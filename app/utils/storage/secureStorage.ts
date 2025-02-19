@@ -107,7 +107,11 @@ export default class KeyStoreWrapper {
   public static async setAllTokens(token: string): Promise<boolean> {
     try {
       if (!token || token.trim() === "") {
+<<<<<<< HEAD
         return false
+=======
+        return false;
+>>>>>>> 507defa066afad990d1a7c0a75026d09994bfa1e
       }
       const oldTokens = await this.getAllTokens()
       const combinedToken = [...oldTokens, token]
