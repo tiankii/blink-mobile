@@ -106,6 +106,9 @@ export default class KeyStoreWrapper {
 
   public static async setAllTokens(token: string): Promise<boolean> {
     try {
+      if (!token || token.trim() === "") {
+        return false
+      }
       const oldTokens = await this.getAllTokens()
       const combinedToken = [...oldTokens, token]
 
@@ -131,9 +134,13 @@ export default class KeyStoreWrapper {
   public static async updateAllTokens(token: string): Promise<boolean> {
     try {
       const updatedToken = (await this.getAllTokens()).filter((t) => t !== token)
-      await RNSecureKeyStore.set(KeyStoreWrapper.TOKENS, JSON.stringify([...updatedToken]), {
-        accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
-      })
+      await RNSecureKeyStore.set(
+        KeyStoreWrapper.TOKENS,
+        JSON.stringify([...updatedToken]),
+        {
+          accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
+        },
+      )
       return true
     } catch {
       return false

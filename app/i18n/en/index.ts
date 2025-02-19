@@ -2375,7 +2375,7 @@ const en: BaseTranslation = {
     tapToAddPhoneNumber: "Tap to add phone number",
     loginMethods: "Login Methods",
     level: "Level {level: string}",
-    switch: "switch",
+    switch: "Switch Account",
     accountLevel: "Account Level",
     upgrade: "Upgrade your account",
     logOutAndDeleteLocalData: "Log out and clear all local data",
