@@ -10,11 +10,8 @@ import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useApolloClient, gql } from "@apollo/client"
-import { useUserLogoutMutation, useUsernameLazyQuery } from "@app/graphql/generated"
-import { useCallback, useEffect, useRef, useState } from "react"
-import messaging from "@react-native-firebase/messaging"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { logLogout } from "@app/utils/analytics"
+import { useUsernameLazyQuery } from "@app/graphql/generated"
+import { useEffect, useRef, useState } from "react"
 import KeyStoreWrapper from "../../../utils/storage/secureStorage"
 
 gql`
