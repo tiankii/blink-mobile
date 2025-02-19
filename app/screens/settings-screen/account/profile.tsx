@@ -16,6 +16,7 @@ import messaging from "@react-native-firebase/messaging"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { logLogout } from "@app/utils/analytics"
 import { PersistentState } from "@app/store/persistent-state/state-migrations"
+import KeyStoreWrapper from "../../../utils/storage/secureStorage"
 
 gql`
   query username {
@@ -40,7 +41,7 @@ export const ProfileScreen: React.FC = () => {
   const { persistentState } = usePersistentStateContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
-  const { galoyAuthToken: curToken, galoyAllAuthTokens: allTokens } = persistentState
+  const { galoyAuthToken: curToken } = persistentState
 
   const [profiles, setProfiles] = useState<ProfileProps[]>([])
   const [fetchUsername, { error, refetch }] = useUsernameLazyQuery({
@@ -52,7 +53,10 @@ export const ProfileScreen: React.FC = () => {
   useEffect(() => {
     const fetchUsernames = async () => {
       setLoading(true)
+      // Avoid duplicate account data
+      setProfiles([])
       const profiles: ProfileProps[] = []
+      const allTokens = await KeyStoreWrapper.getAllTokens()
       let counter = 1
       for (const token of allTokens) {
         try {
@@ -78,7 +82,7 @@ export const ProfileScreen: React.FC = () => {
       setLoading(false)
     }
     fetchUsernames()
-  }, [allTokens, fetchUsername, curToken])
+  }, [fetchUsername, curToken])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -126,8 +130,9 @@ export const ProfileScreen: React.FC = () => {
     )
   }
 
-  const handleAddNew = () => {
+  const handleAddNew = async () => {
     navigation.navigate("getStarted")
+    console.log(await KeyStoreWrapper.getAllTokens())
   }
 
   return (
@@ -179,11 +184,11 @@ const Profile: React.FC<ProfileProps> = ({ username, token, selected }) => {
   }, [userLogoutMutation])
 
   const handleLogout = async () => {
+    await KeyStoreWrapper.updateAllTokens(token)
     updateState((state) => {
       if (state) {
         return {
           ...state,
-          galoyAllAuthTokens: state.galoyAllAuthTokens.filter((t) => t !== token),
         }
       }
       return state

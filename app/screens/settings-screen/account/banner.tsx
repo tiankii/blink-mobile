@@ -28,7 +28,7 @@ export const AccountBanner = () => {
   const { currentLevel } = useLevel()
   const isUserLoggedIn = currentLevel !== AccountLevel.NonAuth
 
-  const { data, loading } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
+  const { data, loading } = useSettingsScreenQuery({ fetchPolicy: "cache-first" }) 
 
   const usernameTitle = data?.me?.username || LL.common.blinkUser()
 

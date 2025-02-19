@@ -99,7 +99,7 @@ const useStyles = makeStyles(({ colors }) => ({
   whatsAppButton: {
     marginBottom: 20,
   },
-  contactSupportButton: {
+  contactSupportButton: { 
     marginTop: 10,
   },
 
