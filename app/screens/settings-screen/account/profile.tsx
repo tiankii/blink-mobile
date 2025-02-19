@@ -15,7 +15,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import messaging from "@react-native-firebase/messaging"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { logLogout } from "@app/utils/analytics"
-import { PersistentState } from "@app/store/persistent-state/state-migrations"
 import KeyStoreWrapper from "../../../utils/storage/secureStorage"
 
 gql`
@@ -132,7 +131,6 @@ export const ProfileScreen: React.FC = () => {
 
   const handleAddNew = async () => {
     navigation.navigate("getStarted")
-    console.log(await KeyStoreWrapper.getAllTokens())
   }
 
   return (
@@ -154,46 +152,12 @@ const Profile: React.FC<ProfileProps> = ({ username, token, selected }) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { persistentState, updateState } = usePersistentStateContext()
+  const { updateState } = usePersistentStateContext()
   const client = useApolloClient()
-  const [userLogoutMutation] = useUserLogoutMutation({
-    fetchPolicy: "no-cache",
-  })
-  const oldToken = persistentState.galoyAuthToken
-
-  const logout = useCallback(async (): Promise<void> => {
-    try {
-      const deviceToken = await messaging().getToken()
-      logLogout()
-      await Promise.race([
-        userLogoutMutation({ variables: { input: { deviceToken } } }),
-        // Create a promise that rejects after 2 seconds
-        // this is handy for the case where the server is down, or in dev mode
-        new Promise((_, reject) => {
-          setTimeout(() => {
-            reject(new Error("Logout mutation timeout"))
-          }, 2000)
-        }),
-      ])
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        crashlytics().recordError(err)
-        console.debug({ err }, `error logout`)
-      }
-    }
-  }, [userLogoutMutation])
 
   const handleLogout = async () => {
     await KeyStoreWrapper.updateAllTokens(token)
-    updateState((state) => {
-      if (state) {
-        return {
-          ...state,
-        }
-      }
-      return state
-    })
-    await logout()
+    navigation.goBack()
   }
 
   const handleProfileSwitch = () => {
