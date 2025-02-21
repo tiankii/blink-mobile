@@ -2432,7 +2432,8 @@ const en: BaseTranslation = {
     copy: "Copy",
   },
   ProfileScreen: {
-    addAccount: "Add Account"
+    addAccount: "Add Account",
+    error: "Unable to fetch profiles at this time",
   },
   TotpRegistrationInitiateScreen: {
     title: "Two-factor authentication",
