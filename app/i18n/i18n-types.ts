@@ -7438,6 +7438,10 @@ type RootTranslation = {
 		 */
 		switchAccount: string
 		/**
+		 * Please Wait.
+		 */
+		pleaseWait: string
+		/**
 		 * A​c​c​o​u​n​t​ ​L​e​v​e​l
 		 */
 		accountLevel: string
@@ -16524,6 +16528,10 @@ export type TranslationFunctions = {
 		 * Switch Account
 		 */
 		switchAccount: () => LocalizedString
+		/**
+		 * Please Wait.
+		 */
+		pleaseWait: () => LocalizedString
 		/**
 		 * Account Level
 		 */
