@@ -1162,6 +1162,15 @@ query fullOnboardingScreen {
   }
 }
 
+query getUsernames {
+  me {
+    id
+    phone
+    username
+    __typename
+  }
+}
+
 query hasPromptedSetDefaultAccount {
   hasPromptedSetDefaultAccount @client
 }
@@ -1654,13 +1663,6 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
       }
       __typename
     }
-    __typename
-  }
-}
-
-query username {
-  me {
-    username
     __typename
   }
 }
