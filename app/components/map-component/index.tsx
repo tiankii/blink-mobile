@@ -2,44 +2,36 @@ import debounce from "lodash.debounce"
 import React, { useRef } from "react"
 import { View } from "react-native"
 import MapView, { MapMarker as MapMarkerType, Region } from "react-native-maps"
-import { PermissionStatus, RESULTS, request } from "react-native-permissions"
 
 import { useApolloClient } from "@apollo/client"
 import { updateMapLastCoords } from "@app/graphql/client-only-query"
 import { BusinessMapMarkersQuery, MapMarker } from "@app/graphql/generated"
-import { LOCATION_PERMISSION, getUserRegion } from "@app/screens/map-screen/functions"
-import { isIOS } from "@rneui/base"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { ListItem, makeStyles, useTheme } from "@rneui/themed"
 
 import MapMarkerComponent from "../map-marker-component"
-import LocationButtonCopy from "./location-button-copy"
+import ButtonMapsContainer from "./button-maps-container"
 import MapStyles from "./map-styles.json"
-import { OpenSettingsElement, OpenSettingsModal } from "./open-settings-modal"
+import { OpenBottomModal, OpenBottomModalElement, TModal } from "./modals/modal-container"
+import Icon from "react-native-vector-icons/Ionicons"
 
 type Props = {
   data?: BusinessMapMarkersQuery
   userLocation?: Region
-  permissionsStatus?: PermissionStatus
-  setPermissionsStatus: (_: PermissionStatus) => void
   handleMapPress: () => void
   handleMarkerPress: (_: MapMarker) => void
   focusedMarker: MapMarker | null
   focusedMarkerRef: React.MutableRefObject<MapMarkerType | null>
   handleCalloutPress: (_: MapMarker) => void
-  alertOnLocationError: () => void
 }
 
 export default function MapComponent({
   data,
   userLocation,
-  permissionsStatus,
-  setPermissionsStatus,
   handleMapPress,
   handleMarkerPress,
   focusedMarker,
   focusedMarkerRef,
   handleCalloutPress,
-  alertOnLocationError,
 }: Props) {
   const {
     theme: { colors, mode: themeMode },
@@ -48,59 +40,13 @@ export default function MapComponent({
   const client = useApolloClient()
 
   const mapViewRef = useRef<MapView>(null)
-  const openSettingsModalRef = React.useRef<OpenSettingsElement>(null)
-  const isAndroidSecondPermissionRequest = React.useRef(false)
+  const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
 
   // toggle modal from inside modal component instead of here in the parent
   const toggleModal = React.useCallback(
-    () => openSettingsModalRef.current?.toggleVisibility(),
+    (type: TModal) => openBottomModalRef.current?.toggleVisibility(type),
     [],
   )
-
-  const respondToBlocked = (status: PermissionStatus) => {
-    // iOS will only ever ask once for permission, and initial checks can differentiate between BLOCKED vs DENIED
-    if (isIOS) {
-      if (permissionsStatus === RESULTS.BLOCKED && status === RESULTS.BLOCKED) {
-        toggleModal()
-      }
-      // Android can ask twice for permission, and initial checks cannot differentiate between BLOCKED vs DENIED
-    } else {
-      !isAndroidSecondPermissionRequest.current && toggleModal()
-    }
-  }
-
-  const centerOnUser = async () => {
-    getUserRegion(async (region) => {
-      if (region && mapViewRef.current) {
-        mapViewRef.current.animateToRegion(region)
-      } else {
-        alertOnLocationError()
-      }
-    })
-  }
-
-  const requestLocationPermission = async () => {
-    try {
-      const status = await request(
-        LOCATION_PERMISSION,
-        () =>
-          new Promise((resolve) => {
-            // This will only trigger on Android if it's the 2nd request ever
-            isAndroidSecondPermissionRequest.current = true
-            resolve(true)
-          }),
-      )
-      if (status === RESULTS.GRANTED) {
-        centerOnUser()
-      } else if (status === RESULTS.BLOCKED) {
-        respondToBlocked(status)
-      }
-      isAndroidSecondPermissionRequest.current = false
-      setPermissionsStatus(status)
-    } catch {
-      alertOnLocationError()
-    }
-  }
 
   const debouncedHandleRegionChange = React.useRef(
     debounce((region: Region) => updateMapLastCoords(client, region), 1000, {
@@ -113,7 +59,6 @@ export default function MapComponent({
       <MapView
         ref={mapViewRef}
         style={styles.map}
-        showsUserLocation={permissionsStatus === RESULTS.GRANTED}
         showsMyLocationButton={false}
         initialRegion={userLocation}
         customMapStyle={themeMode === "dark" ? MapStyles.dark : MapStyles.light}
@@ -147,15 +92,27 @@ export default function MapComponent({
           />
         ))}
       </MapView>
-      {permissionsStatus !== RESULTS.UNAVAILABLE &&
-        permissionsStatus !== RESULTS.LIMITED && (
-          <LocationButtonCopy
-            requestPermissions={requestLocationPermission}
-            permissionStatus={permissionsStatus}
-            centerOnUser={centerOnUser}
-          />
-        )}
-      <OpenSettingsModal ref={openSettingsModalRef} />
+      <ButtonMapsContainer
+        position="topCenter"
+        event={() => toggleModal("locationEvent")}
+      >
+        <ListItem containerStyle={styles.list}>
+          <Icon name="location-outline" color="white" size={15} />
+          <ListItem.Title>Bitcoint Berlin, E</ListItem.Title>
+          <Icon name="chevron-down-outline" color="white" />
+        </ListItem>
+      </ButtonMapsContainer>
+      <ButtonMapsContainer
+        event={() => toggleModal("filter")}
+        position="LeftLv1"
+        iconName="options-outline"
+      />
+      <ButtonMapsContainer
+        event={() => toggleModal("search")}
+        position="LeftLv2"
+        iconName="search"
+      />
+      <OpenBottomModal ref={openBottomModalRef} />
     </View>
   )
 }
@@ -165,6 +122,11 @@ const useStyles = makeStyles(() => ({
     height: "100%",
     width: "100%",
   },
-
+  list: {
+    padding: 0,
+    margin: 0,
+    fontSize: "0.5rem",
+    backgroundColor: "transparent",
+  },
   viewContainer: { flex: 1 },
 }))

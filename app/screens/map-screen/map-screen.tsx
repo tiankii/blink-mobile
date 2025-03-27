@@ -3,7 +3,6 @@ import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import { Alert, Dimensions } from "react-native"
 import { Region, MapMarker as MapMarkerType } from "react-native-maps"
-import { check, PermissionStatus, RESULTS } from "react-native-permissions"
 
 import { gql } from "@apollo/client"
 import MapComponent from "@app/components/map-component"
@@ -23,7 +22,6 @@ import countryCodes from "../../../utils/countryInfo.json"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import { toastShow } from "../../utils/toast"
-import { LOCATION_PERMISSION, getUserRegion } from "./functions"
 
 const EL_ZONTE_COORDS = {
   latitude: 13.496743,
@@ -80,7 +78,6 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const [isRefreshed, setIsRefreshed] = React.useState(false)
   const [focusedMarker, setFocusedMarker] = React.useState<MapMarker | null>(null)
   const [isInitializing, setInitializing] = React.useState(true)
-  const [permissionsStatus, setPermissionsStatus] = React.useState<PermissionStatus>()
 
   useFocusEffect(() => {
     if (!isRefreshed) {
@@ -93,23 +90,8 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
     toastShow({ message: error.message, LL })
   }
 
-  // On screen load, check (NOT request) if location permissions are given
   React.useEffect(() => {
-    ;(async () => {
-      const status = await check(LOCATION_PERMISSION)
-      setPermissionsStatus(status)
-      if (status === RESULTS.GRANTED) {
-        getUserRegion(async (region) => {
-          if (region) {
-            setInitialLocation(region)
-          } else {
-            setInitializing(false)
-          }
-        })
-      } else {
-        setInitializing(false)
-      }
-    })()
+    setInitializing(false)
   }, [])
 
   const alertOnLocationError = React.useCallback(() => {
@@ -187,14 +169,11 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
         <MapComponent
           data={data}
           userLocation={initialLocation}
-          permissionsStatus={permissionsStatus}
-          setPermissionsStatus={setPermissionsStatus}
           handleMapPress={handleMapPress}
           handleMarkerPress={handleMarkerPress}
           focusedMarker={focusedMarker}
           focusedMarkerRef={focusedMarkerRef}
           handleCalloutPress={handleCalloutPress}
-          alertOnLocationError={alertOnLocationError}
         />
       )}
     </Screen>
