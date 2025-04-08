@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react"
-import { View, Alert } from "react-native"
+import { View, Alert, TouchableHighlight } from "react-native"
 import InAppReview from "react-native-in-app-review"
 
 import { useApolloClient } from "@apollo/client"
@@ -18,7 +18,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { logAppFeedback } from "@app/utils/analytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { Button, makeStyles, Text, useTheme } from "@rneui/themed"
 
 import { testProps } from "../../utils/testProps"
 import {
@@ -27,7 +27,6 @@ import {
 } from "../transaction-detail-screen/format-time"
 import { SuggestionModal } from "./suggestion-modal"
 import { PaymentSendCompletedStatus } from "./use-send-payment"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import LogoLightMode from "@app/assets/logo/blink-logo-light.svg"
 import LogoDarkMode from "@app/assets/logo/app-logo-dark.svg"
 
@@ -181,12 +180,14 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
         </CompletedTextAnimation>
         <SuccessActionComponent successAction={successAction} preimage={preimage} />
       </View>
-      <GaloyPrimaryButton
-        style={styles.view}
+      <Button
+        title={LL.HomeScreen.title()}
         onPress={() => navigation.navigate("Primary")}
-      >
-        {LL.HomeScreen.title()}
-      </GaloyPrimaryButton>
+        TouchableComponent={TouchableHighlight}
+        titleStyle={styles.titleStyle}
+        containerStyle={styles.containerStyle}
+        buttonStyle={styles.buttonStyle}
+      />
       <SuggestionModal
         navigation={navigation}
         showSuggestionModal={showSuggestionModal}
@@ -227,18 +228,26 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  view: {
-    marginHorizontal: 20,
-    backgroundColor: colors.white,
-    padding: 20,
-    borderRadius: 20,
-  },
   logoContainer: {
     top: 20,
     alignSelf: "center",
     width: "50%",
     height: "100%",
     position: "absolute",
+  },
+  containerStyle: {
+    height: 42,
+    borderRadius: 12,
+    marginHorizontal: 40,
+    marginBottom: 20,
+  },
+  buttonStyle: {
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: colors.grey5,
+  },
+  titleStyle: {
+    color: colors.primary,
   },
 }))
 
