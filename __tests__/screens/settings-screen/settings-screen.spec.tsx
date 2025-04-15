@@ -55,6 +55,10 @@ describe("Settings Screen", () => {
         }),
     )
 
+    const switchAccountRight = screen.getByTestId("Switch Account-right")
+
+    expect(switchAccountRight.props.accessibilityLabel).toBe("Switch Account-right")
     expect(screen.getByText(LL.AccountScreen.switchAccount())).toBeTruthy()
+    expect(screen.getByTestId("Switch Account")).toBeTruthy()
   })
 })
