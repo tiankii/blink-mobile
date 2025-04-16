@@ -2559,6 +2559,7 @@ const en: BaseTranslation = {
     verify: "Click to Verify",
     sms: "Send via SMS",
     whatsapp: "Send via WhatsApp",
+    telegram: "Send via Telegram",
   },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",

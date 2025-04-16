@@ -7981,6 +7981,10 @@ type RootTranslation = {
 		 * S​e​n​d​ ​v​i​a​ ​W​h​a​t​s​A​p​p
 		 */
 		whatsapp: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​T​e​l​e​g​r​a​m
+		 */
+		telegram: string
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -17005,6 +17009,10 @@ export type TranslationFunctions = {
 		 * Send via WhatsApp
 		 */
 		whatsapp: () => LocalizedString
+		/**
+		 * Send via Telegram
+		 */
+		telegram: () => LocalizedString
 	}
 	PhoneLoginValidationScreen: {
 		/**
