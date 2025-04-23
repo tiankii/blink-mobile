@@ -48,6 +48,7 @@ import User from "@app/assets/icons-redesign/user.svg"
 import Video from "@app/assets/icons-redesign/video.svg"
 import WarningWithBackground from "@app/assets/icons-redesign/warning-with-background.svg"
 import Warning from "@app/assets/icons-redesign/warning.svg"
+import Telegram from "@app/assets/icons-redesign/telegram.svg"
 import Note from "@app/assets/icons/note.svg"
 import People from "@app/assets/icons/people.svg"
 import Rank from "@app/assets/icons/rank.svg"
@@ -106,6 +107,7 @@ export const icons = {
   "payment-error": PaymentError,
   "bell": Bell,
   "refresh": Refresh,
+  "telegram": Telegram,
 } as const
 
 export type IconNamesType = keyof typeof icons

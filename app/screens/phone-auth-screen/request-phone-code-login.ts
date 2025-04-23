@@ -55,6 +55,7 @@ export type UseRequestPhoneCodeReturn = {
   validatedPhoneNumber?: string
   isWhatsAppSupported: boolean
   isSmsSupported: boolean
+  isTelegramSupported: boolean
   phoneCodeChannel: PhoneCodeChannelType
   error?: ErrorType
   captchaLoading: boolean
@@ -128,7 +129,12 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     resetValidationData,
   } = useGeetestCaptcha()
 
-  const { isWhatsAppSupported, isSmsSupported, allSupportedCountries } = useMemo(() => {
+  const {
+    isTelegramSupported,
+    isWhatsAppSupported,
+    isSmsSupported,
+    allSupportedCountries,
+  } = useMemo(() => {
     const currentCountry = data?.globals?.supportedCountries.find(
       (country) => country.id === countryCode,
     )
@@ -137,6 +143,9 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
       (country) => country.id,
     ) || []) as CountryCode[]
 
+    const isTelegramSupported =
+      currentCountry?.supportedAuthChannels.includes(PhoneCodeChannelType.Telegram) ||
+      false
     const isWhatsAppSupported =
       currentCountry?.supportedAuthChannels.includes(PhoneCodeChannelType.Whatsapp) ||
       false
@@ -144,6 +153,7 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
       currentCountry?.supportedAuthChannels.includes(PhoneCodeChannelType.Sms) || false
 
     return {
+      isTelegramSupported,
       isWhatsAppSupported,
       isSmsSupported,
       allSupportedCountries,
@@ -298,7 +308,8 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
       if (
         !parsedPhoneNumber.country ||
         (phoneCodeChannel === PhoneCodeChannelType.Sms && !isSmsSupported) ||
-        (phoneCodeChannel === PhoneCodeChannelType.Whatsapp && !isWhatsAppSupported)
+        (phoneCodeChannel === PhoneCodeChannelType.Whatsapp && !isWhatsAppSupported) ||
+        (phoneCodeChannel === PhoneCodeChannelType.Telegram && !isTelegramSupported)
       ) {
         setStatus(RequestPhoneCodeStatus.Error)
         setError(ErrorType.UnsupportedCountryError)
@@ -306,6 +317,12 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
       }
 
       setValidatedPhoneNumber(parsedPhoneNumber.number)
+
+      // To Telegram it is not required to request an OTP code.
+      if (phoneCodeChannel === PhoneCodeChannelType.Telegram) {
+        setStatus(RequestPhoneCodeStatus.SuccessRequestingCode)
+        return
+      }
 
       setStatus(RequestPhoneCodeStatus.CompletingCaptchaOrAppcheck)
     } else {
@@ -332,6 +349,7 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     error,
     userSubmitPhoneNumber,
     phoneCodeChannel,
+    isTelegramSupported,
     isWhatsAppSupported,
     isSmsSupported,
     captchaLoading: loadingRegisterCaptcha,

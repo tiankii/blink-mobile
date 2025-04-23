@@ -116,6 +116,10 @@ export type PhoneValidationStackParamList = {
   phoneLoginInitiate: {
     type: PhoneLoginInitiateType
   }
+  telegramLoginValidate: {
+    phone: string
+    type: PhoneLoginInitiateType
+  }
   phoneLoginValidate: {
     phone: string
     channel: PhoneCodeChannelType
