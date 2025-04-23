@@ -2577,6 +2577,12 @@ const en: BaseTranslation = {
     sendViaOtherChannel:
       "You selected to receive the code via {channel: string}. You can try receiving via {other: string} instead",
   },
+  TelegramValidationScreen: {
+    text: "Telegram Passport",
+    description: "After authorizing in Telegram, you will be automatically logged in",
+    loginWithTelegram: "Log in with Telegram",
+    waitingForAuthorization: "Waiting for authorization in Telegram...",
+  },  
   PhoneRegistrationInitiateScreen: {
     title: "Phone set up",
     header: "Enter your phone number, and we'll text you an access code.",

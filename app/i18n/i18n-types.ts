@@ -8032,6 +8032,24 @@ type RootTranslation = {
 		 */
 		sendViaOtherChannel: RequiredParams<'channel' | 'other'>
 	}
+	TelegramValidationScreen: {
+		/**
+		 * T​e​l​e​g​r​a​m​ ​P​a​s​s​p​o​r​t
+		 */
+		text: string
+		/**
+		 * A​f​t​e​r​ ​a​u​t​h​o​r​i​z​i​n​g​ ​i​n​ ​T​e​l​e​g​r​a​m​,​ ​y​o​u​ ​w​i​l​l​ ​b​e​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​l​o​g​g​e​d​ ​i​n
+		 */
+		description: string
+		/**
+		 * L​o​g​ ​i​n​ ​w​i​t​h​ ​T​e​l​e​g​r​a​m
+		 */
+		loginWithTelegram: string
+		/**
+		 * W​a​i​t​i​n​g​ ​f​o​r​ ​a​u​t​h​o​r​i​z​a​t​i​o​n​ ​i​n​ ​T​e​l​e​g​r​a​m​.​.​.
+		 */
+		waitingForAuthorization: string
+	}
 	PhoneRegistrationInitiateScreen: {
 		/**
 		 * P​h​o​n​e​ ​s​e​t​ ​u​p
@@ -17055,6 +17073,24 @@ export type TranslationFunctions = {
 		 * You selected to receive the code via {channel}. You can try receiving via {other} instead
 		 */
 		sendViaOtherChannel: (arg: { channel: string, other: string }) => LocalizedString
+	}
+	TelegramValidationScreen: {
+		/**
+		 * Telegram Passport
+		 */
+		text: () => LocalizedString
+		/**
+		 * After authorizing in Telegram, you will be automatically logged in
+		 */
+		description: () => LocalizedString
+		/**
+		 * Log in with Telegram
+		 */
+		loginWithTelegram: () => LocalizedString
+		/**
+		 * Waiting for authorization in Telegram...
+		 */
+		waitingForAuthorization: () => LocalizedString
 	}
 	PhoneRegistrationInitiateScreen: {
 		/**
