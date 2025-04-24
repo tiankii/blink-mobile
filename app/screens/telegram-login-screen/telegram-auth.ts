@@ -28,9 +28,14 @@ export const useTelegramLogin = (phone: string) => {
   const [isPollingForAuth, setIsPollingForAuth] = useState(false)
 
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const pollingAttemptsRef = useRef(0)
   const hasLoggedInRef = useRef(false)
 
-  const callback = encodeURIComponent(`${BLINK_DEEP_LINK_PREFIX}/passport-callback`)
+  const MAX_POLLING_ATTEMPTS = 3
+  const POLLING_INTERVAL_MS = 5000
+  const TELEGRAM_CALLBACK = encodeURIComponent(
+    `${BLINK_DEEP_LINK_PREFIX}/passport-callback`,
+  )
 
   const {
     appConfig: {
@@ -42,6 +47,7 @@ export const useTelegramLogin = (phone: string) => {
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current)
       pollingIntervalRef.current = null
+      pollingAttemptsRef.current = 0
       setIsPollingForAuth(false)
     }
   }
@@ -86,13 +92,11 @@ export const useTelegramLogin = (phone: string) => {
   const checkIfAuthorized = useCallback(
     async (nonce: string) => {
       if (hasLoggedInRef.current) return
-      let alreadyLoggedIn = false
 
       try {
         const result = await loginWithTelegramPassport(nonce)
         if (!result?.authToken || hasLoggedInRef.current) return
 
-        alreadyLoggedIn = true
         hasLoggedInRef.current = true
         clearPolling()
         analytics().logLogin({ method: "telegram" })
@@ -110,7 +114,6 @@ export const useTelegramLogin = (phone: string) => {
 
         clearPolling()
         setError(message)
-        if (alreadyLoggedIn) hasLoggedInRef.current = true
       }
     },
     [navigation, saveToken, loginWithTelegramPassport],
@@ -129,10 +132,16 @@ export const useTelegramLogin = (phone: string) => {
         if (params.get("tg_passport") === "success") {
           clearPolling()
           setIsPollingForAuth(true)
-          pollingIntervalRef.current = setInterval(
-            () => checkIfAuthorized(authData.nonce),
-            5000,
-          )
+          pollingIntervalRef.current = setInterval(() => {
+            pollingAttemptsRef.current += 1
+            if (pollingAttemptsRef.current > MAX_POLLING_ATTEMPTS) {
+              clearPolling()
+              setError("Authorization timed out. Please try again.")
+              return
+            }
+
+            checkIfAuthorized(authData.nonce)
+          }, POLLING_INTERVAL_MS)
         }
       }
 
@@ -153,8 +162,8 @@ export const useTelegramLogin = (phone: string) => {
       const data = await getTelegramPassportRequestParams()
       setAuthData(data)
 
-      const deepLink = `tg://passport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${callback}`
-      const fallbackLink = `https://telegram.me/telegrampassport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${callback}`
+      const deepLink = `tg://passport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${TELEGRAM_CALLBACK}`
+      const fallbackLink = `https://telegram.me/telegrampassport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${TELEGRAM_CALLBACK}`
 
       clearPolling()
 
@@ -167,7 +176,7 @@ export const useTelegramLogin = (phone: string) => {
     } finally {
       setLoading(false)
     }
-  }, [callback, getTelegramPassportRequestParams])
+  }, [TELEGRAM_CALLBACK, getTelegramPassportRequestParams])
 
   return {
     loading,
