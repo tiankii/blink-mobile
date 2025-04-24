@@ -27,7 +27,7 @@ jest.mock("@app/hooks", () => ({
     saveToken: jest.fn(),
     appConfig: {
       galoyInstance: {
-        authUrl: "https://api.mainnet.galoy.io",
+        authUrl: "https://api.blink.sv",
       },
     },
   }),
@@ -43,6 +43,7 @@ jest.mock("react-native/Libraries/Linking/Linking", () => ({
 }))
 
 describe("useTelegramLogin", () => {
+  const mockPhone = "+50376543210"
   const mockData = {
     bot_id: "1111111111",
     scope: { data: ["phone_number"], v: 1 },
@@ -59,15 +60,15 @@ describe("useTelegramLogin", () => {
     ;(Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true)
     ;(Linking.openURL as jest.Mock).mockResolvedValueOnce(undefined)
 
-    const { result } = renderHook(() => useTelegramLogin("+50378662557"))
+    const { result } = renderHook(() => useTelegramLogin(mockPhone))
 
     await act(async () => {
       await result.current.handleTelegramLogin()
     })
 
     expect(axios.post).toHaveBeenCalledWith(
-      "https://api.mainnet.galoy.io/auth/telegram-passport/request-params",
-      { phone: "+50378662557" },
+      "https://api.blink.sv/auth/telegram-passport/request-params",
+      { phone: mockPhone },
     )
 
     expect(Linking.canOpenURL).toHaveBeenCalled()
@@ -79,7 +80,7 @@ describe("useTelegramLogin", () => {
     ;(axios.post as jest.Mock).mockResolvedValueOnce({ data: mockData })
     ;(Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false)
 
-    const { result } = renderHook(() => useTelegramLogin("+50378662557"))
+    const { result } = renderHook(() => useTelegramLogin(mockPhone))
 
     await act(async () => {
       await result.current.handleTelegramLogin()
@@ -95,7 +96,7 @@ describe("useTelegramLogin", () => {
       response: { data: {} },
     })
 
-    const { result } = renderHook(() => useTelegramLogin("+50378662557"))
+    const { result } = renderHook(() => useTelegramLogin(mockPhone))
 
     await act(async () => {
       await result.current.handleTelegramLogin()
@@ -107,7 +108,7 @@ describe("useTelegramLogin", () => {
   it("should handle general errors", async () => {
     ;(axios.post as jest.Mock).mockRejectedValueOnce(new Error("network failed"))
 
-    const { result } = renderHook(() => useTelegramLogin("+50378662557"))
+    const { result } = renderHook(() => useTelegramLogin(mockPhone))
 
     await act(async () => {
       await result.current.handleTelegramLogin()
@@ -120,7 +121,7 @@ describe("useTelegramLogin", () => {
     ;(axios.post as jest.Mock).mockResolvedValueOnce({ data: mockData })
     ;(Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true)
 
-    const { result } = renderHook(() => useTelegramLogin("+50378662557"))
+    const { result } = renderHook(() => useTelegramLogin(mockPhone))
 
     await act(async () => {
       await result.current.handleTelegramLogin()
