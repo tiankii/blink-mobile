@@ -154,30 +154,23 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     DisableCountriesForAccountCreation.includes(phoneInputInfo.countryCode)
 
   useEffect(() => {
-    if (
-      status === RequestPhoneCodeStatus.SuccessRequestingCode &&
-      phoneCodeChannel !== PhoneCodeChannelType.Telegram
-    ) {
-      setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
-      navigation.navigate("phoneLoginValidate", {
-        type: screenType,
-        phone: validatedPhoneNumber || "",
-        channel: phoneCodeChannel,
-      })
-    }
-  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
+    if (status !== RequestPhoneCodeStatus.SuccessRequestingCode) return
 
-  useEffect(() => {
-    if (
-      status === RequestPhoneCodeStatus.SuccessRequestingCode &&
-      phoneCodeChannel === PhoneCodeChannelType.Telegram
-    ) {
-      setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
+    setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
+
+    if (phoneCodeChannel === PhoneCodeChannelType.Telegram) {
       navigation.navigate("telegramLoginValidate", {
         phone: validatedPhoneNumber || "",
         type: screenType,
       })
+      return
     }
+
+    navigation.navigate("phoneLoginValidate", {
+      type: screenType,
+      phone: validatedPhoneNumber || "",
+      channel: phoneCodeChannel,
+    })
   }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
 
   useEffect(() => {
