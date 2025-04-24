@@ -27,6 +27,7 @@ export const TelegramLoginButton: FC<PropsWithChildren<ButtonProps>> = (props) =
       iconRight={false}
       buttonStyle={[styles.buttonStyle, props.buttonStyle]}
       titleStyle={[styles.titleStyle, props.titleStyle]}
+      disabled={props.loading}
       disabledStyle={styles.disabledStyle}
       disabledTitleStyle={styles.disabledTitleStyle}
       {...props}
@@ -51,8 +52,8 @@ const useStyles = makeStyles(({ colors }) => ({
     color: colors.grey3,
   },
   disabledStyle: {
-    opacity: 0.5,
-    backgroundColor: colors.blue5,
+    opacity: 1,
+    backgroundColor: "#A1CFE6",
   },
   iconStyle: {
     marginRight: 10,
