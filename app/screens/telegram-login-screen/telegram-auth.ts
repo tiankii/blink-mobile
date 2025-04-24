@@ -12,12 +12,9 @@ import { useAppConfig } from "@app/hooks"
 import { BLINK_DEEP_LINK_PREFIX } from "@app/config"
 
 type TelegramAuthData = {
-  bot_id: string
-  scope: {
-    data: string[]
-    v: number
-  }
-  public_key: string
+  botId: string
+  scope: string
+  publicKey: string
   nonce: string
 }
 
@@ -32,6 +29,8 @@ export const useTelegramLogin = (phone: string) => {
 
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const hasLoggedInRef = useRef(false)
+
+  const callback = encodeURIComponent(`${BLINK_DEEP_LINK_PREFIX}/passport-callback`)
 
   const {
     appConfig: {
@@ -51,7 +50,13 @@ export const useTelegramLogin = (phone: string) => {
     try {
       const url = `${authUrl}/auth/telegram-passport/request-params`
       const { data } = await axios.post(url, { phone })
-      return data
+
+      return {
+        botId: data.bot_id,
+        scope: encodeURIComponent(JSON.stringify(data.scope)),
+        publicKey: encodeURIComponent(formatPublicKey(data.public_key)),
+        nonce: data.nonce,
+      }
     } catch (err) {
       throw new Error(
         isAxiosError(err) && typeof err.response?.data?.error === "string"
@@ -148,12 +153,8 @@ export const useTelegramLogin = (phone: string) => {
       const data = await getTelegramPassportRequestParams()
       setAuthData(data)
 
-      const scope = encodeURIComponent(JSON.stringify(data.scope))
-      const publicKey = encodeURIComponent(formatPublicKey(data.public_key))
-      const callback = encodeURIComponent(`${BLINK_DEEP_LINK_PREFIX}/passport-callback`)
-
-      const deepLink = `tg://passport?bot_id=${data.bot_id}&scope=${scope}&public_key=${publicKey}&nonce=${data.nonce}&callback_url=${callback}`
-      const fallbackLink = `https://telegram.me/telegrampassport?bot_id=${data.bot_id}&scope=${scope}&public_key=${publicKey}&nonce=${data.nonce}&callback_url=${callback}`
+      const deepLink = `tg://passport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${callback}`
+      const fallbackLink = `https://telegram.me/telegrampassport?bot_id=${data.botId}&scope=${data.scope}&public_key=${data.publicKey}&nonce=${data.nonce}&callback_url=${callback}`
 
       clearPolling()
 
@@ -166,7 +167,7 @@ export const useTelegramLogin = (phone: string) => {
     } finally {
       setLoading(false)
     }
-  }, [getTelegramPassportRequestParams])
+  }, [callback, getTelegramPassportRequestParams])
 
   return {
     loading,
