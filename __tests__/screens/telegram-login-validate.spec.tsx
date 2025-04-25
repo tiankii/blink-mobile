@@ -3,17 +3,24 @@ import { render, screen, waitFor } from "@testing-library/react-native"
 import { RouteProp } from "@react-navigation/native"
 
 import { TelegramLogin } from "@app/screens/telegram-login-screen/telegram-login-validate.stories"
-import { useTelegramLogin } from "@app/screens/telegram-login-screen/telegram-auth"
 import { PhoneValidationStackParamList } from "@app/navigation/stack-param-lists"
+import {
+  useTelegramLogin,
+  ErrorType,
+} from "@app/screens/telegram-login-screen/telegram-auth"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 
 import { ContextForScreen } from "./helper"
 
 // Mock useTelegramLogin
-jest.mock("@app/screens/telegram-login-screen/telegram-auth", () => ({
-  useTelegramLogin: jest.fn(),
-}))
+jest.mock("@app/screens/telegram-login-screen/telegram-auth", () => {
+  const actual = jest.requireActual("@app/screens/telegram-login-screen/telegram-auth")
+  return {
+    ...actual,
+    useTelegramLogin: jest.fn(),
+  }
+})
 
 const mockUseTelegramLogin = useTelegramLogin as jest.Mock
 
@@ -93,7 +100,7 @@ describe("Telegram Login Screen", () => {
   it("renders GaloyErrorBox when error exists", async () => {
     mockUseTelegramLogin.mockReturnValueOnce({
       loading: false,
-      error: "Failed to open Telegram",
+      error: ErrorType.OpenAppError,
       isPollingForAuth: false,
       handleTelegramLogin: jest.fn(),
     })
@@ -105,7 +112,9 @@ describe("Telegram Login Screen", () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText("Failed to open Telegram")).toBeTruthy()
+      expect(
+        screen.getByText(LL.TelegramValidationScreen.errorOpenAppError()),
+      ).toBeTruthy()
     })
   })
 })

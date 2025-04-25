@@ -8049,6 +8049,22 @@ type RootTranslation = {
 		 * W​a​i​t​i​n​g​ ​f​o​r​ ​a​u​t​h​o​r​i​z​a​t​i​o​n​ ​i​n​ ​T​e​l​e​g​r​a​m​.​.​.
 		 */
 		waitingForAuthorization: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​T​e​l​e​g​r​a​m​ ​a​u​t​h​ ​p​a​r​a​m​s
+		 */
+		errorFetchParams: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​T​e​l​e​g​r​a​m​ ​l​o​g​i​n
+		 */
+		errorFetchLogin: string
+		/**
+		 * A​u​t​h​o​r​i​z​a​t​i​o​n​ ​t​i​m​e​d​ ​o​u​t​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		errorAuthTimeout: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​o​p​e​n​ ​T​e​l​e​g​r​a​m​.​ ​P​l​e​a​s​e​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​a​p​p​ ​i​s​ ​i​n​s​t​a​l​l​e​d​.
+		 */
+		errorOpenAppError: string
 	}
 	PhoneRegistrationInitiateScreen: {
 		/**
@@ -17091,6 +17107,22 @@ export type TranslationFunctions = {
 		 * Waiting for authorization in Telegram...
 		 */
 		waitingForAuthorization: () => LocalizedString
+		/**
+		 * Failed to fetch Telegram auth params
+		 */
+		errorFetchParams: () => LocalizedString
+		/**
+		 * Failed to fetch Telegram login
+		 */
+		errorFetchLogin: () => LocalizedString
+		/**
+		 * Authorization timed out. Please try again.
+		 */
+		errorAuthTimeout: () => LocalizedString
+		/**
+		 * Failed to open Telegram. Please make sure the app is installed.
+		 */
+		errorOpenAppError: () => LocalizedString
 	}
 	PhoneRegistrationInitiateScreen: {
 		/**

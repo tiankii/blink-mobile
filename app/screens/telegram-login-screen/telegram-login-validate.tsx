@@ -10,7 +10,7 @@ import { GaloyInfo } from "@app/components/atomic/galoy-info"
 import { TelegramLoginButton } from "@app/components/telegram-login"
 import { PhoneValidationStackParamList } from "@app/navigation/stack-param-lists"
 
-import { useTelegramLogin } from "./telegram-auth"
+import { useTelegramLogin, ErrorType } from "./telegram-auth"
 
 export const TelegramLoginScreen: React.FC<{
   route: RouteProp<PhoneValidationStackParamList, "telegramLoginValidate">
@@ -21,6 +21,27 @@ export const TelegramLoginScreen: React.FC<{
   const { loading, error, isPollingForAuth, handleTelegramLogin } = useTelegramLogin(
     route.params.phone,
   )
+
+  // Map useTelegramLogin errors
+  let errorMessage: string | undefined
+  if (error) {
+    switch (error) {
+      case ErrorType.FetchParamsError:
+        errorMessage = LL.TelegramValidationScreen.errorFetchParams()
+        break
+      case ErrorType.FetchLoginError:
+        errorMessage = LL.TelegramValidationScreen.errorFetchLogin()
+        break
+      case ErrorType.TimeoutError:
+        errorMessage = LL.TelegramValidationScreen.errorAuthTimeout()
+        break
+      case ErrorType.OpenAppError:
+        errorMessage = LL.TelegramValidationScreen.errorOpenAppError()
+        break
+      default:
+        errorMessage = typeof error === "string" ? error : undefined
+    }
+  }
 
   // Run handleTelegramLogin once on screen mount
   useEffect(() => {
@@ -42,9 +63,9 @@ export const TelegramLoginScreen: React.FC<{
           {LL.TelegramValidationScreen.description()}
         </Text>
 
-        {error && (
+        {errorMessage && (
           <View style={styles.errorContainer}>
-            <GaloyErrorBox errorMessage={error} />
+            <GaloyErrorBox errorMessage={errorMessage} />
           </View>
         )}
 

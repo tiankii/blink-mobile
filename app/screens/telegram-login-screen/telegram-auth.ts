@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react"
 import { Linking } from "react-native"
-import axios, { isAxiosError } from "axios"
+import axios from "axios"
 
 import analytics from "@react-native-firebase/analytics"
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
@@ -11,6 +11,14 @@ import { formatPublicKey } from "@app/utils/format-public-key"
 import { useAppConfig } from "@app/hooks"
 import { BLINK_DEEP_LINK_PREFIX } from "@app/config"
 
+export const ErrorType = {
+  FetchParamsError: "FetchParamsError",
+  FetchLoginError: "FetchLoginError",
+  TimeoutError: "TimeoutError",
+  OpenAppError: "OpenAppError",
+} as const
+
+type ErrorType = (typeof ErrorType)[keyof typeof ErrorType]
 type TelegramAuthData = {
   botId: string
   scope: string
@@ -23,7 +31,7 @@ export const useTelegramLogin = (phone: string) => {
   const { saveToken } = useAppConfig()
 
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<ErrorType | string | null>(null)
   const [authData, setAuthData] = useState<TelegramAuthData | null>(null)
   const [isPollingForAuth, setIsPollingForAuth] = useState(false)
 
@@ -64,11 +72,7 @@ export const useTelegramLogin = (phone: string) => {
         nonce: data.nonce,
       }
     } catch (err) {
-      throw new Error(
-        isAxiosError(err) && typeof err.response?.data?.error === "string"
-          ? err.response.data.error
-          : "Failed to fetch Telegram auth params",
-      )
+      throw new Error(ErrorType.FetchParamsError)
     }
   }, [authUrl, phone])
 
@@ -79,11 +83,7 @@ export const useTelegramLogin = (phone: string) => {
         const { data } = await axios.post(url, { phone, nonce })
         return data
       } catch (err) {
-        throw new Error(
-          isAxiosError(err) && typeof err.response?.data?.error === "string"
-            ? err.response.data.error
-            : "Failed to fetch Telegram login",
-        )
+        throw new Error(ErrorType.FetchLoginError)
       }
     },
     [authUrl, phone],
@@ -136,7 +136,7 @@ export const useTelegramLogin = (phone: string) => {
             pollingAttemptsRef.current += 1
             if (pollingAttemptsRef.current > MAX_POLLING_ATTEMPTS) {
               clearPolling()
-              setError("Authorization timed out. Please try again.")
+              setError(ErrorType.TimeoutError)
               return
             }
 
@@ -169,7 +169,7 @@ export const useTelegramLogin = (phone: string) => {
 
       const canOpen = await Linking.canOpenURL(deepLink)
       await Linking.openURL(canOpen ? deepLink : fallbackLink).catch(() => {
-        setError("Failed to open Telegram. Please make sure the app is installed.")
+        setError(ErrorType.OpenAppError)
       })
     } catch (err) {
       setError((err as Error).message || "Unexpected error occurred")

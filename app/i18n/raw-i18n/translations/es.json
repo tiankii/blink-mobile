@@ -2483,7 +2483,11 @@
         "text": "Telegram Passport",
         "description": "Después de autorizar en Telegram, iniciarás sesión automáticamente",
         "loginWithTelegram": "Iniciar sesión con Telegram",
-        "waitingForAuthorization": "Esperando autorización en Telegram..."
+        "waitingForAuthorization": "Esperando autorización en Telegram...",
+        "errorFetchParams": "No se pudo obtener los parámetros de autenticación de Telegram",
+        "errorFetchLogin": "No se pudo completar el inicio de sesión con Telegram",
+        "errorAuthTimeout": "La autorización ha expirado. Inténtalo de nuevo.",
+        "errorOpenAppError": "No se pudo abrir Telegram. Asegúrate de que la app esté instalada."
     },
     "PhoneRegistrationInitiateScreen": {
         "title": "Configuración del teléfono",

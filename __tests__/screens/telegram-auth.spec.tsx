@@ -1,9 +1,14 @@
 /* eslint-disable camelcase */
-import { renderHook, act } from "@testing-library/react-hooks"
-import { useTelegramLogin } from "@app/screens/telegram-login-screen/telegram-auth"
-import { formatPublicKey } from "@app/utils/format-public-key"
-import { Linking } from "react-native"
 import axios from "axios"
+import { Linking } from "react-native"
+
+import {
+  useTelegramLogin,
+  ErrorType,
+} from "@app/screens/telegram-login-screen/telegram-auth"
+import { formatPublicKey } from "@app/utils/format-public-key"
+
+import { renderHook, act } from "@testing-library/react-hooks"
 
 // Mocks
 jest.mock("@react-navigation/native", () => {
@@ -102,7 +107,7 @@ describe("useTelegramLogin", () => {
       await result.current.handleTelegramLogin()
     })
 
-    expect(result.current.error).toBe("Failed to fetch Telegram auth params")
+    expect(result.current.error).toBe(ErrorType.FetchParamsError)
   })
 
   it("should handle general errors", async () => {
@@ -114,7 +119,7 @@ describe("useTelegramLogin", () => {
       await result.current.handleTelegramLogin()
     })
 
-    expect(result.current.error).toBe("Failed to fetch Telegram auth params")
+    expect(result.current.error).toBe(ErrorType.FetchParamsError)
   })
 
   it("should generate correct deepLink", async () => {

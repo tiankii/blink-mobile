@@ -2483,7 +2483,11 @@
         "text": "Telegram Passport",
         "description": "After authorizing in Telegram, you will be automatically logged in",
         "loginWithTelegram": "Log in with Telegram",
-        "waitingForAuthorization": "Waiting for authorization in Telegram..."
+        "waitingForAuthorization": "Waiting for authorization in Telegram...",
+        "errorFetchParams": "Failed to fetch Telegram auth params",
+        "errorFetchLogin": "Failed to fetch Telegram login",
+        "errorAuthTimeout": "Authorization timed out. Please try again.",
+        "errorOpenAppError": "Failed to open Telegram. Please make sure the app is installed."
     },
     "PhoneRegistrationInitiateScreen": {
         "title": "Phone set up",
