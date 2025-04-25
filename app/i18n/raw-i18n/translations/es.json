@@ -2464,7 +2464,8 @@
         "placeholder": "Número de teléfono",
         "verify": "Pulsa para verificar",
         "sms": "Envia por SMS",
-        "whatsapp": "Enviar a través de WhatsApp"
+        "whatsapp": "Enviar a través de WhatsApp",
+        "telegram": "Enviar a través de Telegram"
     },
     "PhoneLoginValidationScreen": {
         "errorLoggingIn": "Error al inciar sesión. ¿Usó el código correcto?",
@@ -2477,6 +2478,16 @@
         "sendAgain": "Enviar de nuevo",
         "tryAgain": "Inténtalo de Nuevo",
         "sendViaOtherChannel": "Seleccionaste recibir el código a través de {channel: string}. Puede intentar recibir a través de {other: string} en su lugar"
+    },
+    "TelegramValidationScreen": {
+        "text": "Telegram Passport",
+        "description": "Después de autorizar en Telegram, iniciarás sesión automáticamente",
+        "loginWithTelegram": "Iniciar sesión con Telegram",
+        "waitingForAuthorization": "Esperando autorización en Telegram...",
+        "errorFetchParams": "No se pudo obtener los parámetros de autenticación de Telegram",
+        "errorFetchLogin": "No se pudo completar el inicio de sesión con Telegram",
+        "errorAuthTimeout": "La autorización ha expirado. Inténtalo de nuevo.",
+        "errorOpenAppError": "No se pudo abrir Telegram. Asegúrate de que la app esté instalada."
     },
     "PhoneRegistrationInitiateScreen": {
         "title": "Configuración del teléfono",

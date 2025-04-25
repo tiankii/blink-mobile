@@ -65,6 +65,10 @@
 			</array>
 		</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	  	<string>tg</string>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>750</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

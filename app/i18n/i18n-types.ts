@@ -7981,6 +7981,10 @@ type RootTranslation = {
 		 * S​e​n​d​ ​v​i​a​ ​W​h​a​t​s​A​p​p
 		 */
 		whatsapp: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​T​e​l​e​g​r​a​m
+		 */
+		telegram: string
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -8027,6 +8031,40 @@ type RootTranslation = {
 		 * @param {string} other
 		 */
 		sendViaOtherChannel: RequiredParams<'channel' | 'other'>
+	}
+	TelegramValidationScreen: {
+		/**
+		 * T​e​l​e​g​r​a​m​ ​P​a​s​s​p​o​r​t
+		 */
+		text: string
+		/**
+		 * A​f​t​e​r​ ​a​u​t​h​o​r​i​z​i​n​g​ ​i​n​ ​T​e​l​e​g​r​a​m​,​ ​y​o​u​ ​w​i​l​l​ ​b​e​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​l​o​g​g​e​d​ ​i​n
+		 */
+		description: string
+		/**
+		 * L​o​g​ ​i​n​ ​w​i​t​h​ ​T​e​l​e​g​r​a​m
+		 */
+		loginWithTelegram: string
+		/**
+		 * W​a​i​t​i​n​g​ ​f​o​r​ ​a​u​t​h​o​r​i​z​a​t​i​o​n​ ​i​n​ ​T​e​l​e​g​r​a​m​.​.​.
+		 */
+		waitingForAuthorization: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​T​e​l​e​g​r​a​m​ ​a​u​t​h​ ​p​a​r​a​m​s
+		 */
+		errorFetchParams: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​T​e​l​e​g​r​a​m​ ​l​o​g​i​n
+		 */
+		errorFetchLogin: string
+		/**
+		 * A​u​t​h​o​r​i​z​a​t​i​o​n​ ​t​i​m​e​d​ ​o​u​t​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		errorAuthTimeout: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​o​p​e​n​ ​T​e​l​e​g​r​a​m​.​ ​P​l​e​a​s​e​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​a​p​p​ ​i​s​ ​i​n​s​t​a​l​l​e​d​.
+		 */
+		errorOpenAppError: string
 	}
 	PhoneRegistrationInitiateScreen: {
 		/**
@@ -17005,6 +17043,10 @@ export type TranslationFunctions = {
 		 * Send via WhatsApp
 		 */
 		whatsapp: () => LocalizedString
+		/**
+		 * Send via Telegram
+		 */
+		telegram: () => LocalizedString
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -17047,6 +17089,40 @@ export type TranslationFunctions = {
 		 * You selected to receive the code via {channel}. You can try receiving via {other} instead
 		 */
 		sendViaOtherChannel: (arg: { channel: string, other: string }) => LocalizedString
+	}
+	TelegramValidationScreen: {
+		/**
+		 * Telegram Passport
+		 */
+		text: () => LocalizedString
+		/**
+		 * After authorizing in Telegram, you will be automatically logged in
+		 */
+		description: () => LocalizedString
+		/**
+		 * Log in with Telegram
+		 */
+		loginWithTelegram: () => LocalizedString
+		/**
+		 * Waiting for authorization in Telegram...
+		 */
+		waitingForAuthorization: () => LocalizedString
+		/**
+		 * Failed to fetch Telegram auth params
+		 */
+		errorFetchParams: () => LocalizedString
+		/**
+		 * Failed to fetch Telegram login
+		 */
+		errorFetchLogin: () => LocalizedString
+		/**
+		 * Authorization timed out. Please try again.
+		 */
+		errorAuthTimeout: () => LocalizedString
+		/**
+		 * Failed to open Telegram. Please make sure the app is installed.
+		 */
+		errorOpenAppError: () => LocalizedString
 	}
 	PhoneRegistrationInitiateScreen: {
 		/**

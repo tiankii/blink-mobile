@@ -2559,6 +2559,7 @@ const en: BaseTranslation = {
     verify: "Click to Verify",
     sms: "Send via SMS",
     whatsapp: "Send via WhatsApp",
+    telegram: "Send via Telegram",
   },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",
@@ -2576,6 +2577,16 @@ const en: BaseTranslation = {
     sendViaOtherChannel:
       "You selected to receive the code via {channel: string}. You can try receiving via {other: string} instead",
   },
+  TelegramValidationScreen: {
+    text: "Telegram Passport",
+    description: "After authorizing in Telegram, you will be automatically logged in",
+    loginWithTelegram: "Log in with Telegram",
+    waitingForAuthorization: "Waiting for authorization in Telegram...",
+    errorFetchParams: "Failed to fetch Telegram auth params",
+    errorFetchLogin: "Failed to fetch Telegram login",
+    errorAuthTimeout: "Authorization timed out. Please try again.",
+    errorOpenAppError: "Failed to open Telegram. Please make sure the app is installed.",
+  },  
   PhoneRegistrationInitiateScreen: {
     title: "Phone set up",
     header: "Enter your phone number, and we'll text you an access code.",

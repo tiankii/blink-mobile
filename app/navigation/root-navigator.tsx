@@ -29,6 +29,7 @@ import {
   PhoneLoginInitiateType,
   PhoneLoginValidationScreen,
 } from "@app/screens/phone-auth-screen"
+import { TelegramLoginScreen } from "@app/screens/telegram-login-screen/telegram-login-validate"
 import { PhoneRegistrationInitiateScreen } from "@app/screens/phone-auth-screen/phone-registration-input"
 import { PhoneRegistrationValidateScreen } from "@app/screens/phone-auth-screen/phone-registration-validation"
 import ReceiveScreen from "@app/screens/receive-bitcoin-screen/receive-screen"
@@ -526,6 +527,13 @@ export const PhoneLoginNavigator = () => {
         component={PhoneLoginValidationScreen}
         options={(props) => ({
           title: getTitle(props.route.params.type),
+        })}
+      />
+      <StackPhoneValidation.Screen
+        name="telegramLoginValidate"
+        component={TelegramLoginScreen}
+        options={() => ({
+          title: LL.PhoneLoginInitiateScreen.telegram(),
         })}
       />
     </StackPhoneValidation.Navigator>

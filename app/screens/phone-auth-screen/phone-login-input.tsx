@@ -15,8 +15,6 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 
 import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
 import { GaloyInfo } from "@app/components/atomic/galoy-info"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { ContactSupportButton } from "@app/components/contact-support-button/contact-support-button"
 import { PhoneCodeChannelType } from "@app/graphql/generated"
 import { useAppConfig } from "@app/hooks"
@@ -27,6 +25,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme, Text, Input } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
+import { PhoneChannelButtons } from "./phone-channel-buttons"
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
 import {
   ErrorType,
@@ -41,10 +40,6 @@ const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
     padding: 20,
     flexGrow: 1,
-  },
-  buttonsContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
   },
 
   inputContainer: {
@@ -96,9 +91,6 @@ const useStyles = makeStyles(({ colors }) => ({
   infoContainer: {
     marginBottom: 20,
   },
-  whatsAppButton: {
-    marginBottom: 20,
-  },
   contactSupportButton: {
     marginTop: 10,
   },
@@ -139,6 +131,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     captchaLoading,
     status,
     setPhoneNumber,
+    isTelegramSupported,
     isSmsSupported,
     isWhatsAppSupported,
     phoneInputInfo,
@@ -161,14 +154,23 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     DisableCountriesForAccountCreation.includes(phoneInputInfo.countryCode)
 
   useEffect(() => {
-    if (status === RequestPhoneCodeStatus.SuccessRequestingCode) {
-      setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
-      navigation.navigate("phoneLoginValidate", {
-        type: screenType,
+    if (status !== RequestPhoneCodeStatus.SuccessRequestingCode) return
+
+    setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
+
+    if (phoneCodeChannel === PhoneCodeChannelType.Telegram) {
+      navigation.navigate("telegramLoginValidate", {
         phone: validatedPhoneNumber || "",
-        channel: phoneCodeChannel,
+        type: screenType,
       })
+      return
     }
+
+    navigation.navigate("phoneLoginValidate", {
+      type: screenType,
+      phone: validatedPhoneNumber || "",
+      channel: phoneCodeChannel,
+    })
   }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
 
   useEffect(() => {
@@ -211,55 +213,11 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
         break
     }
   }
-  if (!isSmsSupported && !isWhatsAppSupported) {
+  if (!isSmsSupported && !isWhatsAppSupported && !isTelegramSupported) {
     errorMessage = LL.PhoneLoginInitiateScreen.errorUnsupportedCountry()
   }
   if (isDisabledCountryAndCreateAccount) {
     errorMessage = LL.PhoneLoginInitiateScreen.errorUnsupportedCountry()
-  }
-
-  let PrimaryButton = undefined
-  let SecondaryButton = undefined
-  switch (true) {
-    case isSmsSupported && isWhatsAppSupported:
-      PrimaryButton = (
-        <GaloyPrimaryButton
-          title={LL.PhoneLoginInitiateScreen.sms()}
-          loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Sms}
-          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
-          disabled={isDisabledCountryAndCreateAccount}
-        />
-      )
-      SecondaryButton = (
-        <GaloySecondaryButton
-          title={LL.PhoneLoginInitiateScreen.whatsapp()}
-          containerStyle={styles.whatsAppButton}
-          loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Whatsapp}
-          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
-          disabled={isDisabledCountryAndCreateAccount}
-        />
-      )
-      break
-    case isSmsSupported && !isWhatsAppSupported:
-      PrimaryButton = (
-        <GaloyPrimaryButton
-          title={LL.PhoneLoginInitiateScreen.sms()}
-          loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Sms}
-          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
-          disabled={isDisabledCountryAndCreateAccount}
-        />
-      )
-      break
-    case !isSmsSupported && isWhatsAppSupported:
-      PrimaryButton = (
-        <GaloyPrimaryButton
-          title={LL.PhoneLoginInitiateScreen.whatsapp()}
-          loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Whatsapp}
-          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
-          disabled={isDisabledCountryAndCreateAccount}
-        />
-      )
-      break
   }
 
   let info: string | undefined = undefined
@@ -333,10 +291,15 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
             <ContactSupportButton containerStyle={styles.contactSupportButton} />
           </View>
         )}
-        <View style={styles.buttonsContainer}>
-          {SecondaryButton}
-          {PrimaryButton}
-        </View>
+        <PhoneChannelButtons
+          isTelegramSupported={isTelegramSupported}
+          isSmsSupported={isSmsSupported}
+          isWhatsAppSupported={isWhatsAppSupported}
+          phoneCodeChannel={phoneCodeChannel}
+          captchaLoading={captchaLoading}
+          isDisabled={isDisabledCountryAndCreateAccount}
+          submit={userSubmitPhoneNumber}
+        />
       </View>
     </Screen>
   )
