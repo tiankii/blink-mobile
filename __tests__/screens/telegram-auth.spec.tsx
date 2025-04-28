@@ -7,6 +7,7 @@ import {
   ErrorType,
 } from "@app/screens/telegram-login-screen/telegram-auth"
 import { formatPublicKey } from "@app/utils/format-public-key"
+import { BLINK_DEEP_LINK_PREFIX, TELEGRAM_CALLBACK_PATH } from "@app/config"
 
 import { renderHook, act } from "@testing-library/react-hooks"
 
@@ -134,7 +135,9 @@ describe("useTelegramLogin", () => {
 
     const encodedScope = encodeURIComponent(JSON.stringify(mockData.scope))
     const encodedPublicKey = encodeURIComponent(formatPublicKey(mockData.public_key))
-    const callback = encodeURIComponent("blink://passport-callback")
+    const callback = encodeURIComponent(
+      `${BLINK_DEEP_LINK_PREFIX}/${TELEGRAM_CALLBACK_PATH}`,
+    )
 
     const expectedDeepLink = `tg://passport?bot_id=${mockData.bot_id}&scope=${encodedScope}&public_key=${encodedPublicKey}&nonce=${mockData.nonce}&callback_url=${callback}`
 
