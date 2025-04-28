@@ -134,7 +134,7 @@ describe("useTelegramLogin", () => {
 
     const encodedScope = encodeURIComponent(JSON.stringify(mockData.scope))
     const encodedPublicKey = encodeURIComponent(formatPublicKey(mockData.public_key))
-    const callback = encodeURIComponent("blink://passport-callback")
+    const callback = encodeURIComponent("blink://auth/passport-callback")
 
     const expectedDeepLink = `tg://passport?bot_id=${mockData.bot_id}&scope=${encodedScope}&public_key=${encodedPublicKey}&nonce=${mockData.nonce}&callback_url=${callback}`
 
