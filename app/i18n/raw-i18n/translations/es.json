@@ -2307,6 +2307,8 @@
         "tapToAddPhoneNumber": "Pulse para añadir el número",
         "loginMethods": "Métodos de acceso",
         "level": "Nivel {nivel: cadena}",
+        "switchAccount": "Cambiar de cuenta",
+        "pleaseWait": "Por favor, espere.",
         "accountLevel": "Nivel de cuenta",
         "upgrade": "Actualiza tu cuenta",
         "logOutAndDeleteLocalData": "Cerrar sesión y borrar todos los datos locales",
@@ -2347,6 +2349,10 @@
         "yourAccountId": "ID de tu cuenta",
         "accountId": "ID de cuenta",
         "copy": "Copiar"
+    },
+    "ProfileScreen": {
+        "addAccount": "Agregar una cuenta",
+        "error": "No se pudo obtener la información de los perfiles en este momento"
     },
     "TotpRegistrationInitiateScreen": {
         "title": "Autenticación de dos factores",
