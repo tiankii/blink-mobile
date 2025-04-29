@@ -26,15 +26,21 @@ const useLogout = () => {
   })
 
   const logout = useCallback(
-    async (stateToDefault = true): Promise<void> => {
+    async (
+      stateToDefault = true,
+      tokenOverride: string | undefined = undefined,
+    ): Promise<void> => {
       try {
-        const deviceToken = await messaging().getToken()
-
-        await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
-        await KeyStoreWrapper.removeIsBiometricsEnabled()
-        await KeyStoreWrapper.removePin()
-        await KeyStoreWrapper.removePinAttempts()
-        await KeyStoreWrapper.removeAllSessionTokens()
+        const deviceToken = tokenOverride || (await messaging().getToken())
+        if (tokenOverride) {
+          await KeyStoreWrapper.removeTokenFromSession(tokenOverride)
+        } else {
+          await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
+          await KeyStoreWrapper.removeIsBiometricsEnabled()
+          await KeyStoreWrapper.removePin()
+          await KeyStoreWrapper.removePinAttempts()
+          await KeyStoreWrapper.removeAllSessionTokens()
+        }
 
         logLogout()
 
