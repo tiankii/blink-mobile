@@ -1,21 +1,24 @@
 import debounce from "lodash.debounce"
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import { View } from "react-native"
-import MapView, { MapMarker as MapMarkerType, Region } from "react-native-maps"
+import MapView, { MapMarker as MapMarkerType, Marker, Region } from "react-native-maps"
 
 import { useApolloClient } from "@apollo/client"
 import { updateMapLastCoords } from "@app/graphql/client-only-query"
-import { BusinessMapMarkersQuery, MapMarker } from "@app/graphql/generated"
-import { ListItem, makeStyles, useTheme } from "@rneui/themed"
+import { MapMarker } from "@app/graphql/generated"
+import { ListItem, makeStyles, useTheme, Text } from "@rneui/themed"
 
-import MapMarkerComponent from "../map-marker-component"
 import ButtonMapsContainer from "./button-maps-container"
 import MapStyles from "./map-styles.json"
 import { OpenBottomModal, OpenBottomModalElement, TModal } from "./modals/modal-container"
 import Icon from "react-native-vector-icons/Ionicons"
+import { ICluster, IMarker } from "@app/screens/map-screen/btc-map-interface"
+import SuperCluster from "react-native-maps-super-cluster"
+import iconMap from "./iconMap"
+import PinIcon from "./pinIcon"
 
 type Props = {
-  data?: BusinessMapMarkersQuery
+  data?: IMarker[]
   userLocation?: Region
   handleMapPress: () => void
   handleMarkerPress: (_: MapMarker) => void
@@ -54,16 +57,52 @@ export default function MapComponent({
     }),
   ).current
 
+  const renderCluster = (cluster: ICluster) => {
+    const pointCount = cluster.pointCount,
+      coordinate = cluster.coordinate,
+      clusterId = cluster.clusterId
+
+    return (
+      <Marker identifier={`cluster-${clusterId}`} coordinate={coordinate}>
+        <View style={styles.clusterContainer}>
+          <Text style={styles.clusterText}>{pointCount}</Text>
+        </View>
+      </Marker>
+    )
+  }
+
+  const renderMarker = (pin: IMarker) => {
+    const iconName: string = pin?.tags?.["icon:android"]
+    return (
+      <Marker identifier={`pin-${pin.id}`} key={pin.id} coordinate={pin.location}>
+        <View style={styles.iconContainer}>
+          <PinIcon size={35} />
+          <Icon
+            name={iconMap[iconName]}
+            size={18}
+            color="#FFFFFF"
+            style={styles.iconOverlay}
+          />
+        </View>
+      </Marker>
+    )
+  }
+
   return (
     <View style={styles.viewContainer}>
-      <MapView
+      <SuperCluster
         ref={mapViewRef}
-        style={styles.map}
-        showsMyLocationButton={false}
-        initialRegion={userLocation}
-        customMapStyle={themeMode === "dark" ? MapStyles.dark : MapStyles.light}
-        onPress={handleMapPress}
+        data={data}
+        renderMarker={renderMarker}
+        renderCluster={renderCluster}
         onRegionChange={debouncedHandleRegionChange}
+        style={styles.map}
+        customMapStyle={themeMode === "dark" ? MapStyles.dark : MapStyles.light}
+        accessor="location"
+        initialRegion={userLocation}
+      />
+      {/* <MapView
+        onPress={handleMapPress}
         onMarkerSelect={(e) => {
           // react-native-maps has a very annoying error on iOS
           // When two markers are almost on top of each other onSelect will get called for a nearby Marker
@@ -81,17 +120,9 @@ export default function MapComponent({
           }
         }}
       >
-        {(data?.businessMapMarkers ?? []).map((item: MapMarker) => (
-          <MapMarkerComponent
-            key={item.username}
-            item={item}
-            color={colors._orange}
-            handleCalloutPress={handleCalloutPress}
-            handleMarkerPress={handleMarkerPress}
-            isFocused={focusedMarker?.username === item.username}
-          />
-        ))}
-      </MapView>
+        
+      </MapView> */}
+
       <ButtonMapsContainer
         position="topCenter"
         event={() => toggleModal("locationEvent")}
@@ -129,4 +160,34 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "transparent",
   },
   viewContainer: { flex: 1 },
+
+  clusterContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#4f378c",
+    justifyContent: "center",
+    alignItems: "center",
+    // borderWidth: 6,
+    // borderColor: "#4f378cb3"
+  },
+  clusterBubble: {
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 15,
+  },
+  clusterText: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  iconContainer: {
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconOverlay: {
+    position: "absolute",
+    top: 10, // ajusta según el pin
+    alignSelf: "center",
+  },
 }))
