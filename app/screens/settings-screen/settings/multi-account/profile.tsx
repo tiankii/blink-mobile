@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { ActivityIndicator } from "react-native"
+import { ActivityIndicator, Alert } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useApolloClient } from "@apollo/client"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -20,18 +20,36 @@ export const Profile: React.FC<ProfileProps> = ({
 }) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [switchLoading, setSwitchLoading] = useState(false)
+
   const { updateState } = usePersistentStateContext()
   const client = useApolloClient()
   const { logout } = useLogout()
 
-  const handleLogout = async () => {
-    setLogoutLoading(true)
-    await logout({ stateToDefault: false, token })
-    navigation.navigate("Primary")
-    setLogoutLoading(false)
+  const handleLogout = () => {
+    Alert.alert(
+      LL.SettingsScreen.logoutOneAccountAlertTitle(),
+      LL.SettingsScreen.logoutOneAccountAlertContent({ identifier }),
+      [
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+        {
+          text: LL.SettingsScreen.logoutOneAccountConfirm(),
+          onPress: async () => {
+            setLogoutLoading(true)
+            await logout({ stateToDefault: false, token })
+            navigation.navigate("Primary")
+            setLogoutLoading(false)
+          },
+        },
+      ],
+    )
   }
 
   const handleProfileSwitch = () => {

@@ -7342,6 +7342,24 @@ type RootTranslation = {
 		 * L​o​g​ ​i​n​ ​o​r​ ​c​r​e​a​t​e​ ​a​c​c​o​u​n​t
 		 */
 		logInOrCreateAccount: string
+		/**
+		 * L​o​g​ ​o​u​t​ ​f​r​o​m​ ​t​h​i​s​ ​a​c​c​o​u​n​t
+		 */
+		logOutFromOneAccount: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​ ​o​u​t​ ​f​r​o​m​ ​t​h​i​s​ ​a​c​c​o​u​n​t​?
+		 */
+		logoutOneAccountAlertTitle: string
+		/**
+		 * Y​o​u​ ​w​i​l​l​ ​b​e​ ​s​i​g​n​e​d​ ​o​u​t​ ​f​r​o​m​ ​t​h​e​ ​s​e​s​s​i​o​n​ ​l​i​n​k​e​d​ ​t​o​ ​{​i​d​e​n​t​i​f​i​e​r​}​.​
+	​M​a​k​e​ ​s​u​r​e​ ​y​o​u​ ​h​a​v​e​ ​a​c​c​e​s​s​ ​t​o​ ​s​i​g​n​ ​i​n​ ​a​g​a​i​n​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e​.
+		 * @param {string} identifier
+		 */
+		logoutOneAccountAlertContent: RequiredParams<'identifier'>
+		/**
+		 * I​ ​u​n​d​e​r​s​t​a​n​d​.​ ​P​l​e​a​s​e​ ​l​o​g​ ​o​u​t​.
+		 */
+		logoutOneAccountConfirm: string
 	}
 	NotificationSettingsScreen: {
 		/**
@@ -16434,6 +16452,23 @@ export type TranslationFunctions = {
 		 * Log in or create account
 		 */
 		logInOrCreateAccount: () => LocalizedString
+		/**
+		 * Log out from this account
+		 */
+		logOutFromOneAccount: () => LocalizedString
+		/**
+		 * Are you sure you want to log out from this account?
+		 */
+		logoutOneAccountAlertTitle: () => LocalizedString
+		/**
+		 * You will be signed out from the session linked to {identifier}.
+	Make sure you have access to sign in again in the future.
+		 */
+		logoutOneAccountAlertContent: (arg: { identifier: string }) => LocalizedString
+		/**
+		 * I understand. Please log out.
+		 */
+		logoutOneAccountConfirm: () => LocalizedString
 	}
 	NotificationSettingsScreen: {
 		/**

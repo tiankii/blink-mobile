@@ -2273,7 +2273,11 @@
         "nfcOnlyReceive": "Por ahora sólo está disponible la recepción por NFC",
         "nfcScanNow": "Escanear NFC ahora",
         "nfcNotSupported": "NFC no es compatible con este dispositivo",
-        "logInOrCreateAccount": "Inicia sesión o crea una cuenta"
+        "logInOrCreateAccount": "Inicia sesión o crea una cuenta",
+        "logOutFromOneAccount": "Cerrar sesión de esta cuenta",
+        "logoutOneAccountAlertTitle": "¿Está seguro de que desea cerrar la sesión de esta cuenta?",
+        "logoutOneAccountAlertContent": "Se cerrará la sesión vinculada a {identifier: string}.\nAsegúrese de tener acceso nuevamente para poder iniciar sesión en el futuro.",
+        "logoutOneAccountConfirm": "Comprendo. Por favor, cierre sesión."
     },
     "NotificationSettingsScreen": {
         "title": "Configuración de Notificaciones ",
