@@ -2,16 +2,20 @@ import { ScrollView } from "react-native-gesture-handler"
 import React, { useEffect } from "react"
 import { TouchableOpacity } from "react-native"
 
+import { gql } from "@apollo/client"
+import { Icon, makeStyles, Text } from "@rneui/themed"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
-import { gql } from "@apollo/client"
 import { Screen } from "@app/components/screen"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { VersionComponent } from "@app/components/version"
 import { AccountLevel, useLevel } from "@app/graphql/level-context"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { Icon, makeStyles, Text } from "@rneui/themed"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import {
+  useBetaQuery,
+  useUnacknowledgedNotificationCountQuery,
+} from "@app/graphql/generated"
 
 import { AccountBanner } from "./account/banner"
 import { EmailSetting } from "./account/settings/email"
@@ -34,7 +38,6 @@ import { ThemeSetting } from "./settings/preferences-theme"
 import { NotificationSetting } from "./settings/sp-notifications"
 import { OnDeviceSecuritySetting } from "./settings/sp-security"
 import { TotpSetting } from "./totp"
-import { useUnacknowledgedNotificationCountQuery } from "@app/graphql/generated"
 
 // All queries in settings have to be set here so that the server is not hit with
 // multiple requests for each query
@@ -76,13 +79,20 @@ export const SettingsScreen: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
+  const { data: dataBeta } = useBetaQuery()
   const { currentLevel, isAtLeastLevelOne } = useLevel()
   const { data: unackNotificationCount } = useUnacknowledgedNotificationCountQuery({
     fetchPolicy: "cache-and-network",
   })
 
+  const beta = dataBeta?.beta ?? false
+  const account = [AccountLevelSetting, TxLimits]
+  if (beta) {
+    account.push(SwitchAccount)
+  }
+
   const items = {
-    account: [AccountLevelSetting, TxLimits, SwitchAccount],
+    account,
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [
