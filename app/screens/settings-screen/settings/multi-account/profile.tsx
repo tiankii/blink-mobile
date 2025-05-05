@@ -16,7 +16,7 @@ export const Profile: React.FC<ProfileProps> = ({
   identifier,
   token,
   selected,
-  avatarurl,
+  avatarUrl,
 }) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
@@ -49,8 +49,8 @@ export const Profile: React.FC<ProfileProps> = ({
         containerStyle={styles.listItem}
         style={selected && styles.listItemSelected}
       >
-        {avatarurl ? (
-          <Avatar rounded source={{ uri: avatarurl }} size={44} />
+        {avatarUrl ? (
+          <Avatar rounded source={{ uri: avatarUrl }} size={44} />
         ) : (
           <GaloyIcon name="user" size={30} backgroundColor={styles.iconColor.color} />
         )}

@@ -1,9 +1,9 @@
 type ProfileProps = {
-  userid?: string | null
+  userId?: string | null
   identifier: string
   token: string
   selected?: boolean
-  avatarurl?: string
+  avatarUrl?: string
 }
 
 type FetchProfilesParams = {

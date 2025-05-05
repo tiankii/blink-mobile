@@ -26,7 +26,7 @@ export const fetchProfiles = async ({
       const existingProfileIndex = findExistingProfileIndex(profiles, data)
       if (data?.me && existingProfileIndex === -1) {
         profiles.push({
-          userid: data.me.id,
+          userId: data.me.id,
           identifier:
             data.me.username || data.me.phone || `${LL.common.blinkUser()} #${counter}`,
           token,
