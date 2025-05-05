@@ -29,7 +29,7 @@ export const Profile: React.FC<ProfileProps> = ({
 
   const handleLogout = async () => {
     setLogoutLoading(true)
-    await logout(false, token)
+    await logout({ stateToDefault: false, token })
     navigation.navigate("Primary")
     setLogoutLoading(false)
   }

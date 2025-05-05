@@ -11,6 +11,11 @@ import messaging from "@react-native-firebase/messaging"
 
 import KeyStoreWrapper from "../utils/storage/secureStorage"
 
+type LogoutOptions = {
+  stateToDefault?: boolean
+  token?: string
+}
+
 gql`
   mutation userLogout($input: UserLogoutInput!) {
     userLogout(input: $input) {
@@ -26,14 +31,11 @@ const useLogout = () => {
   })
 
   const logout = useCallback(
-    async (
-      stateToDefault = true,
-      tokenOverride: string | undefined = undefined,
-    ): Promise<void> => {
+    async ({ stateToDefault = true, token }: LogoutOptions = {}): Promise<void> => {
       try {
-        const deviceToken = tokenOverride || (await messaging().getToken())
-        if (tokenOverride) {
-          await KeyStoreWrapper.removeTokenFromSession(tokenOverride)
+        const deviceToken = token || (await messaging().getToken())
+        if (token) {
+          await KeyStoreWrapper.removeTokenFromSession(token)
         } else {
           await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
           await KeyStoreWrapper.removeIsBiometricsEnabled()

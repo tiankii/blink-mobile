@@ -171,7 +171,7 @@ export const DeveloperScreen: React.FC = () => {
   }
 
   const handleSave = async () => {
-    await logout(false)
+    await logout({ stateToDefault: false })
 
     if (newGaloyInstance === "Custom") {
       saveTokenAndInstance({
