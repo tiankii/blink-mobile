@@ -34,14 +34,15 @@ const useLogout = () => {
     async ({ stateToDefault = true, token }: LogoutOptions = {}): Promise<void> => {
       try {
         const deviceToken = token || (await messaging().getToken())
+
         if (token) {
-          await KeyStoreWrapper.removeTokenFromSession(token)
+          await KeyStoreWrapper.removeSessionProfileByToken(token)
         } else {
           await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
           await KeyStoreWrapper.removeIsBiometricsEnabled()
           await KeyStoreWrapper.removePin()
           await KeyStoreWrapper.removePinAttempts()
-          await KeyStoreWrapper.removeAllSessionTokens()
+          await KeyStoreWrapper.removeSessionProfiles()
         }
 
         logLogout()

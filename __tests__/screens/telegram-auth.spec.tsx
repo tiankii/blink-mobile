@@ -30,12 +30,15 @@ jest.mock("@react-native-firebase/analytics", () => () => ({
 
 jest.mock("@app/hooks", () => ({
   useAppConfig: () => ({
-    saveToken: jest.fn(),
     appConfig: {
       galoyInstance: {
         authUrl: "https://api.blink.sv",
       },
     },
+  }),
+  useTokenManager: () => ({
+    saveToken: jest.fn(),
+    saveTokenAndInstance: jest.fn(),
   }),
 }))
 

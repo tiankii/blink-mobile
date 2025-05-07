@@ -4,7 +4,7 @@ export default class KeyStoreWrapper {
   private static readonly IS_BIOMETRICS_ENABLED = "isBiometricsEnabled"
   private static readonly PIN = "PIN"
   private static readonly PIN_ATTEMPTS = "pinAttempts"
-  private static readonly TOKENS = "TOKENS"
+  private static readonly SESSION_PROFILES = "sessionProfiles"
 
   public static async getIsBiometricsEnabled(): Promise<boolean> {
     try {
@@ -104,54 +104,43 @@ export default class KeyStoreWrapper {
     }
   }
 
-  public static async saveSessionToken(token: string): Promise<boolean> {
+  public static async saveSessionProfiles(profiles: ProfileProps[]): Promise<boolean> {
     try {
-      if (!token || token.trim() === "") {
-        return false
-      }
-      const oldTokens = await this.getSessionTokens()
-      const combinedToken = [...oldTokens, token]
-
-      await RNSecureKeyStore.set(KeyStoreWrapper.TOKENS, JSON.stringify(combinedToken), {
+      const serialized = JSON.stringify(profiles)
+      await RNSecureKeyStore.set(KeyStoreWrapper.SESSION_PROFILES, serialized, {
         accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
       })
       return true
-    } catch {
+    } catch (err) {
       return false
     }
   }
 
-  public static async getSessionTokens(): Promise<string[]> {
+  public static async getSessionProfiles(): Promise<ProfileProps[]> {
     try {
-      const tokens = await RNSecureKeyStore.get(KeyStoreWrapper.TOKENS)
-      if (tokens) return JSON.parse(tokens)
-      return []
-    } catch {
+      const data = await RNSecureKeyStore.get(KeyStoreWrapper.SESSION_PROFILES)
+      const parsed = data ? JSON.parse(data) : []
+      return parsed
+    } catch (err) {
       return []
     }
   }
 
-  public static async removeTokenFromSession(token: string): Promise<boolean> {
+  public static async removeSessionProfiles(): Promise<boolean> {
     try {
-      const updatedToken = (await this.getSessionTokens()).filter((t) => t !== token)
-      await RNSecureKeyStore.set(
-        KeyStoreWrapper.TOKENS,
-        JSON.stringify([...updatedToken]),
-        {
-          accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
-        },
-      )
+      await RNSecureKeyStore.remove(KeyStoreWrapper.SESSION_PROFILES)
       return true
-    } catch {
+    } catch (err) {
       return false
     }
   }
 
-  public static async removeAllSessionTokens(): Promise<boolean> {
+  public static async removeSessionProfileByToken(token: string): Promise<boolean> {
     try {
-      await RNSecureKeyStore.remove(KeyStoreWrapper.TOKENS)
-      return true
-    } catch {
+      const profiles = await KeyStoreWrapper.getSessionProfiles()
+      const updatedProfiles = profiles.filter((profile) => profile.token !== token)
+      return await KeyStoreWrapper.saveSessionProfiles(updatedProfiles)
+    } catch (err) {
       return false
     }
   }

@@ -1167,6 +1167,14 @@ query getUsernames {
     id
     phone
     username
+    defaultAccount {
+      id
+      __typename
+    }
+    email {
+      address
+      __typename
+    }
     __typename
   }
 }

@@ -2,12 +2,16 @@ type ProfileProps = {
   userId?: string | null
   identifier: string
   token: string
-  selected?: boolean
+  selected: boolean
   avatarUrl?: string
+  phone?: string | null
+  email?: string | null
+  accountId?: string
 }
 
-type FetchProfilesParams = {
-  currentToken: string
-  fetchUsername: LazyQueryExecFunction<GetUsernamesQuery, Record<string, never>>
-  LL: TranslationFunctions
+type FetchUsername = LazyQueryExecFunction<GetUsernamesQuery, Record<string, never>>
+
+type TryFetchUserProps = {
+  token: string
+  fetchUsername: FetchUsername
 }

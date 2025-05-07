@@ -1,11 +1,16 @@
 import React from "react"
 import { act, render, screen } from "@testing-library/react-native"
-import { SettingsScreenDocument } from "@app/graphql/generated"
+import { SettingsScreenDocument, useBetaQuery } from "@app/graphql/generated"
 import { LoggedInWithUsername } from "@app/screens/settings-screen/settings-screen.stories"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 import mocks from "@app/graphql/mocks"
 import { ContextForScreen } from "../helper"
+
+jest.mock("@app/graphql/generated", () => ({
+  ...jest.requireActual("@app/graphql/generated"),
+  useBetaQuery: jest.fn(() => ({ data: { beta: true } })),
+}))
 
 const mocksWithUsername = [
   ...mocks,
@@ -41,7 +46,7 @@ describe("Settings Screen", () => {
     LL = i18nObject("en")
   })
 
-  it("Renders switch account component correctly", async () => {
+  it("Renders switch account component correctly when beta is enabled", async () => {
     render(
       <ContextForScreen>
         <LoggedInWithUsername mock={mocksWithUsername} />
@@ -60,5 +65,25 @@ describe("Settings Screen", () => {
     expect(switchAccountRight.props.accessibilityLabel).toBe("Switch Account-right")
     expect(screen.getByText(LL.AccountScreen.switchAccount())).toBeTruthy()
     expect(screen.getByTestId("Switch Account")).toBeTruthy()
+  })
+
+  it("Does not render switch account component when beta is disabled", async () => {
+    ;(useBetaQuery as jest.Mock).mockReturnValue({ data: { beta: false } })
+
+    render(
+      <ContextForScreen>
+        <LoggedInWithUsername mock={mocksWithUsername} />
+      </ContextForScreen>,
+    )
+
+    await act(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(resolve, 10)
+        }),
+    )
+
+    expect(screen.queryByTestId("Switch Account")).toBeNull()
+    expect(screen.queryByTestId("Switch Account-right")).toBeNull()
   })
 })

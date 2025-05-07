@@ -4,11 +4,12 @@ import { Pressable, TouchableOpacity, View } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { useFeatureFlags } from "@app/config/feature-flags-context"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useSyncSessionProfile } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import theme from "@app/rne-theme/theme"
 import { logGetStartedAction } from "@app/utils/analytics"
 import { testProps } from "@app/utils/testProps"
+
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
@@ -44,6 +45,16 @@ export const GetStartedScreen: React.FC = () => {
   const { deviceAccountEnabled } = useFeatureFlags()
 
   const appCheckToken = useAppCheckToken({ skip: !deviceAccountEnabled })
+
+  const {
+    appConfig: {
+      token,
+      galoyInstance: { id },
+    },
+  } = useAppConfig()
+
+  // synchronize session data
+  useSyncSessionProfile(token)
 
   const handleCreateAccount = () => {
     logGetStartedAction({
@@ -89,12 +100,6 @@ export const GetStartedScreen: React.FC = () => {
 
     navigation.navigate("emailLoginInitiate")
   }
-
-  const {
-    appConfig: {
-      galoyInstance: { id },
-    },
-  } = useAppConfig()
 
   const NonProdInstanceHint =
     id === "Main" ? null : (
