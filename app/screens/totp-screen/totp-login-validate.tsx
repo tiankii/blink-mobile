@@ -53,7 +53,7 @@ export const TotpLoginValidateScreen: React.FC<Props> = ({ route }) => {
             method: "email-2fa",
           })
 
-          await saveProfile(authToken)
+          saveProfile(authToken)
           navigation.reset({
             routes: [{ name: "Primary" }],
           })

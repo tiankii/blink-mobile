@@ -231,7 +231,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
             logUpgradeLoginSuccess()
 
             if (authToken) {
-              await saveProfile(authToken)
+              saveProfile(authToken)
             }
 
             navigation.replace("Primary")
@@ -255,7 +255,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
               return
             }
             analytics().logLogin({ method: "phone" })
-            await saveProfile(authToken)
+            saveProfile(authToken)
             navigation.replace("Primary")
             return
           }

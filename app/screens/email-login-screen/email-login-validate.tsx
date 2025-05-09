@@ -60,7 +60,7 @@ export const EmailLoginValidateScreen: React.FC<EmailLoginValidateScreenProps> =
             })
           } else {
             analytics().logLogin({ method: "email" })
-            await saveProfile(authToken)
+            saveProfile(authToken)
             navigation.replace("Primary")
           }
         } else {

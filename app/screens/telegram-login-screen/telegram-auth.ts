@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Linking } from "react-native"
 import axios from "axios"
 
@@ -106,7 +106,7 @@ export const useTelegramLogin = (phone: string) => {
           return
         }
 
-        await saveProfile(result.authToken)
+        saveProfile(result.authToken)
         navigation.replace("Primary")
       } catch (e) {
         const message = (e as Error).message
@@ -149,10 +149,15 @@ export const useTelegramLogin = (phone: string) => {
 
       return () => {
         sub.remove()
-        clearPolling()
       }
     }, [authData, checkIfAuthorized]),
   )
+
+  useEffect(() => {
+    return () => {
+      clearPolling()
+    }
+  }, [])
 
   const handleTelegramLogin = useCallback(async () => {
     try {

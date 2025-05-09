@@ -115,7 +115,7 @@ export const DeviceAccountModal: React.FC<DeviceAccountModalProps> = ({
 
       logCreatedDeviceAccount()
       analytics().logLogin({ method: "device" })
-      await saveProfile(authToken)
+      saveProfile(authToken)
       navigation.replace("Primary")
       closeModal()
     } catch (error) {
