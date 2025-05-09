@@ -9,7 +9,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { PhoneValidationStackParamList } from "@app/navigation/stack-param-lists"
 import { BLINK_DEEP_LINK_PREFIX, TELEGRAM_CALLBACK_PATH } from "@app/config"
 import { formatPublicKey } from "@app/utils/format-public-key"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useSaveSessionProfile } from "@app/hooks"
 
 export const ErrorType = {
   FetchParamsError: "FetchParamsError",
@@ -28,7 +28,7 @@ type TelegramAuthData = {
 
 export const useTelegramLogin = (phone: string) => {
   const navigation = useNavigation<StackNavigationProp<PhoneValidationStackParamList>>()
-  const { saveToken } = useAppConfig()
+  const { saveProfile } = useSaveSessionProfile()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ErrorType | string | null>(null)
@@ -106,7 +106,7 @@ export const useTelegramLogin = (phone: string) => {
           return
         }
 
-        saveToken(result.authToken)
+        await saveProfile(result.authToken)
         navigation.replace("Primary")
       } catch (e) {
         const message = (e as Error).message
@@ -116,7 +116,7 @@ export const useTelegramLogin = (phone: string) => {
         setError(message)
       }
     },
-    [navigation, saveToken, loginWithTelegramPassport],
+    [navigation, saveProfile, loginWithTelegramPassport],
   )
 
   useFocusEffect(

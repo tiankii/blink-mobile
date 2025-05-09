@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import CustomModal from "@app/components/custom-modal/custom-modal"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useSaveSessionProfile } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import {
@@ -44,7 +44,7 @@ export const DeviceAccountModal: React.FC<DeviceAccountModalProps> = ({
   isVisible,
   closeModal,
 }) => {
-  const { saveToken } = useAppConfig()
+  const { saveProfile } = useSaveSessionProfile()
   const {
     appConfig: {
       galoyInstance: { authUrl },
@@ -115,7 +115,7 @@ export const DeviceAccountModal: React.FC<DeviceAccountModalProps> = ({
 
       logCreatedDeviceAccount()
       analytics().logLogin({ method: "device" })
-      saveToken(authToken)
+      await saveProfile(authToken)
       navigation.replace("Primary")
       closeModal()
     } catch (error) {

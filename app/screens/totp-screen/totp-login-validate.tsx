@@ -2,7 +2,7 @@ import axios, { isAxiosError } from "axios"
 import React, { useCallback, useState } from "react"
 
 import { CodeInput } from "@app/components/code-input"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useSaveSessionProfile } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import analytics from "@react-native-firebase/analytics"
@@ -18,7 +18,7 @@ export const TotpLoginValidateScreen: React.FC<Props> = ({ route }) => {
     useNavigation<StackNavigationProp<RootStackParamList, "totpLoginValidate">>()
 
   const [errorMessage, setErrorMessage] = useState<string>("")
-  const { saveToken } = useAppConfig()
+  const { saveProfile } = useSaveSessionProfile()
 
   const [loading, setLoading] = useState(false)
   const authToken = route.params.authToken
@@ -53,7 +53,7 @@ export const TotpLoginValidateScreen: React.FC<Props> = ({ route }) => {
             method: "email-2fa",
           })
 
-          saveToken(authToken)
+          await saveProfile(authToken)
           navigation.reset({
             routes: [{ name: "Primary" }],
           })
@@ -82,7 +82,7 @@ export const TotpLoginValidateScreen: React.FC<Props> = ({ route }) => {
         setLoading(false)
       }
     },
-    [authToken, navigation, authUrl, saveToken],
+    [authToken, navigation, authUrl, saveProfile],
   )
 
   const header = LL.TotpLoginValidateScreen.content()

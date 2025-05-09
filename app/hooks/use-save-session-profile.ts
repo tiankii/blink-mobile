@@ -1,10 +1,11 @@
-import { useEffect, useCallback } from "react"
+import { useCallback } from "react"
 import { gql } from "@apollo/client"
 import crashlytics from "@react-native-firebase/crashlytics"
 
 import { useGetUsernamesLazyQuery } from "@app/graphql/generated"
 import KeyStoreWrapper from "@app/utils/storage/secureStorage"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { useAppConfig } from "./use-app-config"
 
 gql`
   query getUsernames {
@@ -22,8 +23,9 @@ gql`
   }
 `
 
-export const useSyncSessionProfile = (token: string | undefined) => {
+export const useSaveSessionProfile = () => {
   const { LL } = useI18nContext()
+  const { saveToken } = useAppConfig()
   const [fetchUsername] = useGetUsernamesLazyQuery({ fetchPolicy: "no-cache" })
 
   const tryFetchUserProps = useCallback(
@@ -62,9 +64,11 @@ export const useSyncSessionProfile = (token: string | undefined) => {
     [LL.common],
   )
 
-  useEffect(() => {
-    const syncProfile = async () => {
+  const saveProfile = useCallback(
+    async (token: string): Promise<void> => {
       if (!token) return
+
+      await saveToken(token)
 
       const profiles = await KeyStoreWrapper.getSessionProfiles()
 
@@ -79,8 +83,11 @@ export const useSyncSessionProfile = (token: string | undefined) => {
         const cleaned = profiles.map((p) => ({ ...p, selected: false }))
         await KeyStoreWrapper.saveSessionProfiles([{ ...profile }, ...cleaned])
       }
-    }
+    },
+    [saveToken, tryFetchUserProps, fetchUsername],
+  )
 
-    syncProfile()
-  }, [token, fetchUsername, tryFetchUserProps])
+  return {
+    saveProfile,
+  }
 }

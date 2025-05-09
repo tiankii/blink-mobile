@@ -20,6 +20,7 @@ import {
   logValidateAuthCodeFailure,
 } from "@app/utils/analytics"
 import { testProps } from "@app/utils/testProps"
+import { useAppConfig, useSaveSessionProfile } from "@app/hooks"
 import analytics from "@react-native-firebase/analytics"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
@@ -27,7 +28,6 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme, Input } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
-import { useAppConfig } from "../../hooks"
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
 import { parseTimer } from "../../utils/timer"
 import { PhoneCodeChannelToFriendlyName } from "./request-phone-code-login"
@@ -182,7 +182,8 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
     | undefined
   >()
 
-  const { saveToken, appConfig } = useAppConfig()
+  const { appConfig } = useAppConfig()
+  const { saveProfile } = useSaveSessionProfile()
 
   const { LL } = useI18nContext()
 
@@ -230,7 +231,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
             logUpgradeLoginSuccess()
 
             if (authToken) {
-              saveToken(authToken)
+              await saveProfile(authToken)
             }
 
             navigation.replace("Primary")
@@ -254,7 +255,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
               return
             }
             analytics().logLogin({ method: "phone" })
-            saveToken(authToken)
+            await saveProfile(authToken)
             navigation.replace("Primary")
             return
           }
@@ -290,7 +291,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
       userLoginMutation,
       userLoginUpgradeMutation,
       phone,
-      saveToken,
+      saveProfile,
       _setCode,
       navigation,
       isUpgradeFlow,

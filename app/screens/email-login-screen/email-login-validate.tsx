@@ -3,7 +3,7 @@ import * as React from "react"
 import { useCallback, useState } from "react"
 
 import { CodeInput } from "@app/components/code-input"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useSaveSessionProfile } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import analytics from "@react-native-firebase/analytics"
@@ -29,7 +29,7 @@ export const EmailLoginValidateScreen: React.FC<EmailLoginValidateScreenProps> =
   } = useAppConfig()
 
   const { LL } = useI18nContext()
-  const { saveToken } = useAppConfig()
+  const { saveProfile } = useSaveSessionProfile()
 
   const [loading, setLoading] = useState(false)
   const { emailLoginId, email } = route.params
@@ -60,7 +60,7 @@ export const EmailLoginValidateScreen: React.FC<EmailLoginValidateScreenProps> =
             })
           } else {
             analytics().logLogin({ method: "email" })
-            saveToken(authToken)
+            await saveProfile(authToken)
             navigation.replace("Primary")
           }
         } else {
@@ -89,7 +89,7 @@ export const EmailLoginValidateScreen: React.FC<EmailLoginValidateScreenProps> =
         setLoading(false)
       }
     },
-    [emailLoginId, navigation, authUrl, saveToken, LL],
+    [emailLoginId, navigation, authUrl, saveProfile, LL],
   )
 
   const header = LL.EmailLoginValidateScreen.header({ email })
