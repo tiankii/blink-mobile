@@ -114,7 +114,7 @@ export const Delete = () => {
       const res = await deleteAccount()
 
       if (res.data?.accountDelete?.success) {
-        await logout(true)
+        await logout({ stateToDefault: true })
         setAccountIsBeingDeleted(false)
         navigation.reset({
           index: 0,

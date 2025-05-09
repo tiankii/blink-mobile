@@ -2623,6 +2623,11 @@ export type UserLogoutMutationVariables = Exact<{
 
 export type UserLogoutMutation = { readonly __typename: 'Mutation', readonly userLogout: { readonly __typename: 'SuccessPayload', readonly success?: boolean | null } };
 
+export type GetUsernamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsernamesQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly phone?: string | null, readonly username?: string | null, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string }, readonly email?: { readonly __typename: 'Email', readonly address?: string | null } | null } | null };
+
 export type ConversionScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4285,6 +4290,53 @@ export function useUserLogoutMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UserLogoutMutationHookResult = ReturnType<typeof useUserLogoutMutation>;
 export type UserLogoutMutationResult = Apollo.MutationResult<UserLogoutMutation>;
 export type UserLogoutMutationOptions = Apollo.BaseMutationOptions<UserLogoutMutation, UserLogoutMutationVariables>;
+export const GetUsernamesDocument = gql`
+    query getUsernames {
+  me {
+    id
+    phone
+    username
+    defaultAccount {
+      id
+    }
+    email {
+      address
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUsernamesQuery__
+ *
+ * To run a query within a React component, call `useGetUsernamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsernamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsernamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsernamesQuery(baseOptions?: Apollo.QueryHookOptions<GetUsernamesQuery, GetUsernamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsernamesQuery, GetUsernamesQueryVariables>(GetUsernamesDocument, options);
+      }
+export function useGetUsernamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsernamesQuery, GetUsernamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsernamesQuery, GetUsernamesQueryVariables>(GetUsernamesDocument, options);
+        }
+export function useGetUsernamesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUsernamesQuery, GetUsernamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUsernamesQuery, GetUsernamesQueryVariables>(GetUsernamesDocument, options);
+        }
+export type GetUsernamesQueryHookResult = ReturnType<typeof useGetUsernamesQuery>;
+export type GetUsernamesLazyQueryHookResult = ReturnType<typeof useGetUsernamesLazyQuery>;
+export type GetUsernamesSuspenseQueryHookResult = ReturnType<typeof useGetUsernamesSuspenseQuery>;
+export type GetUsernamesQueryResult = Apollo.QueryResult<GetUsernamesQuery, GetUsernamesQueryVariables>;
 export const ConversionScreenDocument = gql`
     query conversionScreen {
   me {

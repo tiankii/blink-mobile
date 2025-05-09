@@ -20,7 +20,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { Button, Text, makeStyles } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
-import { usePriceConversion } from "../../hooks"
+import { usePriceConversion, useSaveSessionProfile } from "@app/hooks"
 import useLogout from "../../hooks/use-logout"
 import { addDeviceToken } from "../../utils/notifications"
 import { testProps } from "../../utils/testProps"
@@ -44,10 +44,11 @@ export const DeveloperScreen: React.FC = () => {
   const client = useApolloClient()
   const { usdPerSat } = usePriceConversion()
   const { logout } = useLogout()
+  const { saveProfile } = useSaveSessionProfile()
 
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
 
-  const { appConfig, saveToken, saveTokenAndInstance } = useAppConfig()
+  const { appConfig, saveTokenAndInstance } = useAppConfig()
   const token = appConfig.token
 
   const { data: dataLevel } = useLevelQuery({ fetchPolicy: "cache-only" })
@@ -171,10 +172,10 @@ export const DeveloperScreen: React.FC = () => {
   }
 
   const handleSave = async () => {
-    await logout(false)
+    await logout({ stateToDefault: false })
 
     if (newGaloyInstance === "Custom") {
-      saveTokenAndInstance({
+      await saveTokenAndInstance({
         instance: {
           id: "Custom",
           graphqlUri: newGraphqlUri,
@@ -188,6 +189,7 @@ export const DeveloperScreen: React.FC = () => {
         },
         token: newToken || "",
       })
+      await saveProfile(newToken || "")
     }
 
     const newGaloyInstanceObject = GALOY_INSTANCES.find(
@@ -195,11 +197,15 @@ export const DeveloperScreen: React.FC = () => {
     )
 
     if (newGaloyInstanceObject) {
-      saveTokenAndInstance({ instance: newGaloyInstanceObject, token: newToken || "" })
+      await saveTokenAndInstance({
+        instance: newGaloyInstanceObject,
+        token: newToken || "",
+      })
+      await saveProfile(newToken || "")
       return
     }
 
-    saveToken(newToken || "")
+    await saveProfile(newToken || "")
   }
 
   return (

@@ -2347,6 +2347,10 @@ const en: BaseTranslation = {
     nfcScanNow: "Scan NFC Now",
     nfcNotSupported: "NFC is not supported on this device",
     logInOrCreateAccount: "Log in or create account",
+    logOutFromOneAccount: "Log out from this account",
+    logoutOneAccountAlertTitle: "Are you sure you want to log out from this account?",
+    logoutOneAccountAlertContent: "You will be signed out from the session linked to {identifier: string}.\nMake sure you have access to sign in again in the future.",
+    logoutOneAccountConfirm: "I understand. Please log out.",
   },
   NotificationSettingsScreen: {
     title: "Notification Settings",
@@ -2381,6 +2385,8 @@ const en: BaseTranslation = {
     tapToAddPhoneNumber: "Tap to add phone number",
     loginMethods: "Login Methods",
     level: "Level {level: string}",
+    switchAccount: "Switch Account",
+    pleaseWait: "Please Wait.",
     accountLevel: "Account Level",
     upgrade: "Upgrade your account",
     logOutAndDeleteLocalData: "Log out and clear all local data",
@@ -2429,6 +2435,10 @@ const en: BaseTranslation = {
     yourAccountId: "Your Account ID",
     accountId: "Account ID",
     copy: "Copy",
+  },
+  ProfileScreen: {
+    addAccount: "Add Account",
+    error: "Unable to fetch profiles at this time",
   },
   TotpRegistrationInitiateScreen: {
     title: "Two-factor authentication",

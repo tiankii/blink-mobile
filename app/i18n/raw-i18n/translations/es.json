@@ -2273,7 +2273,11 @@
         "nfcOnlyReceive": "Por ahora sólo está disponible la recepción por NFC",
         "nfcScanNow": "Escanear NFC ahora",
         "nfcNotSupported": "NFC no es compatible con este dispositivo",
-        "logInOrCreateAccount": "Inicia sesión o crea una cuenta"
+        "logInOrCreateAccount": "Inicia sesión o crea una cuenta",
+        "logOutFromOneAccount": "Cerrar sesión de esta cuenta",
+        "logoutOneAccountAlertTitle": "¿Está seguro de que desea cerrar la sesión de esta cuenta?",
+        "logoutOneAccountAlertContent": "Se cerrará la sesión vinculada a {identifier: string}.\nAsegúrese de tener acceso nuevamente para poder iniciar sesión en el futuro.",
+        "logoutOneAccountConfirm": "Comprendo. Por favor, cierre sesión."
     },
     "NotificationSettingsScreen": {
         "title": "Configuración de Notificaciones ",
@@ -2307,6 +2311,8 @@
         "tapToAddPhoneNumber": "Pulse para añadir el número",
         "loginMethods": "Métodos de acceso",
         "level": "Nivel {nivel: cadena}",
+        "switchAccount": "Cambiar de cuenta",
+        "pleaseWait": "Por favor, espere.",
         "accountLevel": "Nivel de cuenta",
         "upgrade": "Actualiza tu cuenta",
         "logOutAndDeleteLocalData": "Cerrar sesión y borrar todos los datos locales",
@@ -2347,6 +2353,10 @@
         "yourAccountId": "ID de tu cuenta",
         "accountId": "ID de cuenta",
         "copy": "Copiar"
+    },
+    "ProfileScreen": {
+        "addAccount": "Agregar una cuenta",
+        "error": "No se pudo obtener la información de los perfiles en este momento"
     },
     "TotpRegistrationInitiateScreen": {
         "title": "Autenticación de dos factores",

@@ -29,7 +29,7 @@ export const useAppConfig = () => {
   )
 
   const saveToken = useCallback(
-    (token: string) => {
+    async (token: string) => {
       updateState((state) => {
         if (state)
           return {
@@ -43,7 +43,7 @@ export const useAppConfig = () => {
   )
 
   const saveTokenAndInstance = useCallback(
-    ({ token, instance }: { token: string; instance: GaloyInstance }) => {
+    async ({ token, instance }: { token: string; instance: GaloyInstance }) => {
       updateState((state) => {
         if (state)
           return {

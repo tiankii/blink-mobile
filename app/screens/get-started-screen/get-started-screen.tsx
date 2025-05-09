@@ -9,6 +9,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import theme from "@app/rne-theme/theme"
 import { logGetStartedAction } from "@app/utils/analytics"
 import { testProps } from "@app/utils/testProps"
+
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"

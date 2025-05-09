@@ -1162,6 +1162,23 @@ query fullOnboardingScreen {
   }
 }
 
+query getUsernames {
+  me {
+    id
+    phone
+    username
+    defaultAccount {
+      id
+      __typename
+    }
+    email {
+      address
+      __typename
+    }
+    __typename
+  }
+}
+
 query hasPromptedSetDefaultAccount {
   hasPromptedSetDefaultAccount @client
 }

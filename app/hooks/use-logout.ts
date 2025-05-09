@@ -11,6 +11,11 @@ import messaging from "@react-native-firebase/messaging"
 
 import KeyStoreWrapper from "../utils/storage/secureStorage"
 
+type LogoutOptions = {
+  stateToDefault?: boolean
+  token?: string
+}
+
 gql`
   mutation userLogout($input: UserLogoutInput!) {
     userLogout(input: $input) {
@@ -26,19 +31,29 @@ const useLogout = () => {
   })
 
   const logout = useCallback(
-    async (stateToDefault = true): Promise<void> => {
+    async ({ stateToDefault = true, token }: LogoutOptions = {}): Promise<void> => {
       try {
+        let context
         const deviceToken = await messaging().getToken()
 
-        await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
-        await KeyStoreWrapper.removeIsBiometricsEnabled()
-        await KeyStoreWrapper.removePin()
-        await KeyStoreWrapper.removePinAttempts()
+        if (token) {
+          await KeyStoreWrapper.removeSessionProfileByToken(token)
+          context = { headers: { authorization: `Bearer ${token}` } }
+        } else {
+          await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
+          await KeyStoreWrapper.removeIsBiometricsEnabled()
+          await KeyStoreWrapper.removePin()
+          await KeyStoreWrapper.removePinAttempts()
+          await KeyStoreWrapper.removeSessionProfiles()
+        }
 
         logLogout()
 
         await Promise.race([
-          userLogoutMutation({ variables: { input: { deviceToken } } }),
+          userLogoutMutation({
+            context,
+            variables: { input: { deviceToken } },
+          }),
           // Create a promise that rejects after 2 seconds
           // this is handy for the case where the server is down, or in dev mode
           new Promise((_, reject) => {

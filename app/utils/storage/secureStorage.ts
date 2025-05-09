@@ -4,6 +4,7 @@ export default class KeyStoreWrapper {
   private static readonly IS_BIOMETRICS_ENABLED = "isBiometricsEnabled"
   private static readonly PIN = "PIN"
   private static readonly PIN_ATTEMPTS = "pinAttempts"
+  private static readonly SESSION_PROFILES = "sessionProfiles"
 
   public static async getIsBiometricsEnabled(): Promise<boolean> {
     try {
@@ -99,6 +100,47 @@ export default class KeyStoreWrapper {
       await RNSecureKeyStore.remove(KeyStoreWrapper.PIN_ATTEMPTS)
       return true
     } catch {
+      return false
+    }
+  }
+
+  public static async saveSessionProfiles(profiles: ProfileProps[]): Promise<boolean> {
+    try {
+      const serialized = JSON.stringify(profiles)
+      await RNSecureKeyStore.set(KeyStoreWrapper.SESSION_PROFILES, serialized, {
+        accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
+      })
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
+  public static async getSessionProfiles(): Promise<ProfileProps[]> {
+    try {
+      const data = await RNSecureKeyStore.get(KeyStoreWrapper.SESSION_PROFILES)
+      const parsed = data ? JSON.parse(data) : []
+      return parsed
+    } catch (err) {
+      return []
+    }
+  }
+
+  public static async removeSessionProfiles(): Promise<boolean> {
+    try {
+      await RNSecureKeyStore.remove(KeyStoreWrapper.SESSION_PROFILES)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
+  public static async removeSessionProfileByToken(token: string): Promise<boolean> {
+    try {
+      const profiles = await KeyStoreWrapper.getSessionProfiles()
+      const updatedProfiles = profiles.filter((profile) => profile.token !== token)
+      return await KeyStoreWrapper.saveSessionProfiles(updatedProfiles)
+    } catch (err) {
       return false
     }
   }
