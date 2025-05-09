@@ -33,10 +33,12 @@ const useLogout = () => {
   const logout = useCallback(
     async ({ stateToDefault = true, token }: LogoutOptions = {}): Promise<void> => {
       try {
-        const deviceToken = token || (await messaging().getToken())
+        let context
+        const deviceToken = await messaging().getToken()
 
         if (token) {
           await KeyStoreWrapper.removeSessionProfileByToken(token)
+          context = { headers: { authorization: `Bearer ${token}` } }
         } else {
           await AsyncStorage.multiRemove([SCHEMA_VERSION_KEY])
           await KeyStoreWrapper.removeIsBiometricsEnabled()
@@ -48,7 +50,10 @@ const useLogout = () => {
         logLogout()
 
         await Promise.race([
-          userLogoutMutation({ variables: { input: { deviceToken } } }),
+          userLogoutMutation({
+            context,
+            variables: { input: { deviceToken } },
+          }),
           // Create a promise that rejects after 2 seconds
           // this is handy for the case where the server is down, or in dev mode
           new Promise((_, reject) => {
