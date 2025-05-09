@@ -8,9 +8,9 @@ import { ListItem, Avatar, Overlay, Text, makeStyles } from "@rneui/themed"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon/galoy-icon"
 import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button/galoy-icon-button"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { usePersistentStateContext } from "@app/store/persistent-state"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import useLogout from "@app/hooks/use-logout"
+import { useAppConfig } from "@app/hooks"
 
 export const Profile: React.FC<ProfileProps> = ({
   identifier,
@@ -26,8 +26,8 @@ export const Profile: React.FC<ProfileProps> = ({
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [switchLoading, setSwitchLoading] = useState(false)
 
-  const { updateState } = usePersistentStateContext()
   const client = useApolloClient()
+  const { saveToken } = useAppConfig()
   const { logout } = useLogout()
 
   const handleLogout = () => {
@@ -52,10 +52,10 @@ export const Profile: React.FC<ProfileProps> = ({
     )
   }
 
-  const handleProfileSwitch = () => {
+  const handleProfileSwitch = async () => {
     setSwitchLoading(true)
-    updateState((state) => (state ? { ...state, galoyAuthToken: token } : state))
-    client.clearStore()
+    await saveToken(token)
+    await client.clearStore()
     setSwitchLoading(false)
   }
 

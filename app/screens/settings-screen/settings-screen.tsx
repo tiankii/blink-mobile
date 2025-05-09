@@ -86,13 +86,11 @@ export const SettingsScreen: React.FC = () => {
   })
 
   const beta = dataBeta?.beta ?? false
-  const account = [AccountLevelSetting, TxLimits]
-  if (beta) {
-    account.push(SwitchAccount)
-  }
+  const accountItems = [AccountLevelSetting, TxLimits]
+  const switchAcccount = () => <>{beta && <SwitchAccount />}</>
 
   const items = {
-    account,
+    account: [...accountItems, switchAcccount],
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [
