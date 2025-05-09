@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { ListItem, Icon, makeStyles } from "@rneui/themed"
 
-import { usePersistentStateContext } from "@app/store/persistent-state"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { SettingsRow } from "@app/screens/settings-screen/row"
+import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { SettingsRow } from "@app/screens/settings-screen/row"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
 import { Profile } from "./profile"
 import { fetchProfiles } from "./utils"
@@ -14,15 +14,14 @@ import { fetchProfiles } from "./utils"
 export const SwitchAccount: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const {
+    appConfig: { token: currentToken },
+  } = useAppConfig()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { persistentState } = usePersistentStateContext()
-  const { galoyAuthToken: currentToken } = persistentState
 
   const [profiles, setProfiles] = useState<ProfileProps[]>([])
   const [expanded, setExpanded] = useState(false)
-
-  const prevTokenRef = useRef<string>(currentToken)
 
   useEffect(() => {
     if (!expanded) return
@@ -34,13 +33,6 @@ export const SwitchAccount: React.FC = () => {
 
     loadProfiles()
   }, [expanded, currentToken, LL])
-
-  useEffect(() => {
-    if (prevTokenRef.current !== currentToken) {
-      navigation.navigate("Primary")
-    }
-    prevTokenRef.current = currentToken
-  }, [currentToken, navigation])
 
   const handleAddNew = () => {
     navigation.navigate("getStarted")

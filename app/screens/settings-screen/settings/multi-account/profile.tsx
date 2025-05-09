@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { ActivityIndicator, Alert } from "react-native"
 import { useNavigation } from "@react-navigation/native"
-import { useApolloClient } from "@apollo/client"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { ListItem, Avatar, Overlay, Text, makeStyles } from "@rneui/themed"
 
@@ -26,7 +25,6 @@ export const Profile: React.FC<ProfileProps> = ({
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [switchLoading, setSwitchLoading] = useState(false)
 
-  const client = useApolloClient()
   const { saveToken } = useAppConfig()
   const { logout } = useLogout()
 
@@ -55,8 +53,8 @@ export const Profile: React.FC<ProfileProps> = ({
   const handleProfileSwitch = async () => {
     setSwitchLoading(true)
     await saveToken(token)
-    await client.clearStore()
     setSwitchLoading(false)
+    navigation.navigate("Primary")
   }
 
   return (
