@@ -40,6 +40,9 @@ jest.mock("@app/hooks", () => ({
     saveToken: jest.fn(),
     saveTokenAndInstance: jest.fn(),
   }),
+  useSaveSessionProfile: () => ({
+    saveProfile: jest.fn(),
+  }),
 }))
 
 jest.mock("axios")
