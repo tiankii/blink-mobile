@@ -2011,6 +2011,7 @@
         "exploreWallet": "Explora la wallet",
         "logBackInWith": "Reinicia sesión con",
         "headline": "El banco con dinero sólido",
+        "upgradeYourAccount": "Actualiza tu cuenta",
         "startTrialAccount": "Empieza con una cuenta de prueba.",
         "startWithTrialAccount": "Empezar con la cuenta de prueba",
         "registerPhoneAccount": "Registra cuenta de teléfono",
@@ -2020,7 +2021,10 @@
         "trialAccountLimits": {
             "noBackup": "Sin opción de copia de seguridad",
             "sendingLimit": "Límite de envíos diarios reducido",
-            "noOnchain": "No recibir bitcoin onchain"
+            "noOnchain": "No recibir bitcoin onchain",
+            "recoveryOption": "Opción de recuperación",
+            "dailyLimit": "Límite de transacciones diarias de $1000",
+            "onchainReceive": "Recibir bitcoin en cadena"
         }
     },
     "MapScreen": {
@@ -2440,7 +2444,9 @@
         "receiveOnchain": "Recibir bitcoin onchain",
         "onlyAPhoneNumber": "Verificación de número de teléfono rápida y fácil",
         "letsGo": "¡Vamos!",
-        "stayInTrialMode": "Permanecer en modo de prueba"
+        "stayInTrialMode": "Permanecer en modo de prueba",
+        "upgradeToLevel": "Actualizar al Nivel {level: string}",
+        "notNow": "Ahora no"
     },
     "SetAddressModal": {
         "title": "Establece tu dirección de {bankName: string}",
