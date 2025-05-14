@@ -2058,6 +2058,9 @@ const en: BaseTranslation = {
       noBackup: "No backup option",
       sendingLimit: "Reduced daily sending limit",
       noOnchain: "No receiving bitcoin onchain",
+      recoveryOption: "Recovery option",
+      dailyLimit: "$1000 daily transaction limit",
+      onchainReceive: "Receive bitcoin onchain",
     },
   },
   MapScreen: {
@@ -2529,6 +2532,8 @@ const en: BaseTranslation = {
     onlyAPhoneNumber: "Quick and easy phone number verification",
     letsGo: "Let's go!",
     stayInTrialMode: "Stay in trial mode",
+    upgradeToLevel: "Upgrade to Level {level: string}",
+    notNow: "Not now",
   },
   SetAddressModal: {
     title: "Set {bankName: string} address",

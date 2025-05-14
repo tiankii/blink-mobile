@@ -6366,6 +6366,18 @@ type RootTranslation = {
 			 * N​o​ ​r​e​c​e​i​v​i​n​g​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
 			 */
 			noOnchain: string
+			/**
+			 * R​e​c​o​v​e​r​y​ ​o​p​t​i​o​n
+			 */
+			recoveryOption: string
+			/**
+			 * $​1​0​0​0​ ​d​a​i​l​y​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t
+			 */
+			dailyLimit: string
+			/**
+			 * R​e​c​e​i​v​e​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
+			 */
+			onchainReceive: string
 		}
 	}
 	MapScreen: {
@@ -7903,6 +7915,15 @@ type RootTranslation = {
 		 * S​t​a​y​ ​i​n​ ​t​r​i​a​l​ ​m​o​d​e
 		 */
 		stayInTrialMode: string
+		/**
+		 * U​p​g​r​a​d​e​ ​t​o​ ​L​e​v​e​l​ ​{​l​e​v​e​l​}
+		 * @param {string} level
+		 */
+		upgradeToLevel: RequiredParams<'level'>
+		/**
+		 * N​o​t​ ​n​o​w
+		 */
+		notNow: string
 	}
 	SetAddressModal: {
 		/**
@@ -15510,6 +15531,18 @@ export type TranslationFunctions = {
 			 * No receiving bitcoin onchain
 			 */
 			noOnchain: () => LocalizedString
+			/**
+			 * Recovery option
+			 */
+			recoveryOption: () => LocalizedString
+			/**
+			 * $1000 daily transaction limit
+			 */
+			dailyLimit: () => LocalizedString
+			/**
+			 * Receive bitcoin onchain
+			 */
+			onchainReceive: () => LocalizedString
 		}
 	}
 	MapScreen: {
@@ -17002,6 +17035,14 @@ export type TranslationFunctions = {
 		 * Stay in trial mode
 		 */
 		stayInTrialMode: () => LocalizedString
+		/**
+		 * Upgrade to Level {level}
+		 */
+		upgradeToLevel: (arg: { level: string }) => LocalizedString
+		/**
+		 * Not now
+		 */
+		notNow: () => LocalizedString
 	}
 	SetAddressModal: {
 		/**
