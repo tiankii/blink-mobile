@@ -59,6 +59,7 @@ import { makeStyles, useTheme } from "@rneui/themed"
 import {
   AuthenticationCheckScreen,
   AuthenticationScreen,
+  LoginMethodScreen,
 } from "../screens/authentication-screen"
 import { PinScreen } from "../screens/authentication-screen/pin-screen"
 import { DeveloperScreen } from "../screens/developer-screen"
@@ -122,6 +123,11 @@ export const RootStack = () => {
         name="authentication"
         component={AuthenticationScreen}
         options={{ headerShown: false, animationEnabled: false }}
+      />
+      <RootNavigator.Screen
+        name="login"
+        component={LoginMethodScreen}
+        options={{ title: LL.GetStartedScreen.login() }}
       />
       <RootNavigator.Screen
         name="pin"
@@ -518,7 +524,7 @@ export const PhoneLoginNavigator = () => {
       <StackPhoneValidation.Screen
         name="phoneLoginInitiate"
         options={(props) => ({
-          title: getTitle(props.route.params.type),
+          title: props.route.params.title ?? getTitle(props.route.params.type),
         })}
         component={PhoneLoginInitiateScreen}
       />

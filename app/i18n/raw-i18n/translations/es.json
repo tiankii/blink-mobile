@@ -2010,6 +2010,7 @@
         "createAccount": "Crear nueva cuenta",
         "exploreWallet": "Explora la wallet",
         "logBackInWith": "Reinicia sesión con",
+        "login": "Iniciar sesión",
         "headline": "El banco con dinero sólido",
         "upgradeYourAccount": "Actualiza tu cuenta",
         "startTrialAccount": "Empieza con una cuenta de prueba.",
@@ -2483,6 +2484,13 @@
         "whatsapp": "Enviar a través de WhatsApp",
         "telegram": "Enviar a través de Telegram"
     },
+    "LoginMethodScreen": {
+        "useTelegram": "Usar Telegram",
+        "useSms": "Usar SMS",
+        "useWhatsapp": "Usar WhatsApp",
+        "useEmail": "Usar Correo Electrónico",
+        "title": "Seleccione cómo desea iniciar sesión en su cuenta."
+    },
     "PhoneLoginValidationScreen": {
         "errorLoggingIn": "Error al inciar sesión. ¿Usó el código correcto?",
         "errorTooManyAttempts": "Demasiados intentos. Por favor, inténtelo de nuevo más tarde.",
@@ -2644,7 +2652,8 @@
         "thisMonth": "Este mes",
         "prevMonths": "Meses anteriores",
         "problemMaybeReauth": "Hubo un problema con tu solicitud. Vuelve a intentarlo en un minuto. Si el problema persiste, te recomendamos que cierres la sesión y vuelvas a iniciar sesión. Puedes cerrar la sesión en Configuración > Cuenta > Cerrar sesión",
-        "warning": "Advertencia"
+        "warning": "Advertencia",
+        "recommended": "Recomendado"
     },
     "errors": {
         "generic": "Hubo un error inesperado.\nPor favor intente más tarde",
@@ -2674,6 +2683,7 @@
         "joinTheCommunity": "Únete a la comunidad",
         "whatsapp": "WhatsApp",
         "email": "Correo electrónico",
+        "sms": "SMS",
         "faq": "Preguntas Frecuentes - FAQ",
         "enjoyingApp": "¿Disfrutas de la aplicación?",
         "statusPage": "Página de Estado",
