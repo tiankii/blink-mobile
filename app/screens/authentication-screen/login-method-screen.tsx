@@ -39,10 +39,10 @@ export const LoginMethodScreen: React.FC = () => {
   const AppLogo = mode === "dark" ? AppLogoDarkMode : AppLogoLightMode
 
   const useLabels: Record<LoginChannels, string> = {
-    TELEGRAM: LL.LoginMethodScreen.useTelegram(),
-    SMS: LL.LoginMethodScreen.useSms(),
-    WHATSAPP: LL.LoginMethodScreen.useWhatsapp(),
-    EMAIL: LL.LoginMethodScreen.useEmail(),
+    [LoginChannels.Telegram]: LL.LoginMethodScreen.useTelegram(),
+    [LoginChannels.Sms]: LL.LoginMethodScreen.useSms(),
+    [LoginChannels.Whatsapp]: LL.LoginMethodScreen.useWhatsapp(),
+    [LoginChannels.Email]: LL.LoginMethodScreen.useEmail(),
   }
 
   const handleSubmit = () => {

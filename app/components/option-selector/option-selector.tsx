@@ -57,22 +57,27 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
               ]}
             >
               <View style={styles.contentContainer}>
-                <Text style={[styles.label, isSelected && styles.labelSelected]}>
-                  {option.label}
+                <View style={styles.labelWithRecommended}>
+                  <Text style={[styles.label, isSelected && styles.labelSelected]}>
+                    {option.label}
+                  </Text>
                   {option.recommended && (
                     <Text
-                      style={[styles.recommended, isSelected && styles.labelSelected]}
+                      style={[
+                        styles.recommended,
+                        isSelected && styles.recommendedSelected,
+                      ]}
                     >
-                      {` (${LL.common.recommended()})`}
+                      ({LL.common.recommended()})
                     </Text>
                   )}
-                </Text>
+                </View>
 
                 {option.icon && (
                   <View style={styles.iconContainer}>
                     <Icon
                       name={option.icon}
-                      size={22}
+                      size={24}
                       type="ionicon"
                       color={isSelected ? colors.primary : colors.grey3}
                     />
@@ -122,8 +127,21 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+  labelWithRecommended: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+
   recommended: {
-    fontWeight: "300",
+    fontStyle: "italic",
     fontSize: 15,
+    fontWeight: "400",
+    marginLeft: 8,
+    color: colors.grey2,
+  },
+
+  recommendedSelected: {
+    color: colors.primary,
   },
 }))
