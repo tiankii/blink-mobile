@@ -6321,6 +6321,10 @@ type RootTranslation = {
 		 */
 		exploreWallet: string
 		/**
+		 * L​o​g​i​n
+		 */
+		login: string
+		/**
 		 * L​o​g​ ​b​a​c​k​ ​i​n​ ​w​i​t​h
 		 */
 		logBackInWith: string
@@ -8042,6 +8046,28 @@ type RootTranslation = {
 		 */
 		telegram: string
 	}
+	LoginMethodScreen: {
+		/**
+		 * U​s​e​ ​T​e​l​e​g​r​a​m
+		 */
+		useTelegram: string
+		/**
+		 * U​s​e​ ​S​M​S
+		 */
+		useSms: string
+		/**
+		 * U​s​e​ ​W​h​a​t​s​A​p​p
+		 */
+		useWhatsapp: string
+		/**
+		 * U​s​e​ ​E​m​a​i​l
+		 */
+		useEmail: string
+		/**
+		 * S​e​l​e​c​t​ ​h​o​w​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​i​n​ ​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​.
+		 */
+		title: string
+	}
 	PhoneLoginValidationScreen: {
 		/**
 		 * E​r​r​o​r​ ​l​o​g​g​i​n​g​ ​i​n​.​ ​D​i​d​ ​y​o​u​ ​u​s​e​ ​t​h​e​ ​r​i​g​h​t​ ​c​o​d​e​?
@@ -8651,6 +8677,10 @@ type RootTranslation = {
 		 * W​a​r​n​i​n​g
 		 */
 		warning: string
+		/**
+		 * R​e​c​o​m​m​e​n​d​e​d
+		 */
+		recommended: string
 	}
 	errors: {
 		/**
@@ -8741,6 +8771,10 @@ type RootTranslation = {
 		 * E​m​a​i​l
 		 */
 		email: string
+		/**
+		 * S​M​S
+		 */
+		sms: string
 		/**
 		 * F​A​Q
 		 */
@@ -15485,6 +15519,10 @@ export type TranslationFunctions = {
 		 */
 		exploreWallet: () => LocalizedString
 		/**
+		 * Login
+		 */
+		login: () => LocalizedString
+		/**
 		 * Log back in with
 		 */
 		logBackInWith: () => LocalizedString
@@ -17158,6 +17196,28 @@ export type TranslationFunctions = {
 		 */
 		telegram: () => LocalizedString
 	}
+	LoginMethodScreen: {
+		/**
+		 * Use Telegram
+		 */
+		useTelegram: () => LocalizedString
+		/**
+		 * Use SMS
+		 */
+		useSms: () => LocalizedString
+		/**
+		 * Use WhatsApp
+		 */
+		useWhatsapp: () => LocalizedString
+		/**
+		 * Use Email
+		 */
+		useEmail: () => LocalizedString
+		/**
+		 * Select how you want to login to your account.
+		 */
+		title: () => LocalizedString
+	}
 	PhoneLoginValidationScreen: {
 		/**
 		 * Error logging in. Did you use the right code?
@@ -17757,6 +17817,10 @@ export type TranslationFunctions = {
 		 * Warning
 		 */
 		warning: () => LocalizedString
+		/**
+		 * Recommended
+		 */
+		recommended: () => LocalizedString
 	}
 	errors: {
 		/**
@@ -17846,6 +17910,10 @@ export type TranslationFunctions = {
 		 * Email
 		 */
 		email: () => LocalizedString
+		/**
+		 * SMS
+		 */
+		sms: () => LocalizedString
 		/**
 		 * FAQ
 		 */

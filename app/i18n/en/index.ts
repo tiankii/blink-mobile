@@ -2045,6 +2045,7 @@ const en: BaseTranslation = {
     logInCreateAccount: "Log in / create account",
     createAccount: "Create new account",
     exploreWallet: "Explore wallet",
+    login: "Login",
     logBackInWith: "Log back in with",
     headline: "Wallet powered by Galoy",
     startTrialAccount: "Start with a trial account",
@@ -2576,6 +2577,13 @@ const en: BaseTranslation = {
     whatsapp: "Send via WhatsApp",
     telegram: "Send via Telegram",
   },
+  LoginMethodScreen: {
+    useTelegram: "Use Telegram",
+    useSms: "Use SMS",
+    useWhatsapp: "Use WhatsApp",
+    useEmail: "Use Email",
+    title: "Select how you want to login to your account.",
+  },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",
     errorTooManyAttempts: "Too many attempts. Please try again later.",
@@ -2747,6 +2755,7 @@ const en: BaseTranslation = {
     problemMaybeReauth:
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
     warning: "Warning",
+    recommended: "Recommended",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
@@ -2778,6 +2787,7 @@ const en: BaseTranslation = {
     joinTheCommunity: "Join the community",
     whatsapp: "WhatsApp",
     email: "Email",
+    sms: "SMS",
     faq: "FAQ",
     enjoyingApp: "Enjoying the app?",
     statusPage: "Status Page",
