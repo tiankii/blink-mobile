@@ -22,6 +22,8 @@ export type RootStackParamList = {
   developerScreen: undefined
   login: {
     type: PhoneLoginInitiateType
+    title?: string
+    upgrade?: boolean
   }
   authenticationCheck: undefined
   authentication: {

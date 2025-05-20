@@ -7928,6 +7928,11 @@ type RootTranslation = {
 		 * N​o​t​ ​n​o​w
 		 */
 		notNow: string
+		/**
+		 * S​e​t​ ​u​p​ ​L​e​v​e​l​ ​{​l​e​v​e​l​}​ ​a​c​c​o​u​n​t
+		 * @param {number} level
+		 */
+		setUpLevelAccount: RequiredParams<'level'>
 	}
 	SetAddressModal: {
 		/**
@@ -8049,6 +8054,10 @@ type RootTranslation = {
 	}
 	LoginMethodScreen: {
 		/**
+		 * S​e​l​e​c​t​ ​h​o​w​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​i​n​ ​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​.
+		 */
+		title: string
+		/**
 		 * U​s​e​ ​T​e​l​e​g​r​a​m
 		 */
 		useTelegram: string
@@ -8065,9 +8074,21 @@ type RootTranslation = {
 		 */
 		useEmail: string
 		/**
-		 * S​e​l​e​c​t​ ​h​o​w​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​i​n​ ​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​.
+		 * S​e​t​ ​u​p​ ​T​e​l​e​g​r​a​m​ ​l​o​g​i​n
 		 */
-		title: string
+		setupTelegram: string
+		/**
+		 * S​e​t​ ​u​p​ ​S​M​S​ ​l​o​g​i​n
+		 */
+		setupSms: string
+		/**
+		 * S​e​t​ ​u​p​ ​W​h​a​t​s​A​p​p​ ​l​o​g​i​n
+		 */
+		setupWhatsapp: string
+		/**
+		 * S​e​t​ ​u​p​ ​E​m​a​i​l​ ​l​o​g​i​n
+		 */
+		setupEmail: string
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -17081,6 +17102,10 @@ export type TranslationFunctions = {
 		 * Not now
 		 */
 		notNow: () => LocalizedString
+		/**
+		 * Set up Level {level} account
+		 */
+		setUpLevelAccount: (arg: { level: number }) => LocalizedString
 	}
 	SetAddressModal: {
 		/**
@@ -17200,6 +17225,10 @@ export type TranslationFunctions = {
 	}
 	LoginMethodScreen: {
 		/**
+		 * Select how you want to login to your account.
+		 */
+		title: () => LocalizedString
+		/**
 		 * Use Telegram
 		 */
 		useTelegram: () => LocalizedString
@@ -17216,9 +17245,21 @@ export type TranslationFunctions = {
 		 */
 		useEmail: () => LocalizedString
 		/**
-		 * Select how you want to login to your account.
+		 * Set up Telegram login
 		 */
-		title: () => LocalizedString
+		setupTelegram: () => LocalizedString
+		/**
+		 * Set up SMS login
+		 */
+		setupSms: () => LocalizedString
+		/**
+		 * Set up WhatsApp login
+		 */
+		setupWhatsapp: () => LocalizedString
+		/**
+		 * Set up Email login
+		 */
+		setupEmail: () => LocalizedString
 	}
 	PhoneLoginValidationScreen: {
 		/**

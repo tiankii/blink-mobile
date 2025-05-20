@@ -2447,7 +2447,8 @@
         "letsGo": "¡Vamos!",
         "stayInTrialMode": "Permanecer en modo de prueba",
         "upgradeToLevel": "Actualizar al Nivel {level: number}",
-        "notNow": "Ahora no"
+        "notNow": "Ahora no",
+        "setUpLevelAccount": "Configurar cuenta Nivel {level: number}"
     },
     "SetAddressModal": {
         "title": "Establece tu dirección de {bankName: string}",
@@ -2485,11 +2486,15 @@
         "telegram": "Enviar a través de Telegram"
     },
     "LoginMethodScreen": {
+        "title": "Seleccione cómo desea iniciar sesión en su cuenta.",
         "useTelegram": "Usar Telegram",
         "useSms": "Usar SMS",
         "useWhatsapp": "Usar WhatsApp",
         "useEmail": "Usar Correo Electrónico",
-        "title": "Seleccione cómo desea iniciar sesión en su cuenta."
+        "setupTelegram": "Configurar inicio con Telegram",
+        "setupSms": "Configurar inicio con SMS",
+        "setupWhatsapp": "Configurar inicio con WhatsApp",
+        "setupEmail": "Configurar inicio con Correo"
     },
     "PhoneLoginValidationScreen": {
         "errorLoggingIn": "Error al inciar sesión. ¿Usó el código correcto?",

@@ -41,13 +41,20 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   const [selected, setSelected] = useState<LoginChannels | undefined>()
 
   const AppLogo = mode === "dark" ? AppLogoDarkMode : AppLogoLightMode
-  const { type } = route.params
+  const { type, upgrade } = route.params
 
-  const useLabels: Record<LoginChannels, string> = {
+  const loginChanneltitles: Record<LoginChannels, string> = {
     [LoginChannels.Telegram]: LL.LoginMethodScreen.useTelegram(),
     [LoginChannels.Sms]: LL.LoginMethodScreen.useSms(),
     [LoginChannels.Whatsapp]: LL.LoginMethodScreen.useWhatsapp(),
     [LoginChannels.Email]: LL.LoginMethodScreen.useEmail(),
+  }
+
+  const setUpChanneltitles: Record<LoginChannels, string> = {
+    [LoginChannels.Telegram]: LL.LoginMethodScreen.setupTelegram(),
+    [LoginChannels.Sms]: LL.LoginMethodScreen.setupSms(),
+    [LoginChannels.Whatsapp]: LL.LoginMethodScreen.setupWhatsapp(),
+    [LoginChannels.Email]: LL.LoginMethodScreen.setupEmail(),
   }
 
   const handleSubmit = () => {
@@ -63,7 +70,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
       params: {
         type,
         channel: selected as PhoneCodeChannelType,
-        title: useLabels[selected],
+        title: upgrade ? setUpChanneltitles[selected] : loginChanneltitles[selected],
       },
     })
   }
@@ -116,7 +123,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
       <View style={styles.bottom}>
         {selected && (
           <GaloyPrimaryButton
-            title={useLabels[selected]}
+            title={loginChanneltitles[selected]}
             onPress={handleSubmit}
             disabled={!selected}
             containerStyle={styles.buttonContainer}

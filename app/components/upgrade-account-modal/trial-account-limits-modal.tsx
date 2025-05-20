@@ -17,6 +17,8 @@ export type TrialAccountLimitsModalProps = {
   closeModal: () => void
 }
 
+const UPGRADE_TO = 1
+
 export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = ({
   isVisible,
   closeModal,
@@ -33,6 +35,8 @@ export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = (
   const navigateToPhoneLogin = () => {
     navigation.navigate("login", {
       type: PhoneLoginInitiateType.CreateAccount,
+      title: LL.UpgradeAccountModal.upgradeToLevel({ level: UPGRADE_TO }),
+      upgrade: true,
     })
     closeModal()
   }
@@ -50,7 +54,7 @@ export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = (
           <LimitItem text={LL.GetStartedScreen.trialAccountLimits.onchainReceive()} />
         </View>
       }
-      primaryButtonTitle={LL.UpgradeAccountModal.upgradeToLevel({ level: 1 })}
+      primaryButtonTitle={LL.UpgradeAccountModal.upgradeToLevel({ level: UPGRADE_TO })}
       primaryButtonOnPress={navigateToPhoneLogin}
       secondaryButtonTitle={LL.UpgradeAccountModal.notNow()}
       secondaryButtonOnPress={closeModal}
