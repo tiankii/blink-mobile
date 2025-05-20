@@ -2446,7 +2446,7 @@
         "onlyAPhoneNumber": "Verificación de número de teléfono rápida y fácil",
         "letsGo": "¡Vamos!",
         "stayInTrialMode": "Permanecer en modo de prueba",
-        "upgradeToLevel": "Actualizar al Nivel {level: string}",
+        "upgradeToLevel": "Actualizar al Nivel {level: number}",
         "notNow": "Ahora no"
     },
     "SetAddressModal": {

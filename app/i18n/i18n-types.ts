@@ -7920,7 +7920,7 @@ type RootTranslation = {
 		stayInTrialMode: string
 		/**
 		 * U​p​g​r​a​d​e​ ​t​o​ ​L​e​v​e​l​ ​{​l​e​v​e​l​}
-		 * @param {string} level
+		 * @param {number} level
 		 */
 		upgradeToLevel: RequiredParams<'level'>
 		/**
@@ -17074,7 +17074,7 @@ export type TranslationFunctions = {
 		/**
 		 * Upgrade to Level {level}
 		 */
-		upgradeToLevel: (arg: { level: string }) => LocalizedString
+		upgradeToLevel: (arg: { level: number }) => LocalizedString
 		/**
 		 * Not now
 		 */

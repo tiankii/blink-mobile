@@ -2533,7 +2533,7 @@ const en: BaseTranslation = {
     onlyAPhoneNumber: "Quick and easy phone number verification",
     letsGo: "Let's go!",
     stayInTrialMode: "Stay in trial mode",
-    upgradeToLevel: "Upgrade to Level {level: string}",
+    upgradeToLevel: "Upgrade to Level {level: number}",
     notNow: "Not now",
   },
   SetAddressModal: {
