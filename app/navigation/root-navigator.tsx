@@ -127,7 +127,12 @@ export const RootStack = () => {
       <RootNavigator.Screen
         name="login"
         component={LoginMethodScreen}
-        options={{ title: LL.GetStartedScreen.login() }}
+        options={({ route: { params } }) => ({
+          title:
+            params.type === PhoneLoginInitiateType.Login
+              ? LL.GetStartedScreen.login()
+              : LL.GetStartedScreen.createAccount(),
+        })}
       />
       <RootNavigator.Screen
         name="pin"
@@ -524,7 +529,7 @@ export const PhoneLoginNavigator = () => {
       <StackPhoneValidation.Screen
         name="phoneLoginInitiate"
         options={(props) => ({
-          title: props.route.params.title ?? getTitle(props.route.params.type),
+          title: props.route.params.title,
         })}
         component={PhoneLoginInitiateScreen}
       />

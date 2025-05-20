@@ -20,7 +20,9 @@ export type RootStackParamList = {
     appCheckToken: string
   }
   developerScreen: undefined
-  login: undefined
+  login: {
+    type: PhoneLoginInitiateType
+  }
   authenticationCheck: undefined
   authentication: {
     screenPurpose: AuthenticationScreenPurpose
@@ -116,7 +118,7 @@ export type PhoneValidationStackParamList = {
   Primary: undefined
   phoneLoginInitiate: {
     type: PhoneLoginInitiateType
-    channel?: PhoneCodeChannelType
+    channel: PhoneCodeChannelType
     title?: string
   }
   telegramLoginValidate: {

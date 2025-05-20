@@ -33,11 +33,8 @@ export const AcceptTermsAndConditionsScreen: React.FC = () => {
 
   const action = () => {
     if (flow === "phone") {
-      navigation.navigate("phoneFlow", {
-        screen: "phoneLoginInitiate",
-        params: {
-          type: PhoneLoginInitiateType.CreateAccount,
-        },
+      navigation.navigate("login", {
+        type: PhoneLoginInitiateType.CreateAccount,
       })
     } else if (flow === "trial") {
       openConfirmationModal()

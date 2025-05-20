@@ -19,6 +19,7 @@ import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import useAppCheckToken from "./use-device-token"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
 
 export const GetStartedScreen: React.FC = () => {
   const navigation =
@@ -59,7 +60,9 @@ export const GetStartedScreen: React.FC = () => {
       action: "log_in",
       createDeviceAccountEnabled: Boolean(appCheckToken),
     })
-    navigation.navigate("login")
+    navigation.navigate("login", {
+      type: PhoneLoginInitiateType.Login,
+    })
   }
 
   const {
