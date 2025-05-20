@@ -2535,6 +2535,7 @@ const en: BaseTranslation = {
     stayInTrialMode: "Stay in trial mode",
     upgradeToLevel: "Upgrade to Level {level: number}",
     notNow: "Not now",
+    setUpLevelAccount: "Set up Level {level: number} account",
   },
   SetAddressModal: {
     title: "Set {bankName: string} address",
@@ -2578,11 +2579,15 @@ const en: BaseTranslation = {
     telegram: "Send via Telegram",
   },
   LoginMethodScreen: {
+    title: "Select how you want to login to your account.",
     useTelegram: "Use Telegram",
     useSms: "Use SMS",
     useWhatsapp: "Use WhatsApp",
     useEmail: "Use Email",
-    title: "Select how you want to login to your account.",
+    setupTelegram: "Set up Telegram login",
+    setupSms: "Set up SMS login",
+    setupWhatsapp: "Set up WhatsApp login",
+    setupEmail: "Set up Email login",
   },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",

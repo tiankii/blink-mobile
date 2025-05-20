@@ -129,11 +129,13 @@ export const RootStack = () => {
         component={LoginMethodScreen}
         options={({ route: { params } }) => ({
           title:
-            params.type === PhoneLoginInitiateType.Login
+            params.title ??
+            (params.type === PhoneLoginInitiateType.Login
               ? LL.GetStartedScreen.login()
-              : LL.GetStartedScreen.createAccount(),
+              : LL.GetStartedScreen.createAccount()),
         })}
       />
+
       <RootNavigator.Screen
         name="pin"
         component={PinScreen}
