@@ -98,6 +98,7 @@ export const useCreateDeviceAccount = () => {
         }
 
         console.error("Device account creation error:", err)
+        throw err
       } finally {
         setLoading(false)
       }
