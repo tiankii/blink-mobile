@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react"
 import { View } from "react-native"
 
 import { StackNavigationProp } from "@react-navigation/stack"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -23,7 +23,11 @@ export enum LoginChannels {
   Email = "EMAIL",
 }
 
-export const LoginMethodScreen: React.FC = () => {
+type LoginMethodScreenProps = {
+  route: RouteProp<RootStackParamList, "login">
+}
+
+export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const {
@@ -37,6 +41,7 @@ export const LoginMethodScreen: React.FC = () => {
   const [selected, setSelected] = useState<LoginChannels | undefined>()
 
   const AppLogo = mode === "dark" ? AppLogoDarkMode : AppLogoLightMode
+  const { type } = route.params
 
   const useLabels: Record<LoginChannels, string> = {
     [LoginChannels.Telegram]: LL.LoginMethodScreen.useTelegram(),
@@ -56,7 +61,7 @@ export const LoginMethodScreen: React.FC = () => {
     navigation.navigate("phoneFlow", {
       screen: "phoneLoginInitiate",
       params: {
-        type: PhoneLoginInitiateType.Login,
+        type,
         channel: selected as PhoneCodeChannelType,
         title: useLabels[selected],
       },
@@ -92,10 +97,10 @@ export const LoginMethodScreen: React.FC = () => {
         label: LL.support.email(),
         value: LoginChannels.Email,
         icon: "mail-outline",
-        active: true,
+        active: type === PhoneLoginInitiateType.Login,
       },
     ],
-    [LL, isTelegramSupported, isSmsSupported, isWhatsAppSupported],
+    [LL.support, isTelegramSupported, isSmsSupported, isWhatsAppSupported, type],
   )
 
   return (

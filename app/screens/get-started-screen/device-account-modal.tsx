@@ -137,11 +137,8 @@ export const DeviceAccountModal: React.FC<DeviceAccountModalProps> = ({
   }, [isVisible])
 
   const navigateToPhoneLogin = () => {
-    navigation.navigate("phoneFlow", {
-      screen: "phoneLoginInitiate",
-      params: {
-        type: PhoneLoginInitiateType.CreateAccount,
-      },
+    navigation.navigate("login", {
+      type: PhoneLoginInitiateType.CreateAccount,
     })
     closeModal()
   }
