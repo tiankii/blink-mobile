@@ -107,6 +107,16 @@ export type RootStackParamList = {
   fullOnboardingFlow: undefined
   supportChat: undefined
   notificationHistory: undefined
+  onboarding: NavigatorScreenParams<OnboardingStackParamList>
+}
+
+export type OnboardingStackParamList = {
+  welcomeLevel1: undefined
+  emailBenefits: undefined
+  emailConfirmed: undefined
+  lightningBenefits: undefined
+  lightningConfirmed: undefined
+  supportScreen: undefined
 }
 
 export type PeopleStackParamList = {

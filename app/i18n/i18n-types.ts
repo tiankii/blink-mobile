@@ -8089,6 +8089,129 @@ type RootTranslation = {
 		 */
 		setupEmail: string
 	}
+	OnboardingScreen: {
+		welcomeLevel1: {
+			/**
+			 * W​e​l​c​o​m​e​ ​t​o​ ​L​e​v​e​l​ ​1
+			 */
+			mainTitle: string
+			/**
+			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
+			 */
+			title: string
+			/**
+			 * R​e​c​e​i​v​e​ ​B​i​t​c​o​i​n​ ​u​s​i​n​g​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+			 */
+			receibeBitcoinDescription: string
+			/**
+			 * S​e​n​d​ ​u​p​ ​t​o​ ​$​1​,​0​0​0​ ​U​S​D​ ​p​e​r​ ​d​a​y
+			 */
+			dailyLimitDescription: string
+			/**
+			 * R​e​c​e​i​v​e​ ​o​n​-​c​h​a​i​n​ ​p​a​y​m​e​n​t​s
+			 */
+			onchainDescription: string
+		}
+		emailBenefits: {
+			/**
+			 * A​d​d​ ​e​m​a​i​l​ ​l​o​g​i​n
+			 */
+			mainTitle: string
+			/**
+			 * E​m​a​i​l​ ​l​o​g​i​n​ ​a​l​l​o​w​s​ ​y​o​u​ ​t​o​:
+			 */
+			title: string
+			/**
+			 * H​a​v​e​ ​a​ ​b​a​c​k​u​p​ ​t​o​ ​a​c​c​e​s​s​i​n​g​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+			 */
+			backupDescription: string
+			/**
+			 * M​a​k​e​ ​i​t​ ​e​a​s​i​e​r​ ​f​o​r​ ​u​s​ ​t​o​ ​g​i​v​e​ ​y​o​u​ ​s​u​p​p​o​r​t
+			 */
+			supportDescription: string
+			/**
+			 * I​n​c​r​e​a​s​e​ ​a​c​c​o​u​n​t​ ​s​e​c​u​r​i​t​y
+			 */
+			securityDescription: string
+			/**
+			 * S​e​t​ ​u​p​ ​e​m​a​i​l​ ​l​o​g​i​n
+			 */
+			primaryButton: string
+		}
+		emailConfirmed: {
+			/**
+			 * E​m​a​i​l​ ​l​o​g​i​n​ ​a​d​d​e​d
+			 */
+			mainTitle: string
+			/**
+			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
+			 */
+			title: string
+		}
+		lightningBenefits: {
+			/**
+			 * S​e​t​ ​u​p​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+			 */
+			mainTitle: string
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s​ ​b​e​n​e​f​i​t​s​:
+			 */
+			title: string
+			/**
+			 * A​ ​s​t​a​t​i​c​ ​a​d​d​r​e​s​s​ ​t​o​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s
+			 */
+			staticAddressDescription: string
+			/**
+			 * E​a​s​y​ ​t​o​ ​m​e​m​o​r​i​z​e​ ​a​n​d​ ​s​h​a​r​e​ ​p​u​b​l​i​c​l​y​ ​o​r​ ​p​r​i​v​a​t​e​l​y
+			 */
+			easyToShareDescription: string
+			/**
+			 * U​n​l​o​c​k​s​ ​v​a​r​i​o​u​s​ ​B​l​i​n​k​ ​t​o​o​l​s​ ​u​s​e​f​u​l​ ​f​o​r​ ​c​o​m​m​e​r​c​e
+			 */
+			blinkToolsDescription: string
+			/**
+			 * S​e​t​ ​u​p​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+			 */
+			primaryButton: string
+		}
+		lightningConfirmed: {
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s​ ​s​e​t
+			 */
+			mainTitle: string
+			/**
+			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
+			 */
+			title: string
+		}
+		supportScreen: {
+			/**
+			 * B​l​i​n​k​ ​S​u​p​p​o​r​t
+			 */
+			mainTitle: string
+			/**
+			 * O​n​e​ ​m​o​r​e​ ​t​h​i​n​g​:
+			 */
+			title: string
+			/**
+			 * W​e​ ​a​r​e​ ​o​n​ ​a​ ​m​i​s​s​i​o​n​ ​t​o​ ​m​a​k​e​ ​b​i​t​c​o​i​n​ ​a​c​c​e​s​s​i​b​l​e​ ​t​o​ ​a​l​l​,​ ​a​n​d​ ​w​e​ ​w​o​u​l​d​ ​l​o​v​e​ ​t​o​ ​h​e​a​r​ ​f​r​o​m​ ​y​o​u​.
+			 */
+			description: string
+			/**
+			 * D​o​n​'​t​ ​h​e​s​i​t​a​t​e​ ​t​o​ ​c​o​n​t​a​c​t​ ​u​s​ ​a​t​ ​{​c​o​n​t​a​c​t​E​m​a​i​l​}​ ​a​n​d​ ​s​h​a​r​e​ ​h​o​w​ ​w​e​ ​c​a​n​ ​m​a​k​e​ ​B​l​i​n​k​ ​b​e​t​t​e​r​ ​f​o​r​ ​y​o​u​ ​a​n​d​ ​o​t​h​e​r​s​.
+			 * @param {string} contactEmail
+			 */
+			contactInfo: RequiredParams<'contactEmail'>
+			/**
+			 * D​o​n​e
+			 */
+			primaryButton: string
+			/**
+			 * C​o​n​t​a​c​t​ ​S​u​p​p​o​r​t
+			 */
+			secondaryButton: string
+		}
+	}
 	PhoneLoginValidationScreen: {
 		/**
 		 * E​r​r​o​r​ ​l​o​g​g​i​n​g​ ​i​n​.​ ​D​i​d​ ​y​o​u​ ​u​s​e​ ​t​h​e​ ​r​i​g​h​t​ ​c​o​d​e​?
@@ -17258,6 +17381,128 @@ export type TranslationFunctions = {
 		 * Set up Email login
 		 */
 		setupEmail: () => LocalizedString
+	}
+	OnboardingScreen: {
+		welcomeLevel1: {
+			/**
+			 * Welcome to Level 1
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * New features unlocked for your account:
+			 */
+			title: () => LocalizedString
+			/**
+			 * Receive Bitcoin using your phone number
+			 */
+			receibeBitcoinDescription: () => LocalizedString
+			/**
+			 * Send up to $1,000 USD per day
+			 */
+			dailyLimitDescription: () => LocalizedString
+			/**
+			 * Receive on-chain payments
+			 */
+			onchainDescription: () => LocalizedString
+		}
+		emailBenefits: {
+			/**
+			 * Add email login
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * Email login allows you to:
+			 */
+			title: () => LocalizedString
+			/**
+			 * Have a backup to accessing your account
+			 */
+			backupDescription: () => LocalizedString
+			/**
+			 * Make it easier for us to give you support
+			 */
+			supportDescription: () => LocalizedString
+			/**
+			 * Increase account security
+			 */
+			securityDescription: () => LocalizedString
+			/**
+			 * Set up email login
+			 */
+			primaryButton: () => LocalizedString
+		}
+		emailConfirmed: {
+			/**
+			 * Email login added
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * New features unlocked for your account:
+			 */
+			title: () => LocalizedString
+		}
+		lightningBenefits: {
+			/**
+			 * Set up Lightning Address
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * Lightning Address benefits:
+			 */
+			title: () => LocalizedString
+			/**
+			 * A static address to receive payments
+			 */
+			staticAddressDescription: () => LocalizedString
+			/**
+			 * Easy to memorize and share publicly or privately
+			 */
+			easyToShareDescription: () => LocalizedString
+			/**
+			 * Unlocks various Blink tools useful for commerce
+			 */
+			blinkToolsDescription: () => LocalizedString
+			/**
+			 * Set up Lightning Address
+			 */
+			primaryButton: () => LocalizedString
+		}
+		lightningConfirmed: {
+			/**
+			 * Lightning Address set
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * New features unlocked for your account:
+			 */
+			title: () => LocalizedString
+		}
+		supportScreen: {
+			/**
+			 * Blink Support
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * One more thing:
+			 */
+			title: () => LocalizedString
+			/**
+			 * We are on a mission to make bitcoin accessible to all, and we would love to hear from you.
+			 */
+			description: () => LocalizedString
+			/**
+			 * Don't hesitate to contact us at {contactEmail} and share how we can make Blink better for you and others.
+			 */
+			contactInfo: (arg: { contactEmail: string }) => LocalizedString
+			/**
+			 * Done
+			 */
+			primaryButton: () => LocalizedString
+			/**
+			 * Contact Support
+			 */
+			secondaryButton: () => LocalizedString
+		}
 	}
 	PhoneLoginValidationScreen: {
 		/**
