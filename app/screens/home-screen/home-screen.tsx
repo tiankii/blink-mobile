@@ -24,6 +24,7 @@ import { SetDefaultAccountModal } from "@app/components/set-default-account-moda
 import { StableSatsModal } from "@app/components/stablesats-modal"
 import WalletOverview from "@app/components/wallet-overview/wallet-overview"
 import { BalanceHeader, useTotalBalance } from "@app/components/balance-header"
+import { TrialAccountLimitsModal } from "@app/components/upgrade-account-modal"
 import { MemoizedTransactionItem } from "@app/components/transaction-item"
 import { Screen } from "@app/components/screen"
 
@@ -48,6 +49,7 @@ import {
 } from "@app/graphql/generated"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
+const BALANCE_TO_SHOW_TRIAL_LIMIT_MODAL = 125 // USD balance
 
 gql`
   query homeAuthed {
@@ -221,7 +223,9 @@ export const HomeScreen: React.FC = () => {
     }
   }, [isAuthed, refetchAuthed, refetchBulletins, refetchRealtimePrice, refetchUnauthed])
 
-  const { formattedBalance } = useTotalBalance(dataAuthed?.me?.defaultAccount?.wallets)
+  const { formattedBalance, numericBalance } = useTotalBalance(
+    dataAuthed?.me?.defaultAccount?.wallets,
+  )
 
   const levelAccount = dataAuthed?.me?.defaultAccount.level
   const pendingIncomingTransactions =
@@ -245,6 +249,10 @@ export const HomeScreen: React.FC = () => {
 
   const [modalVisible, setModalVisible] = React.useState(false)
   const [isStablesatModalVisible, setIsStablesatModalVisible] = React.useState(false)
+  const [isUpgradeModalVisible, setIsUpgradeModalVisible] = React.useState(false)
+
+  const closeUpgradeModal = () => setIsUpgradeModalVisible(false)
+  const openUpgradeModal = () => setIsUpgradeModalVisible(true)
 
   const numberOfTxs = transactions.length
 
@@ -284,6 +292,15 @@ export const HomeScreen: React.FC = () => {
       Alert.alert(LL.HomeScreen.walletCountNotTwo())
     }
   }, [dataAuthed, LL])
+
+  React.useEffect(() => {
+    if (
+      numericBalance >= BALANCE_TO_SHOW_TRIAL_LIMIT_MODAL &&
+      levelAccount === AccountLevel.Zero
+    ) {
+      openUpgradeModal()
+    }
+  }, [levelAccount, numericBalance])
 
   let recentTransactionsData:
     | {
@@ -391,6 +408,10 @@ export const HomeScreen: React.FC = () => {
       <StableSatsModal
         isVisible={isStablesatModalVisible}
         setIsVisible={setIsStablesatModalVisible}
+      />
+      <TrialAccountLimitsModal
+        isVisible={isUpgradeModalVisible}
+        closeModal={closeUpgradeModal}
       />
       <View style={[styles.header, styles.container]}>
         <GaloyIconButton
