@@ -2589,6 +2589,47 @@ const en: BaseTranslation = {
     setupWhatsapp: "Set up WhatsApp login",
     setupEmail: "Set up Email login",
   },
+  OnboardingScreen: {
+    welcomeLevel1: {
+      mainTitle: "Welcome to Level 1",
+      title: "New features unlocked for your account:",
+      receibeBitcoinDescription: "Receive Bitcoin using your phone number",
+      dailyLimitDescription: "Send up to $1,000 USD per day",
+      onchainDescription: "Receive on-chain payments",
+    },
+    emailBenefits: {
+      mainTitle: "Add email login",
+      title: "Email login allows you to:",
+      backupDescription: "Have a backup to accessing your account",
+      supportDescription: "Make it easier for us to give you support",
+      securityDescription: "Increase account security",
+      primaryButton: "Set up email login",
+    },
+    emailConfirmed: {
+      mainTitle: "Email login added",
+      title: "New features unlocked for your account:",
+    },
+    lightningBenefits: {
+      mainTitle: "Set up Lightning Address",
+      title: "Lightning Address benefits:",
+      staticAddressDescription: "A static address to receive payments",
+      easyToShareDescription: "Easy to memorize and share publicly or privately",
+      blinkToolsDescription: "Unlocks various Blink tools useful for commerce",
+      primaryButton: "Set up Lightning Address",
+    },
+    lightningConfirmed: {
+      mainTitle: "Lightning Address set",
+      title: "New features unlocked for your account:",
+    },
+    supportScreen: {
+      mainTitle: "Blink Support",
+      title: "One more thing:",
+      description: "We are on a mission to make bitcoin accessible to all, and we would love to hear from you.",
+      contactInfo: "Don't hesitate to contact us at {contactEmail: string} and share how we can make Blink better for you and others.",
+      primaryButton: "Done",
+      secondaryButton: "Contact Support",
+    }
+  },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",
     errorTooManyAttempts: "Too many attempts. Please try again later.",

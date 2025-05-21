@@ -2496,6 +2496,47 @@
         "setupWhatsapp": "Configurar inicio con WhatsApp",
         "setupEmail": "Configurar inicio con Correo"
     },
+    "OnboardingScreen": {
+        "welcomeLevel1": {
+            "mainTitle": "Bienvenido al Nivel 1",
+            "title": "Nuevas funciones desbloqueadas para tu cuenta:",
+            "receibeBitcoinDescription": "Recibe Bitcoin usando tu número de teléfono",
+            "dailyLimitDescription": "Envía hasta $1,000 USD por día",
+            "onchainDescription": "Recibe pagos on-chain"
+        },
+        "emailBenefits": {
+            "mainTitle": "Agregar inicio de sesión con email",
+            "title": "El inicio de sesión con email te permite:",
+            "backupDescription": "Tener un respaldo para acceder a tu cuenta",
+            "supportDescription": "Facilitar que podamos darte soporte",
+            "securityDescription": "Incrementar la seguridad de tu cuenta",
+            "primaryButton": "Configurar inicio de sesión con email"
+        },
+        "emailConfirmed": {
+            "mainTitle": "Inicio de sesión por correo añadido",
+            "title": "Nuevas funciones desbloqueadas para tu cuenta:"
+        },
+        "lightningBenefits": {
+            "mainTitle": "Configura la dirección Lightning",
+            "title": "Beneficios de la dirección Lightning:",
+            "staticAddressDescription": "Una dirección estática para recibir pagos",
+            "easyToShareDescription": "Fácil de memorizar y compartir pública o privadamente",
+            "blinkToolsDescription": "Desbloquea varias herramientas de Blink útiles para el comercio",
+            "primaryButton": "Configurar dirección Lightning"
+        },
+        "lightningConfirmed": {
+          "mainTitle": "Dirección Lightning configurada",
+          "title": "Nuevas funciones desbloqueadas para tu cuenta:"
+        },
+        "supportScreen": {
+          "mainTitle": "Soporte de Blink",
+          "title": "Una cosa más:",
+          "description": "Estamos en una misión para hacer que bitcoin sea accesible para todos, y nos encantaría saber de ti.",
+          "contactInfo": "No dudes en contactarnos en {contactEmail: string} y compartir cómo podemos hacer que Blink sea mejor para ti y otros.",
+          "primaryButton": "Hecho",
+          "secondaryButton": "Contactar soporte"
+        }
+    },
     "PhoneLoginValidationScreen": {
         "errorLoggingIn": "Error al inciar sesión. ¿Usó el código correcto?",
         "errorTooManyAttempts": "Demasiados intentos. Por favor, inténtelo de nuevo más tarde.",
