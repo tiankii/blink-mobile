@@ -9,12 +9,19 @@ import {
   SuccessAction,
 } from "@app/screens/send-bitcoin-screen/send-bitcoin-completed-screen.stories"
 import { ContextForScreen } from "./helper"
-import { Linking } from "react-native"
+import { Linking, View } from "react-native"
 
 jest.mock("react-native-in-app-review", () => ({
   isAvailable: () => true,
   RequestInAppReview: jest.fn(),
 }))
+
+jest.mock("react-native-view-shot", () => {
+  return {
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => <View>{children}</View>,
+  }
+})
 
 describe("SendBitcoinCompletedScreen", () => {
   let LL: ReturnType<typeof i18nObject>

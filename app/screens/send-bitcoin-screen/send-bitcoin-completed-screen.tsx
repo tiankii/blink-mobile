@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { View, Alert, TouchableHighlight, ScrollView } from "react-native"
 import InAppReview from "react-native-in-app-review"
+import Share from "react-native-share"
+import ViewShot, { captureRef } from "react-native-view-shot"
 
 import { useApolloClient } from "@apollo/client"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
@@ -40,6 +42,7 @@ type Props = {
 type StatusProcessed = "SUCCESS" | "PENDING" | "QUEUED"
 
 const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
+  const viewRef = useRef<View | null>(null)
   const {
     arrivalAtMempoolEstimate,
     status: statusRaw,
@@ -57,8 +60,9 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
   } = useTheme()
 
   const status = processStatus({ arrivalAtMempoolEstimate, status: statusRaw })
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false)
+  const [isTakingScreenshot, setIsTakingScreenshot] = useState(false)
 
-  const [showSuggestionModal, setShowSuggestionModal] = React.useState(false)
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinCompleted">>()
 
@@ -139,6 +143,30 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
     successAction,
   ])
 
+  const captureAndShare = async () => {
+    try {
+      setIsTakingScreenshot(true)
+
+      // To wait before hiding buttons
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 100)
+      })
+
+      const uri = await captureRef(viewRef, {
+        format: "jpg",
+        quality: 0.9,
+      })
+
+      await Share.open({
+        url: uri,
+        failOnCancel: false,
+      })
+    } catch (_) {
+      // Do nothing
+    }
+    setIsTakingScreenshot(false)
+  }
+
   const MainIcon = () => {
     switch (status) {
       case "SUCCESS":
@@ -181,74 +209,81 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <Screen>
-      <View style={styles.screenContainer} {...testProps("Success Text")}>
-        <View style={styles.successIcon} {...testProps(status)}>
-          <SuccessIconAnimation>{MainIcon()}</SuccessIconAnimation>
-        </View>
-        <Logo height={65} />
-        <View style={styles.container}>
-          <ScrollView>
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.amount()}
-              text={formatAmount}
-              key={1}
-              visible={Boolean(formatAmount)}
-            />
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.feeLabel()}
-              text={`${feeDisplayText} | ${paymentType === "intraledger" ? "Blink to Blink" : paymentType}`}
-              key={2}
-              visible={Boolean(feeDisplayText)}
-            />
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.sender()}
-              text={usernameTitle}
-              key={3}
-              visible={Boolean(usernameTitle)}
-              icon="pencil"
-            />
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.recipient()}
-              text={destination}
-              key={4}
-              visible={Boolean(destination)}
-              icon="pencil"
-            />
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.time()}
-              text={formatUnixTimestampYMDHM(createdAt!)}
-              key={5}
-              visible={Boolean(createdAt)}
-            />
-            <SuccessActionComponent
-              title={LL.SendBitcoinScreen.noteLabel()}
-              text={noteMessage()}
-              key={6}
-              visible={Boolean(noteMessage())}
-              icon="copy-paste"
-            />
-          </ScrollView>
-        </View>
+      <ViewShot ref={viewRef} style={styles.viewShot}>
+        <View style={styles.screenContainer} {...testProps("Success Text")}>
+          <View style={styles.successIcon} {...testProps(status)}>
+            <SuccessIconAnimation>{MainIcon()}</SuccessIconAnimation>
+          </View>
+          <Logo height={65} />
+          <View style={styles.container}>
+            <ScrollView>
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.amount()}
+                text={formatAmount}
+                key={1}
+                visible={Boolean(formatAmount)}
+              />
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.feeLabel()}
+                text={`${feeDisplayText} | ${paymentType === "intraledger" ? "Blink to Blink" : paymentType}`}
+                key={2}
+                visible={Boolean(feeDisplayText)}
+              />
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.sender()}
+                text={usernameTitle}
+                key={3}
+                visible={Boolean(usernameTitle)}
+                {...(!isTakingScreenshot && { icon: "pencil" })}
+              />
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.recipient()}
+                text={destination}
+                key={4}
+                visible={Boolean(destination)}
+                {...(!isTakingScreenshot && { icon: "pencil" })}
+              />
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.time()}
+                text={formatUnixTimestampYMDHM(createdAt!)}
+                key={5}
+                visible={Boolean(createdAt)}
+              />
+              <SuccessActionComponent
+                title={LL.SendBitcoinScreen.noteLabel()}
+                text={noteMessage()}
+                key={6}
+                visible={Boolean(noteMessage())}
+                {...(!isTakingScreenshot && { icon: "copy-paste" })}
+              />
+            </ScrollView>
+          </View>
 
-        <GaloyPrimaryButton
-          style={styles.shareButton}
-          onPress={() => {}}
-          title={LL.common.share()}
-        />
-        <Button
-          title={LL.common.close()}
-          onPress={() => navigation.navigate("Primary")}
-          TouchableComponent={TouchableHighlight}
-          titleStyle={{ color: colors.primary }}
-          containerStyle={styles.containerStyle}
-          buttonStyle={styles.buttonStyle}
-        />
-        <SuggestionModal
-          navigation={navigation}
-          showSuggestionModal={showSuggestionModal}
-          setShowSuggestionModal={setShowSuggestionModal}
-        />
-      </View>
+          {!isTakingScreenshot && (
+            <GaloyPrimaryButton
+              style={styles.shareButton}
+              onPress={captureAndShare}
+              title={LL.common.share()}
+            />
+          )}
+
+          {!isTakingScreenshot && (
+            <Button
+              title={LL.common.close()}
+              onPress={() => navigation.navigate("Primary")}
+              TouchableComponent={TouchableHighlight}
+              titleStyle={{ color: colors.primary }}
+              containerStyle={styles.containerStyle}
+              buttonStyle={styles.buttonStyle}
+            />
+          )}
+          <SuggestionModal
+            navigation={navigation}
+            showSuggestionModal={showSuggestionModal}
+            setShowSuggestionModal={setShowSuggestionModal}
+          />
+        </View>
+      </ViewShot>
     </Screen>
   )
 }
@@ -274,6 +309,9 @@ const useStyles = makeStyles(({ colors }) => ({
   screenContainer: {
     flexGrow: 1,
     marginHorizontal: 20,
+  },
+  viewShot: {
+    flexGrow: 1,
   },
   completedText: {
     textAlign: "center",
