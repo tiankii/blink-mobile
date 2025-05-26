@@ -2796,6 +2796,10 @@ const en: BaseTranslation = {
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
     warning: "Warning",
     recommended: "Recommended",
+    expirationTime: "Expiration Time",
+    minute: "Minute",
+    days: "Days",
+    day: "Day",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
