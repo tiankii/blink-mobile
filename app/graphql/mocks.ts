@@ -12,6 +12,8 @@ import {
   SendBitcoinConfirmationScreenDocument,
   SendBitcoinDestinationDocument,
   SendBitcoinDetailsScreenDocument,
+  UserUpdateUsernameDocument,
+  MyUserIdDocument,
 } from "./generated"
 
 // TODO: put in __tests__ folder?
@@ -283,6 +285,56 @@ const mocks = [
             __typename: "ConsumerAccount",
           },
           __typename: "User",
+        },
+      },
+    },
+  },
+  {
+    request: { query: MyUserIdDocument },
+    result: {
+      data: {
+        me: {
+          id: "user-id-123",
+          __typename: "User",
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UserUpdateUsernameDocument,
+      variables: {
+        input: { username: "validAddress" },
+      },
+    },
+    result: {
+      data: {
+        userUpdateUsername: {
+          errors: [],
+          user: {
+            id: "user-id-123",
+            username: "validAddress",
+            __typename: "User",
+          },
+          __typename: "UserPayload",
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: DisplayCurrencyDocument,
+    },
+    result: {
+      data: {
+        me: {
+          id: "user-id-123",
+          __typename: "User",
+          defaultAccount: {
+            id: "account-id-123",
+            displayCurrency: "USD",
+            __typename: "ConsumerAccount",
+          },
         },
       },
     },
