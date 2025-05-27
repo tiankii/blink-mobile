@@ -2627,7 +2627,6 @@ const en: BaseTranslation = {
       description: "We are on a mission to make bitcoin accessible to all, and we would love to hear from you.",
       contactInfo: {
         messagePrefix: "Don't hesitate to contact us at ",
-        contactEmail: "support@blink.sv",
         messageSuffix: " and share how we can make Blink better for you and others."
       },
       primaryButton: "Done",

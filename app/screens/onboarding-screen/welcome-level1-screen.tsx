@@ -1,20 +1,29 @@
 import * as React from "react"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import {
+  OnboardingStackParamList,
+  RootStackParamList,
+} from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
-export const WelcomeLevel1Screen: React.FC = () => {
-  const { LL } = useI18nContext()
+type WelcomeLevel1ScreenProps = {
+  route: RouteProp<OnboardingStackParamList, "welcomeLevel1">
+}
 
+export const WelcomeLevel1Screen: React.FC<WelcomeLevel1ScreenProps> = ({ route }) => {
+  const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+
+  const { onboarding } = route.params
 
   const handlePrimaryAction = () => {
     navigation.replace("onboarding", {
       screen: "emailBenefits",
+      params: { onboarding },
     })
   }
 

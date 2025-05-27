@@ -8204,10 +8204,6 @@ type RootTranslation = {
 				 */
 				messagePrefix: string
 				/**
-				 * s​u​p​p​o​r​t​@​b​l​i​n​k​.​s​v
-				 */
-				contactEmail: string
-				/**
 				 *  ​a​n​d​ ​s​h​a​r​e​ ​h​o​w​ ​w​e​ ​c​a​n​ ​m​a​k​e​ ​B​l​i​n​k​ ​b​e​t​t​e​r​ ​f​o​r​ ​y​o​u​ ​a​n​d​ ​o​t​h​e​r​s​.
 				 */
 				messageSuffix: string
@@ -17506,10 +17502,6 @@ export type TranslationFunctions = {
 				 * Don't hesitate to contact us at 
 				 */
 				messagePrefix: () => LocalizedString
-				/**
-				 * support@blink.sv
-				 */
-				contactEmail: () => LocalizedString
 				/**
 				 *  and share how we can make Blink better for you and others.
 				 */

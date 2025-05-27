@@ -23,7 +23,7 @@ export type RootStackParamList = {
   login: {
     type: PhoneLoginInitiateType
     title?: string
-    upgrade?: boolean
+    onboarding?: boolean
   }
   authenticationCheck: undefined
   authentication: {
@@ -96,8 +96,12 @@ export type RootStackParamList = {
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   acceptTermsAndConditions: NewAccountFlowParamsList
-  emailRegistrationInitiate: undefined
-  emailRegistrationValidate: { email: string; emailRegistrationId: string }
+  emailRegistrationInitiate: { onboarding?: boolean }
+  emailRegistrationValidate: {
+    email: string
+    emailRegistrationId: string
+    onboarding?: boolean
+  }
   emailLoginInitiate: undefined
   emailLoginValidate: { email: string; emailLoginId: string }
   totpRegistrationInitiate: undefined
@@ -111,11 +115,11 @@ export type RootStackParamList = {
 }
 
 export type OnboardingStackParamList = {
-  welcomeLevel1: undefined
-  emailBenefits: undefined
-  emailConfirmed: undefined
-  lightningBenefits: undefined
-  lightningConfirmed: undefined
+  welcomeLevel1: { onboarding?: boolean }
+  emailBenefits: { onboarding?: boolean }
+  emailConfirmed: { onboarding?: boolean }
+  lightningBenefits: { onboarding?: boolean }
+  lightningConfirmed: { onboarding?: boolean }
   supportScreen: undefined
 }
 
@@ -132,15 +136,18 @@ export type PhoneValidationStackParamList = {
     type: PhoneLoginInitiateType
     channel: PhoneCodeChannelType
     title?: string
+    onboarding?: boolean
   }
   telegramLoginValidate: {
     phone: string
     type: PhoneLoginInitiateType
+    onboarding?: boolean
   }
   phoneLoginValidate: {
     phone: string
     channel: PhoneCodeChannelType
     type: PhoneLoginInitiateType
+    onboarding?: boolean
   }
   authentication: {
     screenPurpose: AuthenticationScreenPurpose

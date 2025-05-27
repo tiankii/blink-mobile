@@ -382,9 +382,11 @@ export const RootStack = () => {
       <RootNavigator.Screen
         name="emailRegistrationInitiate"
         component={EmailRegistrationInitiateScreen}
-        options={{
-          title: LL.EmailRegistrationInitiateScreen.title(),
-        }}
+        options={({ route: { params } }) => ({
+          title: params.onboarding
+            ? LL.OnboardingScreen.emailBenefits.primaryButton()
+            : LL.EmailRegistrationInitiateScreen.title(),
+        })}
       />
       <RootNavigator.Screen
         name="emailRegistrationValidate"

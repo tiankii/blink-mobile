@@ -41,7 +41,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   const [selected, setSelected] = useState<LoginChannels | undefined>()
 
   const AppLogo = mode === "dark" ? AppLogoDarkMode : AppLogoLightMode
-  const { type, upgrade } = route.params
+  const { type, onboarding } = route.params
 
   const loginChanneltitles: Record<LoginChannels, string> = {
     [LoginChannels.Telegram]: LL.LoginMethodScreen.useTelegram(),
@@ -69,8 +69,9 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
       screen: "phoneLoginInitiate",
       params: {
         type,
+        onboarding,
         channel: selected as PhoneCodeChannelType,
-        title: upgrade ? setUpChanneltitles[selected] : loginChanneltitles[selected],
+        title: onboarding ? setUpChanneltitles[selected] : loginChanneltitles[selected],
       },
     })
   }

@@ -13,7 +13,9 @@ export const LightningConfirmedScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const handlePrimaryAction = () => {
-    navigation.navigate("Primary")
+    navigation.navigate("onboarding", {
+      screen: "supportScreen",
+    })
   }
 
   return (
