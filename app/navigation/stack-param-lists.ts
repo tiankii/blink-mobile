@@ -61,6 +61,7 @@ export type RootStackParamList = {
     successAction?: LNURLPaySuccessAction
     preimage?: string
   }
+  setLightningAddress: { onboarding?: boolean }
   language: undefined
   currency: undefined
   security: {

@@ -2539,6 +2539,7 @@ const en: BaseTranslation = {
   },
   SetAddressModal: {
     title: "Set {bankName: string} address",
+    mainTitle: "Choose Lightning Address",
     setLightningAddress: "Set Lightning address",
     Errors: {
       tooShort: "Address must be at least 3 characters long",
@@ -2549,7 +2550,7 @@ const en: BaseTranslation = {
     },
     receiveMoney:
       "Receive money from other lightning wallets and {bankName: string} users with this address.",
-    itCannotBeChanged: "It can't be changed later.",
+    itCannotBeChanged: "Choose well – it cannot be changed later!",
   },
   WelcomeFirstScreen: {
     bank: "Bitcoin is designed to let you store, send and receive money, without relying on a bank or credit card.",

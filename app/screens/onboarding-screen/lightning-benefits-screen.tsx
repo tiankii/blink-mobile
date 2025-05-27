@@ -1,19 +1,31 @@
 import * as React from "react"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import {
+  OnboardingStackParamList,
+  RootStackParamList,
+} from "@app/navigation/stack-param-lists"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
-export const LightningBenefitsScreen: React.FC = () => {
-  const { LL } = useI18nContext()
+type LightningBenefitsScreenProps = {
+  route: RouteProp<OnboardingStackParamList, "lightningBenefits">
+}
 
+export const LightningBenefitsScreen: React.FC<LightningBenefitsScreenProps> = ({
+  route,
+}) => {
+  const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
+  const { onboarding } = route.params
+
   const handlePrimaryAction = () => {
-    navigation.navigate("Primary")
+    navigation.navigate("setLightningAddress", {
+      onboarding,
+    })
   }
 
   const handleSecondaryAction = () => {

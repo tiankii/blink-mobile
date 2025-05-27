@@ -7940,6 +7940,10 @@ type RootTranslation = {
 		 */
 		title: RequiredParams<'bankName'>
 		/**
+		 * C​h​o​o​s​e​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+		 */
+		mainTitle: string
+		/**
 		 * S​e​t​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s
 		 */
 		setLightningAddress: string
@@ -7971,7 +7975,7 @@ type RootTranslation = {
 		 */
 		receiveMoney: RequiredParams<'bankName'>
 		/**
-		 * I​t​ ​c​a​n​'​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r​.
+		 * C​h​o​o​s​e​ ​w​e​l​l​ ​–​ ​i​t​ ​c​a​n​n​o​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r​!
 		 */
 		itCannotBeChanged: string
 	}
@@ -17239,6 +17243,10 @@ export type TranslationFunctions = {
 		 */
 		title: (arg: { bankName: string }) => LocalizedString
 		/**
+		 * Choose Lightning Address
+		 */
+		mainTitle: () => LocalizedString
+		/**
 		 * Set Lightning address
 		 */
 		setLightningAddress: () => LocalizedString
@@ -17269,7 +17277,7 @@ export type TranslationFunctions = {
 		 */
 		receiveMoney: (arg: { bankName: string }) => LocalizedString
 		/**
-		 * It can't be changed later.
+		 * Choose well – it cannot be changed later!
 		 */
 		itCannotBeChanged: () => LocalizedString
 	}

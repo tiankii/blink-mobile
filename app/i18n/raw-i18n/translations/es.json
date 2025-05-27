@@ -2452,6 +2452,7 @@
     },
     "SetAddressModal": {
         "title": "Establece tu dirección de {bankName: string}",
+        "mainTitle": "Elegir dirección Lightning",
         "setLightningAddress": "Establecer dirección de Lightning",
         "Errors": {
             "tooShort": "La dirección debe tener al menos 3 caracteres",
@@ -2461,7 +2462,7 @@
             "unknownError": "Se produjo un error desconocido, inténtelo de nuevo más tarde"
         },
         "receiveMoney": "Reciba dinero de otras billeteras lightning y  de usuarios de {bankName: string} con esta dirección.",
-        "itCannotBeChanged": "No podrá ser cambiado posteriormente."
+        "itCannotBeChanged": "Elígela bien – ¡no se puede cambiar después!"
     },
     "WelcomeFirstScreen": {
         "bank": "Bitcoin está diseñado para permitirle almacenar, enviar y recibir dinero, sin depender de un banco o tarjeta de crédito.",
