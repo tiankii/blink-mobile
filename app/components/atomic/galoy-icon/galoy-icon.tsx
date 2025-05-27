@@ -28,10 +28,12 @@ import Graph from "@app/assets/icons-redesign/graph.svg"
 import Image from "@app/assets/icons-redesign/image.svg"
 import Info from "@app/assets/icons-redesign/info.svg"
 import Lightning from "@app/assets/icons-redesign/lightning.svg"
+import LightningAddress from "@app/assets/icons-redesign/lightning-address.svg"
+import LightningAddressSet from "@app/assets/icons-redesign/lightning-address-set.svg"
 import Link from "@app/assets/icons-redesign/link.svg"
 import Loading from "@app/assets/icons-redesign/loading.svg"
-import MailCheck from "@app/assets/icons-redesign/mail-check.svg"
-import MailQuestion from "@app/assets/icons-redesign/mail-question.svg"
+import EmailCheck from "@app/assets/icons-redesign/email-check.svg"
+import EmailQuestion from "@app/assets/icons-redesign/email-question.svg"
 import MagnifyingGlass from "@app/assets/icons-redesign/magnifying-glass.svg"
 import Map from "@app/assets/icons-redesign/map.svg"
 import Menu from "@app/assets/icons-redesign/menu.svg"
@@ -44,6 +46,7 @@ import Question from "@app/assets/icons-redesign/question.svg"
 import Receive from "@app/assets/icons-redesign/receive.svg"
 import Send from "@app/assets/icons-redesign/send.svg"
 import Settings from "@app/assets/icons-redesign/settings.svg"
+import Support from "@app/assets/icons-redesign/support.svg"
 import Share from "@app/assets/icons-redesign/share.svg"
 import Transfer from "@app/assets/icons-redesign/transfer.svg"
 import User from "@app/assets/icons-redesign/user.svg"
@@ -55,6 +58,7 @@ import Note from "@app/assets/icons/note.svg"
 import People from "@app/assets/icons/people.svg"
 import Rank from "@app/assets/icons/rank.svg"
 import Refresh from "@app/assets/icons/refresh.svg"
+import Welcome from "@app/assets/icons-redesign/welcome.svg"
 import { makeStyles, useTheme } from "@rneui/themed"
 
 export const icons = {
@@ -85,10 +89,12 @@ export const icons = {
   "image": Image,
   "info": Info,
   "lightning": Lightning,
+  "lightning-address": LightningAddress,
+  "lightning-address-set": LightningAddressSet,
   "link": Link,
   "loading": Loading,
-  "mail-check": MailCheck,
-  "mail-question": MailQuestion,
+  "email-check": EmailCheck,
+  "email-question": EmailQuestion,
   "magnifying-glass": MagnifyingGlass,
   "map": Map,
   "menu": Menu,
@@ -101,6 +107,7 @@ export const icons = {
   "send": Send,
   "settings": Settings,
   "share": Share,
+  "support": Support,
   "transfer": Transfer,
   "user": User,
   "video": Video,
@@ -112,6 +119,7 @@ export const icons = {
   "bell": Bell,
   "refresh": Refresh,
   "telegram": Telegram,
+  "welcome": Welcome,
 } as const
 
 export type IconNamesType = keyof typeof icons
@@ -153,6 +161,7 @@ export const GaloyIcon = ({
         height={size}
         color={color || colors.black}
         fontWeight={"600"}
+        testID={`icon-${name}`}
       />
     </View>
   ) : (
@@ -163,6 +172,7 @@ export const GaloyIcon = ({
       color={color || colors.black}
       style={style}
       fontWeight={"600"}
+      testID={`icon-${name}`}
     />
   )
 }

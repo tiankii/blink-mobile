@@ -5,7 +5,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
-import { OnboardingInfoTemplateScreen } from "./Info-template-screen"
+import { OnboardingLayout } from "./onboarding-layout"
 
 export const EmailBenefitsScreen: React.FC = () => {
   const { LL } = useI18nContext()
@@ -13,15 +13,17 @@ export const EmailBenefitsScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const handlePrimaryAction = () => {
-    navigation.navigate("login", { type: "Login" })
+    navigation.navigate("Primary")
   }
 
   const handleSecondaryAction = () => {
-    navigation.navigate("login", { type: "Login" })
+    navigation.navigate("onboarding", {
+      screen: "lightningBenefits",
+    })
   }
 
   return (
-    <OnboardingInfoTemplateScreen
+    <OnboardingLayout
       title={LL.OnboardingScreen.emailBenefits.title()}
       descriptions={[
         LL.OnboardingScreen.emailBenefits.backupDescription(),
@@ -32,7 +34,7 @@ export const EmailBenefitsScreen: React.FC = () => {
       onPrimaryAction={handlePrimaryAction}
       secondaryLabel={LL.UpgradeAccountModal.notNow()}
       onSecondaryAction={handleSecondaryAction}
-      iconName="mail-question"
+      iconName="email-question"
     />
   )
 }

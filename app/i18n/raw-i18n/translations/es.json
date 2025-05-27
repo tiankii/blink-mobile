@@ -2532,7 +2532,11 @@
           "mainTitle": "Soporte de Blink",
           "title": "Una cosa más:",
           "description": "Estamos en una misión para hacer que bitcoin sea accesible para todos, y nos encantaría saber de ti.",
-          "contactInfo": "No dudes en contactarnos en {contactEmail: string} y compartir cómo podemos hacer que Blink sea mejor para ti y otros.",
+          "contactInfo": {
+            "messagePrefix": "No dudes en contactarnos en ",
+            "contactEmail": "support@blink.sv",
+            "messageSuffix": " y cuéntanos cómo podemos mejorar Blink para ti y para los demás."
+          },
           "primaryButton": "Hecho",
           "secondaryButton": "Contactar soporte"
         }

@@ -2625,7 +2625,11 @@ const en: BaseTranslation = {
       mainTitle: "Blink Support",
       title: "One more thing:",
       description: "We are on a mission to make bitcoin accessible to all, and we would love to hear from you.",
-      contactInfo: "Don't hesitate to contact us at {contactEmail: string} and share how we can make Blink better for you and others.",
+      contactInfo: {
+        messagePrefix: "Don't hesitate to contact us at ",
+        contactEmail: "support@blink.sv",
+        messageSuffix: " and share how we can make Blink better for you and others."
+      },
       primaryButton: "Done",
       secondaryButton: "Contact Support",
     }
