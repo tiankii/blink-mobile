@@ -6,6 +6,7 @@ import { Text, makeStyles } from "@rneui/themed"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { CONTACT_EMAIL_ADDRESS } from "@app/config"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
@@ -19,12 +20,11 @@ export const SupportOnboardingScreen: React.FC = () => {
     navigation.replace("Primary")
   }
 
-  const handleSecondaryAction = (email: string) => {
-    Linking.openURL(`mailto:${email}`)
+  const handleSecondaryAction = () => {
+    Linking.openURL(`mailto:${CONTACT_EMAIL_ADDRESS}`)
   }
 
   const messagePrefix = LL.OnboardingScreen.supportScreen.contactInfo.messagePrefix()
-  const contactEmail = LL.OnboardingScreen.supportScreen.contactInfo.contactEmail()
   const messageSuffix = LL.OnboardingScreen.supportScreen.contactInfo.messageSuffix()
 
   return (
@@ -37,11 +37,8 @@ export const SupportOnboardingScreen: React.FC = () => {
           </Text>
           <Text style={styles.descriptionText}>
             {messagePrefix}
-            <Text
-              style={styles.linkText}
-              onPress={() => Linking.openURL(`mailto:${contactEmail}`)}
-            >
-              {contactEmail}
+            <Text style={styles.linkText} onPress={() => handleSecondaryAction()}>
+              {CONTACT_EMAIL_ADDRESS}
             </Text>
             {messageSuffix}
           </Text>
@@ -50,7 +47,7 @@ export const SupportOnboardingScreen: React.FC = () => {
       primaryLabel={LL.OnboardingScreen.supportScreen.primaryButton()}
       onPrimaryAction={handlePrimaryAction}
       secondaryLabel={LL.OnboardingScreen.supportScreen.secondaryButton()}
-      onSecondaryAction={() => handleSecondaryAction(contactEmail)}
+      onSecondaryAction={() => handleSecondaryAction()}
       iconName="support"
     />
   )

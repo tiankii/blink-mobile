@@ -36,7 +36,7 @@ export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = (
     navigation.navigate("login", {
       type: PhoneLoginInitiateType.CreateAccount,
       title: LL.UpgradeAccountModal.upgradeToLevel({ level: UPGRADE_TO }),
-      upgrade: true,
+      onboarding: true,
     })
     closeModal()
   }

@@ -2534,7 +2534,6 @@
           "description": "Estamos en una misión para hacer que bitcoin sea accesible para todos, y nos encantaría saber de ti.",
           "contactInfo": {
             "messagePrefix": "No dudes en contactarnos en ",
-            "contactEmail": "support@blink.sv",
             "messageSuffix": " y cuéntanos cómo podemos mejorar Blink para ti y para los demás."
           },
           "primaryButton": "Hecho",

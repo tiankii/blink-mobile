@@ -148,6 +148,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
 
   const screenType = route.params.type
   const phoneChannel = route.params.channel as PhoneCodeChannelType
+  const onboarding = route.params.onboarding
 
   const isDisabledCountryAndCreateAccount =
     screenType === PhoneLoginInitiateType.CreateAccount &&
@@ -163,6 +164,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       navigation.navigate("telegramLoginValidate", {
         phone: validatedPhoneNumber || "",
         type: screenType,
+        onboarding,
       })
       return
     }
@@ -171,8 +173,17 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       type: screenType,
       phone: validatedPhoneNumber || "",
       channel: phoneCodeChannel,
+      onboarding,
     })
-  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
+  }, [
+    status,
+    phoneCodeChannel,
+    validatedPhoneNumber,
+    navigation,
+    setStatus,
+    screenType,
+    onboarding,
+  ])
 
   useEffect(() => {
     if (!appConfig || appConfig.galoyInstance.id !== "Local") {

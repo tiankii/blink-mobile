@@ -1,19 +1,30 @@
 import * as React from "react"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import {
+  OnboardingStackParamList,
+  RootStackParamList,
+} from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
-export const EmailConfirmedScreen: React.FC = () => {
-  const { LL } = useI18nContext()
+type EmailConfirmedScreenProps = {
+  route: RouteProp<OnboardingStackParamList, "emailConfirmed">
+}
 
+export const EmailConfirmedScreen: React.FC<EmailConfirmedScreenProps> = ({ route }) => {
+  const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
+  const { onboarding } = route.params
+
   const handlePrimaryAction = () => {
-    navigation.navigate("Primary")
+    navigation.navigate("onboarding", {
+      screen: "lightningBenefits",
+      params: { onboarding },
+    })
   }
 
   return (
