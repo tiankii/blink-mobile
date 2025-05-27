@@ -5,7 +5,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
-import { OnboardingInfoTemplateScreen } from "./Info-template-screen"
+import { OnboardingLayout } from "./onboarding-layout"
 
 export const WelcomeLevel1Screen: React.FC = () => {
   const { LL } = useI18nContext()
@@ -13,11 +13,13 @@ export const WelcomeLevel1Screen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const handlePrimaryAction = () => {
-    navigation.navigate("login", { type: "Login" })
+    navigation.replace("onboarding", {
+      screen: "emailBenefits",
+    })
   }
 
   return (
-    <OnboardingInfoTemplateScreen
+    <OnboardingLayout
       title={LL.OnboardingScreen.welcomeLevel1.title()}
       descriptions={[
         LL.OnboardingScreen.welcomeLevel1.receibeBitcoinDescription(),
@@ -26,7 +28,7 @@ export const WelcomeLevel1Screen: React.FC = () => {
       ]}
       primaryLabel={LL.common.next()}
       onPrimaryAction={handlePrimaryAction}
-      iconName="rank"
+      iconName="welcome"
     />
   )
 }

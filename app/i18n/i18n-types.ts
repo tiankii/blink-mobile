@@ -8198,11 +8198,20 @@ type RootTranslation = {
 			 * W​e​ ​a​r​e​ ​o​n​ ​a​ ​m​i​s​s​i​o​n​ ​t​o​ ​m​a​k​e​ ​b​i​t​c​o​i​n​ ​a​c​c​e​s​s​i​b​l​e​ ​t​o​ ​a​l​l​,​ ​a​n​d​ ​w​e​ ​w​o​u​l​d​ ​l​o​v​e​ ​t​o​ ​h​e​a​r​ ​f​r​o​m​ ​y​o​u​.
 			 */
 			description: string
-			/**
-			 * D​o​n​'​t​ ​h​e​s​i​t​a​t​e​ ​t​o​ ​c​o​n​t​a​c​t​ ​u​s​ ​a​t​ ​{​c​o​n​t​a​c​t​E​m​a​i​l​}​ ​a​n​d​ ​s​h​a​r​e​ ​h​o​w​ ​w​e​ ​c​a​n​ ​m​a​k​e​ ​B​l​i​n​k​ ​b​e​t​t​e​r​ ​f​o​r​ ​y​o​u​ ​a​n​d​ ​o​t​h​e​r​s​.
-			 * @param {string} contactEmail
-			 */
-			contactInfo: RequiredParams<'contactEmail'>
+			contactInfo: {
+				/**
+				 * D​o​n​'​t​ ​h​e​s​i​t​a​t​e​ ​t​o​ ​c​o​n​t​a​c​t​ ​u​s​ ​a​t​ 
+				 */
+				messagePrefix: string
+				/**
+				 * s​u​p​p​o​r​t​@​b​l​i​n​k​.​s​v
+				 */
+				contactEmail: string
+				/**
+				 *  ​a​n​d​ ​s​h​a​r​e​ ​h​o​w​ ​w​e​ ​c​a​n​ ​m​a​k​e​ ​B​l​i​n​k​ ​b​e​t​t​e​r​ ​f​o​r​ ​y​o​u​ ​a​n​d​ ​o​t​h​e​r​s​.
+				 */
+				messageSuffix: string
+			}
 			/**
 			 * D​o​n​e
 			 */
@@ -17492,10 +17501,20 @@ export type TranslationFunctions = {
 			 * We are on a mission to make bitcoin accessible to all, and we would love to hear from you.
 			 */
 			description: () => LocalizedString
-			/**
-			 * Don't hesitate to contact us at {contactEmail} and share how we can make Blink better for you and others.
-			 */
-			contactInfo: (arg: { contactEmail: string }) => LocalizedString
+			contactInfo: {
+				/**
+				 * Don't hesitate to contact us at 
+				 */
+				messagePrefix: () => LocalizedString
+				/**
+				 * support@blink.sv
+				 */
+				contactEmail: () => LocalizedString
+				/**
+				 *  and share how we can make Blink better for you and others.
+				 */
+				messageSuffix: () => LocalizedString
+			}
 			/**
 			 * Done
 			 */

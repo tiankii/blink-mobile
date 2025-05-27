@@ -489,7 +489,6 @@ export const OnboardingNavigator = () => {
         component={WelcomeLevel1Screen}
         options={{
           title: LL.OnboardingScreen.welcomeLevel1.mainTitle(),
-          headerShown: true,
           headerLeft: () => null,
         }}
       />
@@ -498,7 +497,7 @@ export const OnboardingNavigator = () => {
         component={EmailBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.emailBenefits.mainTitle(),
-          headerShown: true,
+          headerLeft: () => null,
         }}
       />
       <Onboarding.Screen
@@ -506,7 +505,6 @@ export const OnboardingNavigator = () => {
         component={EmailConfirmedScreen}
         options={{
           title: LL.OnboardingScreen.emailConfirmed.mainTitle(),
-          headerShown: true,
           headerLeft: () => null,
         }}
       />
@@ -515,7 +513,6 @@ export const OnboardingNavigator = () => {
         component={LightningBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.lightningBenefits.mainTitle(),
-          headerShown: true,
         }}
       />
       <Onboarding.Screen
@@ -523,7 +520,6 @@ export const OnboardingNavigator = () => {
         component={LightningConfirmedScreen}
         options={{
           title: LL.OnboardingScreen.lightningConfirmed.mainTitle(),
-          headerShown: true,
           headerLeft: () => null,
         }}
       />
@@ -532,7 +528,6 @@ export const OnboardingNavigator = () => {
         component={SupportOnboardingScreen}
         options={{
           title: LL.OnboardingScreen.supportScreen.mainTitle(),
-          headerShown: true,
           headerLeft: () => null,
         }}
       />
