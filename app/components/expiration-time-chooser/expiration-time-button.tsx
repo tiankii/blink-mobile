@@ -5,7 +5,7 @@ import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { testProps } from "@app/utils/testProps"
 import { useTheme, Text, makeStyles } from "@rneui/themed"
 
-export type AmountInputButtonProps = {
+export type ExpirationTimeButtonProps = {
   placeholder?: string
   value?: string | number
   iconName?: "pencil" | "info"
@@ -16,7 +16,7 @@ export type AmountInputButtonProps = {
   style?: StyleProp<ViewStyle>
 } & PressableProps
 
-export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
+export const ExpirationTimeButton: React.FC<ExpirationTimeButtonProps> = ({
   placeholder,
   value,
   iconName,

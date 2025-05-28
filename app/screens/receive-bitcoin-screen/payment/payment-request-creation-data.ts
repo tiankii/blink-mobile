@@ -45,7 +45,7 @@ export const createPaymentRequestCreationData = <T extends WalletCurrency>(
     permissions.canSetReceivingWalletDescriptor = true
     permissions.canSetMemo = true
   }
-  if (type == Invoice.Lightning) permissions.canSetExpirationTime = true
+  if (type === Invoice.Lightning) permissions.canSetExpirationTime = true
 
   // Permission based sets
   let setReceivingWalletDescriptor:
