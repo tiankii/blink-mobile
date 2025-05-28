@@ -3,12 +3,12 @@ import * as React from "react"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 
-import { AmountInputButton } from "./amount-input-button"
-import { AmountInputModal } from "./amount-input-modal"
+import { ExpirationTimeButton } from "./expiration-time-button"
+import { ExpirationTimeModal } from "./expiration-time-modal"
 import { StyleProp, ViewStyle } from "react-native"
 import { WalletCurrency } from "@app/graphql/generated"
 
-export type AmountInputProps = {
+export type ExpirationTimeInputProps = {
   expirationTime?: number
   expiresAt?: Date | null
   setExpirationTime?: (expirationTime: number) => void
@@ -18,7 +18,7 @@ export type AmountInputProps = {
   style?: StyleProp<ViewStyle>
 }
 
-export const ExpirationTimeChooser: React.FC<AmountInputProps> = ({
+export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
   expirationTime,
   expiresAt,
   setExpirationTime,
@@ -47,7 +47,7 @@ export const ExpirationTimeChooser: React.FC<AmountInputProps> = ({
 
   if (openModal) {
     return (
-      <AmountInputModal
+      <ExpirationTimeModal
         value={
           expirationTime && expirationTime > 0
             ? expirationTime
@@ -92,7 +92,7 @@ export const ExpirationTimeChooser: React.FC<AmountInputProps> = ({
   }
 
   return (
-    <AmountInputButton
+    <ExpirationTimeButton
       placeholder={LL.common.expirationTime()}
       onPress={onPressInputButton}
       value={
@@ -102,10 +102,10 @@ export const ExpirationTimeChooser: React.FC<AmountInputProps> = ({
       }
       disabled={disabled}
       iconName="pencil"
-      primaryTextTestProps={"Amount Input Button Amount"}
+      primaryTextTestProps={"Expiration time input button"}
       big={big}
       style={style}
-      {...testProps("Amount Input Button")}
+      {...testProps("Expiration time button")}
     />
   )
 }
