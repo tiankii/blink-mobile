@@ -9,7 +9,7 @@ import { GaloyIconButton } from "../atomic/galoy-icon-button"
 import { WalletCurrency } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
-export type AmountInputModalProps = {
+export type ExpirationTimeModalProps = {
   value?: string | number
   walletCurrency: WalletCurrency
   onSetExpirationTime?: (expirationTime: number) => void
@@ -17,7 +17,7 @@ export type AmountInputModalProps = {
   close: () => void
 }
 
-export const AmountInputModal: React.FC<AmountInputModalProps> = ({
+export const ExpirationTimeModal: React.FC<ExpirationTimeModalProps> = ({
   value,
   onSetExpirationTime,
   walletCurrency,
@@ -56,7 +56,7 @@ export const AmountInputModal: React.FC<AmountInputModalProps> = ({
       minutes: 5,
     },
   ]
-  const expirationList = walletCurrency == "USD" ? usdExpirationList : btcExpirationList
+  const expirationList = walletCurrency === "USD" ? usdExpirationList : btcExpirationList
 
   return (
     <ReactNativeModal
@@ -79,7 +79,7 @@ export const AmountInputModal: React.FC<AmountInputModalProps> = ({
             {value === minutes ? (
               <Icon name="checkmark-circle" size={18} color={colors._green} />
             ) : (
-              <View style={{ width: 18 }} />
+              <View style={styles.emptySpacer} />
             )}
             <ListItem.Content>
               <ListItem.Title>{name}</ListItem.Title>
@@ -106,5 +106,8 @@ const useStyles = makeStyles(({ colors }) => ({
     padding: 16,
     borderBottomColor: colors.primary4,
     borderBottomWidth: 1,
+  },
+  emptySpacer: {
+    width: 18,
   },
 }))
