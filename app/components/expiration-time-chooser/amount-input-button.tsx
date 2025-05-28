@@ -86,7 +86,7 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
             ellipsizeMode="middle"
             {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
           >
-            {placeholder}
+            {`${placeholder}${value ? ": " + value : ""}`}
           </Text>
           {iconName && (
             <GaloyIcon
@@ -96,11 +96,11 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
             />
           )}
         </View>
-        {value && (
+        {/* {value && (
           <Text type="p4" color={error ? colors.error : undefined}>
             {value}
           </Text>
-        )}
+        )} */}
       </Pressable>
     </View>
   )
