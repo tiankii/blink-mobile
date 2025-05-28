@@ -1,9 +1,9 @@
 import React from "react"
 import { Text } from "react-native"
-import theme from "@app/rne-theme/theme"
 import { ThemeProvider } from "@rneui/themed"
 import { fireEvent, render, screen } from "@testing-library/react-native"
 
+import theme from "@app/rne-theme/theme"
 import {
   OnboardingLayout,
   OnboardingLayoutProps,
