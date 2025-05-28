@@ -34,7 +34,7 @@ import { getErrorMessages } from "@app/graphql/utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 import { isIos } from "@app/utils/helper"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useUpgradeModalTrigger } from "@app/hooks"
 import {
   AccountLevel,
   TransactionFragment,
@@ -49,7 +49,6 @@ import {
 } from "@app/graphql/generated"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
-const BALANCE_TO_SHOW_TRIAL_LIMIT_MODAL = 125 // USD balance
 
 gql`
   query homeAuthed {
@@ -139,7 +138,6 @@ export const HomeScreen: React.FC = () => {
   const {
     theme: { colors },
   } = useTheme()
-
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const { data: { hasPromptedSetDefaultAccount } = {} } =
@@ -227,6 +225,7 @@ export const HomeScreen: React.FC = () => {
     dataAuthed?.me?.defaultAccount?.wallets,
   )
 
+  const accountId = dataAuthed?.me?.defaultAccount?.id
   const levelAccount = dataAuthed?.me?.defaultAccount.level
   const pendingIncomingTransactions =
     dataAuthed?.me?.defaultAccount?.pendingIncomingTransactions
@@ -293,14 +292,13 @@ export const HomeScreen: React.FC = () => {
     }
   }, [dataAuthed, LL])
 
-  React.useEffect(() => {
-    if (
-      numericBalance >= BALANCE_TO_SHOW_TRIAL_LIMIT_MODAL &&
-      levelAccount === AccountLevel.Zero
-    ) {
-      openUpgradeModal()
-    }
-  }, [levelAccount, numericBalance])
+  // Triggers the upgrade modal during the 1st or 2nd session based on balance to account level ZERO
+  useUpgradeModalTrigger({
+    accountId,
+    levelAccount,
+    numericBalance,
+    openUpgradeModal,
+  })
 
   let recentTransactionsData:
     | {

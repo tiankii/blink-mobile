@@ -193,6 +193,13 @@ export type AccountLimits = {
   readonly withdrawal: ReadonlyArray<AccountLimit>;
 };
 
+export type AccountMetadataEntry = {
+  readonly __typename: 'AccountMetadataEntry';
+  readonly accountId: Scalars['String']['output'];
+  readonly sessionCount: Scalars['Int']['output'];
+  readonly upgradeModalShown: Scalars['Int']['output'];
+};
+
 export type AccountUpdateDefaultWalletIdInput = {
   readonly walletId: Scalars['WalletId']['input'];
 };
@@ -1694,6 +1701,7 @@ export type PublicWallet = {
 export type Query = {
   readonly __typename: 'Query';
   readonly accountDefaultWallet: PublicWallet;
+  readonly accountMetadata: ReadonlyArray<AccountMetadataEntry>;
   /** Retrieve the list of scopes permitted for the user's token or API key */
   readonly authorization: Authorization;
   readonly beta: Scalars['Boolean']['output'];
@@ -2595,6 +2603,11 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
+
+export type AccountMetadataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AccountMetadataQuery = { readonly __typename: 'Query', readonly accountMetadata: ReadonlyArray<{ readonly __typename: 'AccountMetadataEntry', readonly accountId: string, readonly sessionCount: number, readonly upgradeModalShown: number }> };
 
 export type TransactionFragment = { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } };
 
@@ -4010,6 +4023,47 @@ export type InnerCircleValueQueryHookResult = ReturnType<typeof useInnerCircleVa
 export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCircleValueLazyQuery>;
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
+export const AccountMetadataDocument = gql`
+    query accountMetadata {
+  accountMetadata @client {
+    accountId
+    sessionCount
+    upgradeModalShown
+  }
+}
+    `;
+
+/**
+ * __useAccountMetadataQuery__
+ *
+ * To run a query within a React component, call `useAccountMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountMetadataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAccountMetadataQuery(baseOptions?: Apollo.QueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
+      }
+export function useAccountMetadataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
+        }
+export function useAccountMetadataSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
+        }
+export type AccountMetadataQueryHookResult = ReturnType<typeof useAccountMetadataQuery>;
+export type AccountMetadataLazyQueryHookResult = ReturnType<typeof useAccountMetadataLazyQuery>;
+export type AccountMetadataSuspenseQueryHookResult = ReturnType<typeof useAccountMetadataSuspenseQuery>;
+export type AccountMetadataQueryResult = Apollo.QueryResult<AccountMetadataQuery, AccountMetadataQueryVariables>;
 export const NetworkDocument = gql`
     query network {
   globals {
@@ -8087,6 +8141,7 @@ export type ResolversTypes = {
   AccountLevel: AccountLevel;
   AccountLimit: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['AccountLimit']>;
   AccountLimits: ResolverTypeWrapper<AccountLimits>;
+  AccountMetadataEntry: ResolverTypeWrapper<AccountMetadataEntry>;
   AccountUpdateDefaultWalletIdInput: AccountUpdateDefaultWalletIdInput;
   AccountUpdateDefaultWalletIdPayload: ResolverTypeWrapper<AccountUpdateDefaultWalletIdPayload>;
   AccountUpdateDisplayCurrencyInput: AccountUpdateDisplayCurrencyInput;
@@ -8326,6 +8381,7 @@ export type ResolversParentTypes = {
   AccountEnableNotificationChannelInput: AccountEnableNotificationChannelInput;
   AccountLimit: ResolversInterfaceTypes<ResolversParentTypes>['AccountLimit'];
   AccountLimits: AccountLimits;
+  AccountMetadataEntry: AccountMetadataEntry;
   AccountUpdateDefaultWalletIdInput: AccountUpdateDefaultWalletIdInput;
   AccountUpdateDefaultWalletIdPayload: AccountUpdateDefaultWalletIdPayload;
   AccountUpdateDisplayCurrencyInput: AccountUpdateDisplayCurrencyInput;
@@ -8580,6 +8636,13 @@ export type AccountLimitsResolvers<ContextType = any, ParentType extends Resolve
   convert?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
   internalSend?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
   withdrawal?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AccountMetadataEntryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountMetadataEntry'] = ResolversParentTypes['AccountMetadataEntry']> = {
+  accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sessionCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  upgradeModalShown?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -9270,6 +9333,7 @@ export type PublicWalletResolvers<ContextType = any, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   accountDefaultWallet?: Resolver<ResolversTypes['PublicWallet'], ParentType, ContextType, RequireFields<QueryAccountDefaultWalletArgs, 'username'>>;
+  accountMetadata?: Resolver<ReadonlyArray<ResolversTypes['AccountMetadataEntry']>, ParentType, ContextType>;
   authorization?: Resolver<ResolversTypes['Authorization'], ParentType, ContextType>;
   beta?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   btcPriceList?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['PricePoint']>>>, ParentType, ContextType, RequireFields<QueryBtcPriceListArgs, 'range'>>;
@@ -9671,6 +9735,7 @@ export type Resolvers<ContextType = any> = {
   AccountDeletePayload?: AccountDeletePayloadResolvers<ContextType>;
   AccountLimit?: AccountLimitResolvers<ContextType>;
   AccountLimits?: AccountLimitsResolvers<ContextType>;
+  AccountMetadataEntry?: AccountMetadataEntryResolvers<ContextType>;
   AccountUpdateDefaultWalletIdPayload?: AccountUpdateDefaultWalletIdPayloadResolvers<ContextType>;
   AccountUpdateDisplayCurrencyPayload?: AccountUpdateDisplayCurrencyPayloadResolvers<ContextType>;
   AccountUpdateNotificationSettingsPayload?: AccountUpdateNotificationSettingsPayloadResolvers<ContextType>;
