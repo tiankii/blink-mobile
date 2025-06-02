@@ -27,6 +27,7 @@ export const useSaveSessionProfile = () => {
   const { LL } = useI18nContext()
   const { saveToken } = useAppConfig()
   const [fetchUsername] = useGetUsernamesLazyQuery({ fetchPolicy: "no-cache" })
+  const blinkUserText = LL.common.blinkUser()
 
   const tryFetchUserProps = useCallback(
     async ({
@@ -46,7 +47,7 @@ export const useSaveSessionProfile = () => {
           username ||
           phone ||
           email?.address ||
-          `${LL.common.blinkUser()} - ${defaultAccount.id.slice(-6)}`
+          `${blinkUserText} - ${defaultAccount.id.slice(-6)}`
 
         return {
           userId: id,
@@ -61,7 +62,7 @@ export const useSaveSessionProfile = () => {
         if (err instanceof Error) crashlytics().recordError(err)
       }
     },
-    [LL.common],
+    [blinkUserText],
   )
 
   const saveProfile = useCallback(
