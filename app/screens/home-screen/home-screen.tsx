@@ -394,11 +394,14 @@ export const HomeScreen: React.FC = () => {
     },
   ]
 
+  const isIosWithBalance = isIos && numericBalance > 0
+
   if (
     !isIos ||
     dataUnauthed?.globals?.network !== "mainnet" ||
     levelAccount === AccountLevel.Two ||
-    levelAccount === AccountLevel.Three
+    levelAccount === AccountLevel.Three ||
+    isIosWithBalance
   ) {
     buttons.unshift({
       title: LL.ConversionDetailsScreen.title(),
