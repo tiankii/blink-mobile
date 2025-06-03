@@ -80,10 +80,18 @@ export const useSaveSessionProfile = () => {
       if (!profile) return
 
       const exists = profiles.some((p) => p.accountId === profile.accountId)
+      const cleaned = profiles.map((p) => ({ ...p, selected: false }))
       if (!exists) {
-        const cleaned = profiles.map((p) => ({ ...p, selected: false }))
         await KeyStoreWrapper.saveSessionProfiles([{ ...profile }, ...cleaned])
+        return
       }
+
+      // Update token for the previously saved session
+      const updatedProfiles = cleaned.map((p) =>
+        p.accountId === profile.accountId ? { ...p, token: profile.token } : p,
+      )
+
+      await KeyStoreWrapper.saveSessionProfiles(updatedProfiles)
     },
     [saveToken, tryFetchUserProps, fetchUsername],
   )
