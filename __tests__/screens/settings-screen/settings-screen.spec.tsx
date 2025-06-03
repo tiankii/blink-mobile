@@ -1,15 +1,13 @@
 import React from "react"
 import { act, render, screen } from "@testing-library/react-native"
-import { SettingsScreenDocument, useBetaQuery } from "@app/graphql/generated"
+import { SettingsScreenDocument } from "@app/graphql/generated"
 import { LoggedInWithUsername } from "@app/screens/settings-screen/settings-screen.stories"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
-import { i18nObject } from "@app/i18n/i18n-util"
 import mocks from "@app/graphql/mocks"
 import { ContextForScreen } from "../helper"
 
 jest.mock("@app/graphql/generated", () => ({
   ...jest.requireActual("@app/graphql/generated"),
-  useBetaQuery: jest.fn(() => ({ data: { beta: true } })),
 }))
 
 const mocksWithUsername = [
@@ -39,11 +37,8 @@ const mocksWithUsername = [
 ]
 
 describe("Settings Screen", () => {
-  let LL: ReturnType<typeof i18nObject>
-
   beforeEach(() => {
     loadLocale("en")
-    LL = i18nObject("en")
   })
 
   it("Renders user info", async () => {
