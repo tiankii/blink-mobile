@@ -147,7 +147,6 @@ export const HomeScreen: React.FC = () => {
     React.useState(false)
   const toggleSetDefaultAccountModal = () =>
     setSetDefaultAccountModalVisible(!setDefaultAccountModalVisible)
-  const [profiles, setProfiles] = React.useState<ProfileProps[]>([])
   const [currentProfile, setCurrentProfile] = React.useState<ProfileProps>()
 
   const { saveProfile } = useSaveSessionProfile()
@@ -396,7 +395,6 @@ export const HomeScreen: React.FC = () => {
         await saveProfile(currentToken)
         profilesList = await fetchProfiles(currentToken)
       }
-      setProfiles(profilesList)
       setCurrentProfile(profilesList.find((profile) => profile.selected))
     }
 
@@ -417,7 +415,7 @@ export const HomeScreen: React.FC = () => {
         setIsVisible={setIsStablesatModalVisible}
       />
       <View style={styles.multiAccountContianer}>
-        {!loading && profiles.length > 1 && currentProfile?.identifier && (
+        {!loading && currentProfile?.identifier && (
           <Pressable onPress={handleSwitchPress}>
             <View style={styles.profileContainer}>
               <Text type="p2">{currentProfile?.identifier}</Text>
