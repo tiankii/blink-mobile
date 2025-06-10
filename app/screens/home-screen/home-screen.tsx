@@ -34,7 +34,7 @@ import { getErrorMessages } from "@app/graphql/utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 import { isIos } from "@app/utils/helper"
-import { useAppConfig, useUpgradeModalTrigger } from "@app/hooks"
+import { useAppConfig } from "@app/hooks"
 import {
   AccountLevel,
   TransactionFragment,
@@ -47,6 +47,8 @@ import {
   useRealtimePriceQuery,
   useSettingsScreenQuery,
 } from "@app/graphql/generated"
+
+import { triggerUpgradeModal } from "./trigger-upgrade-modal"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
 
@@ -212,18 +214,8 @@ export const HomeScreen: React.FC = () => {
 
   const loading = loadingAuthed || loadingPrice || loadingUnauthed || loadingSettings
 
-  const refetch = React.useCallback(() => {
-    if (isAuthed) {
-      refetchRealtimePrice()
-      refetchAuthed()
-      refetchUnauthed()
-      refetchBulletins()
-    }
-  }, [isAuthed, refetchAuthed, refetchBulletins, refetchRealtimePrice, refetchUnauthed])
-
-  const { formattedBalance, numericBalance } = useTotalBalance(
-    dataAuthed?.me?.defaultAccount?.wallets,
-  )
+  const wallets = dataAuthed?.me?.defaultAccount?.wallets
+  const { formattedBalance, satsBalance } = useTotalBalance(wallets)
 
   const accountId = dataAuthed?.me?.defaultAccount?.id
   const levelAccount = dataAuthed?.me?.defaultAccount.level
@@ -251,7 +243,38 @@ export const HomeScreen: React.FC = () => {
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = React.useState(false)
 
   const closeUpgradeModal = () => setIsUpgradeModalVisible(false)
-  const openUpgradeModal = () => setIsUpgradeModalVisible(true)
+  const openUpgradeModal = React.useCallback(() => {
+    setIsUpgradeModalVisible(true)
+  }, [])
+
+  const refetch = React.useCallback(() => {
+    if (!isAuthed) return
+
+    Promise.all([
+      refetchRealtimePrice(),
+      refetchAuthed(),
+      refetchUnauthed(),
+      refetchBulletins(),
+    ]).then(() => {
+      // Triggers the upgrade trial account modal to refetch
+      triggerUpgradeModal({
+        accountId,
+        satsBalance,
+        levelAccount,
+        openUpgradeModal,
+      })
+    })
+  }, [
+    isAuthed,
+    refetchAuthed,
+    refetchBulletins,
+    refetchRealtimePrice,
+    refetchUnauthed,
+    satsBalance,
+    accountId,
+    levelAccount,
+    openUpgradeModal,
+  ])
 
   const numberOfTxs = transactions.length
 
@@ -284,21 +307,23 @@ export const HomeScreen: React.FC = () => {
   // debug code. verify that we have 2 wallets. mobile doesn't work well with only one wallet
   // TODO: add this code in a better place
   React.useEffect(() => {
-    if (
-      dataAuthed?.me?.defaultAccount?.wallets?.length !== undefined &&
-      dataAuthed?.me?.defaultAccount?.wallets?.length !== 2
-    ) {
+    if (wallets?.length !== undefined && wallets?.length !== 2) {
       Alert.alert(LL.HomeScreen.walletCountNotTwo())
     }
-  }, [dataAuthed, LL])
+  }, [wallets, LL])
 
-  // Triggers the upgrade modal during the 1st or 2nd session based on balance to account level ZERO
-  useUpgradeModalTrigger({
-    accountId,
-    levelAccount,
-    numericBalance,
-    openUpgradeModal,
-  })
+  // Triggers the upgrade trial account modal to load screen
+  const hasTriggeredUpgradeModal = React.useRef(false)
+  React.useEffect(() => {
+    if (hasTriggeredUpgradeModal.current) return
+
+    triggerUpgradeModal({
+      accountId,
+      satsBalance,
+      levelAccount,
+      openUpgradeModal,
+    })
+  }, [accountId, satsBalance, levelAccount, openUpgradeModal])
 
   let recentTransactionsData:
     | {
