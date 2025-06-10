@@ -46,7 +46,8 @@ export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = (
       isVisible={isVisible}
       toggleModal={closeModal}
       image={<GaloyIcon name="info" color={colors.primary3} size={100} />}
-      title={LL.UpgradeAccountModal.title()}
+      title={LL.GetStartedScreen.trialAccountLimits.modalTitle()}
+      titleFontSize={22}
       body={
         <View style={styles.modalBody}>
           <LimitItem text={LL.GetStartedScreen.trialAccountLimits.recoveryOption()} />
@@ -83,6 +84,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: 12,
   },
   modalBody: {
+    marginTop: 5,
     rowGap: 8,
   },
 }))

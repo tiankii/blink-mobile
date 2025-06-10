@@ -2019,10 +2019,11 @@
         "trialAccountCreationFailedMessage": "Unfortunately, we were unable to create your trial account. Try again later or create an account with a phone number.",
         "trialAccountHasLimits": "Trial account has limits",
         "trialAccountLimits": {
+            "modalTitle": "Upgrade for more benefits",
             "noBackup": "No backup option",
             "sendingLimit": "Reduced daily sending limit",
             "noOnchain": "No receiving bitcoin onchain",
-            "recoveryOption": "Recovery option",
+            "recoveryOption": "Recover funds by SMS or email",
             "dailyLimit": "$1000 daily transaction limit",
             "onchainReceive": "Receive bitcoin onchain"
         }

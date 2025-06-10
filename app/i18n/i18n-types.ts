@@ -6359,6 +6359,10 @@ type RootTranslation = {
 		trialAccountHasLimits: string
 		trialAccountLimits: {
 			/**
+			 * U​p​g​r​a​d​e​ ​f​o​r​ ​m​o​r​e​ ​b​e​n​e​f​i​t​s
+			 */
+			modalTitle: string
+			/**
 			 * N​o​ ​b​a​c​k​u​p​ ​o​p​t​i​o​n
 			 */
 			noBackup: string
@@ -6371,7 +6375,7 @@ type RootTranslation = {
 			 */
 			noOnchain: string
 			/**
-			 * R​e​c​o​v​e​r​y​ ​o​p​t​i​o​n
+			 * R​e​c​o​v​e​r​ ​f​u​n​d​s​ ​b​y​ ​S​M​S​ ​o​r​ ​e​m​a​i​l
 			 */
 			recoveryOption: string
 			/**
@@ -15711,6 +15715,10 @@ export type TranslationFunctions = {
 		trialAccountHasLimits: () => LocalizedString
 		trialAccountLimits: {
 			/**
+			 * Upgrade for more benefits
+			 */
+			modalTitle: () => LocalizedString
+			/**
 			 * No backup option
 			 */
 			noBackup: () => LocalizedString
@@ -15723,7 +15731,7 @@ export type TranslationFunctions = {
 			 */
 			noOnchain: () => LocalizedString
 			/**
-			 * Recovery option
+			 * Recover funds by SMS or email
 			 */
 			recoveryOption: () => LocalizedString
 			/**
