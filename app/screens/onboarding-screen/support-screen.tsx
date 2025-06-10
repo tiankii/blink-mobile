@@ -6,7 +6,7 @@ import { Text, makeStyles } from "@rneui/themed"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { CONTACT_EMAIL_ADDRESS } from "@app/config"
+import { FEEDBACK_EMAIL_ADDRESS } from "@app/config"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
@@ -21,7 +21,7 @@ export const SupportOnboardingScreen: React.FC = () => {
   }
 
   const handleSecondaryAction = () => {
-    Linking.openURL(`mailto:${CONTACT_EMAIL_ADDRESS}`)
+    Linking.openURL(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
   }
 
   const messagePrefix = LL.OnboardingScreen.supportScreen.contactInfo.messagePrefix()
@@ -38,7 +38,7 @@ export const SupportOnboardingScreen: React.FC = () => {
           <Text style={styles.descriptionText}>
             {messagePrefix}
             <Text style={styles.linkText} onPress={() => handleSecondaryAction()}>
-              {CONTACT_EMAIL_ADDRESS}
+              {FEEDBACK_EMAIL_ADDRESS}
             </Text>
             {messageSuffix}
           </Text>
