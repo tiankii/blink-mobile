@@ -2530,7 +2530,7 @@
           "title": "Nuevas funciones desbloqueadas para tu cuenta:"
         },
         "supportScreen": {
-          "mainTitle": "Soporte de Blink",
+          "mainTitle": "Comentarios sobre Blink",
           "title": "Una cosa más:",
           "description": "Estamos en una misión para hacer que bitcoin sea accesible para todos, y nos encantaría saber de ti.",
           "contactInfo": {
@@ -2538,7 +2538,7 @@
             "messageSuffix": " y cuéntanos cómo podemos mejorar Blink para ti y para los demás."
           },
           "primaryButton": "Hecho",
-          "secondaryButton": "Contactar soporte"
+          "secondaryButton": "Dar Comentarios Ahora"
         }
     },
     "PhoneLoginValidationScreen": {

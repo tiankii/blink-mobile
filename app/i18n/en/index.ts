@@ -2623,7 +2623,7 @@ const en: BaseTranslation = {
       title: "New features unlocked for your account:",
     },
     supportScreen: {
-      mainTitle: "Blink Support",
+      mainTitle: "Blink Feedback",
       title: "One more thing:",
       description: "We are on a mission to make bitcoin accessible to all, and we would love to hear from you.",
       contactInfo: {
@@ -2631,7 +2631,7 @@ const en: BaseTranslation = {
         messageSuffix: " and share how we can make Blink better for you and others."
       },
       primaryButton: "Done",
-      secondaryButton: "Contact Support",
+      secondaryButton: "Give Feedback Now",
     }
   },
   PhoneLoginValidationScreen: {

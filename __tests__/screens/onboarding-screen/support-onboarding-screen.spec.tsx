@@ -6,7 +6,7 @@ import { Linking } from "react-native"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 import { SupportOnboardingScreen } from "@app/screens/onboarding-screen"
-import { CONTACT_EMAIL_ADDRESS } from "@app/config"
+import { FEEDBACK_EMAIL_ADDRESS } from "@app/config"
 
 import { ContextForScreen } from "../helper"
 
@@ -40,7 +40,7 @@ describe("SupportOnboardingScreen", () => {
 
     expect(getByText(LL.OnboardingScreen.supportScreen.title())).toBeTruthy()
     expect(getByText(LL.OnboardingScreen.supportScreen.description())).toBeTruthy()
-    expect(getByText(CONTACT_EMAIL_ADDRESS)).toBeTruthy()
+    expect(getByText(FEEDBACK_EMAIL_ADDRESS)).toBeTruthy()
   })
 
   it("renders icon with correct testID", () => {
@@ -75,7 +75,7 @@ describe("SupportOnboardingScreen", () => {
     )
 
     fireEvent.press(getByText(LL.OnboardingScreen.supportScreen.secondaryButton()))
-    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${CONTACT_EMAIL_ADDRESS}`)
+    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
   })
 
   it("calls Linking.openURL when email link is pressed", () => {
@@ -85,7 +85,7 @@ describe("SupportOnboardingScreen", () => {
       </ContextForScreen>,
     )
 
-    fireEvent.press(getByText(CONTACT_EMAIL_ADDRESS))
-    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${CONTACT_EMAIL_ADDRESS}`)
+    fireEvent.press(getByText(FEEDBACK_EMAIL_ADDRESS))
+    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
   })
 })
