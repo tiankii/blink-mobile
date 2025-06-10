@@ -2020,10 +2020,11 @@
         "trialAccountCreationFailedMessage": "Desafortunadamente, no pudimos crear tu cuenta de prueba. Vuelve a intentarlo más tarde o crea una cuenta con un número de teléfono.",
         "trialAccountHasLimits": "La cuenta de prueba tiene límites",
         "trialAccountLimits": {
+            "modalTitle": "Mejora tu cuenta para más beneficios",
             "noBackup": "Sin opción de copia de seguridad",
             "sendingLimit": "Límite de envíos diarios reducido",
             "noOnchain": "No recibir bitcoin onchain",
-            "recoveryOption": "Opción de recuperación",
+            "recoveryOption": "Recupera fondos por SMS o correo",
             "dailyLimit": "Límite de transacciones diarias de $1000",
             "onchainReceive": "Recibir bitcoin en cadena"
         }
