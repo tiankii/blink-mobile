@@ -1,11 +1,12 @@
 import React from "react"
-import { render, fireEvent } from "@testing-library/react-native"
+import { fireEvent, render } from "@testing-library/react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 
 import { EmailConfirmedScreen } from "@app/screens/onboarding-screen"
 import { OnboardingStackParamList } from "@app/navigation/stack-param-lists"
-import { loadLocale } from "@app/i18n/i18n-util.sync"
+import { useSettingsScreenQuery } from "@app/graphql/generated"
 import { i18nObject } from "@app/i18n/i18n-util"
+import { loadLocale } from "@app/i18n/i18n-util.sync"
 
 import { ContextForScreen } from "../helper"
 
@@ -17,20 +18,46 @@ const route: RouteProp<OnboardingStackParamList, "emailConfirmed"> = {
   },
 }
 
+const usernameMock = {
+  loading: false,
+  data: {
+    me: {
+      username: "userexample",
+    },
+  },
+}
+
+const noUsernameMock = {
+  loading: false,
+  data: {
+    me: {
+      username: null,
+    },
+  },
+}
+
 jest.mock("@react-navigation/native", () => ({
   ...jest.requireActual("@react-navigation/native"),
   useNavigation: jest.fn(),
+}))
+
+jest.mock("@app/graphql/generated", () => ({
+  ...jest.requireActual("@app/graphql/generated"),
+  useSettingsScreenQuery: jest.fn(),
 }))
 
 describe("EmailConfirmedScreen", () => {
   let LL: ReturnType<typeof i18nObject>
 
   beforeEach(() => {
+    ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(usernameMock)
+
     loadLocale("en")
     LL = i18nObject("en")
+    jest.clearAllMocks()
   })
 
-  it("Renders title and descriptions", () => {
+  it("renders title and descriptions", () => {
     const { getByText } = render(
       <ContextForScreen>
         <EmailConfirmedScreen route={route} />
@@ -49,7 +76,7 @@ describe("EmailConfirmedScreen", () => {
     ).toBeTruthy()
   })
 
-  it("Displays primary action button", () => {
+  it("renders primary button", () => {
     const { getByText } = render(
       <ContextForScreen>
         <EmailConfirmedScreen route={route} />
@@ -59,9 +86,27 @@ describe("EmailConfirmedScreen", () => {
     expect(getByText(LL.common.next())).toBeTruthy()
   })
 
-  it("Triggers navigation to lightningBenefits when primary button is pressed", () => {
+  it("navigates to supportScreen if username exists", () => {
     const mockNavigate = jest.fn()
     ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
+
+    const { getByText } = render(
+      <ContextForScreen>
+        <EmailConfirmedScreen route={route} />
+      </ContextForScreen>,
+    )
+
+    fireEvent.press(getByText(LL.common.next()))
+
+    expect(mockNavigate).toHaveBeenCalledWith("onboarding", {
+      screen: "supportScreen",
+    })
+  })
+
+  it("navigates to lightningBenefits if username is missing", () => {
+    const mockNavigate = jest.fn()
+    ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
+    ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(noUsernameMock)
 
     const { getByText } = render(
       <ContextForScreen>
@@ -77,23 +122,7 @@ describe("EmailConfirmedScreen", () => {
     })
   })
 
-  it("Passes correct onboarding param", () => {
-    const mockNavigate = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
-
-    const { getByText } = render(
-      <ContextForScreen>
-        <EmailConfirmedScreen route={route} />
-      </ContextForScreen>,
-    )
-
-    fireEvent.press(getByText(LL.common.next()))
-
-    const lastCall = mockNavigate.mock.calls[0]
-    expect(lastCall[1]?.params?.onboarding).toBe(true)
-  })
-
-  it("Renders icon when iconName is provided", () => {
+  it("renders the icon if iconName is passed", () => {
     const { getByTestId } = render(
       <ContextForScreen>
         <EmailConfirmedScreen route={route} />
