@@ -16,6 +16,8 @@ export type OnboardingLayoutProps = {
   secondaryLabel?: string
   onPrimaryAction: () => void
   onSecondaryAction?: () => void
+  primaryLoading?: boolean
+  secondaryLoading?: boolean
 }
 
 export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
@@ -27,6 +29,8 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   onPrimaryAction,
   secondaryLabel,
   onSecondaryAction,
+  primaryLoading = false,
+  secondaryLoading = false,
 }) => {
   const {
     theme: { colors },
@@ -58,10 +62,15 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
         <GaloyPrimaryButton
           title={primaryLabel}
           onPress={onPrimaryAction}
+          loading={primaryLoading}
           containerStyle={styles.buttonContainer}
         />
         {secondaryLabel && onSecondaryAction && (
-          <GaloySecondaryButton title={secondaryLabel} onPress={onSecondaryAction} />
+          <GaloySecondaryButton
+            title={secondaryLabel}
+            onPress={onSecondaryAction}
+            loading={secondaryLoading}
+          />
         )}
       </View>
     </Screen>
