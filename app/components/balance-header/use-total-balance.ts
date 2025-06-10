@@ -1,4 +1,5 @@
 import { WalletBalance, getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
+import { WalletCurrency } from "@app/graphql/generated"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { usePriceConversion } from "@app/hooks"
 import {
@@ -13,6 +14,7 @@ export const useTotalBalance = (
 ): {
   formattedBalance: string
   numericBalance: number
+  satsBalance: number
 } => {
   const { formatMoneyAmount } = useDisplayCurrency()
   const { convertMoneyAmount } = usePriceConversion()
@@ -36,21 +38,26 @@ export const useTotalBalance = (
     return {
       formattedBalance: "$0.00",
       numericBalance: 0,
+      satsBalance: 0,
     }
   }
 
-  const total = addMoneyAmounts({ a: usdAmount, b: btcAmount })
+  const totalDisplay = addMoneyAmounts({ a: usdAmount, b: btcAmount })
 
   const integerBalanceString = formatMoneyAmount({
-    moneyAmount: total,
+    moneyAmount: totalDisplay,
     noSymbol: true,
     noSuffix: true,
   })
 
   const numericBalance = Number(integerBalanceString)
 
+  const totalBtc = convertMoneyAmount?.(totalDisplay, WalletCurrency.Btc)
+  const satsBalance = totalBtc?.amount ?? 0
+
   return {
-    formattedBalance: formatMoneyAmount({ moneyAmount: total }),
+    formattedBalance: formatMoneyAmount({ moneyAmount: totalDisplay }),
     numericBalance: isNaN(numericBalance) ? 0 : numericBalance,
+    satsBalance: isNaN(satsBalance) ? 0 : satsBalance,
   }
 }

@@ -2604,11 +2604,6 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
 
-export type AccountMetadataQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AccountMetadataQuery = { readonly __typename: 'Query', readonly accountMetadata: ReadonlyArray<{ readonly __typename: 'AccountMetadataEntry', readonly accountId: string, readonly sessionCount: number, readonly upgradeModalShown: number }> };
-
 export type TransactionFragment = { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } };
 
 export type TransactionListFragment = { readonly __typename: 'TransactionConnection', readonly pageInfo: { readonly __typename: 'PageInfo', readonly hasNextPage: boolean, readonly hasPreviousPage: boolean, readonly startCursor?: string | null, readonly endCursor?: string | null }, readonly edges?: ReadonlyArray<{ readonly __typename: 'TransactionEdge', readonly cursor: string, readonly node: { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } } }> | null };
@@ -4023,47 +4018,6 @@ export type InnerCircleValueQueryHookResult = ReturnType<typeof useInnerCircleVa
 export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCircleValueLazyQuery>;
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
-export const AccountMetadataDocument = gql`
-    query accountMetadata {
-  accountMetadata @client {
-    accountId
-    sessionCount
-    upgradeModalShown
-  }
-}
-    `;
-
-/**
- * __useAccountMetadataQuery__
- *
- * To run a query within a React component, call `useAccountMetadataQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAccountMetadataQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAccountMetadataQuery(baseOptions?: Apollo.QueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
-      }
-export function useAccountMetadataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
-        }
-export function useAccountMetadataSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AccountMetadataQuery, AccountMetadataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AccountMetadataQuery, AccountMetadataQueryVariables>(AccountMetadataDocument, options);
-        }
-export type AccountMetadataQueryHookResult = ReturnType<typeof useAccountMetadataQuery>;
-export type AccountMetadataLazyQueryHookResult = ReturnType<typeof useAccountMetadataLazyQuery>;
-export type AccountMetadataSuspenseQueryHookResult = ReturnType<typeof useAccountMetadataSuspenseQuery>;
-export type AccountMetadataQueryResult = Apollo.QueryResult<AccountMetadataQuery, AccountMetadataQueryVariables>;
 export const NetworkDocument = gql`
     query network {
   globals {

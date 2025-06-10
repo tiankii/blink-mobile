@@ -1000,15 +1000,6 @@ query accountLimits {
   }
 }
 
-query accountMetadata {
-  accountMetadata @client {
-    accountId
-    sessionCount
-    upgradeModalShown
-    __typename
-  }
-}
-
 query addressScreen {
   me {
     id
