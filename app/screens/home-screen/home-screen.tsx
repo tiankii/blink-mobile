@@ -313,10 +313,7 @@ export const HomeScreen: React.FC = () => {
   }, [wallets, LL])
 
   // Triggers the upgrade trial account modal to load screen
-  const hasTriggeredUpgradeModal = React.useRef(false)
   React.useEffect(() => {
-    if (hasTriggeredUpgradeModal.current) return
-
     triggerUpgradeModal({
       accountId,
       satsBalance,
