@@ -7637,6 +7637,10 @@ type RootTranslation = {
 		 * U​n​a​b​l​e​ ​t​o​ ​f​e​t​c​h​ ​p​r​o​f​i​l​e​s​ ​a​t​ ​t​h​i​s​ ​t​i​m​e
 		 */
 		error: string
+		/**
+		 * f​r​o​m​ ​t​h​i​s​ ​d​e​v​i​c​e​?
+		 */
+		fromThisDevice: string
 	}
 	TotpRegistrationInitiateScreen: {
 		/**
@@ -16742,6 +16746,10 @@ export type TranslationFunctions = {
 		 * Unable to fetch profiles at this time
 		 */
 		error: () => LocalizedString
+		/**
+		 * from this device?
+		 */
+		fromThisDevice: () => LocalizedString
 	}
 	TotpRegistrationInitiateScreen: {
 		/**

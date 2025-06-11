@@ -47,6 +47,7 @@ import { MemoizedTransactionItem } from "../../components/transaction-item"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import { testProps } from "../../utils/testProps"
 import { fetchProfiles } from "@app/utils/multi-account"
+import { useLevel } from "@app/graphql/level-context"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
 
@@ -150,6 +151,7 @@ export const HomeScreen: React.FC = () => {
   const [currentProfile, setCurrentProfile] = React.useState<ProfileProps>()
 
   const { saveProfile } = useSaveSessionProfile()
+  const { isAtLeastLevelOne } = useLevel()
 
   const isAuthed = useIsAuthed()
   const { LL } = useI18nContext()
@@ -416,10 +418,10 @@ export const HomeScreen: React.FC = () => {
       />
       <View style={styles.multiAccountContianer}>
         {!loading && currentProfile?.identifier && (
-          <Pressable onPress={handleSwitchPress}>
+          <Pressable onPress={isAtLeastLevelOne ? handleSwitchPress : null}>
             <View style={styles.profileContainer}>
               <Text type="p2">{currentProfile?.identifier}</Text>
-              <GaloyIcon name={"caret-down"} size={18} />
+              {isAtLeastLevelOne && <GaloyIcon name={"caret-down"} size={18} />}
             </View>
           </Pressable>
         )}
