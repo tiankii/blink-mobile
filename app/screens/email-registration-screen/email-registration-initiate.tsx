@@ -82,7 +82,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
   const [emailInput, setEmailInput] = React.useState<string>("")
   const [errorMessage, setErrorMessage] = React.useState<string>("")
   const [loading, setLoading] = React.useState<boolean>(false)
-  const { onboarding } = route.params
+  const { onboarding = false } = route.params ?? {}
 
   const { LL } = useI18nContext()
 
