@@ -26,7 +26,7 @@ type TelegramAuthData = {
   nonce: string
 }
 
-export const useTelegramLogin = (phone: string, onboarding?: boolean) => {
+export const useTelegramLogin = (phone: string, onboarding: boolean = false) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   const { saveProfile } = useSaveSessionProfile()
 
