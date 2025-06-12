@@ -147,7 +147,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
   const { LL } = useI18nContext()
 
   const screenType = route.params.type
-  const phoneChannel = route.params.channel as PhoneCodeChannelType
+  const phoneChannel = route.params.channel
   const onboarding = route.params.onboarding
 
   const isDisabledCountryAndCreateAccount =

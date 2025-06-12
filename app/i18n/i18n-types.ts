@@ -8111,7 +8111,7 @@ type RootTranslation = {
 			/**
 			 * R​e​c​e​i​v​e​ ​B​i​t​c​o​i​n​ ​u​s​i​n​g​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r
 			 */
-			receibeBitcoinDescription: string
+			receiveBitcoinDescription: string
 			/**
 			 * S​e​n​d​ ​u​p​ ​t​o​ ​$​1​,​0​0​0​ ​U​S​D​ ​p​e​r​ ​d​a​y
 			 */
@@ -17418,7 +17418,7 @@ export type TranslationFunctions = {
 			/**
 			 * Receive Bitcoin using your phone number
 			 */
-			receibeBitcoinDescription: () => LocalizedString
+			receiveBitcoinDescription: () => LocalizedString
 			/**
 			 * Send up to $1,000 USD per day
 			 */
