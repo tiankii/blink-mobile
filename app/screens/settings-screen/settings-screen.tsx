@@ -81,10 +81,8 @@ export const SettingsScreen: React.FC = () => {
     fetchPolicy: "cache-and-network",
   })
 
-  const accountItems = [AccountLevelSetting, TxLimits, SwitchAccount]
-
   const items = {
-    account: [...accountItems],
+    account: [AccountLevelSetting, TxLimits, SwitchAccount],
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [
