@@ -171,9 +171,7 @@ export const EmailSetting: React.FC = () => {
       title={title(email, emailVerified, LL)}
       subtitle={emailVerified ? email?.toString() : email}
       leftIcon="mail-outline"
-      action={
-        email ? null : () => navigate("emailRegistrationInitiate", { onboarding: false })
-      }
+      action={email ? null : () => navigate("emailRegistrationInitiate")}
       rightIcon={RightIcon}
     />
   )

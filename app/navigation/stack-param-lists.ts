@@ -97,7 +97,7 @@ export type RootStackParamList = {
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   acceptTermsAndConditions: NewAccountFlowParamsList
-  emailRegistrationInitiate: { onboarding?: boolean }
+  emailRegistrationInitiate?: { onboarding?: boolean }
   emailRegistrationValidate: {
     email: string
     emailRegistrationId: string
