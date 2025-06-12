@@ -31,7 +31,7 @@ export const WelcomeLevel1Screen: React.FC<WelcomeLevel1ScreenProps> = ({ route 
     <OnboardingLayout
       title={LL.OnboardingScreen.welcomeLevel1.title()}
       descriptions={[
-        LL.OnboardingScreen.welcomeLevel1.receibeBitcoinDescription(),
+        LL.OnboardingScreen.welcomeLevel1.receiveBitcoinDescription(),
         LL.OnboardingScreen.welcomeLevel1.dailyLimitDescription(),
         LL.OnboardingScreen.welcomeLevel1.onchainDescription(),
       ]}

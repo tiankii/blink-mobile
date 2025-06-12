@@ -39,7 +39,7 @@ describe("WelcomeLevel1Screen", () => {
 
     expect(getByText(LL.OnboardingScreen.welcomeLevel1.title())).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.welcomeLevel1.receibeBitcoinDescription()}`),
+      getByText(`- ${LL.OnboardingScreen.welcomeLevel1.receiveBitcoinDescription()}`),
     ).toBeTruthy()
     expect(
       getByText(`- ${LL.OnboardingScreen.welcomeLevel1.dailyLimitDescription()}`),

@@ -2502,7 +2502,7 @@
         "welcomeLevel1": {
             "mainTitle": "Bienvenido al Nivel 1",
             "title": "Nuevas funciones desbloqueadas para tu cuenta:",
-            "receibeBitcoinDescription": "Recibe Bitcoin usando tu número de teléfono",
+            "receiveBitcoinDescription": "Recibe Bitcoin usando tu número de teléfono",
             "dailyLimitDescription": "Envía hasta $1,000 USD por día",
             "onchainDescription": "Recibe pagos on-chain"
         },

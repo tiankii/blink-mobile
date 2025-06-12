@@ -2595,7 +2595,7 @@ const en: BaseTranslation = {
     welcomeLevel1: {
       mainTitle: "Welcome to Level 1",
       title: "New features unlocked for your account:",
-      receibeBitcoinDescription: "Receive Bitcoin using your phone number",
+      receiveBitcoinDescription: "Receive Bitcoin using your phone number",
       dailyLimitDescription: "Send up to $1,000 USD per day",
       onchainDescription: "Receive on-chain payments",
     },
