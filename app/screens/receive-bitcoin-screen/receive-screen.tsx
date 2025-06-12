@@ -44,11 +44,11 @@ const ReceiveScreen = () => {
 
   const request = useReceiveBitcoin()
 
-  const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false)
+  const [isTrialAccountModalVisible, setIsTrialAccountModalVisible] = useState(false)
   const [displayReceiveNfc, setDisplayReceiveNfc] = useState(false)
 
-  const closeUpgradeModal = () => setIsUpgradeModalVisible(false)
-  const openUpgradeModal = () => setIsUpgradeModalVisible(true)
+  const closeTrialAccountModal = () => setIsTrialAccountModalVisible(false)
+  const openTrialAccountModal = () => setIsTrialAccountModalVisible(true)
 
   const nfcText = LL.ReceiveScreen.nfc()
   useEffect(() => {
@@ -265,11 +265,13 @@ const ReceiveScreen = () => {
             const isBlockedOnchain = id === Invoice.OnChain && isLevelZero
 
             if (isBlockedOnchain) {
-              openUpgradeModal()
+              openTrialAccountModal()
               return
             }
 
-            isReady && request.setType(id as InvoiceType)
+            if (isReady) {
+              request.setType(id as InvoiceType)
+            }
           }}
           style={styles.invoiceTypePicker}
         />
@@ -306,8 +308,8 @@ const ReceiveScreen = () => {
         />
 
         <TrialAccountLimitsModal
-          isVisible={isUpgradeModalVisible}
-          closeModal={closeUpgradeModal}
+          isVisible={isTrialAccountModalVisible}
+          closeModal={closeTrialAccountModal}
         />
       </Screen>
     </>
