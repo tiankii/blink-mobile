@@ -8,7 +8,7 @@ export const SetAddressError = {
 
 export type SetAddressError = (typeof SetAddressError)[keyof typeof SetAddressError]
 
-export type ValidateLightningAddressResult =
+type ValidateLightningAddressResult =
   | { valid: true }
   | { valid: false; error: SetAddressError }
 

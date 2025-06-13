@@ -256,7 +256,7 @@ export const HomeScreen: React.FC = () => {
       refetchUnauthed(),
       refetchBulletins(),
     ]).then(() => {
-      // Triggers the upgrade trial account modal to refetch
+      // Triggers the upgrade trial account modal after refetch
       triggerUpgradeModal({
         accountId,
         satsBalance,
