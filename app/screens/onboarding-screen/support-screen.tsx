@@ -24,8 +24,11 @@ export const SupportOnboardingScreen: React.FC = () => {
     Linking.openURL(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
   }
 
-  const messagePrefix = LL.OnboardingScreen.supportScreen.contactInfo.messagePrefix()
-  const messageSuffix = LL.OnboardingScreen.supportScreen.contactInfo.messageSuffix()
+  const contactInfoString = LL.OnboardingScreen.supportScreen.contactInfo({
+    email: FEEDBACK_EMAIL_ADDRESS,
+  })
+
+  const [prefix, suffix] = contactInfoString.split(FEEDBACK_EMAIL_ADDRESS)
 
   return (
     <OnboardingLayout
@@ -36,18 +39,18 @@ export const SupportOnboardingScreen: React.FC = () => {
             {LL.OnboardingScreen.supportScreen.description()}
           </Text>
           <Text style={styles.descriptionText}>
-            {messagePrefix}
-            <Text style={styles.linkText} onPress={() => handleSecondaryAction()}>
+            {prefix}
+            <Text style={styles.linkText} onPress={handleSecondaryAction}>
               {FEEDBACK_EMAIL_ADDRESS}
             </Text>
-            {messageSuffix}
+            {suffix}
           </Text>
         </>
       }
       primaryLabel={LL.OnboardingScreen.supportScreen.primaryButton()}
       onPrimaryAction={handlePrimaryAction}
       secondaryLabel={LL.OnboardingScreen.supportScreen.secondaryButton()}
-      onSecondaryAction={() => handleSecondaryAction()}
+      onSecondaryAction={handleSecondaryAction}
       iconName="support"
     />
   )
