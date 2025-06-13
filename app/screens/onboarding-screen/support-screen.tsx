@@ -6,7 +6,7 @@ import { Text, makeStyles } from "@rneui/themed"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { FEEDBACK_EMAIL_ADDRESS } from "@app/config"
+import { useRemoteConfig } from "@app/config/feature-flags-context"
 
 import { OnboardingLayout } from "./onboarding-layout"
 
@@ -15,20 +15,21 @@ export const SupportOnboardingScreen: React.FC = () => {
   const styles = useStyles()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const { feedbackEmailAddress } = useRemoteConfig()
 
   const handlePrimaryAction = () => {
     navigation.replace("Primary")
   }
 
   const handleSecondaryAction = () => {
-    Linking.openURL(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
+    Linking.openURL(`mailto:${feedbackEmailAddress}`)
   }
 
   const contactInfoString = LL.OnboardingScreen.supportScreen.contactInfo({
-    email: FEEDBACK_EMAIL_ADDRESS,
+    email: feedbackEmailAddress,
   })
 
-  const [prefix, suffix] = contactInfoString.split(FEEDBACK_EMAIL_ADDRESS)
+  const [prefix, suffix] = contactInfoString.split(feedbackEmailAddress)
 
   return (
     <OnboardingLayout
@@ -41,7 +42,7 @@ export const SupportOnboardingScreen: React.FC = () => {
           <Text style={styles.descriptionText}>
             {prefix}
             <Text style={styles.linkText} onPress={handleSecondaryAction}>
-              {FEEDBACK_EMAIL_ADDRESS}
+              {feedbackEmailAddress}
             </Text>
             {suffix}
           </Text>
