@@ -391,7 +391,7 @@ export const RootStack = () => {
         name="emailRegistrationInitiate"
         component={EmailRegistrationInitiateScreen}
         options={({ route: { params } }) => ({
-          title: params.onboarding
+          title: params?.onboarding
             ? LL.OnboardingScreen.emailBenefits.primaryButton()
             : LL.EmailRegistrationInitiateScreen.title(),
         })}
