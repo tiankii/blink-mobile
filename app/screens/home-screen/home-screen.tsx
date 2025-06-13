@@ -48,7 +48,8 @@ import {
   useSettingsScreenQuery,
 } from "@app/graphql/generated"
 
-import { triggerUpgradeModal } from "./trigger-upgrade-modal"
+// import { triggerUpgradeModal } from "./trigger-upgrade-modal"
+import { useRemoteConfig } from "@app/config/feature-flags-context"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
 
@@ -141,6 +142,7 @@ export const HomeScreen: React.FC = () => {
     theme: { colors },
   } = useTheme()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const { balanceLimitToTriggerUpgradeModal } = useRemoteConfig()
 
   const { data: { hasPromptedSetDefaultAccount } = {} } =
     useHasPromptedSetDefaultAccountQuery()
@@ -247,6 +249,19 @@ export const HomeScreen: React.FC = () => {
     setIsUpgradeModalVisible(true)
   }, [])
 
+  const triggerUpgradeModal = React.useCallback(() => {
+    if (!accountId || levelAccount !== AccountLevel.Zero) return
+    if (satsBalance > balanceLimitToTriggerUpgradeModal) {
+      openUpgradeModal()
+    }
+  }, [
+    accountId,
+    levelAccount,
+    satsBalance,
+    balanceLimitToTriggerUpgradeModal,
+    openUpgradeModal,
+  ])
+
   const refetch = React.useCallback(() => {
     if (!isAuthed) return
 
@@ -257,12 +272,7 @@ export const HomeScreen: React.FC = () => {
       refetchBulletins(),
     ]).then(() => {
       // Triggers the upgrade trial account modal after refetch
-      triggerUpgradeModal({
-        accountId,
-        satsBalance,
-        levelAccount,
-        openUpgradeModal,
-      })
+      triggerUpgradeModal()
     })
   }, [
     isAuthed,
@@ -270,10 +280,7 @@ export const HomeScreen: React.FC = () => {
     refetchBulletins,
     refetchRealtimePrice,
     refetchUnauthed,
-    satsBalance,
-    accountId,
-    levelAccount,
-    openUpgradeModal,
+    triggerUpgradeModal,
   ])
 
   const numberOfTxs = transactions.length
@@ -314,13 +321,8 @@ export const HomeScreen: React.FC = () => {
 
   // Triggers the upgrade trial account modal to load screen
   React.useEffect(() => {
-    triggerUpgradeModal({
-      accountId,
-      satsBalance,
-      levelAccount,
-      openUpgradeModal,
-    })
-  }, [accountId, satsBalance, levelAccount, openUpgradeModal])
+    triggerUpgradeModal()
+  }, [triggerUpgradeModal])
 
   let recentTransactionsData:
     | {
