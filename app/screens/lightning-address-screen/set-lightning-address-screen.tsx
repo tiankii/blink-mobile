@@ -18,7 +18,7 @@ import {
   MyUserIdQuery,
 } from "@app/graphql/generated"
 
-import { validateLightningAddress, SetAddressError } from "./set-lightning-address-utils"
+import { validateLightningAddress, SetAddressError } from "./lightning-address-validation"
 
 gql`
   mutation userUpdateUsername($input: UserUpdateUsernameInput!) {
