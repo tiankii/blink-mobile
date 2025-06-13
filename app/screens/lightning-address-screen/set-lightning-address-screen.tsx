@@ -53,7 +53,7 @@ export const SetLightningAddressScreen: React.FC<{
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const [error, setError] = useState<SetAddressError | undefined>()
-  const [lnAddress, setLnAddress] = useState("")
+  const [username, setUsername] = useState("")
   const { onboarding } = route.params
 
   const {
@@ -79,7 +79,7 @@ export const SetLightningAddressScreen: React.FC<{
             }),
             fields: {
               username: () => {
-                return lnAddress
+                return username
               },
             },
           })
@@ -88,20 +88,20 @@ export const SetLightningAddressScreen: React.FC<{
     },
   })
 
-  const onChangeLnAddress = (lightningAddress: string) => {
-    setLnAddress(lightningAddress)
+  const onChangeUsername = (username: string) => {
+    setUsername(username)
     setError(undefined)
   }
 
   const onSetLightningAddress = async () => {
-    const validationResult = validateLightningAddress(lnAddress)
+    const validationResult = validateLightningAddress(username)
     if (!validationResult.valid) {
       setError(validationResult.error)
       return
     }
 
     const { data } = await updateUsername({
-      variables: { input: { username: lnAddress } },
+      variables: { input: { username } },
     })
 
     if ((data?.userUpdateUsername?.errors ?? []).length > 0) {
@@ -157,8 +157,8 @@ export const SetLightningAddressScreen: React.FC<{
             autoCorrect={false}
             autoComplete="off"
             style={styles.textInputStyle}
-            onChangeText={onChangeLnAddress}
-            value={lnAddress}
+            onChangeText={onChangeUsername}
+            value={username}
             placeholder={"SatoshiNakamoto"}
             placeholderTextColor={colors.grey3}
           />
@@ -172,7 +172,7 @@ export const SetLightningAddressScreen: React.FC<{
         <GaloyPrimaryButton
           title={LL.SetAddressModal.setLightningAddress()}
           loading={loading}
-          disabled={!lnAddress}
+          disabled={!username}
           onPress={onSetLightningAddress}
           containerStyle={styles.buttonContainer}
         />
