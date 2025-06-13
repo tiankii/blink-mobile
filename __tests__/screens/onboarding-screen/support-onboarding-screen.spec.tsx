@@ -6,7 +6,6 @@ import { Linking } from "react-native"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 import { SupportOnboardingScreen } from "@app/screens/onboarding-screen"
-import { FEEDBACK_EMAIL_ADDRESS } from "@app/config"
 
 import { ContextForScreen } from "../helper"
 
@@ -22,6 +21,8 @@ jest.mock("react-native/Libraries/Linking/Linking", () => ({
   getInitialURL: jest.fn(),
   canOpenURL: jest.fn(),
 }))
+
+const FEEDBACK_EMAIL_ADDRESS = "feedback@blink.sv"
 
 describe("SupportOnboardingScreen", () => {
   let LL: ReturnType<typeof i18nObject>
