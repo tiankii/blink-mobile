@@ -48,11 +48,12 @@ export const useCreateDeviceAccount = () => {
     const password = credentials ? credentials.password : await generateSecureRandomUUID()
 
     if (!credentials) {
-      await Keychain.setInternetCredentials(
+      const keychainRes = await Keychain.setInternetCredentials(
         DEVICE_ACCOUNT_CREDENTIALS_KEY,
         username,
         password,
       )
+      if (!keychainRes) throw new Error("Failed to save credentials")
     }
 
     return { username, password }
