@@ -2,6 +2,7 @@ import React from "react"
 import { View } from "react-native"
 import { makeStyles, BottomSheet } from "@rneui/themed"
 import { SearchContent, FiltersContent, EventContent } from "."
+import { IMarker } from "@app/screens/map-screen/btc-map-interface"
 
 /*
   the forwardRef and useImperativeHandle (in the parent) are used here to toggle the modal
@@ -10,12 +11,15 @@ import { SearchContent, FiltersContent, EventContent } from "."
 */
 
 export type TModal = "search" | "filter" | "locationEvent"
+type Props = {
+  focusedMarker?: IMarker | null
+}
 
 export type OpenBottomModalElement = {
   toggleVisibility: (type: TModal) => void
 }
-export const OpenBottomModal = React.forwardRef<OpenBottomModalElement>(
-  function ConfirmDialog(_, ref): JSX.Element {
+export const OpenBottomModal = React.forwardRef<OpenBottomModalElement, Props>(
+  function ConfirmDialog({ focusedMarker }, ref): JSX.Element {
     const styles = useStyles()
     const [isVisible, toggleVisible] = React.useState<boolean>(false)
     const [modalType, setModalType] = React.useState<TModal>("locationEvent")
@@ -35,7 +39,10 @@ export const OpenBottomModal = React.forwardRef<OpenBottomModalElement>(
           ) : modalType == "filter" ? (
             <FiltersContent closeModal={() => toggleVisible(!isVisible)} />
           ) : modalType == "locationEvent" ? (
-            <EventContent closeModal={() => toggleVisible(!isVisible)} />
+            <EventContent
+              closeModal={() => toggleVisible(!isVisible)}
+              focusedMarker={focusedMarker}
+            />
           ) : (
             <></>
           )}

@@ -77,11 +77,8 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
     fetchPolicy: "cache-and-network",
   })
 
-  const focusedMarkerRef = React.useRef<MapMarkerType | null>(null)
-
   const [initialLocation, setInitialLocation] = React.useState<Region>()
   const [isRefreshed, setIsRefreshed] = React.useState(false)
-  const [focusedMarker, setFocusedMarker] = React.useState<MapMarker | null>(null)
   const [isInitializing, setInitializing] = React.useState(true)
 
   useFocusEffect(() => {
@@ -156,17 +153,17 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
     }
   }
 
-  const handleMarkerPress = (item: MapMarker, ref?: MapMarkerType) => {
-    setFocusedMarker(item)
-    if (ref) {
-      focusedMarkerRef.current = ref
-    }
-  }
+  // const handleMarkerPress = (item: MapMarker, ref?: MapMarkerType) => {
+  //   setFocusedMarker(item)
+  //   if (ref) {
+  //     focusedMarkerRef.current = ref
+  //   }
+  // }
 
-  const handleMapPress = () => {
-    setFocusedMarker(null)
-    focusedMarkerRef.current = null
-  }
+  // const handleMapPress = () => {
+  //   setFocusedMarker(null)
+  //   focusedMarkerRef.current = null
+  // }
 
   const formattedData = useMemo<IMarker[]>(() => {
     if (!btcMapElements) return []
@@ -194,10 +191,6 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
         <MapComponent
           data={formattedData}
           userLocation={initialLocation}
-          handleMapPress={handleMapPress}
-          handleMarkerPress={handleMarkerPress}
-          focusedMarker={focusedMarker}
-          focusedMarkerRef={focusedMarkerRef}
           handleCalloutPress={handleCalloutPress}
         />
       )}

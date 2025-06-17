@@ -1,24 +1,33 @@
 import { FC } from "react"
-import { View, TouchableOpacity } from "react-native"
+import { View, TouchableOpacity, ScrollView, Dimensions } from "react-native"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { IMarker } from "@app/screens/map-screen/btc-map-interface"
 
 type EventContentProps = {
   closeModal: () => void
+  focusedMarker?: IMarker | null
 }
 
-export const EventContent: FC<EventContentProps> = ({ closeModal }) => {
+export const EventContent: FC<EventContentProps> = ({ closeModal, focusedMarker }) => {
   const styles = useStyles()
+  const { height: screenHeight } = Dimensions.get("window")
   const {
     theme: { colors },
   } = useTheme()
+  console.log(focusedMarker?.tags["icon:android"])
 
   return (
-    <View>
+    <View style={{ maxHeight: screenHeight - 400 }}>
       <View style={styles.titleContent}>
         <Text style={styles.titleModal} ellipsizeMode="tail" numberOfLines={1}>
-          Five Start Hotel SV
+          {`${
+            focusedMarker?.location?.tags["addr:street"] ||
+            focusedMarker?.location?.tags["addr:city"] ||
+            focusedMarker?.location?.tags["name"] ||
+            ""
+          }`}
         </Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <Icon
@@ -50,13 +59,18 @@ export const EventContent: FC<EventContentProps> = ({ closeModal }) => {
           <Icon color={colors.black} name="location" size={40} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.locationTitle}>Hotel</Text>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <View style={styles.eventDetails}>
-          <Text style={styles.detailsTitle}>Hotel:</Text>
-          <Text style={styles.detailsTitle}>123</Text>
-        </View>
-      ))}
+      <Text style={styles.locationTitle}>{focusedMarker?.tags["icon:android"]}</Text>
+      <ScrollView>
+        {focusedMarker &&
+          Object.entries(focusedMarker.location.tags).map(([key, value], index) => (
+            <View key={index} style={styles.eventDetails}>
+              <Text style={styles.detailsTitle}>{key}: </Text>
+              <Text style={styles.detailsSubTitle} ellipsizeMode="tail" numberOfLines={1}>
+                {value}
+              </Text>
+            </View>
+          ))}
+      </ScrollView>
     </View>
   )
 }
@@ -84,5 +98,11 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   detailsTitle: {
     fontSize: 16,
+    flex: 1,
+    fontWeight: "bold",
+  },
+  detailsSubTitle: {
+    fontSize: 16,
+    flex: 1,
   },
 }))

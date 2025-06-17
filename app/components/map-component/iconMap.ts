@@ -75,7 +75,25 @@ const iconMap: { [key: string]: string } = {
     sports_hockey: 'disc',
     radar: 'radio',
     lan: 'git-network',
-    wc: 'man'
+    wc: 'man',
+    medical_services: 'clinic-medical',
+    photo_camera: 'camera-outline',
+    question_mark: 'help-outline',
+    minor_crash: 'car-sport-outline',
+    attach_money: 'attach-outline',
+    content_cut: 'cut-outline',
+    balance: 'podium-outline',
+    chalet: 'storefront-outline',
+    storefront: 'storefront-outline',
+    camping: 'smoking_rooms',
+    factory: 'settings-outline',
+    local_car_wash: 'car-outline',
+    smoking_rooms: 'color-wand-outline',
+    games: 'game-controller-outline',
+    wine_bar: 'wine-outline',
+    local_bar: 'beer-outline',
+    smartphone: 'phone-portrait-outline',
+    home: 'home-outline',
   }
   
   export default iconMap

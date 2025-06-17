@@ -20,32 +20,25 @@ import PinIcon from "./pinIcon"
 type Props = {
   data?: IMarker[]
   userLocation?: Region
-  handleMapPress: () => void
-  handleMarkerPress: (_: MapMarker) => void
-  focusedMarker: MapMarker | null
-  focusedMarkerRef: React.MutableRefObject<MapMarkerType | null>
   handleCalloutPress: (_: MapMarker) => void
 }
+interface SuperClusterRef {
+  getMapRef: () => MapView | null
+}
 
-export default function MapComponent({
-  data,
-  userLocation,
-  handleMapPress,
-  handleMarkerPress,
-  focusedMarker,
-  focusedMarkerRef,
-  handleCalloutPress,
-}: Props) {
+export default function MapComponent({ data, userLocation, handleCalloutPress }: Props) {
   const {
     theme: { colors, mode: themeMode },
   } = useTheme()
   const styles = useStyles()
   const client = useApolloClient()
 
-  const mapViewRef = useRef<MapView>(null)
+  const mapViewRef = useRef<SuperClusterRef>(null)
+  const [focusedMarker, setFocusedMarker] = React.useState<IMarker | null>(null)
+
   const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
 
-  // toggle modal from inside modal component instead of here in the parent
+  // Toggle modal from inside modal component instead of here in the parent
   const toggleModal = React.useCallback(
     (type: TModal) => openBottomModalRef.current?.toggleVisibility(type),
     [],
@@ -56,6 +49,23 @@ export default function MapComponent({
       trailing: true,
     }),
   ).current
+
+  const moveToFocusedMarker = () => {
+    const map = mapViewRef.current?.getMapRef()
+    // console.log("Métodos disponibles:", mapViewRef.current?.getMapRef().animateToRegion);
+
+    if (focusedMarker) {
+      map?.animateToRegion(
+        {
+          latitude: focusedMarker.location.latitude,
+          longitude: focusedMarker.location.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        },
+        1000,
+      )
+    }
+  }
 
   const renderCluster = (cluster: ICluster) => {
     const pointCount = cluster.pointCount,
@@ -74,13 +84,24 @@ export default function MapComponent({
   const renderMarker = (pin: IMarker) => {
     const iconName: string = pin?.tags?.["icon:android"]
     return (
-      <Marker identifier={`pin-${pin.id}`} key={pin.id} coordinate={pin.location}>
+      <Marker
+        identifier={`pin-${pin.id}`}
+        key={pin.id}
+        coordinate={pin.location}
+        onPress={() => {
+          setFocusedMarker(pin)
+          toggleModal("locationEvent")
+        }}
+      >
         <View style={styles.iconContainer}>
-          <PinIcon size={35} />
+          <PinIcon
+            size={35}
+            color={focusedMarker?.id == pin.id ? colors.primary : "#4f378c"}
+          />
           <Icon
             name={iconMap[iconName]}
             size={18}
-            color="#FFFFFF"
+            color={"#FFFFFF"}
             style={styles.iconOverlay}
           />
         </View>
@@ -124,12 +145,27 @@ export default function MapComponent({
       </MapView> */}
 
       <ButtonMapsContainer
+        key={focusedMarker?.id}
         position="topCenter"
-        event={() => toggleModal("locationEvent")}
+        event={() => {
+          moveToFocusedMarker()
+          toggleModal("locationEvent")
+        }}
       >
         <ListItem containerStyle={styles.list}>
           <Icon name="location-outline" color="white" size={15} />
-          <ListItem.Title>Bitcoint Berlin, E</ListItem.Title>
+          <ListItem.Title
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            style={{ maxWidth: 200 }}
+          >
+            {`${
+              focusedMarker?.location?.tags["addr:street"] ||
+              focusedMarker?.location?.tags["addr:city"] ||
+              focusedMarker?.location?.tags["name"] ||
+              ""
+            }`}
+          </ListItem.Title>
           <Icon name="chevron-down-outline" color="white" />
         </ListItem>
       </ButtonMapsContainer>
@@ -143,7 +179,7 @@ export default function MapComponent({
         position="LeftLv2"
         iconName="search"
       />
-      <OpenBottomModal ref={openBottomModalRef} />
+      <OpenBottomModal ref={openBottomModalRef} focusedMarker={focusedMarker} />
     </View>
   )
 }
