@@ -30,49 +30,18 @@ export const ExpirationTimeButton: React.FC<ExpirationTimeButtonProps> = ({
   const {
     theme: { colors },
   } = useTheme()
-  const styles = useStyles()
+  const styles = useStyles({ big })
 
   const pressableStyle = ({ pressed }: { pressed: boolean }): StyleProp<ViewStyle> => {
-    let colorStyles = {}
-    switch (true) {
-      case error:
-        colorStyles = {
-          backgroundColor: colors.error9,
-        }
-        break
-      case pressed:
-        colorStyles = {
-          opacity: 0.5,
-          backgroundColor: colors.grey5,
-        }
-        break
-      case disabled:
-        colorStyles = {
-          backgroundColor: colors.grey5,
-          opacity: 0.5,
-        }
-        break
-      default:
-        colorStyles = {
-          backgroundColor: colors.grey5,
-        }
+    if (error) {
+      return [styles.pressableBase, styles.errorBackground]
     }
 
-    const sizeStyles = {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      minHeight: big ? 60 : 50,
-      justifyContent: "center",
+    if (disabled || pressed) {
+      return [styles.pressableBase, styles.defaultBackground, styles.interactiveOpacity]
     }
 
-    return [colorStyles, sizeStyles]
-  }
-
-  /* eslint-disable no-param-reassign */
-  // hide values if disabled
-  if (disabled) {
-    value = ""
+    return [styles.pressableBase, styles.defaultBackground]
   }
 
   return (
@@ -86,7 +55,7 @@ export const ExpirationTimeButton: React.FC<ExpirationTimeButtonProps> = ({
             ellipsizeMode="middle"
             {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
           >
-            {`${placeholder}${value ? ": " + value : ""}`}
+            {`${placeholder}${!disabled && value ? ": " + value : ""}`}
           </Text>
           {iconName && (
             <GaloyIcon
@@ -96,20 +65,31 @@ export const ExpirationTimeButton: React.FC<ExpirationTimeButtonProps> = ({
             />
           )}
         </View>
-        {/* {value && (
-          <Text type="p4" color={error ? colors.error : undefined}>
-            {value}
-          </Text>
-        )} */}
       </Pressable>
     </View>
   )
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ colors }, props: { big?: boolean }) => ({
   contentContainerStyle: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  pressableBase: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    minHeight: props.big ? 60 : 50,
+    justifyContent: "center",
+  },
+  defaultBackground: {
+    backgroundColor: colors.grey5,
+  },
+  errorBackground: {
+    backgroundColor: colors.error9,
+  },
+  interactiveOpacity: {
+    opacity: 0.5,
   },
 }))

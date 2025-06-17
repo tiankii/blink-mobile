@@ -71,7 +71,7 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
       minutes = getRemainMinutes(timeIn.expiresAt)
     }
     const unidades = [
-      { umbral: 1440, singular: LL.common.day(), plural: LL.common.days() },
+      { umbral: 1440, singular: LL.common.day.one(), plural: LL.common.day.other() },
       { umbral: 60, singular: LL.common.hour(), plural: LL.common.hours() },
       { umbral: 1, singular: LL.common.minute(), plural: LL.common.minutes() },
     ]

@@ -2734,8 +2734,10 @@ const en: BaseTranslation = {
     warning: "Warning",
     expirationTime: "Expiration Time",
     minute: "Minute",
-    days: "Days",
-    day: "Day",
+    day: {
+      one: "Day",
+      other: "Days"
+    },
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
