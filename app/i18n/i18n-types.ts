@@ -8821,14 +8821,16 @@ type RootTranslation = {
 		 * M​i​n​u​t​e
 		 */
 		minute: string
-		/**
-		 * D​a​y​s
-		 */
-		days: string
-		/**
-		 * D​a​y
-		 */
-		day: string
+		day: {
+			/**
+			 * D​a​y
+			 */
+			one: string
+			/**
+			 * D​a​y​s
+			 */
+			other: string
+		}
 	}
 	errors: {
 		/**
@@ -18107,14 +18109,16 @@ export type TranslationFunctions = {
 		 * Minute
 		 */
 		minute: () => LocalizedString
-		/**
-		 * Days
-		 */
-		days: () => LocalizedString
-		/**
-		 * Day
-		 */
-		day: () => LocalizedString
+		day: {
+			/**
+			 * Day
+			 */
+			one: () => LocalizedString
+			/**
+			 * Days
+			 */
+			other: () => LocalizedString
+		}
 	}
 	errors: {
 		/**
