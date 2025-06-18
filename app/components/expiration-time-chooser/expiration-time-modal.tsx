@@ -30,7 +30,6 @@ export const ExpirationTimeModal: React.FC<ExpirationTimeModalProps> = ({
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  // Mock data
   const btcExpirationList = [
     {
       name: `24 ${LL.common.hours()}`,
@@ -49,7 +48,7 @@ export const ExpirationTimeModal: React.FC<ExpirationTimeModalProps> = ({
       minutes: 60,
     },
   ]
-  // Mock data
+
   const usdExpirationList = [
     {
       name: `5 ${LL.common.minutes()}`,
