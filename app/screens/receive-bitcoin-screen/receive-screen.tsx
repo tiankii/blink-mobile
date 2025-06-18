@@ -141,6 +141,13 @@ const ReceiveScreen = () => {
     request.info?.data?.invoiceType === Invoice.Lightning && request.info?.data?.expiresAt
       ? request.info.data.expiresAt
       : null
+
+  const handlePressWallet = (id: string) => {
+    if (isReady) {
+      request.setReceivingWallet(id as WalletCurrency)
+      request.setExpirationTime(0)
+    }
+  }
   return (
     <>
       <Screen
@@ -174,7 +181,7 @@ const ReceiveScreen = () => {
               },
             },
           ]}
-          onPress={(id) => isReady && request.setReceivingWallet(id as WalletCurrency)}
+          onPress={handlePressWallet}
           style={styles.receivingWalletPicker}
           disabled={!request.canSetReceivingWalletDescriptor}
         />
@@ -311,11 +318,11 @@ const ReceiveScreen = () => {
           big={false}
         />
         <ExpirationTimeChooser
-          expirationTime={request.expirationTime}
+          expirationTime={request?.expirationTime ?? 0}
           expiresAt={expiresAt}
           setExpirationTime={request.setExpirationTime}
           walletCurrency={request.receivingWalletDescriptor.currency}
-          disabled={!request?.canSetExpirationTime}
+          disabled={!request.canSetExpirationTime}
           style={styles.note}
         />
 
