@@ -446,7 +446,6 @@ export const useReceiveBitcoin = () => {
       }
       return pr
     })
-    setExpirationTime(0)
   }
   const setAmount = (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
     setPRCD((pr) => {

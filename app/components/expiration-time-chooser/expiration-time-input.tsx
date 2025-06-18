@@ -9,11 +9,11 @@ import { StyleProp, ViewStyle } from "react-native"
 import { WalletCurrency } from "@app/graphql/generated"
 
 export type ExpirationTimeInputProps = {
-  expirationTime?: number
+  expirationTime: number
   expiresAt?: Date | null
   setExpirationTime?: (expirationTime: number) => void
   walletCurrency: WalletCurrency
-  disabled?: boolean
+  disabled: boolean
   big?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -48,11 +48,7 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
   if (openModal) {
     return (
       <ExpirationTimeModal
-        value={
-          expirationTime && expirationTime > 0
-            ? expirationTime
-            : getRemainMinutes(expiresAt)
-        }
+        value={expirationTime > 0 ? expirationTime : getRemainMinutes(expiresAt)}
         isOpen={true}
         onSetExpirationTime={onSetExpirationTime}
         close={() => setOpenModal(false)}
@@ -96,7 +92,7 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
       placeholder={LL.common.expirationTime()}
       onPress={onPressInputButton}
       value={
-        expirationTime && expirationTime > 0
+        expirationTime > 0
           ? getExpirationTimeFormat({ minutes: expirationTime })
           : getExpirationTimeFormat({ expiresAt })
       }
