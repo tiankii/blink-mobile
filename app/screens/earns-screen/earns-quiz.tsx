@@ -221,7 +221,7 @@ export const EarnQuiz = ({ route }: Props) => {
 
   const { quizServerData } = useQuizServer()
 
-  const { id } = route.params
+  const { id, isAvailable } = route.params
 
   const allCards = React.useMemo(
     () => quizQuestionsContent.map((item) => item.content).flatMap((item) => item),
@@ -373,7 +373,9 @@ export const EarnQuiz = ({ route }: Props) => {
           {(completed && (
             <>
               <Text style={styles.textEarn}>
-                {LL.EarnScreen.quizComplete({ formattedNumber: amount })}
+                {isAvailable
+                  ? LL.EarnScreen.quizComplete({ formattedNumber: amount })
+                  : LL.EarnScreen.sectionsCompleted()}
               </Text>
               <Button
                 title={LL.EarnScreen.reviewQuiz()}
@@ -384,9 +386,13 @@ export const EarnQuiz = ({ route }: Props) => {
             </>
           )) || (
             <Button
-              title={LL.EarnScreen.earnSats({
-                formattedNumber: amount,
-              })}
+              title={
+                isAvailable
+                  ? LL.EarnScreen.earnSats({
+                      formattedNumber: amount,
+                    })
+                  : LL.common.continue()
+              }
               buttonStyle={styles.buttonStyle}
               titleStyle={styles.titleStyle}
               onPress={() => setQuizVisible(true)}
