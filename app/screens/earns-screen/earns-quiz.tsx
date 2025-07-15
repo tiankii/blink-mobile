@@ -7,6 +7,7 @@ import {
   View,
   TouchableWithoutFeedback,
   Pressable,
+  Alert,
 } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import Modal from "react-native-modal"
@@ -30,7 +31,11 @@ import { shuffle } from "../../utils/helper"
 import { sleep } from "../../utils/sleep"
 import { useQuizServer } from "../earns-map-screen/use-quiz-server"
 import { SVGs } from "./earn-svg-factory"
-import { augmentCardWithGqlData, getQuizQuestionsContent } from "./earns-utils"
+import {
+  augmentCardWithGqlData,
+  getQuizQuestionsContent,
+  skipRewardErrorCodes,
+} from "./earns-utils"
 
 const useStyles = makeStyles(({ colors }) => ({
   answersViewInner: {
@@ -196,6 +201,7 @@ gql`
     quizClaim(input: $input) {
       errors {
         message
+        code
       }
       quizzes {
         id
@@ -244,6 +250,7 @@ export const EarnQuiz = ({ route }: Props) => {
   const [quizClaim, { loading: quizClaimLoading }] = useQuizClaimMutation()
   const [quizVisible, setQuizVisible] = useState(false)
   const [recordedAnswer, setRecordedAnswer] = useState<number[]>([])
+  const [hasTriedClaim, setHasTriedClaim] = useState(false)
 
   const addRecordedAnswer = (value: number) => {
     setRecordedAnswer([...recordedAnswer, value])
@@ -253,12 +260,39 @@ export const EarnQuiz = ({ route }: Props) => {
 
   useEffect(() => {
     ;(async () => {
+      if (hasTriedClaim) return
       if (recordedAnswer.indexOf(0) !== -1 && !completed && !quizClaimLoading) {
+        setHasTriedClaim(true)
         const { data } = await quizClaim({
           variables: { input: { id } },
         })
 
         if (data?.quizClaim?.errors?.length) {
+          if (skipRewardErrorCodes(data.quizClaim.errors[0]?.code)) {
+            Alert.alert(
+              "Oops!",
+              `${getErrorMessages(data.quizClaim.errors)} Please try again later.\nOr, click to continue to keep learning without rewards.`,
+              [
+                {
+                  text: LL.common.cancel(),
+                  onPress: () => {
+                    navigation.navigate("Earn")
+                  },
+                },
+                {
+                  text: LL.common.continue(),
+                  onPress: async () => {
+                    await quizClaim({
+                      variables: { input: { id } },
+                    })
+                  },
+                },
+              ],
+            )
+            return
+          }
+
+          navigation.goBack()
           // FIXME: message is hidden by the modal
           toastShow({
             message: getErrorMessages(data.quizClaim.errors),
@@ -267,7 +301,16 @@ export const EarnQuiz = ({ route }: Props) => {
         }
       }
     })()
-  }, [recordedAnswer, id, quizClaim, LL, completed, quizClaimLoading])
+  }, [
+    recordedAnswer,
+    id,
+    quizClaim,
+    LL,
+    completed,
+    quizClaimLoading,
+    navigation,
+    hasTriedClaim,
+  ])
 
   const close = async () => {
     if (quizVisible) {

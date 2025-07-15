@@ -188,7 +188,7 @@ export const EarnMapScreen: React.FC = () => {
 
     const onPress = () => {
       nextSectionNotYetAvailable
-        ? Alert.alert(LL.EarnScreen.oneSectionADay(), LL.EarnScreen.availableTomorrow(), [
+        ? Alert.alert("Oops!", LL.EarnScreen.availableTomorrow(), [
             {
               text: LL.common.cancel(),
             },
