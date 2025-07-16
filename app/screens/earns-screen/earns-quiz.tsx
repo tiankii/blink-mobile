@@ -283,7 +283,7 @@ export const EarnQuiz = ({ route }: Props) => {
                   text: LL.common.continue(),
                   onPress: async () => {
                     await quizClaim({
-                      variables: { input: { id } },
+                      variables: { input: { id, skipRewards: true } },
                     })
                   },
                 },
