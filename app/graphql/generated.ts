@@ -804,6 +804,7 @@ export type LnInvoicePaymentInput = {
 export type LnInvoicePaymentStatus = {
   readonly __typename: 'LnInvoicePaymentStatus';
   readonly paymentHash?: Maybe<Scalars['PaymentHash']['output']>;
+  readonly paymentPreimage?: Maybe<Scalars['LnPaymentPreImage']['output']>;
   readonly paymentRequest?: Maybe<Scalars['LnPaymentRequest']['output']>;
   readonly status?: Maybe<InvoicePaymentStatus>;
 };
@@ -824,6 +825,7 @@ export type LnInvoicePaymentStatusPayload = {
   readonly __typename: 'LnInvoicePaymentStatusPayload';
   readonly errors: ReadonlyArray<Error>;
   readonly paymentHash?: Maybe<Scalars['PaymentHash']['output']>;
+  readonly paymentPreimage?: Maybe<Scalars['LnPaymentPreImage']['output']>;
   readonly paymentRequest?: Maybe<Scalars['LnPaymentRequest']['output']>;
   readonly status?: Maybe<InvoicePaymentStatus>;
 };
@@ -1817,6 +1819,7 @@ export type Quiz = {
 
 export type QuizClaimInput = {
   readonly id: Scalars['ID']['input'];
+  readonly skipRewards?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type QuizClaimPayload = {
@@ -8984,6 +8987,7 @@ export type LnInvoicePayloadResolvers<ContextType = any, ParentType extends Reso
 
 export type LnInvoicePaymentStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['LnInvoicePaymentStatus'] = ResolversParentTypes['LnInvoicePaymentStatus']> = {
   paymentHash?: Resolver<Maybe<ResolversTypes['PaymentHash']>, ParentType, ContextType>;
+  paymentPreimage?: Resolver<Maybe<ResolversTypes['LnPaymentPreImage']>, ParentType, ContextType>;
   paymentRequest?: Resolver<Maybe<ResolversTypes['LnPaymentRequest']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['InvoicePaymentStatus']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -8992,6 +8996,7 @@ export type LnInvoicePaymentStatusResolvers<ContextType = any, ParentType extend
 export type LnInvoicePaymentStatusPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LnInvoicePaymentStatusPayload'] = ResolversParentTypes['LnInvoicePaymentStatusPayload']> = {
   errors?: Resolver<ReadonlyArray<ResolversTypes['Error']>, ParentType, ContextType>;
   paymentHash?: Resolver<Maybe<ResolversTypes['PaymentHash']>, ParentType, ContextType>;
+  paymentPreimage?: Resolver<Maybe<ResolversTypes['LnPaymentPreImage']>, ParentType, ContextType>;
   paymentRequest?: Resolver<Maybe<ResolversTypes['LnPaymentRequest']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['InvoicePaymentStatus']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
