@@ -5,8 +5,8 @@ import { useAppConfig } from "@app/hooks"
 import remoteConfigInstance from "@react-native-firebase/remote-config"
 
 const DeviceAccountEnabledKey = "deviceAccountEnabledRestAuth"
-const balanceLimitToTriggerUpgradeModalKey = "balanceLimitToTriggerUpgradeModal"
-const feedbackEmailKey = "feedbackEmailAddress"
+const BalanceLimitToTriggerUpgradeModalKey = "balanceLimitToTriggerUpgradeModal"
+const FeedbackEmailKey = "feedbackEmailAddress"
 
 type FeatureFlags = {
   deviceAccountEnabled: boolean
@@ -14,8 +14,8 @@ type FeatureFlags = {
 
 type RemoteConfig = {
   [DeviceAccountEnabledKey]: boolean
-  [balanceLimitToTriggerUpgradeModalKey]: number
-  [feedbackEmailKey]: string
+  [BalanceLimitToTriggerUpgradeModalKey]: number
+  [FeedbackEmailKey]: string
 }
 
 const defaultRemoteConfig: RemoteConfig = {
@@ -59,11 +59,11 @@ export const FeatureFlagContextProvider: React.FC<React.PropsWithChildren> = ({
           .asBoolean()
 
         const balanceLimitToTriggerUpgradeModal = remoteConfigInstance()
-          .getValue(balanceLimitToTriggerUpgradeModalKey)
+          .getValue(BalanceLimitToTriggerUpgradeModalKey)
           .asNumber()
 
         const feedbackEmailAddress = remoteConfigInstance()
-          .getValue(feedbackEmailKey)
+          .getValue(FeedbackEmailKey)
           .asString()
 
         setRemoteConfig({
