@@ -8194,7 +8194,7 @@ type RootTranslation = {
 		}
 		supportScreen: {
 			/**
-			 * B​l​i​n​k​ ​F​e​e​d​b​a​c​k
+			 * B​l​i​n​k​ ​f​e​e​d​b​a​c​k
 			 */
 			mainTitle: string
 			/**
@@ -8215,7 +8215,7 @@ type RootTranslation = {
 			 */
 			primaryButton: string
 			/**
-			 * G​i​v​e​ ​F​e​e​d​b​a​c​k​ ​N​o​w
+			 * G​i​v​e​ ​f​e​e​d​b​a​c​k​ ​n​o​w
 			 */
 			secondaryButton: string
 		}
@@ -17495,7 +17495,7 @@ export type TranslationFunctions = {
 		}
 		supportScreen: {
 			/**
-			 * Blink Feedback
+			 * Blink feedback
 			 */
 			mainTitle: () => LocalizedString
 			/**
@@ -17515,7 +17515,7 @@ export type TranslationFunctions = {
 			 */
 			primaryButton: () => LocalizedString
 			/**
-			 * Give Feedback Now
+			 * Give feedback now
 			 */
 			secondaryButton: () => LocalizedString
 		}
