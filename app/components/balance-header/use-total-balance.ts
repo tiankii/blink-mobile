@@ -53,7 +53,8 @@ export const useTotalBalance = (
   const numericBalance = Number(integerBalanceString)
 
   const totalBtc = convertMoneyAmount?.(totalDisplay, WalletCurrency.Btc)
-  const satsBalance = totalBtc?.amount ?? 0
+  const satsBalance =
+    !usdWallet?.balance && btcWallet?.balance ? btcWallet?.balance : totalBtc?.amount || 0
 
   return {
     formattedBalance: formatMoneyAmount({ moneyAmount: totalDisplay }),
