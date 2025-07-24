@@ -109,10 +109,17 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
         label: LL.support.email(),
         value: LoginChannels.Email,
         icon: "mail-outline",
-        active: type === PhoneLoginInitiateType.Login,
+        active: type === PhoneLoginInitiateType.Login || onboarding,
       },
     ],
-    [LL.support, isTelegramSupported, isSmsSupported, isWhatsAppSupported, type],
+    [
+      LL.support,
+      isTelegramSupported,
+      isSmsSupported,
+      isWhatsAppSupported,
+      type,
+      onboarding,
+    ],
   )
 
   return (
