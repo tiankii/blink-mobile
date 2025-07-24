@@ -35,8 +35,12 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   } = useTheme()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { isTelegramSupported, isSmsSupported, isWhatsAppSupported } =
-    useRequestPhoneCodeLogin()
+  const {
+    isTelegramSupported,
+    isSmsSupported,
+    isWhatsAppSupported,
+    loadingSupportedCountries,
+  } = useRequestPhoneCodeLogin()
 
   const [selected, setSelected] = useState<LoginChannels | undefined>()
 
@@ -118,7 +122,12 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
         <Text type="h1" style={styles.title}>
           {LL.LoginMethodScreen.title()}
         </Text>
-        <OptionSelector selected={selected} onSelect={handleSelect} options={options} />
+        <OptionSelector
+          selected={selected}
+          onSelect={handleSelect}
+          options={options}
+          loading={loadingSupportedCountries}
+        />
       </View>
 
       <View style={styles.bottom}>
