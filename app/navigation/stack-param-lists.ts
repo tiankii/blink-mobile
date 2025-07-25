@@ -97,7 +97,7 @@ export type RootStackParamList = {
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   acceptTermsAndConditions: NewAccountFlowParamsList
-  emailRegistrationInitiate?: { onboarding?: boolean }
+  emailRegistrationInitiate?: { onboarding?: boolean; hasUsername?: boolean }
   emailRegistrationValidate: {
     email: string
     emailRegistrationId: string
@@ -117,8 +117,8 @@ export type RootStackParamList = {
 
 export type OnboardingStackParamList = {
   welcomeLevel1: { onboarding?: boolean }
-  emailBenefits: { onboarding?: boolean }
-  emailConfirmed: { onboarding?: boolean }
+  emailBenefits: { onboarding?: boolean; hasUsername?: boolean }
+  emailConfirmed: { onboarding?: boolean; hasUsername?: boolean }
   lightningBenefits: { onboarding?: boolean }
   supportScreen: undefined
 }
