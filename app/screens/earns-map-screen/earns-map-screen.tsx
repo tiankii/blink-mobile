@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native"
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler"
 import { SvgProps } from "react-native-svg"
 
@@ -34,6 +34,8 @@ import RightOngoing from "./right-section-ongoing-01.svg"
 import RightTodo from "./right-section-to-do-01.svg"
 import TextBlock from "./text-block-medium.svg"
 import { useQuizServer } from "./use-quiz-server"
+import CustomModal from "@app/components/custom-modal/custom-modal"
+import { useState } from "react"
 
 type SideType = "left" | "right"
 interface IInBetweenTile {
@@ -101,6 +103,10 @@ export const EarnMapScreen: React.FC = () => {
 
   let currSection = 0
   let progress = NaN
+
+  const [showModal, setShowModal] = useState(false)
+  const [notRewards, setNotRewards] = useState(false)
+  const [selectedSection, setSelectedSection] = useState<EarnSectionType>(sections[0])
 
   const { loading, quizServerData, earnedSats } = useQuizServer({
     fetchPolicy: "network-only",
@@ -187,24 +193,22 @@ export const EarnMapScreen: React.FC = () => {
     const progressSection = disabled ? 0 : currSection > position ? 1 : progress
 
     const onPress = () => {
-      nextSectionNotYetAvailable
-        ? Alert.alert("Oops!", LL.EarnScreen.availableTomorrow(), [
-            {
-              text: LL.common.cancel(),
-            },
-            {
-              text: LL.common.continue(),
-              onPress: () =>
-                navigation.navigate("earnsSection", {
-                  section,
-                  isAvailable: false,
-                }),
-            },
-          ])
-        : navigation.navigate("earnsSection", {
+      if (nextSectionNotYetAvailable) {
+        setSelectedSection(section)
+        if (notRewards) {
+          navigation.navigate("earnsSection", {
             section,
-            isAvailable: true,
+            isAvailable: false,
           })
+          return
+        }
+        setShowModal(true)
+        return
+      }
+      navigation.navigate("earnsSection", {
+        section,
+        isAvailable: true,
+      })
     }
 
     // rework this to pass props into the style object
@@ -272,6 +276,14 @@ export const EarnMapScreen: React.FC = () => {
 
   const backgroundColor = currSection < sectionsData.length ? colors._sky : colors._orange
 
+  const continueNotRewards = () => {
+    setNotRewards(true)
+    navigation.navigate("earnsSection", {
+      section: selectedSection,
+      isAvailable: false,
+    })
+  }
+
   return (
     <Screen unsafe statusBar="light-content">
       <ScrollView
@@ -309,6 +321,24 @@ export const EarnMapScreen: React.FC = () => {
           )}
         </View>
       </ScrollView>
+
+      <CustomModal
+        isVisible={showModal}
+        toggleModal={() => setShowModal(false)}
+        title={LL.EarnScreen.somethingNotRight()}
+        backgroundModalColor={colors.white}
+        body={
+          <View style={styles.modalBody}>
+            <Text
+              style={styles.modalBodyText}
+            >{`${LL.EarnScreen.oneSectionADay()} ${LL.EarnScreen.availableTomorrow()}`}</Text>
+          </View>
+        }
+        primaryButtonOnPress={continueNotRewards}
+        primaryButtonTitle={LL.EarnScreen.continueNoRewards()}
+        secondaryButtonTitle={LL.common.close()}
+        secondaryButtonOnPress={() => setShowModal(false)}
+      />
     </Screen>
   )
 }
@@ -348,28 +378,30 @@ const useStyles = makeStyles(({ colors }) => ({
     top: 30,
     width: 160,
   },
-
   icon: {
     marginBottom: 6,
     marginHorizontal: 10,
   },
-
   mainView: {
     alignSelf: "center",
   },
-
   textStyleBox: {
     color: colors._white,
     fontSize: 16,
     fontWeight: "bold",
     marginHorizontal: 10,
   },
-
   progressContainer: { backgroundColor: colors._darkGrey, margin: 10 },
-
   position: { height: 40 },
-
   loadingView: { flex: 1, justifyContent: "center", alignItems: "center" },
-
   fullView: { position: "absolute", width: "100%" },
+  modalBodyText: {
+    fontSize: 17,
+    color: colors.grey3,
+    textAlign: "center",
+  },
+  modalBody: {
+    textAlign: "center",
+    marginTop: 20,
+  },
 }))

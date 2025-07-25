@@ -2003,7 +2003,9 @@
         "registerContent": "Regístrate con tu número de teléfono para recibir sats",
         "oneSectionADay": "¡Una sección al día!",
         "availableTomorrow": "Regresa mañana para seguir ganando recompensas.\nO, haz clic en continuar para seguir aprendiendo sin recompensas.",
-        "motivatingBadger": "Ábrete camino a través de estas lecciones y gana mientras aprendes"
+        "motivatingBadger": "Ábrete camino a través de estas lecciones y gana mientras aprendes",
+        "continueNoRewards": "Continuar (Sin Recompensas)",
+        "somethingNotRight": "Algo no está bien..."
     },
     "GetStartedScreen": {
         "logInCreateAccount": "Log in / Crear Cuenta",
