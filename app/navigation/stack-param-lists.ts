@@ -120,7 +120,6 @@ export type OnboardingStackParamList = {
   emailBenefits: { onboarding?: boolean }
   emailConfirmed: { onboarding?: boolean }
   lightningBenefits: { onboarding?: boolean }
-  lightningConfirmed: { onboarding?: boolean }
   supportScreen: undefined
 }
 

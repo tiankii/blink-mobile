@@ -118,8 +118,7 @@ export const SetLightningAddressScreen: React.FC<{
 
     if (onboarding) {
       navigation.replace("onboarding", {
-        screen: "lightningConfirmed",
-        params: { onboarding },
+        screen: "supportScreen",
       })
       return
     }
