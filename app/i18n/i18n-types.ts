@@ -6307,6 +6307,14 @@ type RootTranslation = {
 		 * D​i​g​ ​y​o​u​r​ ​w​a​y​ ​t​h​r​o​u​g​h​ ​t​h​e​s​e​ ​l​e​s​s​o​n​s​ ​a​n​d​ ​e​a​r​n​ ​a​s​ ​y​o​u​ ​l​e​a​r​n
 		 */
 		motivatingBadger: string
+		/**
+		 * C​o​n​t​i​n​u​e​ ​(​N​o​ ​R​e​w​a​r​d​s​)
+		 */
+		continueNoRewards: string
+		/**
+		 * S​o​m​e​t​h​i​n​g​'​s​ ​N​o​t​ ​R​i​g​h​t​.​.​.
+		 */
+		somethingNotRight: string
 	}
 	GetStartedScreen: {
 		/**
@@ -15664,6 +15672,14 @@ export type TranslationFunctions = {
 		 * Dig your way through these lessons and earn as you learn
 		 */
 		motivatingBadger: () => LocalizedString
+		/**
+		 * Continue (No Rewards)
+		 */
+		continueNoRewards: () => LocalizedString
+		/**
+		 * Something's Not Right...
+		 */
+		somethingNotRight: () => LocalizedString
 	}
 	GetStartedScreen: {
 		/**

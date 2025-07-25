@@ -2040,6 +2040,8 @@ const en: BaseTranslation = {
     oneSectionADay: "One section a day!",
     availableTomorrow: "Come back tomorrow to continue earning rewards.\nOR, click on continue, to keep learning without rewards",
     motivatingBadger: "Dig your way through these lessons and earn as you learn",
+    continueNoRewards: "Continue (No Rewards)",
+    somethingNotRight: "Something's Not Right...",
   },
   GetStartedScreen: {
     logInCreateAccount: "Log in / create account",
