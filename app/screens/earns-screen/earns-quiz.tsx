@@ -278,6 +278,7 @@ export const EarnQuiz = ({ route }: Props) => {
     await quizClaim({
       variables: { input: { id, skipRewards: true } },
     })
+    setShowModal(false)
   }, [quizClaim, id, quizErrorCode])
 
   const answersShuffled: Array<React.ReactNode> = []
