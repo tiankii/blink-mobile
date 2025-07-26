@@ -152,6 +152,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
             containerStyle={styles.buttonContainer}
           />
         )}
+        <View style={styles.buttonSpacer} />
       </View>
     </Screen>
   )
@@ -181,6 +182,9 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: "flex-end",
-    marginBottom: 50,
+    marginBottom: 36,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))

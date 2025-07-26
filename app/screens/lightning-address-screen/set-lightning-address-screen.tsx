@@ -182,11 +182,13 @@ export const SetLightningAddressScreen: React.FC<{
           onPress={onSetLightningAddress}
           containerStyle={styles.buttonContainer}
         />
-        {onboarding && (
+        {onboarding ? (
           <GaloySecondaryButton
             title={LL.UpgradeAccountModal.notNow()}
             onPress={onboardingNavigate}
           />
+        ) : (
+          <View style={styles.buttonSpacer} />
         )}
       </View>
     </Screen>
@@ -225,5 +227,8 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     fontSize: 18,
     color: colors.black,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))

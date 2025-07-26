@@ -65,12 +65,14 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
           loading={primaryLoading}
           containerStyle={styles.buttonContainer}
         />
-        {secondaryLabel && onSecondaryAction && (
+        {secondaryLabel && onSecondaryAction ? (
           <GaloySecondaryButton
             title={secondaryLabel}
             onPress={onSecondaryAction}
             loading={secondaryLoading}
           />
+        ) : (
+          <View style={styles.buttonSpacer} />
         )}
       </View>
     </Screen>
@@ -100,10 +102,12 @@ const useStyles = makeStyles(({ colors }) => ({
     fontSize: 16,
   },
   bottom: {
-    flex: 1,
     justifyContent: "flex-end",
     marginBottom: 36,
     paddingHorizontal: 24,
+  },
+  buttonSpacer: {
+    height: 40,
   },
   buttonContainer: {
     marginVertical: 6,
