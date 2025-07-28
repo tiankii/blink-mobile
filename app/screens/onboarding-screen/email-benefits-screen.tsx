@@ -52,7 +52,7 @@ export const EmailBenefitsScreen: React.FC<EmailBenefitsScreenProps> = ({ route 
       onPrimaryAction={handlePrimaryAction}
       secondaryLabel={LL.UpgradeAccountModal.notNow()}
       onSecondaryAction={handleSecondaryAction}
-      iconName="email-question"
+      iconName="email-add"
     />
   )
 }

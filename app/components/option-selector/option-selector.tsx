@@ -1,12 +1,16 @@
 import React, { useEffect } from "react"
 import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native"
-import { Text, makeStyles, useTheme, Icon } from "@rneui/themed"
+import { Text, makeStyles } from "@rneui/themed"
 import { useI18nContext } from "@app/i18n/i18n-react"
+
+import { IconNamesType } from "../atomic/galoy-icon"
+import { OptioIcon } from "./option-icon"
 
 export type Option = {
   label: string
   value: string
-  icon?: string
+  ionicon?: string
+  icon?: IconNamesType
   active?: boolean
   recommended?: boolean
 }
@@ -28,9 +32,6 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
 }) => {
   const { LL } = useI18nContext()
   const styles = useStyles()
-  const {
-    theme: { colors },
-  } = useTheme()
 
   useEffect(() => {
     if (!selected && !loading) {
@@ -80,16 +81,11 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
                   )}
                 </View>
 
-                {option.icon && (
-                  <View style={styles.iconContainer}>
-                    <Icon
-                      name={option.icon}
-                      size={24}
-                      type="ionicon"
-                      color={isSelected ? colors.primary : colors.grey3}
-                    />
-                  </View>
-                )}
+                <OptioIcon
+                  ionicon={option.ionicon}
+                  icon={option.icon}
+                  isSelected={isSelected}
+                />
               </View>
             </TouchableOpacity>
           )
