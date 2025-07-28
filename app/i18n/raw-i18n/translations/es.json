@@ -2514,10 +2514,6 @@
             "securityDescription": "Incrementar la seguridad de tu cuenta",
             "primaryButton": "Configurar inicio de sesión con email"
         },
-        "emailConfirmed": {
-            "mainTitle": "Inicio de sesión por correo añadido",
-            "title": "Nuevas funciones desbloqueadas para tu cuenta:"
-        },
         "lightningBenefits": {
             "mainTitle": "Configura la dirección Lightning",
             "title": "Beneficios de la dirección Lightning:",

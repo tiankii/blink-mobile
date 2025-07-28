@@ -119,6 +119,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
           emailRegistrationId,
           email: emailInput,
           onboarding,
+          hasUsername,
         })
       } else {
         setErrorMessage(LL.EmailRegistrationInitiateScreen.missingEmailRegistrationId())

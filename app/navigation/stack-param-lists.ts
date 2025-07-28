@@ -102,6 +102,7 @@ export type RootStackParamList = {
     email: string
     emailRegistrationId: string
     onboarding?: boolean
+    hasUsername?: boolean
   }
   emailLoginInitiate: undefined
   emailLoginValidate: { email: string; emailLoginId: string }
@@ -118,7 +119,6 @@ export type RootStackParamList = {
 export type OnboardingStackParamList = {
   welcomeLevel1: { onboarding?: boolean }
   emailBenefits: { onboarding?: boolean; hasUsername?: boolean }
-  emailConfirmed: { onboarding?: boolean; hasUsername?: boolean }
   lightningBenefits: { onboarding?: boolean }
   supportScreen: undefined
 }

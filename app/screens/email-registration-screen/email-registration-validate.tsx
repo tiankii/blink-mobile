@@ -41,7 +41,21 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
   const [emailVerify] = useUserEmailRegistrationValidateMutation()
 
   const [loading, setLoading] = useState(false)
-  const { emailRegistrationId, email, onboarding } = route.params
+  const { emailRegistrationId, email, onboarding, hasUsername = false } = route.params
+
+  const onboardingNavigate = useCallback(() => {
+    if (hasUsername) {
+      navigation.replace("onboarding", {
+        screen: "supportScreen",
+      })
+      return
+    }
+
+    navigation.replace("onboarding", {
+      screen: "lightningBenefits",
+      params: { onboarding },
+    })
+  }, [navigation, onboarding, hasUsername])
 
   const send = useCallback(
     async (code: string) => {
@@ -65,17 +79,8 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
             [
               {
                 text: LL.common.ok(),
-                onPress: () => {
-                  if (onboarding) {
-                    navigation.replace("onboarding", {
-                      screen: "lightningBenefits",
-                      params: { onboarding },
-                    })
-                    return
-                  }
-
-                  navigation.navigate("settings")
-                },
+                onPress: () =>
+                  onboarding ? onboardingNavigate() : navigation.navigate("settings"),
               },
             ],
           )
@@ -88,7 +93,16 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         setLoading(false)
       }
     },
-    [emailVerify, emailRegistrationId, navigation, LL, email, onboarding],
+    [
+      emailVerify,
+      emailRegistrationId,
+      LL.common,
+      LL.EmailRegistrationValidateScreen,
+      email,
+      onboarding,
+      onboardingNavigate,
+      navigation,
+    ],
   )
 
   const header = LL.EmailRegistrationValidateScreen.header({ email })

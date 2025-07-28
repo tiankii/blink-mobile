@@ -23,6 +23,7 @@ export const EmailBenefitsScreen: React.FC<EmailBenefitsScreenProps> = ({ route 
   const handlePrimaryAction = () => {
     navigation.navigate("emailRegistrationInitiate", {
       onboarding,
+      hasUsername,
     })
   }
 

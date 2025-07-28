@@ -2607,10 +2607,6 @@ const en: BaseTranslation = {
       securityDescription: "Increase account security",
       primaryButton: "Set up email login",
     },
-    emailConfirmed: {
-      mainTitle: "Email login added",
-      title: "New features unlocked for your account:",
-    },
     lightningBenefits: {
       mainTitle: "Set up Lightning Address",
       title: "Lightning Address benefits:",

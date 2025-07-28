@@ -8146,16 +8146,6 @@ type RootTranslation = {
 			 */
 			primaryButton: string
 		}
-		emailConfirmed: {
-			/**
-			 * E​m​a​i​l​ ​l​o​g​i​n​ ​a​d​d​e​d
-			 */
-			mainTitle: string
-			/**
-			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
-			 */
-			title: string
-		}
 		lightningBenefits: {
 			/**
 			 * S​e​t​ ​u​p​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
@@ -17436,16 +17426,6 @@ export type TranslationFunctions = {
 			 * Set up email login
 			 */
 			primaryButton: () => LocalizedString
-		}
-		emailConfirmed: {
-			/**
-			 * Email login added
-			 */
-			mainTitle: () => LocalizedString
-			/**
-			 * New features unlocked for your account:
-			 */
-			title: () => LocalizedString
 		}
 		lightningBenefits: {
 			/**

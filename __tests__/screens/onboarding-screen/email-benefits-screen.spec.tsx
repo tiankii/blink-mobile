@@ -76,6 +76,7 @@ describe("EmailBenefitsScreen", () => {
 
     expect(mockNavigate).toHaveBeenCalledWith("emailRegistrationInitiate", {
       onboarding: true,
+      hasUsername: true,
     })
   })
 
