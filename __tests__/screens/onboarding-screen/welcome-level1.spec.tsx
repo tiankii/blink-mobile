@@ -4,6 +4,7 @@ import { render, fireEvent } from "@testing-library/react-native"
 
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
+import { useSettingsScreenQuery } from "@app/graphql/generated"
 import { WelcomeLevel1Screen } from "@app/screens/onboarding-screen"
 import { OnboardingStackParamList } from "@app/navigation/stack-param-lists"
 
@@ -17,6 +18,20 @@ const route: RouteProp<OnboardingStackParamList, "welcomeLevel1"> = {
   },
 }
 
+const usernameMock = {
+  loading: false,
+  data: {
+    me: {
+      username: "userexample",
+    },
+  },
+}
+
+jest.mock("@app/graphql/generated", () => ({
+  ...jest.requireActual("@app/graphql/generated"),
+  useSettingsScreenQuery: jest.fn(),
+}))
+
 jest.mock("@react-navigation/native", () => ({
   ...jest.requireActual("@react-navigation/native"),
   useNavigation: jest.fn(),
@@ -26,6 +41,8 @@ describe("WelcomeLevel1Screen", () => {
   let LL: ReturnType<typeof i18nObject>
 
   beforeEach(() => {
+    ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(usernameMock)
+
     loadLocale("en")
     LL = i18nObject("en")
   })
@@ -65,6 +82,7 @@ describe("WelcomeLevel1Screen", () => {
       screen: "emailBenefits",
       params: {
         onboarding: true,
+        hasUsername: true,
       },
     })
   })

@@ -89,10 +89,17 @@ describe("EmailConfirmedScreen", () => {
   it("navigates to supportScreen if username exists", () => {
     const mockNavigate = jest.fn()
     ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
+    const mockRoute: RouteProp<OnboardingStackParamList, "emailConfirmed"> = {
+      ...route,
+      params: {
+        ...route.params,
+        hasUsername: true,
+      },
+    }
 
     const { getByText } = render(
       <ContextForScreen>
-        <EmailConfirmedScreen route={route} />
+        <EmailConfirmedScreen route={mockRoute} />
       </ContextForScreen>,
     )
 
