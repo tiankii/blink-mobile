@@ -15,6 +15,7 @@ import { Text, makeStyles, useTheme } from "@rneui/themed"
 export type TrialAccountLimitsModalProps = {
   isVisible: boolean
   closeModal: () => void
+  beforeSubmit?: () => void
 }
 
 const UPGRADE_TO = 1
@@ -22,6 +23,7 @@ const UPGRADE_TO = 1
 export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = ({
   isVisible,
   closeModal,
+  beforeSubmit,
 }) => {
   const { LL } = useI18nContext()
   const styles = useStyles()
@@ -33,6 +35,8 @@ export const TrialAccountLimitsModal: React.FC<TrialAccountLimitsModalProps> = (
     useNavigation<StackNavigationProp<RootStackParamList, "getStarted">>()
 
   const navigateToPhoneLogin = () => {
+    if (beforeSubmit) beforeSubmit()
+
     navigation.navigate("login", {
       type: PhoneLoginInitiateType.CreateAccount,
       title: LL.UpgradeAccountModal.upgradeToLevel({ level: UPGRADE_TO }),
