@@ -81,7 +81,7 @@ export const useSaveSessionProfile = () => {
       const profile = await tryFetchUserProps({ token, fetchUsername })
       if (!profile) return
 
-      if (profile.accountId) setUpgradeModalShown(client, profile.accountId, false)
+      if (profile.accountId) setUpgradeModalShown(client, false)
 
       const exists = profiles.some((p) => p.accountId === profile.accountId)
       if (!exists) {

@@ -1795,11 +1795,6 @@ export type QueryRealtimePriceArgs = {
 };
 
 
-export type QueryUpgradeModalShownArgs = {
-  accountId: Scalars['String']['input'];
-};
-
-
 export type QueryUserDefaultWalletIdArgs = {
   username: Scalars['Username']['input'];
 };
@@ -2602,9 +2597,7 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
 
-export type UpgradeModalShownQueryVariables = Exact<{
-  accountId: Scalars['String']['input'];
-}>;
+export type UpgradeModalShownQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UpgradeModalShownQuery = { readonly __typename: 'Query', readonly upgradeModalShown: boolean };
@@ -4024,8 +4017,8 @@ export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCirc
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
 export const UpgradeModalShownDocument = gql`
-    query upgradeModalShown($accountId: String!) {
-  upgradeModalShown(accountId: $accountId) @client
+    query upgradeModalShown {
+  upgradeModalShown @client
 }
     `;
 
@@ -4041,11 +4034,10 @@ export const UpgradeModalShownDocument = gql`
  * @example
  * const { data, loading, error } = useUpgradeModalShownQuery({
  *   variables: {
- *      accountId: // value for 'accountId'
  *   },
  * });
  */
-export function useUpgradeModalShownQuery(baseOptions: Apollo.QueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables> & ({ variables: UpgradeModalShownQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useUpgradeModalShownQuery(baseOptions?: Apollo.QueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
       }
@@ -9348,7 +9340,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   price?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
-  upgradeModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryUpgradeModalShownArgs, 'accountId'>>;
+  upgradeModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
   welcomeLeaderboard?: Resolver<ResolversTypes['Leaderboard'], ParentType, ContextType, RequireFields<QueryWelcomeLeaderboardArgs, 'input'>>;

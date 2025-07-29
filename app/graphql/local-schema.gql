@@ -14,7 +14,7 @@ extend type Query {
   hasPromptedSetDefaultAccount: Boolean!
   introducingCirclesModalShown: Boolean!
   innerCircleValue: Int!
-  upgradeModalShown(accountId: String!): Boolean!
+  upgradeModalShown: Boolean!
 }
 
 extend type Region {

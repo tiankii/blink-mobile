@@ -244,8 +244,6 @@ export const HomeScreen: React.FC = () => {
   }, [pendingIncomingTransactions, transactionsEdges])
 
   const { data: dataModal } = useUpgradeModalShownQuery({
-    variables: { accountId: accountId ?? "" },
-    skip: !accountId,
     fetchPolicy: "cache-only",
   })
   const upgradeModalShown = dataModal?.upgradeModalShown ?? false
@@ -263,7 +261,7 @@ export const HomeScreen: React.FC = () => {
     if (!accountId || levelAccount !== AccountLevel.Zero) return
     if (!upgradeModalShown && satsBalance > balanceLimitToTriggerUpgradeModal) {
       openUpgradeModal()
-      setUpgradeModalShown(client, accountId, true)
+      setUpgradeModalShown(client, true)
     }
   }, [
     accountId,

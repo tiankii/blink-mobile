@@ -73,8 +73,8 @@ export default gql`
     innerCircleValue @client
   }
 
-  query upgradeModalShown($accountId: String!) {
-    upgradeModalShown(accountId: $accountId) @client
+  query upgradeModalShown {
+    upgradeModalShown @client
   }
 `
 
@@ -237,14 +237,15 @@ export const setInnerCircleCachedValue = (
 
 export const setUpgradeModalShown = (
   client: ApolloClient<unknown>,
-  accountId: string,
   shown: boolean,
 ): boolean => {
   try {
     client.writeQuery<UpgradeModalShownQuery>({
       query: UpgradeModalShownDocument,
-      variables: { accountId },
-      data: { __typename: "Query", upgradeModalShown: shown },
+      data: {
+        __typename: "Query",
+        upgradeModalShown: shown,
+      },
     })
     return shown
   } catch {

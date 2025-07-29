@@ -1658,8 +1658,8 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
   }
 }
 
-query upgradeModalShown($accountId: String!) {
-  upgradeModalShown(accountId: $accountId) @client
+query upgradeModalShown {
+  upgradeModalShown @client
 }
 
 query walletOverviewScreen {
