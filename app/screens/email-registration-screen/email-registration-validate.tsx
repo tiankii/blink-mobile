@@ -73,14 +73,17 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         }
 
         if (res.data?.userEmailRegistrationValidate.me?.email?.verified) {
+          if (onboarding) {
+            onboardingNavigate()
+            return
+          }
           Alert.alert(
             LL.common.success(),
             LL.EmailRegistrationValidateScreen.success({ email }),
             [
               {
                 text: LL.common.ok(),
-                onPress: () =>
-                  onboarding ? onboardingNavigate() : navigation.navigate("settings"),
+                onPress: () => navigation.navigate("settings"),
               },
             ],
           )
