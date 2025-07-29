@@ -23,6 +23,8 @@ import {
   IntroducingCirclesModalShownQuery,
   RegionDocument,
   RegionQuery,
+  UpgradeModalShownDocument,
+  UpgradeModalShownQuery,
 } from "./generated"
 
 export default gql`
@@ -69,6 +71,10 @@ export default gql`
 
   query innerCircleValue {
     innerCircleValue @client
+  }
+
+  query upgradeModalShown($accountId: String!) {
+    upgradeModalShown(accountId: $accountId) @client
   }
 `
 
@@ -226,5 +232,23 @@ export const setInnerCircleCachedValue = (
     })
   } catch {
     console.warn("unable to update InnerCircleValueDocument")
+  }
+}
+
+export const setUpgradeModalShown = (
+  client: ApolloClient<unknown>,
+  accountId: string,
+  shown: boolean,
+): boolean => {
+  try {
+    client.writeQuery<UpgradeModalShownQuery>({
+      query: UpgradeModalShownDocument,
+      variables: { accountId },
+      data: { __typename: "Query", upgradeModalShown: shown },
+    })
+    return shown
+  } catch {
+    console.warn("unable to update upgradeModalShown")
+    return false
   }
 }

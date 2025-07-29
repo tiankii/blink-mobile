@@ -97,6 +97,10 @@ export const createCache = () =>
           innerCircleValue: {
             read: (value) => value ?? -1,
           },
+          upgradeModalShown: {
+            keyArgs: ["accountId"],
+            read: (value) => value ?? false,
+          },
         },
       },
       Wallet: {
