@@ -1,6 +1,7 @@
 import * as React from "react"
-import { useCallback, useState } from "react"
-import { Alert } from "react-native"
+import { useCallback, useState, useEffect } from "react"
+import { View, StyleSheet } from "react-native"
+import { Text, makeStyles } from "@rneui/themed"
 
 import { gql } from "@apollo/client"
 import { CodeInput } from "@app/components/code-input"
@@ -9,6 +10,11 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import {
+  SuccessIconAnimation,
+  CompletedTextAnimation,
+} from "@app/components/success-animation"
 
 gql`
   mutation userEmailRegistrationValidate($input: UserEmailRegistrationValidateInput!) {
@@ -31,8 +37,11 @@ type Props = {
   route: RouteProp<RootStackParamList, "emailRegistrationValidate">
 }
 
+const SUCCESS_DELAY = 2000
+
 export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const styles = useStyles()
 
   const [errorMessage, setErrorMessage] = React.useState<string>("")
 
@@ -41,6 +50,7 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
   const [emailVerify] = useUserEmailRegistrationValidateMutation()
 
   const [loading, setLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const { emailRegistrationId, email, onboarding, hasUsername = false } = route.params
 
   const onboardingNavigate = useCallback(() => {
@@ -73,20 +83,7 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         }
 
         if (res.data?.userEmailRegistrationValidate.me?.email?.verified) {
-          if (onboarding) {
-            onboardingNavigate()
-            return
-          }
-          Alert.alert(
-            LL.common.success(),
-            LL.EmailRegistrationValidateScreen.success({ email }),
-            [
-              {
-                text: LL.common.ok(),
-                onPress: () => navigation.navigate("settings"),
-              },
-            ],
-          )
+          setShowSuccess(true)
         } else {
           throw new Error(LL.common.errorAuthToken())
         }
@@ -96,27 +93,67 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         setLoading(false)
       }
     },
-    [
-      emailVerify,
-      emailRegistrationId,
-      LL.common,
-      LL.EmailRegistrationValidateScreen,
-      email,
-      onboarding,
-      onboardingNavigate,
-      navigation,
-    ],
+    [emailVerify, emailRegistrationId, LL.common],
   )
+
+  useEffect(() => {
+    if (!showSuccess) return
+
+    const t = setTimeout(() => {
+      if (onboarding) {
+        onboardingNavigate()
+        return
+      }
+      navigation.navigate("settings")
+    }, SUCCESS_DELAY)
+
+    return () => clearTimeout(t)
+  }, [
+    showSuccess,
+    onboarding,
+    onboardingNavigate,
+    LL.common,
+    LL.EmailRegistrationValidateScreen,
+    email,
+    navigation,
+  ])
 
   const header = LL.EmailRegistrationValidateScreen.header({ email })
 
   return (
-    <CodeInput
-      send={send}
-      header={header}
-      loading={loading}
-      errorMessage={errorMessage}
-      setErrorMessage={setErrorMessage}
-    />
+    <>
+      {showSuccess && (
+        <View style={styles.successOverlay}>
+          <SuccessIconAnimation>
+            <GaloyIcon name="email-add" size={128} />
+          </SuccessIconAnimation>
+          <CompletedTextAnimation>
+            <Text type="h2" style={styles.successText}>
+              {LL.common.success()}
+            </Text>
+          </CompletedTextAnimation>
+        </View>
+      )}
+      <CodeInput
+        send={send}
+        header={header}
+        loading={loading}
+        errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
+      />
+    </>
   )
 }
+
+const useStyles = makeStyles(({ colors }) => ({
+  successText: {
+    marginTop: 20,
+  },
+  successOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+}))
