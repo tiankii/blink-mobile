@@ -3,7 +3,7 @@ import { View } from "react-native"
 import { makeStyles, useTheme, Icon } from "@rneui/themed"
 import { GaloyIcon, IconNamesType } from "../atomic/galoy-icon"
 
-export const OptioIcon = ({
+export const OptionIcon = ({
   ionicon,
   icon,
   isSelected,

@@ -4,7 +4,7 @@ import { Text, makeStyles } from "@rneui/themed"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 import { IconNamesType } from "../atomic/galoy-icon"
-import { OptioIcon } from "./option-icon"
+import { OptionIcon } from "./option-icon"
 
 export type Option = {
   label: string
@@ -81,7 +81,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
                   )}
                 </View>
 
-                <OptioIcon
+                <OptionIcon
                   ionicon={option.ionicon}
                   icon={option.icon}
                   isSelected={isSelected}
