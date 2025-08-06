@@ -8,8 +8,8 @@ import { makeStyles, Text, useTheme } from "@rneui/themed"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { OptionSelector, Option } from "@app/components/option-selector"
-import AppLogoLightMode from "@app/assets/logo/app-logo-light.svg"
 import AppLogoDarkMode from "@app/assets/logo/app-logo-dark.svg"
+import AppLogoLightMode from "@app/assets/logo/blink-logo-light.svg"
 import { PhoneCodeChannelType } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { Screen } from "@app/components/screen"
@@ -35,8 +35,12 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   } = useTheme()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { isTelegramSupported, isSmsSupported, isWhatsAppSupported } =
-    useRequestPhoneCodeLogin()
+  const {
+    isTelegramSupported,
+    isSmsSupported,
+    isWhatsAppSupported,
+    loadingSupportedCountries,
+  } = useRequestPhoneCodeLogin()
 
   const [selected, setSelected] = useState<LoginChannels | undefined>()
 
@@ -85,26 +89,26 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
       {
         label: LL.support.telegram(),
         value: LoginChannels.Telegram,
-        icon: "send",
+        icon: "telegram-simple",
         active: isTelegramSupported,
         recommended: true,
       },
       {
         label: LL.support.sms(),
         value: LoginChannels.Sms,
-        icon: "call-outline",
+        ionicon: "call-outline",
         active: isSmsSupported,
       },
       {
         label: LL.support.whatsapp(),
         value: LoginChannels.Whatsapp,
-        icon: "logo-whatsapp",
+        ionicon: "logo-whatsapp",
         active: isWhatsAppSupported,
       },
       {
         label: LL.support.email(),
         value: LoginChannels.Email,
-        icon: "mail-outline",
+        ionicon: "mail-outline",
         active: type === PhoneLoginInitiateType.Login,
       },
     ],
@@ -118,7 +122,12 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
         <Text type="h1" style={styles.title}>
           {LL.LoginMethodScreen.title()}
         </Text>
-        <OptionSelector selected={selected} onSelect={handleSelect} options={options} />
+        <OptionSelector
+          selected={selected}
+          onSelect={handleSelect}
+          options={options}
+          loading={loadingSupportedCountries}
+        />
       </View>
 
       <View style={styles.bottom}>
@@ -130,6 +139,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
             containerStyle={styles.buttonContainer}
           />
         )}
+        <View style={styles.buttonSpacer} />
       </View>
     </Screen>
   )
@@ -159,6 +169,9 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: "flex-end",
-    marginBottom: 50,
+    marginBottom: 36,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))

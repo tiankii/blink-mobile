@@ -2607,10 +2607,6 @@ const en: BaseTranslation = {
       securityDescription: "Increase account security",
       primaryButton: "Set up email login",
     },
-    emailConfirmed: {
-      mainTitle: "Email login added",
-      title: "New features unlocked for your account:",
-    },
     lightningBenefits: {
       mainTitle: "Set up Lightning Address",
       title: "Lightning Address benefits:",
@@ -2618,10 +2614,6 @@ const en: BaseTranslation = {
       easyToShareDescription: "Easy to memorize and share publicly or privately",
       blinkToolsDescription: "Unlocks various Blink tools useful for commerce",
       primaryButton: "Set up Lightning Address",
-    },
-    lightningConfirmed: {
-      mainTitle: "Lightning Address set",
-      title: "New features unlocked for your account:",
     },
     supportScreen: {
       mainTitle: "Blink feedback",

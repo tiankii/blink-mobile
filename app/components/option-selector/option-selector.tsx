@@ -1,13 +1,16 @@
 import React, { useEffect } from "react"
 import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native"
-import { Text, makeStyles, useTheme, Icon } from "@rneui/themed"
-
+import { Text, makeStyles } from "@rneui/themed"
 import { useI18nContext } from "@app/i18n/i18n-react"
+
+import { IconNamesType } from "../atomic/galoy-icon"
+import { OptionIcon } from "./option-icon"
 
 export type Option = {
   label: string
   value: string
-  icon?: string
+  ionicon?: string
+  icon?: IconNamesType
   active?: boolean
   recommended?: boolean
 }
@@ -17,6 +20,7 @@ export type OptionSelectorProps = {
   selected?: string
   onSelect: (value: string) => void
   style?: StyleProp<ViewStyle>
+  loading?: boolean
 }
 
 export const OptionSelector: React.FC<OptionSelectorProps> = ({
@@ -24,21 +28,25 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   selected,
   onSelect,
   style,
+  loading = false,
 }) => {
   const { LL } = useI18nContext()
   const styles = useStyles()
-  const {
-    theme: { colors },
-  } = useTheme()
 
   useEffect(() => {
-    if (!selected) {
-      const recommended = options.find((o) => o.active !== false && o.recommended)
+    if (!selected && !loading) {
+      const activeOptions = options.filter((o) => o.active !== false)
+      const recommended = activeOptions.find((o) => o.recommended)
       if (recommended) {
         onSelect(recommended.value)
+        return
+      }
+
+      if (activeOptions.length > 0) {
+        onSelect(activeOptions[0].value)
       }
     }
-  }, [selected, options, onSelect])
+  }, [selected, options, onSelect, loading])
 
   return (
     <View style={[styles.fieldContainer, style]}>
@@ -73,16 +81,11 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
                   )}
                 </View>
 
-                {option.icon && (
-                  <View style={styles.iconContainer}>
-                    <Icon
-                      name={option.icon}
-                      size={24}
-                      type="ionicon"
-                      color={isSelected ? colors.primary : colors.grey3}
-                    />
-                  </View>
-                )}
+                <OptionIcon
+                  ionicon={option.ionicon}
+                  icon={option.icon}
+                  isSelected={isSelected}
+                />
               </View>
             </TouchableOpacity>
           )

@@ -1,17 +1,23 @@
-import React, { useState } from "react"
-import { View, TextInput } from "react-native"
+import React, { useState, useEffect, useCallback } from "react"
+import { View, TextInput, StyleSheet } from "react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 import { gql } from "@apollo/client"
 
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { Screen } from "@app/components/screen"
 import {
   validateUsername,
   SetUsernameError,
 } from "@app/components/set-lightning-address-modal"
+import {
+  SuccessIconAnimation,
+  CompletedTextAnimation,
+} from "@app/components/success-animation"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -44,6 +50,8 @@ gql`
   }
 `
 
+const SUCCESS_DELAY = 2000
+
 export const SetLightningAddressScreen: React.FC<{
   route: RouteProp<RootStackParamList, "setLightningAddress">
 }> = ({ route }) => {
@@ -56,6 +64,7 @@ export const SetLightningAddressScreen: React.FC<{
 
   const [error, setError] = useState<SetUsernameError | undefined>()
   const [username, setUsername] = useState("")
+  const [showSuccess, setShowSuccess] = useState(false)
   const { onboarding } = route.params
 
   const {
@@ -95,6 +104,12 @@ export const SetLightningAddressScreen: React.FC<{
     setError(undefined)
   }
 
+  const onboardingNavigate = useCallback(() => {
+    navigation.replace("onboarding", {
+      screen: "supportScreen",
+    })
+  }, [navigation])
+
   const onSetLightningAddress = async () => {
     const validationResult = validateUsername(username)
     if (!validationResult.valid) {
@@ -116,16 +131,22 @@ export const SetLightningAddressScreen: React.FC<{
       return
     }
 
-    if (onboarding) {
-      navigation.replace("onboarding", {
-        screen: "lightningConfirmed",
-        params: { onboarding },
-      })
-      return
-    }
-
-    navigation.navigate("settings")
+    setShowSuccess(true)
   }
+
+  useEffect(() => {
+    if (!showSuccess) return
+
+    const time = setTimeout(() => {
+      if (onboarding) {
+        onboardingNavigate()
+        return
+      }
+      navigation.navigate("settings")
+    }, SUCCESS_DELAY)
+
+    return () => clearTimeout(time)
+  }, [showSuccess, onboarding, navigation, onboardingNavigate])
 
   let errorMessage = ""
   switch (error) {
@@ -148,6 +169,18 @@ export const SetLightningAddressScreen: React.FC<{
 
   return (
     <Screen>
+      {showSuccess && (
+        <View style={styles.successOverlay}>
+          <SuccessIconAnimation>
+            <GaloyIcon name="lightning-address" size={128} />
+          </SuccessIconAnimation>
+          <CompletedTextAnimation>
+            <Text type="h2" style={styles.successText}>
+              {LL.common.success()}
+            </Text>
+          </CompletedTextAnimation>
+        </View>
+      )}
       <View style={styles.content}>
         <Text type={"p1"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
         <Text type={"p1"} color={colors.warning} bold>
@@ -178,12 +211,30 @@ export const SetLightningAddressScreen: React.FC<{
           onPress={onSetLightningAddress}
           containerStyle={styles.buttonContainer}
         />
+        {onboarding ? (
+          <GaloySecondaryButton
+            title={LL.UpgradeAccountModal.notNow()}
+            onPress={onboardingNavigate}
+          />
+        ) : (
+          <View style={styles.buttonSpacer} />
+        )}
       </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors }) => ({
+  successText: {
+    marginTop: 20,
+  },
+  successOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 24,
@@ -215,5 +266,8 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     fontSize: 18,
     color: colors.black,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))

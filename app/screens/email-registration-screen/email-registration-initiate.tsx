@@ -13,6 +13,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { Screen } from "@app/components/screen"
 import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { useUserEmailRegistrationInitiateMutation } from "@app/graphql/generated"
 
 const useStyles = makeStyles(({ colors }) => ({
@@ -23,6 +24,7 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
+    marginBottom: 26,
   },
 
   inputContainer: {
@@ -46,6 +48,9 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   errorContainer: {
     marginBottom: 20,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))
 
@@ -82,10 +87,9 @@ export const EmailRegistrationInitiateScreen: React.FC<
   const [emailInput, setEmailInput] = React.useState<string>("")
   const [errorMessage, setErrorMessage] = React.useState<string>("")
   const [loading, setLoading] = React.useState<boolean>(false)
-  const { onboarding = false } = route.params ?? {}
+  const { onboarding = false, hasUsername = false } = route.params ?? {}
 
   const { LL } = useI18nContext()
-
   const [setEmailMutation] = useUserEmailRegistrationInitiateMutation()
 
   const submit = async () => {
@@ -115,6 +119,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
           emailRegistrationId,
           email: emailInput,
           onboarding,
+          hasUsername,
         })
       } else {
         setErrorMessage(LL.EmailRegistrationInitiateScreen.missingEmailRegistrationId())
@@ -127,6 +132,20 @@ export const EmailRegistrationInitiateScreen: React.FC<
     } finally {
       setLoading(false)
     }
+  }
+
+  const onboardingNavigate = () => {
+    if (hasUsername) {
+      navigation.navigate("onboarding", {
+        screen: "supportScreen",
+      })
+      return
+    }
+
+    navigation.navigate("onboarding", {
+      screen: "lightningBenefits",
+      params: { onboarding },
+    })
   }
 
   return (
@@ -168,6 +187,14 @@ export const EmailRegistrationInitiateScreen: React.FC<
             disabled={!emailInput}
             onPress={submit}
           />
+          {onboarding ? (
+            <GaloySecondaryButton
+              title={LL.UpgradeAccountModal.notNow()}
+              onPress={onboardingNavigate}
+            />
+          ) : (
+            <View style={styles.buttonSpacer} />
+          )}
         </View>
       </View>
     </Screen>

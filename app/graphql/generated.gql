@@ -1658,6 +1658,10 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
   }
 }
 
+query upgradeModalShown {
+  upgradeModalShown @client
+}
+
 query walletOverviewScreen {
   me {
     id

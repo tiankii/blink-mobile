@@ -23,8 +23,11 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
+    marginBottom: 26,
   },
-
+  buttonSpacer: {
+    height: 40,
+  },
   inputContainer: {
     marginBottom: 20,
     flexDirection: "row",
@@ -157,6 +160,7 @@ export const EmailLoginInitiateScreen: React.FC = () => {
             disabled={!emailInput}
             onPress={submit}
           />
+          <View style={styles.buttonSpacer} />
         </View>
       </View>
     </Screen>

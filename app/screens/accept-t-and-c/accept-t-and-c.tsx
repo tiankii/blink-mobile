@@ -85,6 +85,7 @@ export const AcceptTermsAndConditionsScreen: React.FC = () => {
             loading={loading}
             disabled={loading}
           />
+          <View style={styles.buttonSpacer} />
         </View>
       </View>
     </Screen>
@@ -99,6 +100,7 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
+    marginBottom: 20,
   },
 
   inputContainer: {
@@ -122,5 +124,8 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   errorContainer: {
     marginBottom: 20,
+  },
+  buttonSpacer: {
+    height: 40,
   },
 }))

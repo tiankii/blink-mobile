@@ -94,7 +94,10 @@ const useStyles = makeStyles(({ colors }) => ({
   contactSupportButton: {
     marginTop: 10,
   },
-
+  buttonSpacer: {
+    height: 40,
+    marginBottom: 25,
+  },
   loadingView: { flex: 1, justifyContent: "center", alignItems: "center" },
 }))
 
@@ -309,6 +312,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
           isDisabled={isDisabledCountryAndCreateAccount}
           submit={userSubmitPhoneNumber}
         />
+        <View style={styles.buttonSpacer} />
       </View>
     </Screen>
   )

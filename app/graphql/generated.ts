@@ -193,13 +193,6 @@ export type AccountLimits = {
   readonly withdrawal: ReadonlyArray<AccountLimit>;
 };
 
-export type AccountMetadataEntry = {
-  readonly __typename: 'AccountMetadataEntry';
-  readonly accountId: Scalars['String']['output'];
-  readonly sessionCount: Scalars['Int']['output'];
-  readonly upgradeModalShown: Scalars['Int']['output'];
-};
-
 export type AccountUpdateDefaultWalletIdInput = {
   readonly walletId: Scalars['WalletId']['input'];
 };
@@ -1701,7 +1694,6 @@ export type PublicWallet = {
 export type Query = {
   readonly __typename: 'Query';
   readonly accountDefaultWallet: PublicWallet;
-  readonly accountMetadata: ReadonlyArray<AccountMetadataEntry>;
   /** Retrieve the list of scopes permitted for the user's token or API key */
   readonly authorization: Authorization;
   readonly beta: Scalars['Boolean']['output'];
@@ -1734,6 +1726,7 @@ export type Query = {
   /** Returns 1 Sat and 1 Usd Cent price for the given currency in minor unit */
   readonly realtimePrice: RealtimePrice;
   readonly region?: Maybe<Region>;
+  readonly upgradeModalShown: Scalars['Boolean']['output'];
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
   readonly usernameAvailable?: Maybe<Scalars['Boolean']['output']>;
@@ -2603,6 +2596,11 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
+
+export type UpgradeModalShownQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UpgradeModalShownQuery = { readonly __typename: 'Query', readonly upgradeModalShown: boolean };
 
 export type TransactionFragment = { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } };
 
@@ -4018,6 +4016,43 @@ export type InnerCircleValueQueryHookResult = ReturnType<typeof useInnerCircleVa
 export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCircleValueLazyQuery>;
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
+export const UpgradeModalShownDocument = gql`
+    query upgradeModalShown {
+  upgradeModalShown @client
+}
+    `;
+
+/**
+ * __useUpgradeModalShownQuery__
+ *
+ * To run a query within a React component, call `useUpgradeModalShownQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUpgradeModalShownQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUpgradeModalShownQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUpgradeModalShownQuery(baseOptions?: Apollo.QueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
+      }
+export function useUpgradeModalShownLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
+        }
+export function useUpgradeModalShownSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
+        }
+export type UpgradeModalShownQueryHookResult = ReturnType<typeof useUpgradeModalShownQuery>;
+export type UpgradeModalShownLazyQueryHookResult = ReturnType<typeof useUpgradeModalShownLazyQuery>;
+export type UpgradeModalShownSuspenseQueryHookResult = ReturnType<typeof useUpgradeModalShownSuspenseQuery>;
+export type UpgradeModalShownQueryResult = Apollo.QueryResult<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>;
 export const NetworkDocument = gql`
     query network {
   globals {
@@ -8095,7 +8130,6 @@ export type ResolversTypes = {
   AccountLevel: AccountLevel;
   AccountLimit: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['AccountLimit']>;
   AccountLimits: ResolverTypeWrapper<AccountLimits>;
-  AccountMetadataEntry: ResolverTypeWrapper<AccountMetadataEntry>;
   AccountUpdateDefaultWalletIdInput: AccountUpdateDefaultWalletIdInput;
   AccountUpdateDefaultWalletIdPayload: ResolverTypeWrapper<AccountUpdateDefaultWalletIdPayload>;
   AccountUpdateDisplayCurrencyInput: AccountUpdateDisplayCurrencyInput;
@@ -8335,7 +8369,6 @@ export type ResolversParentTypes = {
   AccountEnableNotificationChannelInput: AccountEnableNotificationChannelInput;
   AccountLimit: ResolversInterfaceTypes<ResolversParentTypes>['AccountLimit'];
   AccountLimits: AccountLimits;
-  AccountMetadataEntry: AccountMetadataEntry;
   AccountUpdateDefaultWalletIdInput: AccountUpdateDefaultWalletIdInput;
   AccountUpdateDefaultWalletIdPayload: AccountUpdateDefaultWalletIdPayload;
   AccountUpdateDisplayCurrencyInput: AccountUpdateDisplayCurrencyInput;
@@ -8590,13 +8623,6 @@ export type AccountLimitsResolvers<ContextType = any, ParentType extends Resolve
   convert?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
   internalSend?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
   withdrawal?: Resolver<ReadonlyArray<ResolversTypes['AccountLimit']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AccountMetadataEntryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountMetadataEntry'] = ResolversParentTypes['AccountMetadataEntry']> = {
-  accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sessionCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  upgradeModalShown?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -9287,7 +9313,6 @@ export type PublicWalletResolvers<ContextType = any, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   accountDefaultWallet?: Resolver<ResolversTypes['PublicWallet'], ParentType, ContextType, RequireFields<QueryAccountDefaultWalletArgs, 'username'>>;
-  accountMetadata?: Resolver<ReadonlyArray<ResolversTypes['AccountMetadataEntry']>, ParentType, ContextType>;
   authorization?: Resolver<ResolversTypes['Authorization'], ParentType, ContextType>;
   beta?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   btcPriceList?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['PricePoint']>>>, ParentType, ContextType, RequireFields<QueryBtcPriceListArgs, 'range'>>;
@@ -9315,6 +9340,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   price?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
+  upgradeModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
   welcomeLeaderboard?: Resolver<ResolversTypes['Leaderboard'], ParentType, ContextType, RequireFields<QueryWelcomeLeaderboardArgs, 'input'>>;
@@ -9689,7 +9715,6 @@ export type Resolvers<ContextType = any> = {
   AccountDeletePayload?: AccountDeletePayloadResolvers<ContextType>;
   AccountLimit?: AccountLimitResolvers<ContextType>;
   AccountLimits?: AccountLimitsResolvers<ContextType>;
-  AccountMetadataEntry?: AccountMetadataEntryResolvers<ContextType>;
   AccountUpdateDefaultWalletIdPayload?: AccountUpdateDefaultWalletIdPayloadResolvers<ContextType>;
   AccountUpdateDisplayCurrencyPayload?: AccountUpdateDisplayCurrencyPayloadResolvers<ContextType>;
   AccountUpdateNotificationSettingsPayload?: AccountUpdateNotificationSettingsPayloadResolvers<ContextType>;

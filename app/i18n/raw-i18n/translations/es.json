@@ -2514,10 +2514,6 @@
             "securityDescription": "Incrementar la seguridad de tu cuenta",
             "primaryButton": "Configurar inicio de sesión con email"
         },
-        "emailConfirmed": {
-            "mainTitle": "Inicio de sesión por correo añadido",
-            "title": "Nuevas funciones desbloqueadas para tu cuenta:"
-        },
         "lightningBenefits": {
             "mainTitle": "Configura la dirección Lightning",
             "title": "Beneficios de la dirección Lightning:",
@@ -2525,10 +2521,6 @@
             "easyToShareDescription": "Fácil de memorizar y compartir pública o privadamente",
             "blinkToolsDescription": "Desbloquea varias herramientas de Blink útiles para el comercio",
             "primaryButton": "Configurar dirección Lightning"
-        },
-        "lightningConfirmed": {
-          "mainTitle": "Dirección Lightning configurada",
-          "title": "Nuevas funciones desbloqueadas para tu cuenta:"
         },
         "supportScreen": {
           "mainTitle": "Comentarios sobre Blink",
