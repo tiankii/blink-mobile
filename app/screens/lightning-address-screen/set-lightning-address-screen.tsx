@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { View, TextInput, StyleSheet } from "react-native"
+import { View, TextInput, StyleSheet, Keyboard } from "react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
@@ -131,6 +131,7 @@ export const SetLightningAddressScreen: React.FC<{
       return
     }
 
+    Keyboard.dismiss()
     setShowSuccess(true)
   }
 
