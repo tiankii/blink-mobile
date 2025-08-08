@@ -59,7 +59,7 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
 
         {iconName && (
           <View style={styles.iconWrapper}>
-            <GaloyIcon name={iconName} color={colors.primary3} size={110} />
+            <GaloyIcon name={iconName} color={colors.primary} size={110} />
           </View>
         )}
       </View>

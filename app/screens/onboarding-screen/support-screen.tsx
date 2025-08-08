@@ -53,6 +53,6 @@ const useStyles = makeStyles(({ colors }) => ({
     marginBottom: 8,
   },
   linkText: {
-    color: colors.primary3,
+    color: colors.primary,
   },
 }))
