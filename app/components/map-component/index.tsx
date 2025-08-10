@@ -1,42 +1,50 @@
 import debounce from "lodash.debounce"
-import React, { useRef, useState } from "react"
-import { View } from "react-native"
-import MapView, { MapMarker as MapMarkerType, Marker, Region } from "react-native-maps"
+import React, { useCallback, useMemo, useRef, useState } from "react"
+import { Dimensions, View } from "react-native"
+import MapView, { Region } from "react-native-maps"
 
 import { useApolloClient } from "@apollo/client"
 import { updateMapLastCoords } from "@app/graphql/client-only-query"
 import { MapMarker } from "@app/graphql/generated"
-import { ListItem, makeStyles, useTheme, Text } from "@rneui/themed"
+import { ListItem, makeStyles, useTheme } from "@rneui/themed"
 
 import ButtonMapsContainer from "./button-maps-container"
 import MapStyles from "./map-styles.json"
 import { OpenBottomModal, OpenBottomModalElement, TModal } from "./modals/modal-container"
 import Icon from "react-native-vector-icons/Ionicons"
-import { ICluster, IMarker } from "@app/screens/map-screen/btc-map-interface"
-import SuperCluster from "react-native-maps-super-cluster"
-import iconMap from "./iconMap"
-import PinIcon from "./pinIcon"
+import { IMarker } from "@app/screens/map-screen/btc-map-interface"
+import { useClusterer, isPointCluster } from "react-native-clusterer"
+import { ClusterPoint } from "./map-types"
+import ClusterComponent from "@app/components/map-component/map-elements/cluster-component.tsx"
+import MarkerComponent from "@app/components/map-component/map-elements/marker-component.tsx"
 
 type Props = {
   data?: IMarker[]
   userLocation?: Region
   handleCalloutPress: (_: MapMarker) => void
 }
-interface SuperClusterRef {
-  getMapRef: () => MapView | null
-}
 
-export default function MapComponent({ data, userLocation, handleCalloutPress }: Props) {
+const { width, height } = Dimensions.get("window")
+
+// config, we will need to finetune this
+const CLUSTER_OPTIONS = {
+  radius: 50,
+  maxZoom: 16,
+  minPoints: 2,
+  extent: 512,
+}
+export default function MapComponent({ data, userLocation }: Props) {
   const {
-    theme: { colors, mode: themeMode },
+    theme: { mode: themeMode },
   } = useTheme()
   const styles = useStyles()
   const client = useApolloClient()
 
-  const mapViewRef = useRef<SuperClusterRef>(null)
-  const [focusedMarker, setFocusedMarker] = React.useState<IMarker | null>(null)
-
+  const mapViewRef = useRef<MapView>(null)
   const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
+
+  const [focusedMarker, setFocusedMarker] = React.useState<IMarker | null>(null)
+  const [region, setRegion] = useState(userLocation)
 
   // Toggle modal from inside modal component instead of here in the parent
   const toggleModal = React.useCallback(
@@ -44,125 +52,97 @@ export default function MapComponent({ data, userLocation, handleCalloutPress }:
     [],
   )
 
-  const debouncedHandleRegionChange = React.useRef(
-    debounce((region: Region) => updateMapLastCoords(client, region), 1000, {
-      trailing: true,
-    }),
-  ).current
+  const handleClusterClick = useCallback(() => {}, [])
+  const handleMarkerSelect = useCallback(() => {}, [])
 
-  const moveToFocusedMarker = () => {
-    const map = mapViewRef.current?.getMapRef()
-    // console.log("Métodos disponibles:", mapViewRef.current?.getMapRef().animateToRegion);
+  const debouncedHandleRegionChange = useCallback(
+    (newRegion: Region) => {
+      // update region state first, so clusterer can do the job, but wait for updating coords in API
+      setRegion(newRegion)
+      debounce(() => {
+        updateMapLastCoords(client, newRegion)
+      }, 1000)
+    },
 
-    if (focusedMarker) {
-      map?.animateToRegion(
-        {
-          latitude: focusedMarker.location.latitude,
-          longitude: focusedMarker.location.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        },
-        1000,
-      )
+    [client],
+  )
+
+  const geoPoints = useMemo<ClusterPoint[]>(() => {
+    if (!data) {
+      return []
     }
-  }
+    return data.map((marker) => ({
+      type: "Feature",
+      properties: {
+        markerData: marker,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [marker.location.longitude, marker.location.latitude],
+      },
+    }))
+  }, [data])
 
-  const renderCluster = (cluster: ICluster) => {
-    const pointCount = cluster.pointCount,
-      coordinate = cluster.coordinate,
-      clusterId = cluster.clusterId
+  const [points] = useClusterer(geoPoints, { width, height }, region, CLUSTER_OPTIONS)
 
-    return (
-      <Marker identifier={`cluster-${clusterId}`} coordinate={coordinate}>
-        <View style={styles.clusterContainer}>
-          <Text style={styles.clusterText}>{pointCount}</Text>
-        </View>
-      </Marker>
-    )
-  }
+  // Render markers
+  const renderedMarkers = useMemo(() => {
+    return points.map((point, index) => {
+      const key = `point-${index}`
 
-  const renderMarker = (pin: IMarker) => {
-    const iconName: string = pin?.tags?.["icon:android"]
-    return (
-      <Marker
-        identifier={`pin-${pin.id}`}
-        key={pin.id}
-        coordinate={pin.location}
-        onPress={() => {
-          setFocusedMarker(pin)
-          toggleModal("locationEvent")
-        }}
-      >
-        <View style={styles.iconContainer}>
-          <PinIcon
-            size={35}
-            color={focusedMarker?.id == pin.id ? colors.primary : "#4f378c"}
-          />
-          <Icon
-            name={iconMap[iconName]}
-            size={18}
-            color={"#FFFFFF"}
-            style={styles.iconOverlay}
-          />
-        </View>
-      </Marker>
-    )
-  }
+      if (isPointCluster(point)) {
+        return <ClusterComponent cluster={point} onPress={handleClusterClick} key={key} />
+      }
+      return (
+        <MarkerComponent
+          pin={point.properties.markerData as IMarker}
+          onSelect={handleMarkerSelect}
+          key={key}
+        />
+      )
+    })
+  }, [points, handleClusterClick, handleMarkerSelect])
 
   return (
     <View style={styles.viewContainer}>
-      <SuperCluster
+      <MapView
         ref={mapViewRef}
-        data={data}
-        renderMarker={renderMarker}
-        renderCluster={renderCluster}
-        onRegionChange={debouncedHandleRegionChange}
+        // onPress={handleMapPress}
+        onRegionChangeComplete={debouncedHandleRegionChange}
         style={styles.map}
         customMapStyle={themeMode === "dark" ? MapStyles.dark : MapStyles.light}
-        accessor="location"
         initialRegion={userLocation}
-      />
-      {/* <MapView
-        onPress={handleMapPress}
-        onMarkerSelect={(e) => {
-          // react-native-maps has a very annoying error on iOS
-          // When two markers are almost on top of each other onSelect will get called for a nearby Marker
-          // This improvement (not an optimal fix) checks to see if that error happened, and quickly reopens the correct callout
-          const matchingLat =
-            e.nativeEvent.coordinate.latitude ===
-            focusedMarker?.mapInfo.coordinates.latitude
-          const matchingLng =
-            e.nativeEvent.coordinate.longitude ===
-            focusedMarker?.mapInfo.coordinates.longitude
-          if (!matchingLat || !matchingLng) {
-            if (focusedMarkerRef.current) {
-              focusedMarkerRef.current.showCallout()
-            }
-          }
-        }}
+        moveOnMarkerPress={false}
+        showsUserLocation={false}
+        showsMyLocationButton={false}
+        toolbarEnabled={false}
+        scrollEnabled={true}
+        zoomEnabled={true}
+        rotateEnabled={false}
+        pitchEnabled={false}
+        mapType="standard"
+        loadingEnabled={true}
+        loadingIndicatorColor="#666666"
+        loadingBackgroundColor="#eeeeee"
       >
-        
-      </MapView> */}
+        {renderedMarkers}
+      </MapView>
 
       <ButtonMapsContainer
         key={focusedMarker?.id}
         position="topCenter"
         event={() => {
-          moveToFocusedMarker()
+          // moveToFocusedMarker()
           toggleModal("locationEvent")
         }}
       >
         <ListItem containerStyle={styles.list}>
           <Icon name="location-outline" color="white" size={15} />
-          <ListItem.Title
-            ellipsizeMode="tail"
-            numberOfLines={1}
-            style={{ maxWidth: 200 }}
-          >
+          <ListItem.Title ellipsizeMode="tail" numberOfLines={1} style={styles.listTitle}>
             {`${
               focusedMarker?.location?.tags["addr:street"] ||
               focusedMarker?.location?.tags["addr:city"] ||
-              focusedMarker?.location?.tags["name"] ||
+              focusedMarker?.location?.tags.name ||
               ""
             }`}
           </ListItem.Title>
@@ -195,6 +175,10 @@ export const useStyles = makeStyles(() => ({
     fontSize: "0.5rem",
     backgroundColor: "transparent",
   },
+  listTitle: {
+    maxWidth: 200,
+  },
+
   viewContainer: { flex: 1 },
 
   clusterContainer: {
@@ -215,6 +199,7 @@ export const useStyles = makeStyles(() => ({
   clusterText: {
     fontSize: 14,
     fontWeight: "bold",
+    color: "white",
   },
   iconContainer: {
     position: "relative",
@@ -227,3 +212,19 @@ export const useStyles = makeStyles(() => ({
     alignSelf: "center",
   },
 }))
+// const moveToFocusedMarker = () => {
+//   const map = mapViewRef.current?.getMapRef()
+//   // console.log("Métodos disponibles:", mapViewRef.current?.getMapRef().animateToRegion);
+//
+//   if (focusedMarker) {
+//     map?.animateToRegion(
+//       {
+//         latitude: focusedMarker.location.latitude,
+//         longitude: focusedMarker.location.longitude,
+//         latitudeDelta: 0.01,
+//         longitudeDelta: 0.01,
+//       },
+//       1000,
+//     )
+//   }
+// }
