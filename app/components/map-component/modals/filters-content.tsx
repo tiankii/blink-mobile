@@ -1,43 +1,67 @@
-import { FC, useState } from "react"
-import { View, ScrollView, TouchableOpacity } from "react-native"
+import { FC, useMemo, useState, useCallback } from "react"
+import { View, ScrollView, TouchableOpacity, Dimensions } from "react-native"
 import { CheckBox, makeStyles, Text, useTheme } from "@rneui/themed"
-import { Dimensions } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
+import {
+  Category,
+  categoryNames,
+  categoryIcons,
+} from "@app/components/map-component/categories.ts"
+import MaterialIcon from "react-native-vector-icons/MaterialIcons"
 
 type FiltersContentProps = {
   closeModal: () => void
+  filters: Set<Category>
+  setFilters: (filters: Set<Category>) => void
 }
 
-export const FiltersContent: FC<FiltersContentProps> = ({ closeModal }) => {
+export const FiltersContent: FC<FiltersContentProps> = ({
+  closeModal,
+  filters,
+  setFilters,
+}) => {
   const styles = useStyles()
   const {
     theme: { colors },
   } = useTheme()
   const { height: screenHeight } = Dimensions.get("window")
-  const filterData = [
-    { id: 1, icon: "cash-outline", label: "ATM", checked: false },
-    { id: 2, icon: "beer", label: "Bar", checked: false },
-    { id: 3, icon: "cafe", label: "Cafe", checked: false },
-    { id: 4, icon: "business", label: "Hotel", checked: false },
-    { id: 5, icon: "storefront", label: "Pub", checked: false },
-    { id: 6, icon: "restaurant", label: "Restauran", checked: false },
-    { id: 7, icon: "ellipsis-horizontal", label: "Other", checked: false },
-  ]
-  const [filters, setFilters] = useState(filterData)
-  const toggleCheck = (id: number) => {
-    setFilters(
-      filters.map((filter) =>
-        filter.id === id ? { ...filter, checked: !filter.checked } : filter,
-      ),
-    )
-  }
-  const selectAll = () => {
-    setFilters(filters.map((filter) => ({ ...filter, checked: true })))
-  }
 
-  const deselectAll = () => {
-    setFilters(filters.map((filter) => ({ ...filter, checked: false })))
-  }
+  const [tempFilters, setTempFilters] = useState(() => new Set(filters))
+
+  const availableCategories = useMemo(() => {
+    return Object.keys(categoryNames).map((key) => {
+      const category = parseInt(key, 10) as Category
+      return {
+        category,
+        checked: tempFilters.has(category),
+      }
+    })
+  }, [tempFilters])
+
+  const applyAndClose = useCallback(() => {
+    setFilters(new Set(tempFilters))
+    closeModal()
+  }, [tempFilters, setFilters, closeModal])
+
+  const toggleCheck = useCallback((category: Category) => {
+    setTempFilters((prev) => {
+      const newFilters = new Set(prev)
+      if (newFilters.has(category)) {
+        newFilters.delete(category)
+      } else {
+        newFilters.add(category)
+      }
+      return newFilters
+    })
+  }, [])
+
+  const selectAll = useCallback(() => {
+    const allCategories = Object.values(Category).filter(
+      (value) => typeof value === "number",
+    ) as Category[]
+    setTempFilters(new Set(allCategories))
+  }, [])
+
   return (
     <View style={{ minHeight: screenHeight - 300, maxHeight: screenHeight - 300 }}>
       <View style={styles.titleContent}>
@@ -46,21 +70,27 @@ export const FiltersContent: FC<FiltersContentProps> = ({ closeModal }) => {
           color="grey"
           name="close"
           size={22}
-          style={{ paddingHorizontal: 1 }}
+          style={styles.closeIcon}
           onPress={closeModal}
         />
       </View>
+
       <Text color="grey">Choose which categories you would like to show</Text>
-      <ScrollView style={{ paddingTop: 20 }}>
-        {filters.map((filter) => (
-          <View key={filter.id} style={styles.listContent}>
+
+      <ScrollView style={styles.contentBox}>
+        {availableCategories.map((category) => (
+          <View key={category.category} style={styles.listContent}>
             <View style={styles.listCheck}>
-              <Icon name={filter.icon} size={22} style={styles.listIcon} />
-              <Text style={styles.titleFilter}>{filter.label}</Text>
+              <MaterialIcon
+                name={categoryIcons[category.category] || "help-outline"}
+                size={22}
+                style={styles.listIcon}
+              />
+              <Text style={styles.titleFilter}>{categoryNames[category.category]}</Text>
             </View>
             <CheckBox
-              checked={filter.checked}
-              onPress={() => toggleCheck(filter.id)}
+              checked={category.checked}
+              onPress={() => toggleCheck(category.category)}
               containerStyle={styles.checkBox}
               checkedIcon={<Icon name="checkbox" color={colors.primary} size={22} />}
               uncheckedIcon={<Icon name="square-outline" color="grey" size={22} />}
@@ -68,12 +98,13 @@ export const FiltersContent: FC<FiltersContentProps> = ({ closeModal }) => {
           </View>
         ))}
       </ScrollView>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity onPress={deselectAll}>
-          <Text color={colors.primary}>Deselect All</Text>
-        </TouchableOpacity>
+
+      <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={selectAll}>
           <Text color={colors.primary}>Select All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={applyAndClose}>
+          <Text color={colors.primary}>Apply</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -90,6 +121,9 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     textAlign: "center",
     fontSize: 18,
+  },
+  contentBox: {
+    paddingTop: 20,
   },
   listContent: {
     alignItems: "center",
@@ -113,5 +147,12 @@ const useStyles = makeStyles(({ colors }) => ({
     padding: 0,
     margin: 0,
     right: -10,
+  },
+  closeIcon: {
+    paddingHorizontal: 1,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 }))

@@ -17,10 +17,11 @@ import { useClusterer, isPointCluster } from "react-native-clusterer"
 import { ClusterPoint } from "./map-types"
 import ClusterComponent from "@app/components/map-component/map-elements/cluster-component.tsx"
 import MarkerComponent from "@app/components/map-component/map-elements/marker-component.tsx"
+import { Category } from "@app/components/map-component/categories.ts"
 
 type Props = {
   data?: IMarker[]
-  userLocation?: Region
+  userLocation: Region
   handleCalloutPress: (_: MapMarker) => void
 }
 
@@ -46,6 +47,8 @@ export default function MapComponent({ data, userLocation }: Props) {
   const [focusedMarker, setFocusedMarker] = React.useState<IMarker | null>(null)
   const [region, setRegion] = useState(userLocation)
 
+  const [categoryFilters, setCategoryFilters] = useState<Set<Category>>(new Set())
+
   // Toggle modal from inside modal component instead of here in the parent
   const toggleModal = React.useCallback(
     (type: TModal) => openBottomModalRef.current?.toggleVisibility(type),
@@ -55,23 +58,23 @@ export default function MapComponent({ data, userLocation }: Props) {
   const handleClusterClick = useCallback(() => {}, [])
   const handleMarkerSelect = useCallback(() => {}, [])
 
-  const debouncedHandleRegionChange = useCallback(
-    (newRegion: Region) => {
-      // update region state first, so clusterer can do the job, but wait for updating coords in API
-      setRegion(newRegion)
-      debounce(() => {
-        updateMapLastCoords(client, newRegion)
-      }, 1000)
-    },
-
-    [client],
-  )
-
-  const geoPoints = useMemo<ClusterPoint[]>(() => {
-    if (!data) {
+  const categoryFilteredData = useMemo(() => {
+    if (!data || data.length === 0) {
       return []
     }
-    return data.map((marker) => ({
+    if (categoryFilters.size === 0) {
+      return data
+    }
+    return data.filter(
+      (marker) => marker.category && categoryFilters.has(marker.category),
+    )
+  }, [data, categoryFilters])
+
+  const geoPoints = useMemo<ClusterPoint[]>(() => {
+    if (!categoryFilteredData) {
+      return []
+    }
+    return categoryFilteredData.map((marker) => ({
       type: "Feature",
       properties: {
         markerData: marker,
@@ -81,7 +84,7 @@ export default function MapComponent({ data, userLocation }: Props) {
         coordinates: [marker.location.longitude, marker.location.latitude],
       },
     }))
-  }, [data])
+  }, [categoryFilteredData])
 
   const [points] = useClusterer(geoPoints, { width, height }, region, CLUSTER_OPTIONS)
 
@@ -102,6 +105,18 @@ export default function MapComponent({ data, userLocation }: Props) {
       )
     })
   }, [points, handleClusterClick, handleMarkerSelect])
+
+  const debouncedHandleRegionChange = useCallback(
+    (newRegion: Region) => {
+      // update region state first, so clusterer can do the job, but wait for updating coords in API
+      setRegion(newRegion)
+      debounce(() => {
+        updateMapLastCoords(client, newRegion)
+      }, 1000)
+    },
+
+    [client],
+  )
 
   return (
     <View style={styles.viewContainer}>
@@ -159,7 +174,12 @@ export default function MapComponent({ data, userLocation }: Props) {
         position="LeftLv2"
         iconName="search"
       />
-      <OpenBottomModal ref={openBottomModalRef} focusedMarker={focusedMarker} />
+      <OpenBottomModal
+        ref={openBottomModalRef}
+        focusedMarker={focusedMarker}
+        filters={categoryFilters}
+        setFilters={setCategoryFilters}
+      />
     </View>
   )
 }
