@@ -45,4 +45,19 @@ export type AreaData = {
   }
 }
 
-export type { CdnPlace, Place, BasePlacesData, AreaDataRpc }
+interface ClusterPoint {
+  type: "Feature"
+  properties: {
+    cluster?: boolean
+    point_count?: number
+    cluster_id?: number
+    [key: string]: unknown
+  }
+  geometry: {
+    type: "Point"
+    coordinates: [number, number]
+  }
+}
+
+
+export type { CdnPlace, Place, BasePlacesData, AreaDataRpc, ClusterPoint }
