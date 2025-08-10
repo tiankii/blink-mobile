@@ -3,6 +3,7 @@ import { View } from "react-native"
 import { makeStyles, BottomSheet } from "@rneui/themed"
 import { SearchContent, FiltersContent, EventContent } from "."
 import { IMarker } from "@app/screens/map-screen/btc-map-interface"
+import { Category } from "@app/components/map-component/categories.ts"
 
 /*
   the forwardRef and useImperativeHandle (in the parent) are used here to toggle the modal
@@ -11,46 +12,54 @@ import { IMarker } from "@app/screens/map-screen/btc-map-interface"
 */
 
 export type TModal = "search" | "filter" | "locationEvent"
-type Props = {
+type OpenBottomModalProps = {
   focusedMarker?: IMarker | null
+  filters: Set<Category>
+  setFilters: (filter: Set<Category>) => void
 }
 
 export type OpenBottomModalElement = {
   toggleVisibility: (type: TModal) => void
 }
-export const OpenBottomModal = React.forwardRef<OpenBottomModalElement, Props>(
-  function ConfirmDialog({ focusedMarker }, ref): JSX.Element {
-    const styles = useStyles()
-    const [isVisible, toggleVisible] = React.useState<boolean>(false)
-    const [modalType, setModalType] = React.useState<TModal>("locationEvent")
 
-    React.useImperativeHandle(ref, () => ({
-      toggleVisibility(type) {
-        setModalType(type)
-        toggleVisible(!isVisible)
-      },
-    }))
+export const OpenBottomModal = React.forwardRef<
+  OpenBottomModalElement,
+  OpenBottomModalProps
+>(function ConfirmDialog(props, ref): JSX.Element {
+  const styles = useStyles()
+  const [isVisible, toggleVisible] = React.useState<boolean>(false)
+  const [modalType, setModalType] = React.useState<TModal>("locationEvent")
 
-    return (
-      <BottomSheet isVisible={isVisible} onBackdropPress={() => toggleVisible(false)}>
-        <View style={styles.bottomSheet}>
-          {modalType == "search" ? (
-            <SearchContent closeModal={() => toggleVisible(!isVisible)} />
-          ) : modalType == "filter" ? (
-            <FiltersContent closeModal={() => toggleVisible(!isVisible)} />
-          ) : modalType == "locationEvent" ? (
-            <EventContent
-              closeModal={() => toggleVisible(!isVisible)}
-              focusedMarker={focusedMarker}
-            />
-          ) : (
-            <></>
-          )}
-        </View>
-      </BottomSheet>
-    )
-  },
-)
+  React.useImperativeHandle(ref, () => ({
+    toggleVisibility(type) {
+      setModalType(type)
+      toggleVisible(!isVisible)
+    },
+  }))
+
+  return (
+    <BottomSheet isVisible={isVisible} onBackdropPress={() => toggleVisible(false)}>
+      <View style={styles.bottomSheet}>
+        {modalType === "search" ? (
+          <SearchContent closeModal={() => toggleVisible(!isVisible)} />
+        ) : modalType === "filter" ? (
+          <FiltersContent
+            closeModal={() => toggleVisible(!isVisible)}
+            setFilters={props.setFilters}
+            filters={props.filters}
+          />
+        ) : modalType === "locationEvent" ? (
+          <EventContent
+            closeModal={() => toggleVisible(!isVisible)}
+            focusedMarker={props.focusedMarker}
+          />
+        ) : (
+          <></>
+        )}
+      </View>
+    </BottomSheet>
+  )
+})
 
 const useStyles = makeStyles(({ colors }) => ({
   bottomSheet: {

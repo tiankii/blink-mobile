@@ -1,3 +1,5 @@
+import { Category } from "@app/components/map-component/categories.ts"
+
 export interface OSMJson {
   type: string
   id: number
@@ -43,7 +45,10 @@ export interface IbtcmapElement {
 export type OSMbtcMap = IbtcmapElement
 
 export interface IMarker {
+  name?: string
   id: string
+  icon?: string
+  category?: Category
   location: {
     latitude: number
     longitude: number
