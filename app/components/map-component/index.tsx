@@ -184,7 +184,7 @@ export default function MapComponent({ data, userLocation, handleCalloutPress }:
   )
 }
 
-const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles(() => ({
   map: {
     height: "100%",
     width: "100%",

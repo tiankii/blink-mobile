@@ -1,4 +1,3 @@
-import React from "react"
 import Svg, { Path } from "react-native-svg"
 
 const PinIcon = ({ size = 50, color = "#4f378c" }) => (

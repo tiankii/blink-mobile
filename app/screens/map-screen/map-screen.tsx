@@ -1,32 +1,26 @@
 import { CountryCode } from "libphonenumber-js/mobile"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
-import { Alert, Dimensions } from "react-native"
-import { Region, MapMarker as MapMarkerType } from "react-native-maps"
+import { Alert, Dimensions, View, ActivityIndicator } from "react-native"
+import { Region } from "react-native-maps"
 
-import { gql } from "@apollo/client"
 import MapComponent from "@app/components/map-component"
-import {
-  MapMarker,
-  useBusinessMapMarkersQuery,
-  useRegionQuery,
-} from "@app/graphql/generated"
+import { MapMarker, useRegionQuery } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import useDeviceLocation from "@app/hooks/use-device-location"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import Geolocation from "@react-native-community/geolocation"
-import { useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
 import countryCodes from "../../../utils/countryInfo.json"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import { toastShow } from "../../utils/toast"
-import mockBtcMapaData from "./mock.json"
-import { IbtcmapElement, IMarker } from "./btc-map-interface"
-import { useMemo } from "react"
-
-const btcMapElements: IbtcmapElement[] = mockBtcMapaData as IbtcmapElement[]
+import { IMarker } from "./btc-map-interface"
+import { useCallback, useMemo } from "react"
+import { Place } from "@app/components/map-component/map-types"
+import { usePlacesData } from "@app/components/map-component/map-hooks/use-places-data.ts"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 const EL_ZONTE_COORDS = {
   latitude: 13.496743,
@@ -51,20 +45,21 @@ Geolocation.setRNConfiguration({
   locationProvider: "auto",
 })
 
-gql`
-  query businessMapMarkers {
-    businessMapMarkers {
-      username
-      mapInfo {
-        title
-        coordinates {
-          longitude
-          latitude
-        }
-      }
-    }
-  }
-`
+const transformPlacesToMarkers = (places: Place[]): IMarker[] => {
+  return places
+    .filter((p) => p && typeof p.lat === "number" && typeof p.lon === "number")
+    .map(({ lon, lat, id, icon, name, category }) => ({
+      id,
+      icon,
+      name: name ?? undefined,
+      category,
+      location: {
+        latitude: lat,
+        longitude: lon,
+      },
+      tags: {},
+    }))
+}
 
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const isAuthed = useIsAuthed()
@@ -72,28 +67,43 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const { data: lastRegion, error: lastRegionError } = useRegionQuery()
   const { LL } = useI18nContext()
 
-  const { data, error, refetch } = useBusinessMapMarkersQuery({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: "cache-and-network",
-  })
+  const { places, error, isLoading } = usePlacesData()
 
   const [initialLocation, setInitialLocation] = React.useState<Region>()
-  const [isRefreshed, setIsRefreshed] = React.useState(false)
   const [isInitializing, setInitializing] = React.useState(true)
 
-  useFocusEffect(() => {
-    if (!isRefreshed) {
-      setIsRefreshed(true)
-      refetch()
-    }
-  })
-
-  if (error) {
-    toastShow({ message: error.message, LL })
-  }
+  const showError = useCallback(
+    (errorMessage: string) => {
+      toastShow({ message: errorMessage, LL })
+    },
+    [LL],
+  )
 
   React.useEffect(() => {
-    setInitializing(false)
+    if (error) {
+      showError(error)
+    }
+  }, [error, showError])
+
+  React.useEffect(() => {
+    let isMounted = true
+    const loadResources = async () => {
+      try {
+        await MaterialIcons.loadFont()
+        if (isMounted) {
+          setInitializing(false)
+        }
+      } catch (err) {
+        console.warn("Failed to load font:", err)
+        if (isMounted) {
+          setInitializing(false)
+        }
+      }
+    }
+    loadResources()
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const alertOnLocationError = React.useCallback(() => {
@@ -145,6 +155,7 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [isInitializing, countryCode, lastRegion, loading, initialLocation])
 
+  // todo: will be useful once btcmap adds payment tags to v4 api
   const handleCalloutPress = (item: MapMarker) => {
     if (isAuthed) {
       navigation.navigate("sendBitcoinDestination", { username: item.username })
@@ -166,24 +177,20 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   // }
 
   const formattedData = useMemo<IMarker[]>(() => {
-    if (!btcMapElements) return []
-    return btcMapElements
-      .filter(
-        ({ osm_json }) =>
-          osm_json &&
-          typeof osm_json.lat === "number" &&
-          typeof osm_json.lon === "number",
-      )
-      .map(({ id, osm_json, tags }) => ({
-        id,
-        location: {
-          latitude: osm_json.lat,
-          longitude: osm_json.lon,
-          tags: osm_json.tags,
-        },
-        tags,
-      }))
-  }, [btcMapElements])
+    if (!places?.baseData) return []
+    return transformPlacesToMarkers(places.baseData)
+  }, [places?.baseData])
+
+  // todo: nicer loading state
+  if (isLoading || isInitializing || !initialLocation) {
+    return (
+      <Screen>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      </Screen>
+    )
+  }
 
   return (
     <Screen>
