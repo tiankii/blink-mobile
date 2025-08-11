@@ -505,7 +505,6 @@ export const OnboardingNavigator = () => {
         component={EmailBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.emailBenefits.mainTitle(),
-          headerLeft: () => null,
         }}
       />
       <Onboarding.Screen
@@ -513,6 +512,7 @@ export const OnboardingNavigator = () => {
         component={LightningBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.lightningBenefits.mainTitle(),
+          headerLeft: () => null,
         }}
       />
       <Onboarding.Screen
