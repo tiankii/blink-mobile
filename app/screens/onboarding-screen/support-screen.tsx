@@ -50,7 +50,7 @@ export const SupportOnboardingScreen: React.FC = () => {
 const useStyles = makeStyles(({ colors }) => ({
   descriptionText: {
     color: colors.grey2,
-    marginBottom: 8,
+    marginBottom: 15,
   },
   linkText: {
     color: colors.primary,

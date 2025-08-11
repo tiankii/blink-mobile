@@ -183,8 +183,8 @@ export const SetLightningAddressScreen: React.FC<{
         </View>
       )}
       <View style={styles.content}>
-        <Text type={"p1"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
-        <Text type={"p1"} color={colors.warning} bold>
+        <Text type={"h2"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
+        <Text type={"h2"} color={colors.warning} bold>
           {LL.SetAddressModal.itCannotBeChanged()}
         </Text>
 
@@ -237,7 +237,7 @@ const useStyles = makeStyles(({ colors }) => ({
   content: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 36,
+    paddingTop: 20,
     rowGap: 20,
   },
   bottom: {

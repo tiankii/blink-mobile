@@ -127,7 +127,7 @@ export const EmailLoginInitiateScreen: React.FC = () => {
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.EmailLoginInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.EmailLoginInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>

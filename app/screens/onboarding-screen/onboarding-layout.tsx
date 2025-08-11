@@ -1,5 +1,5 @@
 import * as React from "react"
-import { View } from "react-native"
+import { View, FlatList } from "react-native"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 import { Screen } from "@app/components/screen"
@@ -36,10 +36,11 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
     theme: { colors },
   } = useTheme()
   const styles = useStyles()
+  const hasDescriptions = Boolean(descriptions?.length)
 
   return (
     <Screen style={styles.screenStyle}>
-      <View style={styles.content}>
+      <View>
         {title && (
           <Text type="h2" style={styles.title}>
             {title}
@@ -47,14 +48,32 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
         )}
 
         <View style={styles.descriptionList}>
-          {descriptions?.map((line, index) => (
-            <View key={index} style={styles.descriptionItem}>
-              <Text type="h2" style={styles.descriptionText}>
-                - {line}
-              </Text>
-            </View>
-          ))}
-          {customContent && <View>{customContent}</View>}
+          {hasDescriptions && (
+            <FlatList
+              accessibilityRole="list"
+              data={descriptions!}
+              keyExtractor={(_, i) => String(i)}
+              scrollEnabled={false}
+              renderItem={({ item }) => (
+                <View
+                  accessible
+                  accessibilityLabel={`• ${item}`}
+                  style={styles.descriptionItem}
+                >
+                  <Text type="h2" style={styles.descriptionBullet}>
+                    •
+                  </Text>
+                  <Text type="h2" style={styles.descriptionText}>
+                    {item}
+                  </Text>
+                </View>
+              )}
+            />
+          )}
+
+          {customContent && (
+            <View style={hasDescriptions && styles.customContent}>{customContent}</View>
+          )}
         </View>
 
         {iconName && (
@@ -86,31 +105,38 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
 const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
     padding: 20,
-    paddingBottom: 20,
     flexGrow: 1,
   },
   secondaryButtonContainer: {
     marginTop: 15,
     marginBottom: -15,
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 4,
-    paddingTop: 36,
-  },
   title: {
     paddingHorizontal: 5,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   descriptionList: {
     paddingHorizontal: 5,
     paddingBottom: 20,
   },
   descriptionItem: {
-    marginBottom: 4,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  descriptionBullet: {
+    color: colors.grey2,
+    marginRight: 8,
+    lineHeight: 22,
   },
   descriptionText: {
     color: colors.grey2,
+    flex: 1,
+    flexWrap: "wrap",
+    lineHeight: 22,
+  },
+  customContent: {
+    marginTop: 10,
   },
   bottom: {
     flex: 1,

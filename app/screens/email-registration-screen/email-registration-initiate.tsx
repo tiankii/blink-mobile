@@ -37,7 +37,7 @@ const useStyles = makeStyles(({ colors }) => ({
     minHeight: 48,
   },
   textContainer: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   viewWrapper: { flex: 1 },
 
@@ -157,7 +157,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>

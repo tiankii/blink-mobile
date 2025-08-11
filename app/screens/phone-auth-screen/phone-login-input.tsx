@@ -250,7 +250,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.PhoneLoginInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.PhoneLoginInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>
