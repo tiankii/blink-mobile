@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { AreaData, AreaDataRpc } from "../map-types"
+import type { GetAreaResponse, AreaDataRpc, Area } from "../map-types"
 import axios, { AxiosHeaders } from "axios"
 import { RPC_URL } from "../map-constants"
 
@@ -10,10 +10,10 @@ import { RPC_URL } from "../map-constants"
  * Hook to fetch area (communities also) data by id
  * @param id Community ID. Usually pased from search modal.
  */
-export const useArea = (id: string | null) => {
+export const useArea = (id: number | null) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
-  const [community, setCommunity] = useState<AreaData | null>(null)
+  const [community, setCommunity] = useState<Area | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -25,13 +25,14 @@ export const useArea = (id: string | null) => {
           return
         }
         const start = performance.now()
-        const { data } = await axios.get<AreaData>(
+        const { data } = await axios.get<GetAreaResponse>(
           `https://api.btcmap.org/v3/areas/${id}`,
         )
+
         if (!cancelled) {
           setCommunity(data)
         }
-        console.log(`Downloading took ${performance.now() - start} ms`)
+        console.log(`Downloading area data took ${performance.now() - start} ms`)
       } catch (e) {
         console.error(e)
         if (!cancelled) {
@@ -54,7 +55,7 @@ export const useArea = (id: string | null) => {
 }
 
 /**
- * Hook for fetching area data (community) by rpc. In 99% it's better to use REST version.
+ * Hook for fetching area data (community) by rpc. In 99% cases it's better to use REST version.
  *
  * @param id Community id
  */

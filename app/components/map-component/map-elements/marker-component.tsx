@@ -6,10 +6,9 @@ import PinIcon from "./pinIcon.tsx"
 import MaterialIcon from "react-native-vector-icons/MaterialIcons"
 import { useStyles } from "@app/components/map-component/index.tsx"
 
-// memoize in order not to rerender
 const MarkerComponent = React.memo(
   ({ pin, onSelect }: { pin: IMarker; onSelect: (pin: IMarker) => void }) => {
-    const iconName: string = pin.icon ?? pin?.tags?.["icon:android"] ?? null
+    const iconName: string = pin.icon
     const styles = useStyles()
     return (
       <Marker
