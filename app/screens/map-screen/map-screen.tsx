@@ -21,6 +21,7 @@ import { useCallback, useMemo } from "react"
 import { Place } from "@app/components/map-component/map-types"
 import { usePlacesData } from "@app/components/map-component/map-hooks/use-places-data.ts"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import { makeStyles } from "@rneui/themed"
 
 const EL_ZONTE_COORDS = {
   latitude: 13.496743,
@@ -33,7 +34,6 @@ const EL_ZONTE_COORDS = {
 const { height, width } = Dimensions.get("window")
 const LATITUDE_DELTA = 15 // <-- decrease for more zoom
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height)
-
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, "Primary">
 }
@@ -51,8 +51,8 @@ const transformPlacesToMarkers = (places: Place[]): IMarker[] => {
     .map(({ lon, lat, id, icon, name, category }) => ({
       id,
       icon,
-      name: name ?? undefined,
-      category,
+      name: name ?? null,
+      category: category ?? null,
       location: {
         latitude: lat,
         longitude: lon,
@@ -66,6 +66,8 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const { countryCode, loading } = useDeviceLocation()
   const { data: lastRegion, error: lastRegionError } = useRegionQuery()
   const { LL } = useI18nContext()
+
+  const styles = useStyles()
 
   const { places, error, isLoading } = usePlacesData()
 
@@ -156,25 +158,13 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   }, [isInitializing, countryCode, lastRegion, loading, initialLocation])
 
   // todo: will be useful once btcmap adds payment tags to v4 api
-  const handleCalloutPress = (item: MapMarker) => {
+  const handlePayButton = (item: MapMarker) => {
     if (isAuthed) {
       navigation.navigate("sendBitcoinDestination", { username: item.username })
     } else {
       navigation.navigate("acceptTermsAndConditions", { flow: "phone" })
     }
   }
-
-  // const handleMarkerPress = (item: MapMarker, ref?: MapMarkerType) => {
-  //   setFocusedMarker(item)
-  //   if (ref) {
-  //     focusedMarkerRef.current = ref
-  //   }
-  // }
-
-  // const handleMapPress = () => {
-  //   setFocusedMarker(null)
-  //   focusedMarkerRef.current = null
-  // }
 
   const formattedData = useMemo<IMarker[]>(() => {
     if (!places?.baseData) return []
@@ -185,7 +175,7 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   if (isLoading || isInitializing || !initialLocation) {
     return (
       <Screen>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View style={styles.loadingState}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       </Screen>
@@ -198,9 +188,13 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
         <MapComponent
           data={formattedData}
           userLocation={initialLocation}
-          handleCalloutPress={handleCalloutPress}
+          handlePayButton={handlePayButton}
         />
       )}
     </Screen>
   )
 }
+
+const useStyles = makeStyles(() => ({
+  loadingState: { flex: 1, justifyContent: "center", alignItems: "center" },
+}))

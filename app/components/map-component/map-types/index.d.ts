@@ -1,7 +1,8 @@
 import { Geometry } from "geojson"
 import { Category } from "../categories.ts"
+
 type CdnPlace = {
-  id: string
+  id: number
   lat: number
   lon: number
   icon: string
@@ -36,7 +37,7 @@ type AreaDataRpc = {
   id: number
 }
 
-export type AreaData = {
+export type GetAreaResponse = {
   id: number
   updated_at: string
   tags: Record<string, unknown> & {
@@ -45,19 +46,15 @@ export type AreaData = {
   }
 }
 
-interface ClusterPoint {
-  type: "Feature"
-  properties: {
-    cluster?: boolean
-    point_count?: number
-    cluster_id?: number
-    [key: string]: unknown
-  }
-  geometry: {
-    type: "Point"
-    coordinates: [number, number]
-  }
-}
+export type GetAreaElementsResponse = {
+  id: number
+  area_id: number
+  element_id: number
+  created_at: Date
+  updated_at: Date
+  deleted_at: Date
+}[]
 
+export type Area = GetAreaResponse // & { elementIds: number[] }
 
 export type { CdnPlace, Place, BasePlacesData, AreaDataRpc, ClusterPoint }

@@ -8,7 +8,7 @@ import axios from "axios"
  * todo: add payment and offer tags here
  * @param id - BTCMap place id
  */
-export const usePlace = (id?: string) => {
+export const usePlace = (id?: number | null) => {
   const [error, setError] = useState<string | null>(null)
   const [placeData, setPlaceData] = useState<{
     id: string
@@ -40,7 +40,6 @@ export const usePlace = (id?: string) => {
           website: string
           address: string
         }>(`${V4_API_BASE}/places/${id}?fields=id,name,phone,website,address`)
-
         setPlaceData(data)
       } catch (error) {
         console.error(error)

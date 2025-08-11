@@ -13,9 +13,11 @@ import { Category } from "@app/components/map-component/categories.ts"
 
 export type TModal = "search" | "filter" | "locationEvent"
 type OpenBottomModalProps = {
-  focusedMarker?: IMarker | null
+  focusedMarker: IMarker | null
+  setFocusedMarkerId: (markerId: number) => void
   filters: Set<Category>
   setFilters: (filter: Set<Category>) => void
+  setSelectedCommunityId: (id: number) => void
 }
 
 export type OpenBottomModalElement = {
@@ -41,7 +43,11 @@ export const OpenBottomModal = React.forwardRef<
     <BottomSheet isVisible={isVisible} onBackdropPress={() => toggleVisible(false)}>
       <View style={styles.bottomSheet}>
         {modalType === "search" ? (
-          <SearchContent closeModal={() => toggleVisible(!isVisible)} />
+          <SearchContent
+            closeModal={() => toggleVisible(!isVisible)}
+            setCommunityId={props.setSelectedCommunityId}
+            setSelectedMarker={props.setFocusedMarkerId}
+          />
         ) : modalType === "filter" ? (
           <FiltersContent
             closeModal={() => toggleVisible(!isVisible)}
@@ -51,7 +57,7 @@ export const OpenBottomModal = React.forwardRef<
         ) : modalType === "locationEvent" ? (
           <EventContent
             closeModal={() => toggleVisible(!isVisible)}
-            focusedMarker={props.focusedMarker}
+            selectedMarker={props.focusedMarker}
           />
         ) : (
           <></>

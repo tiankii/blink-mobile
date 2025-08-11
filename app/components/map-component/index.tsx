@@ -1,5 +1,5 @@
 import debounce from "lodash.debounce"
-import React, { useCallback, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Dimensions, View } from "react-native"
 import MapView, { Region } from "react-native-maps"
 
@@ -13,16 +13,20 @@ import MapStyles from "./map-styles.json"
 import { OpenBottomModal, OpenBottomModalElement, TModal } from "./modals/modal-container"
 import Icon from "react-native-vector-icons/Ionicons"
 import { IMarker } from "@app/screens/map-screen/btc-map-interface"
-import { useClusterer, isPointCluster } from "react-native-clusterer"
-import { ClusterPoint } from "./map-types"
+import { useClusterer, isPointCluster, supercluster } from "react-native-clusterer"
 import ClusterComponent from "@app/components/map-component/map-elements/cluster-component.tsx"
 import MarkerComponent from "@app/components/map-component/map-elements/marker-component.tsx"
 import { Category } from "@app/components/map-component/categories.ts"
+import { useArea } from "@app/components/map-component/map-hooks/use-community.ts"
+import {
+  isPointInArea,
+  navigateToGeometry,
+} from "@app/components/map-component/map-utils"
 
 type Props = {
   data?: IMarker[]
   userLocation: Region
-  handleCalloutPress: (_: MapMarker) => void
+  handlePayButton: (_: MapMarker) => void
 }
 
 const { width, height } = Dimensions.get("window")
@@ -34,6 +38,7 @@ const CLUSTER_OPTIONS = {
   minPoints: 2,
   extent: 512,
 }
+
 export default function MapComponent({ data, userLocation }: Props) {
   const {
     theme: { mode: themeMode },
@@ -42,11 +47,16 @@ export default function MapComponent({ data, userLocation }: Props) {
   const client = useApolloClient()
 
   const mapViewRef = useRef<MapView>(null)
-  const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
-
   const [focusedMarker, setFocusedMarker] = React.useState<IMarker | null>(null)
   const [region, setRegion] = useState(userLocation)
+  const [nameField, setNameField] = useState<string | null>(null)
 
+  // communication with modals
+  const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
+  const [selectedCommunityId, setSelectedCommunityId] = React.useState<number | null>(
+    null,
+  )
+  const [selectedMarkerId, setSelectedMarkerId] = React.useState<number | null>(null)
   const [categoryFilters, setCategoryFilters] = useState<Set<Category>>(new Set())
 
   // Toggle modal from inside modal component instead of here in the parent
@@ -54,9 +64,43 @@ export default function MapComponent({ data, userLocation }: Props) {
     (type: TModal) => openBottomModalRef.current?.toggleVisibility(type),
     [],
   )
+  // todo handle loading state and error
+  const { community, isLoading, error } = useArea(selectedCommunityId)
 
-  const handleClusterClick = useCallback(() => {}, [])
-  const handleMarkerSelect = useCallback(() => {}, [])
+  useEffect(() => {
+    if (!selectedMarkerId || !geoPoints) {
+      return
+    }
+    // select marker by id
+    const marker = geoPoints.filter(
+      (point) => point.properties.id === selectedMarkerId,
+    )[0]
+    setFocusedMarker(marker.properties)
+    toggleModal("locationEvent")
+  }, [selectedMarkerId])
+
+  useEffect(() => {
+    if (!community && !focusedMarker) {
+      return
+    }
+    setNameField(community?.tags.name ?? focusedMarker?.name ?? null)
+    if (community && community.tags.geo_json) {
+      navigateToGeometry(mapViewRef, community.tags.geo_json)
+    }
+  }, [community, focusedMarker])
+
+  const handleClusterClick = useCallback(
+    (cluster: supercluster.ClusterFeature<IMarker>) => {
+      const toRegion = cluster.properties.getExpansionRegion()
+      mapViewRef.current?.animateToRegion(toRegion, 500)
+    },
+    [],
+  )
+
+  const handleMarkerSelect = useCallback((pin: IMarker) => {
+    setFocusedMarker(pin)
+    toggleModal("locationEvent")
+  }, [])
 
   const categoryFilteredData = useMemo(() => {
     if (!data || data.length === 0) {
@@ -70,23 +114,46 @@ export default function MapComponent({ data, userLocation }: Props) {
     )
   }, [data, categoryFilters])
 
-  const geoPoints = useMemo<ClusterPoint[]>(() => {
-    if (!categoryFilteredData) {
+  // FIXME - this is unfortunately freezing the UI on weaker phones
+  const filteredData = useMemo(() => {
+    if (!community) {
+      return categoryFilteredData
+    }
+    if (
+      !categoryFilteredData ||
+      categoryFilteredData.length === 0 ||
+      !community.tags.geo_json
+    ) {
       return []
     }
-    return categoryFilteredData.map((marker) => ({
+
+    return categoryFilteredData.filter((p) =>
+      isPointInArea(p.location, community.tags.geo_json!),
+    )
+  }, [community, categoryFilteredData])
+
+  const geoPoints = useMemo<supercluster.PointFeature<IMarker>[]>(() => {
+    if (!filteredData) {
+      return []
+    }
+    return filteredData.map((marker) => ({
       type: "Feature",
       properties: {
-        markerData: marker,
+        ...marker,
       },
       geometry: {
         type: "Point",
         coordinates: [marker.location.longitude, marker.location.latitude],
       },
     }))
-  }, [categoryFilteredData])
+  }, [filteredData])
 
-  const [points] = useClusterer(geoPoints, { width, height }, region, CLUSTER_OPTIONS)
+  const [points] = useClusterer<IMarker, IMarker>(
+    geoPoints,
+    { width, height },
+    region,
+    CLUSTER_OPTIONS,
+  )
 
   // Render markers
   const renderedMarkers = useMemo(() => {
@@ -97,11 +164,7 @@ export default function MapComponent({ data, userLocation }: Props) {
         return <ClusterComponent cluster={point} onPress={handleClusterClick} key={key} />
       }
       return (
-        <MarkerComponent
-          pin={point.properties.markerData as IMarker}
-          onSelect={handleMarkerSelect}
-          key={key}
-        />
+        <MarkerComponent pin={point.properties} onSelect={handleMarkerSelect} key={key} />
       )
     })
   }, [points, handleClusterClick, handleMarkerSelect])
@@ -143,27 +206,38 @@ export default function MapComponent({ data, userLocation }: Props) {
         {renderedMarkers}
       </MapView>
 
-      <ButtonMapsContainer
-        key={focusedMarker?.id}
-        position="topCenter"
-        event={() => {
-          // moveToFocusedMarker()
-          toggleModal("locationEvent")
-        }}
-      >
-        <ListItem containerStyle={styles.list}>
-          <Icon name="location-outline" color="white" size={15} />
-          <ListItem.Title ellipsizeMode="tail" numberOfLines={1} style={styles.listTitle}>
-            {`${
-              focusedMarker?.location?.tags["addr:street"] ||
-              focusedMarker?.location?.tags["addr:city"] ||
-              focusedMarker?.location?.tags.name ||
-              ""
-            }`}
-          </ListItem.Title>
-          <Icon name="chevron-down-outline" color="white" />
-        </ListItem>
-      </ButtonMapsContainer>
+      {nameField && (
+        <ButtonMapsContainer
+          key={focusedMarker?.id}
+          position="topCenter"
+          event={() => {
+            // moveToFocusedMarker()
+            toggleModal("locationEvent")
+          }}
+        >
+          <ListItem containerStyle={styles.list}>
+            <Icon
+              name="close"
+              color="white"
+              size={15}
+              onPress={() => {
+                setNameField(null)
+                setSelectedCommunityId(null)
+              }}
+            />
+            <Icon name="location-outline" color="white" size={15} />
+            <ListItem.Title
+              ellipsizeMode="tail"
+              numberOfLines={1}
+              style={styles.listTitle}
+            >
+              {nameField}
+            </ListItem.Title>
+            <Icon name="chevron-down-outline" color="white" />
+          </ListItem>
+        </ButtonMapsContainer>
+      )}
+
       <ButtonMapsContainer
         event={() => toggleModal("filter")}
         position="LeftLv1"
@@ -177,6 +251,8 @@ export default function MapComponent({ data, userLocation }: Props) {
       <OpenBottomModal
         ref={openBottomModalRef}
         focusedMarker={focusedMarker}
+        setFocusedMarkerId={setSelectedMarkerId}
+        setSelectedCommunityId={setSelectedCommunityId}
         filters={categoryFilters}
         setFilters={setCategoryFilters}
       />
@@ -232,19 +308,3 @@ export const useStyles = makeStyles(() => ({
     alignSelf: "center",
   },
 }))
-// const moveToFocusedMarker = () => {
-//   const map = mapViewRef.current?.getMapRef()
-//   // console.log("Métodos disponibles:", mapViewRef.current?.getMapRef().animateToRegion);
-//
-//   if (focusedMarker) {
-//     map?.animateToRegion(
-//       {
-//         latitude: focusedMarker.location.latitude,
-//         longitude: focusedMarker.location.longitude,
-//         latitudeDelta: 0.01,
-//         longitudeDelta: 0.01,
-//       },
-//       1000,
-//     )
-//   }
-// }
