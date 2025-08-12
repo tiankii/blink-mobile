@@ -5,7 +5,7 @@ import { gql, useApolloClient } from "@apollo/client"
 import Modal from "react-native-modal"
 import { LocalizedString } from "typesafe-i18n"
 import Icon from "react-native-vector-icons/Ionicons"
-import { useNavigation, useIsFocused } from "@react-navigation/native"
+import { useNavigation, useIsFocused, useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 import {
@@ -54,6 +54,7 @@ import {
 import { useRemoteConfig } from "@app/config/feature-flags-context"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
+const UPGRADE_MODAL_INITIAL_DELAY_MS = 1500
 
 gql`
   query homeAuthed {
@@ -151,6 +152,7 @@ export const HomeScreen: React.FC = () => {
     useHasPromptedSetDefaultAccountQuery()
   const [setDefaultAccountModalVisible, setSetDefaultAccountModalVisible] =
     React.useState(false)
+  const reopenUpgradeModal = React.useRef(false)
   const toggleSetDefaultAccountModal = () =>
     setSetDefaultAccountModalVisible(!setDefaultAccountModalVisible)
 
@@ -330,10 +332,22 @@ export const HomeScreen: React.FC = () => {
     }
   }, [wallets, LL])
 
-  // Triggers the upgrade trial account modal to load screen
-  React.useEffect(() => {
-    triggerUpgradeModal()
-  }, [triggerUpgradeModal])
+  // Trigger the upgrade trial account modal
+  useFocusEffect(
+    React.useCallback(() => {
+      if (reopenUpgradeModal.current) {
+        openUpgradeModal()
+        reopenUpgradeModal.current = false
+        return
+      }
+
+      const id = setTimeout(() => {
+        triggerUpgradeModal()
+      }, UPGRADE_MODAL_INITIAL_DELAY_MS)
+
+      return () => clearTimeout(id)
+    }, [openUpgradeModal, triggerUpgradeModal]),
+  )
 
   let recentTransactionsData:
     | {
@@ -445,6 +459,9 @@ export const HomeScreen: React.FC = () => {
       <TrialAccountLimitsModal
         isVisible={isUpgradeModalVisible}
         closeModal={closeUpgradeModal}
+        beforeSubmit={() => {
+          reopenUpgradeModal.current = true
+        }}
       />
       <View style={[styles.header, styles.container]}>
         <GaloyIconButton

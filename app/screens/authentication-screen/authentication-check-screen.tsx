@@ -2,10 +2,13 @@ import * as React from "react"
 import { useEffect } from "react"
 
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { setUpgradeModalShown } from "@app/graphql/client-only-query"
+
 import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme } from "@rneui/themed"
+import { useApolloClient } from "@apollo/client"
 
 import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
 import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
@@ -24,7 +27,7 @@ export const AuthenticationCheckScreen: React.FC = () => {
 
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "authenticationCheck">>()
-
+  const client = useApolloClient()
   const isAuthed = useIsAuthed()
   const { setAppUnlocked } = useAuthenticationContext()
 
@@ -44,10 +47,11 @@ export const AuthenticationCheckScreen: React.FC = () => {
         navigation.replace("pin", { screenPurpose: PinScreenPurpose.AuthenticatePin })
       } else {
         setAppUnlocked()
+        setUpgradeModalShown(client, false)
         navigation.replace("Primary")
       }
     })()
-  }, [isAuthed, navigation, setAppUnlocked])
+  }, [client, isAuthed, navigation, setAppUnlocked])
 
   return (
     <Screen style={styles.container}>
