@@ -3,8 +3,8 @@ import {
   getCountryCallingCode,
 } from "libphonenumber-js/mobile"
 import * as React from "react"
-import { useEffect } from "react"
-import { ActivityIndicator, View } from "react-native"
+import { useEffect, useRef } from "react"
+import { ActivityIndicator, View, TextInput } from "react-native"
 import CountryPicker, {
   CountryCode,
   DARK_THEME,
@@ -121,6 +121,8 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
 
   const styles = useStyles()
 
+  const phoneInputRef = useRef<TextInput>(null)
+
   const navigation =
     useNavigation<
       StackNavigationProp<PhoneValidationStackParamList, "phoneLoginInitiate">
@@ -158,6 +160,19 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     screenType === PhoneLoginInitiateType.CreateAccount &&
     phoneInputInfo?.countryCode &&
     DisableCountriesForAccountCreation.includes(phoneInputInfo.countryCode)
+
+  const handleCountrySelect = (country: { cca2: string }) => {
+    setCountryCode(country.cca2 as PhoneNumberCountryCode)
+    setTimeout(() => {
+      phoneInputRef.current?.focus()
+    }, 100)
+  }
+
+  const handleCountryPickerClose = () => {
+    setTimeout(() => {
+      phoneInputRef.current?.focus()
+    }, 300)
+  }
 
   useEffect(() => {
     if (status !== RequestPhoneCodeStatus.SuccessRequestingCode) return
@@ -260,7 +275,8 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
               (phoneInputInfo?.countryCode || DEFAULT_COUNTRY_CODE) as CountryCode
             }
             countryCodes={supportedCountries as CountryCode[]}
-            onSelect={(country) => setCountryCode(country.cca2 as PhoneNumberCountryCode)}
+            onSelect={handleCountrySelect}
+            onClose={handleCountryPickerClose}
             renderFlagButton={({ countryCode, onOpen }) => {
               return (
                 countryCode && (
@@ -285,6 +301,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
           />
           <Input
             {...testProps("telephoneNumber")}
+            ref={phoneInputRef}
             placeholder={PLACEHOLDER_PHONE_NUMBER}
             containerStyle={styles.inputComponentContainerStyle}
             inputContainerStyle={styles.inputContainerStyle}
