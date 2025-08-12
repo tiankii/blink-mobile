@@ -119,7 +119,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
     <Screen style={styles.screenStyle}>
       <View style={styles.header}>
         <AppLogo style={styles.logo} />
-        <Text type="h1" style={styles.title}>
+        <Text type="h2" style={styles.title}>
           {LL.LoginMethodScreen.title()}
         </Text>
         <OptionSelector
@@ -162,7 +162,6 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     marginBottom: 24,
     color: colors.grey0,
-    fontSize: 18,
   },
   buttonContainer: {
     marginVertical: 6,
