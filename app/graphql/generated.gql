@@ -868,6 +868,7 @@ query ContactsCard {
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1020,23 +1021,6 @@ query analytics {
   }
 }
 
-query balanceHeader {
-  me {
-    id
-    defaultAccount {
-      id
-      wallets {
-        id
-        balance
-        walletCurrency
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
 query beta {
   beta @client
 }
@@ -1079,6 +1063,7 @@ query contacts {
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1461,6 +1446,7 @@ query scanningQRCodeScreen {
     }
     contacts {
       id
+      handle
       username
       __typename
     }
@@ -1502,6 +1488,7 @@ query sendBitcoinDestination {
     }
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1673,6 +1660,10 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
     }
     __typename
   }
+}
+
+query upgradeModalShown {
+  upgradeModalShown @client
 }
 
 query walletOverviewScreen {

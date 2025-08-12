@@ -1,12 +1,14 @@
-import { useState } from "react"
+import { useRef, useState, useCallback } from "react"
 import { View } from "react-native"
+
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { makeStyles, Text } from "@rneui/themed"
+import { useFocusEffect } from "@react-navigation/native"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
-import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
+import { TrialAccountLimitsModal } from "@app/components/upgrade-account-modal"
 import { AccountLevel, useLevel } from "@app/graphql/level-context"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { makeStyles, Text } from "@rneui/themed"
 
 import { useShowWarningSecureAccount } from "../show-warning-secure-account-hook"
 
@@ -15,18 +17,31 @@ export const UpgradeTrialAccount: React.FC = () => {
   const { currentLevel } = useLevel()
   const { LL } = useI18nContext()
   const hasBalance = useShowWarningSecureAccount()
+  const reopenUpgradeModal = useRef(false)
 
   const [upgradeAccountModalVisible, setUpgradeAccountModalVisible] = useState(false)
   const closeUpgradeAccountModal = () => setUpgradeAccountModalVisible(false)
   const openUpgradeAccountModal = () => setUpgradeAccountModalVisible(true)
 
+  useFocusEffect(
+    useCallback(() => {
+      if (reopenUpgradeModal.current) {
+        openUpgradeAccountModal()
+        reopenUpgradeModal.current = false
+      }
+    }, []),
+  )
+
   if (currentLevel !== AccountLevel.Zero) return <></>
 
   return (
     <>
-      <UpgradeAccountModal
+      <TrialAccountLimitsModal
         isVisible={upgradeAccountModalVisible}
         closeModal={closeUpgradeAccountModal}
+        beforeSubmit={() => {
+          reopenUpgradeModal.current = true
+        }}
       />
       <View style={styles.container}>
         <View style={styles.sideBySide}>

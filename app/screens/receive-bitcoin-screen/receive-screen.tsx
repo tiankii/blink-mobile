@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 import nfcManager from "react-native-nfc-manager"
 import Icon from "react-native-vector-icons/Ionicons"
+
+import { StackNavigationProp } from "@react-navigation/stack"
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
+import messaging from "@react-native-firebase/messaging"
 
 import { useApolloClient } from "@apollo/client"
 import { AmountInput } from "@app/components/amount-input"
@@ -11,14 +16,14 @@ import { CustomIcon } from "@app/components/custom-icon"
 import { ModalNfc } from "@app/components/modal-nfc"
 import { NoteInput } from "@app/components/note-input"
 import { Screen } from "@app/components/screen"
+import { useLevel, AccountLevel } from "@app/graphql/level-context"
+import { TrialAccountLimitsModal } from "@app/components/upgrade-account-modal"
 import { SetLightningAddressModal } from "@app/components/set-lightning-address-modal"
 import { WalletCurrency } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { addDeviceToken, requestNotificationPermission } from "@app/utils/notifications"
-import messaging from "@react-native-firebase/messaging"
-import { useIsFocused, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
 import { testProps } from "../../utils/testProps"
 import { withMyLnUpdateSub } from "./my-ln-updates-sub"
@@ -32,15 +37,23 @@ const ReceiveScreen = () => {
   } = useTheme()
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const navigation = useNavigation()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+
   const client = useApolloClient()
+  const reopenUpgradeModal = useRef(false)
 
   const isAuthed = useIsAuthed()
   const isFocused = useIsFocused()
+  const { currentLevel } = useLevel()
+  const isLevelZero = currentLevel === AccountLevel.Zero
 
   const request = useReceiveBitcoin()
 
+  const [isTrialAccountModalVisible, setIsTrialAccountModalVisible] = useState(false)
   const [displayReceiveNfc, setDisplayReceiveNfc] = useState(false)
+
+  const closeTrialAccountModal = () => setIsTrialAccountModalVisible(false)
+  const openTrialAccountModal = () => setIsTrialAccountModalVisible(true)
 
   const nfcText = LL.ReceiveScreen.nfc()
   useEffect(() => {
@@ -68,6 +81,15 @@ const ReceiveScreen = () => {
     // Disable exhaustive-deps because styles.nfcIcon was causing an infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nfcText, colors.black, navigation, request?.state, request?.type])
+
+  useFocusEffect(
+    useCallback(() => {
+      if (reopenUpgradeModal.current) {
+        openTrialAccountModal()
+        reopenUpgradeModal.current = false
+      }
+    }, []),
+  )
 
   // notification permission
   useEffect(() => {
@@ -250,9 +272,21 @@ const ReceiveScreen = () => {
               id: Invoice.OnChain,
               text: "Onchain",
               icon: "logo-bitcoin",
+              disabled: isLevelZero,
             },
           ]}
-          onPress={(id) => isReady && request.setType(id as InvoiceType)}
+          onPress={(id) => {
+            const isBlockedOnchain = id === Invoice.OnChain && isLevelZero
+
+            if (isBlockedOnchain) {
+              openTrialAccountModal()
+              return
+            }
+
+            if (isReady) {
+              request.setType(id as InvoiceType)
+            }
+          }}
           style={styles.invoiceTypePicker}
         />
         <AmountInput
@@ -285,6 +319,14 @@ const ReceiveScreen = () => {
           setIsActive={setDisplayReceiveNfc}
           settlementAmount={request.settlementAmount}
           receiveViaNFC={request.receiveViaNFC}
+        />
+
+        <TrialAccountLimitsModal
+          isVisible={isTrialAccountModalVisible}
+          closeModal={closeTrialAccountModal}
+          beforeSubmit={() => {
+            reopenUpgradeModal.current = true
+          }}
         />
       </Screen>
     </>

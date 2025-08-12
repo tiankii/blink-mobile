@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
+import { TrialAccountLimitsModal } from "@app/components/upgrade-account-modal"
 import { AccountLevel } from "@app/graphql/level-context"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -52,7 +52,7 @@ export const SendBitcoinDetailsExtraInfo = ({
               }),
             })}
           />
-          <UpgradeAccountModal
+          <TrialAccountLimitsModal
             closeModal={closeModal}
             isVisible={isUpgradeAccountModalVisible}
           />

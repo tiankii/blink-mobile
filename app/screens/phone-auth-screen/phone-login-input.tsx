@@ -25,7 +25,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme, Text, Input } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
-import { PhoneChannelButtons } from "./phone-channel-buttons"
+import { PhoneChannelButton } from "./phone-channel-buttons"
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
 import {
   ErrorType,
@@ -94,7 +94,10 @@ const useStyles = makeStyles(({ colors }) => ({
   contactSupportButton: {
     marginTop: 10,
   },
-
+  buttonSpacer: {
+    height: 40,
+    marginBottom: 25,
+  },
   loadingView: { flex: 1, justifyContent: "center", alignItems: "center" },
 }))
 
@@ -147,6 +150,8 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
   const { LL } = useI18nContext()
 
   const screenType = route.params.type
+  const phoneChannel = route.params.channel
+  const onboarding = route.params.onboarding
 
   const isDisabledCountryAndCreateAccount =
     screenType === PhoneLoginInitiateType.CreateAccount &&
@@ -162,6 +167,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       navigation.navigate("telegramLoginValidate", {
         phone: validatedPhoneNumber || "",
         type: screenType,
+        onboarding,
       })
       return
     }
@@ -170,8 +176,17 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       type: screenType,
       phone: validatedPhoneNumber || "",
       channel: phoneCodeChannel,
+      onboarding,
     })
-  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
+  }, [
+    status,
+    phoneCodeChannel,
+    validatedPhoneNumber,
+    navigation,
+    setStatus,
+    screenType,
+    onboarding,
+  ])
 
   useEffect(() => {
     if (!appConfig || appConfig.galoyInstance.id !== "Local") {
@@ -291,15 +306,13 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
             <ContactSupportButton containerStyle={styles.contactSupportButton} />
           </View>
         )}
-        <PhoneChannelButtons
-          isTelegramSupported={isTelegramSupported}
-          isSmsSupported={isSmsSupported}
-          isWhatsAppSupported={isWhatsAppSupported}
-          phoneCodeChannel={phoneCodeChannel}
+        <PhoneChannelButton
+          phoneCodeChannel={phoneChannel}
           captchaLoading={captchaLoading}
           isDisabled={isDisabledCountryAndCreateAccount}
           submit={userSubmitPhoneNumber}
         />
+        <View style={styles.buttonSpacer} />
       </View>
     </Screen>
   )
