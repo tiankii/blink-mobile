@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles } from "@rneui/themed"
 
@@ -25,6 +25,18 @@ export const SupportOnboardingScreen: React.FC = () => {
   })
 
   const [prefix, suffix] = contactInfoString.split(feedbackEmailAddress)
+
+  // Prevent back navigation
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+        if (e.data.action.type === "POP" || e.data.action.type === "GO_BACK") {
+          e.preventDefault()
+        }
+      })
+      return unsubscribe
+    }, [navigation]),
+  )
 
   return (
     <OnboardingLayout
