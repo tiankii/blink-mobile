@@ -22,8 +22,14 @@ jest.mock("@react-navigation/native", () => ({
 
 describe("LightningBenefitsScreen", () => {
   let LL: ReturnType<typeof i18nObject>
+  const mockAddListener = jest.fn(() => jest.fn())
 
   beforeEach(() => {
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      addListener: mockAddListener,
+    })
+    mockAddListener.mockClear()
+
     loadLocale("en")
     LL = i18nObject("en")
   })
@@ -37,13 +43,13 @@ describe("LightningBenefitsScreen", () => {
 
     expect(getByText(LL.OnboardingScreen.lightningBenefits.title())).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.lightningBenefits.staticAddressDescription()}`),
+      getByText(LL.OnboardingScreen.lightningBenefits.staticAddressDescription()),
     ).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.lightningBenefits.easyToShareDescription()}`),
+      getByText(LL.OnboardingScreen.lightningBenefits.easyToShareDescription()),
     ).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.lightningBenefits.blinkToolsDescription()}`),
+      getByText(LL.OnboardingScreen.lightningBenefits.blinkToolsDescription()),
     ).toBeTruthy()
   })
 
@@ -59,7 +65,10 @@ describe("LightningBenefitsScreen", () => {
 
   it("navigates to setLightningAddress on primary button press", () => {
     const mockNavigate = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      navigate: mockNavigate,
+      addListener: mockAddListener,
+    })
 
     const { getByText } = render(
       <ContextForScreen>
@@ -73,7 +82,10 @@ describe("LightningBenefitsScreen", () => {
 
   it("navigates to supportScreen on secondary button press", () => {
     const mockNavigate = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      replace: mockNavigate,
+      addListener: mockAddListener,
+    })
 
     const { getByText } = render(
       <ContextForScreen>

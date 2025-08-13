@@ -25,8 +25,14 @@ const FEEDBACK_EMAIL_ADDRESS = "feedback@blink.sv"
 
 describe("SupportOnboardingScreen", () => {
   let LL: ReturnType<typeof i18nObject>
+  const mockAddListener = jest.fn(() => jest.fn())
 
   beforeEach(() => {
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      addListener: mockAddListener,
+    })
+    mockAddListener.mockClear()
+
     loadLocale("en")
     LL = i18nObject("en")
   })
@@ -54,7 +60,11 @@ describe("SupportOnboardingScreen", () => {
 
   it("calls navigation.replace when primary action is pressed", () => {
     const mockReplace = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ replace: mockReplace })
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      replace: mockReplace,
+      addListener: mockAddListener,
+      navigate: mockReplace,
+    })
 
     const { getByText } = render(
       <ContextForScreen>

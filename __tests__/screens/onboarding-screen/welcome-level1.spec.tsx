@@ -39,9 +39,14 @@ jest.mock("@react-navigation/native", () => ({
 
 describe("WelcomeLevel1Screen", () => {
   let LL: ReturnType<typeof i18nObject>
+  const mockAddListener = jest.fn(() => jest.fn())
 
   beforeEach(() => {
     ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(usernameMock)
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      addListener: mockAddListener,
+    })
+    mockAddListener.mockClear()
 
     loadLocale("en")
     LL = i18nObject("en")
@@ -56,19 +61,21 @@ describe("WelcomeLevel1Screen", () => {
 
     expect(getByText(LL.OnboardingScreen.welcomeLevel1.title())).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.welcomeLevel1.receiveBitcoinDescription()}`),
+      getByText(LL.OnboardingScreen.welcomeLevel1.receiveBitcoinDescription()),
     ).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.welcomeLevel1.dailyLimitDescription()}`),
+      getByText(LL.OnboardingScreen.welcomeLevel1.dailyLimitDescription()),
     ).toBeTruthy()
-    expect(
-      getByText(`- ${LL.OnboardingScreen.welcomeLevel1.onchainDescription()}`),
-    ).toBeTruthy()
+    expect(getByText(LL.OnboardingScreen.welcomeLevel1.onchainDescription())).toBeTruthy()
   })
 
   it("Triggers primary action button with label", () => {
     const mockReplace = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ replace: mockReplace })
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      replace: mockReplace,
+      addListener: mockAddListener,
+      navigate: mockReplace,
+    })
 
     const { getByText } = render(
       <ContextForScreen>
