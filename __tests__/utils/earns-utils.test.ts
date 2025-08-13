@@ -1,4 +1,4 @@
-import { getQuizQuestionsContent } from "@app/screens/earns-screen/earns-utils"
+import { getQuizQuestionsContent } from "@app/screens/earns-screen/helpers"
 
 import { i18nObject } from "../../app/i18n/i18n-util"
 import { loadLocale } from "../../app/i18n/i18n-util.sync"

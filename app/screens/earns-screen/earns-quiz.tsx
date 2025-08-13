@@ -13,8 +13,8 @@ import Modal from "react-native-modal"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Icon from "react-native-vector-icons/Ionicons"
 
-import { gql } from "@apollo/client"
-import { useQuizClaimMutation } from "@app/graphql/generated"
+import { FetchResult, gql } from "@apollo/client"
+import { QuizClaimMutation, useQuizClaimMutation } from "@app/graphql/generated"
 import { getErrorMessages } from "@app/graphql/utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
@@ -36,9 +36,9 @@ import {
   getQuizQuestionsContent,
   markErrorCodeAlertAsShown,
   skipRewardErrorCodes,
-  ValidateQuizCodeErrorsType,
-} from "./earns-utils"
+} from "./helpers"
 import CustomModal from "@app/components/custom-modal/custom-modal"
+import { ValidateQuizCodeErrorsType } from "./sections"
 
 const useStyles = makeStyles(({ colors }) => ({
   answersViewInner: {
@@ -273,13 +273,28 @@ export const EarnQuiz = ({ route }: Props) => {
     setRecordedAnswer([...recordedAnswer, value])
   }
 
+  const claimQuizWrapper = React.useCallback(
+    async (skipRewards: boolean): Promise<FetchResult<QuizClaimMutation>> => {
+      const result = await quizClaim({
+        variables: { input: { id, skipRewards } },
+      })
+      return result
+    },
+    [quizClaim, id],
+  )
+
   const claimQuizWithoutRewards = React.useCallback(async () => {
     markErrorCodeAlertAsShown(quizErrorCode)
-    await quizClaim({
-      variables: { input: { id, skipRewards: true } },
-    })
+    const { data } = await claimQuizWrapper(true)
     setShowModal(false)
-  }, [quizClaim, id, quizErrorCode])
+
+    if (data?.quizClaim?.errors?.length) {
+      toastShow({
+        message: getErrorMessages(data.quizClaim.errors),
+        LL,
+      })
+    }
+  }, [claimQuizWrapper, quizErrorCode, LL])
 
   const answersShuffled: Array<React.ReactNode> = []
 
@@ -288,25 +303,25 @@ export const EarnQuiz = ({ route }: Props) => {
       if (hasTriedClaim) return
       if (recordedAnswer.indexOf(0) !== -1 && !completed && !quizClaimLoading) {
         setHasTriedClaim(true)
-        const { data } = await quizClaim({
-          variables: { input: { id } },
-        })
+        const { data } = await claimQuizWrapper(false)
 
         if (data?.quizClaim?.errors?.length) {
           const errorCode = data.quizClaim.errors[0]?.code as ValidateQuizCodeErrorsType
-          const defualtErrorMessage = `${getErrorMessages(data.quizClaim.errors)} Please try again later.\nOr, click to continue to keep learning without rewards.`
-          const customErrorMessage = `It looks like we've detected some unusual activity on your account. To ensure fair play for everyone, we're unable to offer rewards at this time.\nYou can still continue learning without rewards, or please try again later from a different connection.`
+          const defualtErrorMessage = LL.EarnScreen.defualtErrorMessage({
+            errorMessage: getErrorMessages(data.quizClaim.errors),
+          })
+          const customErrorMessage = LL.EarnScreen.customErrorMessage()
 
           if (skipRewardErrorCodes(errorCode)) {
-            if (!errorCodeAlertAlreadyShown(errorCode)) {
-              setQuizErrorMessage(
-                errorCode === "INVALID_INPUT" ? customErrorMessage : defualtErrorMessage,
-              )
-              setQuizErrorCode(errorCode)
-              setShowModal(true)
+            if (errorCodeAlertAlreadyShown(errorCode)) {
+              await claimQuizWithoutRewards()
               return
             }
-            await claimQuizWithoutRewards()
+            setQuizErrorMessage(
+              errorCode === "INVALID_INPUT" ? customErrorMessage : defualtErrorMessage,
+            )
+            setQuizErrorCode(errorCode)
+            setShowModal(true)
             return
           }
 
@@ -321,8 +336,7 @@ export const EarnQuiz = ({ route }: Props) => {
     })()
   }, [
     recordedAnswer,
-    id,
-    quizClaim,
+    claimQuizWrapper,
     LL,
     completed,
     quizClaimLoading,

@@ -4,7 +4,7 @@ import { Quiz } from "@app/graphql/generated"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 import { QuizQuestion, QuizQuestionContent, QuizSectionContent } from "./earns-section"
-import { EarnSectionType, earnSections } from "./sections"
+import { EarnSectionType, ValidateQuizCodeErrorsType, earnSections } from "./sections"
 
 export const getCardsFromSection = ({
   section,
@@ -90,7 +90,6 @@ export const getQuizQuestionsContent = ({
   return quizSectionContent
 }
 
-export type ValidateQuizCodeErrorsType = "INVALID_INPUT" | "QUIZ_CLAIMED_TOO_EARLY"
 const shownErrorCodes = new Set<ValidateQuizCodeErrorsType>()
 
 const skipRewardErrorCodesList: ValidateQuizCodeErrorsType[] = [

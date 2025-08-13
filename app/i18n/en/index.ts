@@ -2042,6 +2042,8 @@ const en: BaseTranslation = {
     motivatingBadger: "Dig your way through these lessons and earn as you learn",
     continueNoRewards: "Continue (No Rewards)",
     somethingNotRight: "Something's Not Right...",
+    defualtErrorMessage: "{errorMessage: string} Please try again later.\nOr, click to continue to keep learning without rewards.",
+    customErrorMessage: "It looks like we've detected some unusual activity on your account. To ensure fair play for everyone, we're unable to offer rewards at this time.\nYou can still continue learning without rewards, or please try again later from a different connection.",
   },
   GetStartedScreen: {
     logInCreateAccount: "Log in / create account",

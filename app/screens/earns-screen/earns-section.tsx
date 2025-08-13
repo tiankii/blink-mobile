@@ -22,7 +22,7 @@ import {
   augmentCardWithGqlData,
   getCardsFromSection,
   getQuizQuestionsContent,
-} from "./earns-utils"
+} from "./helpers"
 
 const { width: screenWidth } = Dimensions.get("window")
 
