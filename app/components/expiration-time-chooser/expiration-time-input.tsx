@@ -10,7 +10,6 @@ import { WalletCurrency } from "@app/graphql/generated"
 
 export type ExpirationTimeInputProps = {
   expirationTime: number
-  expiresAt?: Date | null
   setExpirationTime?: (expirationTime: number) => void
   walletCurrency: WalletCurrency
   disabled: boolean
@@ -20,7 +19,6 @@ export type ExpirationTimeInputProps = {
 
 export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
   expirationTime,
-  expiresAt,
   setExpirationTime,
   walletCurrency,
   disabled,
@@ -35,20 +33,10 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
     setOpenModal(false)
   }
 
-  const getRemainMinutes = (expiresAt?: Date | null) => {
-    const currentTime = new Date()
-
-    if (!expiresAt) return 0
-    const remainingSeconds = Math.floor(
-      (expiresAt.getTime() - currentTime.getTime()) / 1000,
-    )
-    return Math.ceil(remainingSeconds / 60)
-  }
-
   if (openModal) {
     return (
       <ExpirationTimeModal
-        value={expirationTime > 0 ? expirationTime : getRemainMinutes(expiresAt)}
+        value={expirationTime}
         isOpen={true}
         onSetExpirationTime={onSetExpirationTime}
         close={() => setOpenModal(false)}
@@ -57,15 +45,10 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
     )
   }
 
-  const getExpirationTimeFormat = (timeIn: {
-    expiresAt?: Date | null
-    minutes?: number
-  }) => {
+  const getExpirationTimeFormat = (timeIn: { minutes?: number }) => {
     let minutes = timeIn.minutes ?? 0
+    if (minutes === 0) return null
 
-    if (timeIn?.expiresAt) {
-      minutes = getRemainMinutes(timeIn.expiresAt)
-    }
     const unidades = [
       { umbral: 1440, singular: LL.common.day.one(), plural: LL.common.day.other() },
       { umbral: 60, singular: LL.common.hour(), plural: LL.common.hours() },
@@ -91,11 +74,7 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
     <ExpirationTimeButton
       placeholder={LL.common.expirationTime()}
       onPress={onPressInputButton}
-      value={
-        expirationTime > 0
-          ? getExpirationTimeFormat({ minutes: expirationTime })
-          : getExpirationTimeFormat({ expiresAt })
-      }
+      value={getExpirationTimeFormat({ minutes: expirationTime })}
       disabled={disabled}
       iconName="pencil"
       primaryTextTestProps={"Expiration time input button"}
