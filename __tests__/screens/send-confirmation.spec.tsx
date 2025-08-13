@@ -1,6 +1,8 @@
 import React from "react"
+import { TouchableOpacity, Text } from "react-native"
 import { Satoshis } from "lnurl-pay/dist/types/types"
-import { act, render, screen } from "@testing-library/react-native"
+import { act, fireEvent, render, screen } from "@testing-library/react-native"
+
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
 import { WalletCurrency } from "@app/graphql/generated"
 import * as PaymentDetails from "@app/screens/send-bitcoin-screen/payment-details/intraledger"
@@ -119,10 +121,41 @@ const defaultLightningParams: PaymentDetailsLightning.CreateLnurlPaymentDetailsP
     sendingWalletDescriptor: btcSendingWalletDescriptor,
   }
 
+const saveLnAddressContactMock = jest.fn()
+jest.mock("@app/screens/send-bitcoin-screen/use-save-lnaddress-contact", () => ({
+  useSaveLnAddressContact: () => saveLnAddressContactMock,
+}))
+
+const sendPaymentMock = jest.fn()
+jest.mock("@app/screens/send-bitcoin-screen/use-send-payment", () => ({
+  useSendPayment: () => ({
+    loading: false,
+    hasAttemptedSend: false,
+    sendPayment: sendPaymentMock,
+  }),
+}))
+
+jest.mock("@app/components/atomic/galoy-slider-button/galoy-slider-button", () => {
+  type Props = { onSwipe: () => void; testID?: string; initialText?: string }
+
+  const MockGaloySliderButton = ({
+    onSwipe,
+    testID = "slider",
+    initialText = "Slide",
+  }: Props) => (
+    <TouchableOpacity testID={testID} onPress={onSwipe}>
+      <Text>{initialText}</Text>
+    </TouchableOpacity>
+  )
+
+  return { __esModule: true, default: MockGaloySliderButton }
+})
+
 describe("SendBitcoinConfirmationScreen", () => {
   let LL: ReturnType<typeof i18nObject>
 
   beforeEach(() => {
+    jest.clearAllMocks()
     loadLocale("en")
     LL = i18nObject("en")
   })
@@ -178,5 +211,65 @@ describe("SendBitcoinConfirmationScreen", () => {
     expect(screen.getByText("₦100 ($100.00)")).toBeTruthy()
     expect(screen.getByTestId("slider")).toBeTruthy()
     expect(LL.SendBitcoinConfirmationScreen.slideToConfirm()).toBeTruthy()
+  })
+
+  it("Calls saveLnAddressContact when LNURL payment is SUCCESS", async () => {
+    const { createLnurlPaymentDetails } = PaymentDetailsLightning
+    const paymentDetailLightning = createLnurlPaymentDetails(defaultLightningParams)
+    const routeLnurl = {
+      key: "sendBitcoinConfirmationScreen",
+      name: "sendBitcoinConfirmation",
+      params: { paymentDetail: paymentDetailLightning },
+    } as const
+
+    sendPaymentMock.mockResolvedValueOnce({
+      status: "SUCCESS",
+      extraInfo: { preimage: "preimagetest" },
+    })
+
+    render(
+      <ContextForScreen>
+        <LightningLnURL route={routeLnurl} />
+      </ContextForScreen>,
+    )
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId("slider"))
+    })
+
+    expect(sendPaymentMock).toHaveBeenCalledTimes(1)
+    expect(saveLnAddressContactMock).toHaveBeenCalledTimes(1)
+    expect(saveLnAddressContactMock).toHaveBeenCalledWith({
+      paymentType: "lnurl",
+      destination: defaultLightningParams.lnurl,
+    })
+  })
+
+  it("Does not call saveLnAddressContact when LNURL payment is PENDING", async () => {
+    const { createLnurlPaymentDetails } = PaymentDetailsLightning
+    const paymentDetailLightning = createLnurlPaymentDetails(defaultLightningParams)
+    const routeLnurl = {
+      key: "sendBitcoinConfirmationScreen",
+      name: "sendBitcoinConfirmation",
+      params: { paymentDetail: paymentDetailLightning },
+    } as const
+
+    sendPaymentMock.mockResolvedValueOnce({
+      status: "PENDING",
+      extraInfo: {},
+    })
+
+    render(
+      <ContextForScreen>
+        <LightningLnURL route={routeLnurl} />
+      </ContextForScreen>,
+    )
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId("slider"))
+    })
+
+    expect(sendPaymentMock).toHaveBeenCalledTimes(1)
+    expect(saveLnAddressContactMock).not.toHaveBeenCalled()
   })
 })
