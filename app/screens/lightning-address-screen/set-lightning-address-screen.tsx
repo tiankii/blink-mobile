@@ -14,10 +14,7 @@ import {
   validateUsername,
   SetUsernameError,
 } from "@app/components/set-lightning-address-modal"
-import {
-  SuccessIconAnimation,
-  CompletedTextAnimation,
-} from "@app/components/success-animation"
+import { SuccessIconAnimation } from "@app/components/success-animation"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -174,12 +171,10 @@ export const SetLightningAddressScreen: React.FC<{
         <View style={styles.successOverlay}>
           <SuccessIconAnimation>
             <GaloyIcon name="lightning-address" size={128} />
-          </SuccessIconAnimation>
-          <CompletedTextAnimation>
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
-          </CompletedTextAnimation>
+          </SuccessIconAnimation>
         </View>
       )}
       <View style={styles.content}>
@@ -226,6 +221,8 @@ export const SetLightningAddressScreen: React.FC<{
 const useStyles = makeStyles(({ colors }) => ({
   successText: {
     marginTop: 20,
+    textAlign: "center",
+    alignSelf: "center",
   },
   successOverlay: {
     ...StyleSheet.absoluteFillObject,
