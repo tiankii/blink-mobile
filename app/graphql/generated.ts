@@ -1768,6 +1768,7 @@ export type Query = {
   /** Returns 1 Sat and 1 Usd Cent price for the given currency in minor unit */
   readonly realtimePrice: RealtimePrice;
   readonly region?: Maybe<Region>;
+  readonly upgradeModalLastShownAt?: Maybe<Scalars['String']['output']>;
   readonly upgradeModalShown: Scalars['Boolean']['output'];
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
@@ -2648,6 +2649,11 @@ export type UpgradeModalShownQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UpgradeModalShownQuery = { readonly __typename: 'Query', readonly upgradeModalShown: boolean };
+
+export type UpgradeModalLastShownAtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UpgradeModalLastShownAtQuery = { readonly __typename: 'Query', readonly upgradeModalLastShownAt?: string | null };
 
 export type TransactionFragment = { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } };
 
@@ -4100,6 +4106,43 @@ export type UpgradeModalShownQueryHookResult = ReturnType<typeof useUpgradeModal
 export type UpgradeModalShownLazyQueryHookResult = ReturnType<typeof useUpgradeModalShownLazyQuery>;
 export type UpgradeModalShownSuspenseQueryHookResult = ReturnType<typeof useUpgradeModalShownSuspenseQuery>;
 export type UpgradeModalShownQueryResult = Apollo.QueryResult<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>;
+export const UpgradeModalLastShownAtDocument = gql`
+    query upgradeModalLastShownAt {
+  upgradeModalLastShownAt @client
+}
+    `;
+
+/**
+ * __useUpgradeModalLastShownAtQuery__
+ *
+ * To run a query within a React component, call `useUpgradeModalLastShownAtQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUpgradeModalLastShownAtQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUpgradeModalLastShownAtQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUpgradeModalLastShownAtQuery(baseOptions?: Apollo.QueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+      }
+export function useUpgradeModalLastShownAtLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+        }
+export function useUpgradeModalLastShownAtSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+        }
+export type UpgradeModalLastShownAtQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtQuery>;
+export type UpgradeModalLastShownAtLazyQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtLazyQuery>;
+export type UpgradeModalLastShownAtSuspenseQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtSuspenseQuery>;
+export type UpgradeModalLastShownAtQueryResult = Apollo.QueryResult<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>;
 export const NetworkDocument = gql`
     query network {
   globals {
@@ -9427,6 +9470,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   price?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
+  upgradeModalLastShownAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   upgradeModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;

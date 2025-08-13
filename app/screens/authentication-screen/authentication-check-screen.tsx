@@ -2,8 +2,6 @@ import * as React from "react"
 import { useEffect } from "react"
 
 import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { setUpgradeModalShown } from "@app/graphql/client-only-query"
-
 import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -47,7 +45,6 @@ export const AuthenticationCheckScreen: React.FC = () => {
         navigation.replace("pin", { screenPurpose: PinScreenPurpose.AuthenticatePin })
       } else {
         setAppUnlocked()
-        setUpgradeModalShown(client, false)
         navigation.replace("Primary")
       }
     })()
