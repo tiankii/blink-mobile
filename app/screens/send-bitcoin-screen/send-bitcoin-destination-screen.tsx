@@ -537,23 +537,29 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           data={matchingContacts}
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
-          renderItem={({ item }) => (
-            <ListItem
-              key={item.username}
-              style={styles.item}
-              containerStyle={
-                item.id === selectedId ? styles.selectedContainer : styles.itemContainer
-              }
-              onPress={() => handleContactPress(item)}
-            >
-              <Icon name={"person-outline"} size={24} color={colors.primary} />
-              <ListItem.Content>
-                <ListItem.Title
-                  style={styles.itemText}
-                >{`${item.username}@${lnAddressHostname}`}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          )}
+          renderItem={({ item }) => {
+            const username = item?.username?.trim() ?? ""
+            const displayHandle =
+              username && username.includes("@")
+                ? `${username}@${lnAddressHostname}`
+                : username
+
+            return (
+              <ListItem
+                key={item.username}
+                style={styles.item}
+                containerStyle={
+                  item.id === selectedId ? styles.selectedContainer : styles.itemContainer
+                }
+                onPress={() => handleContactPress(item)}
+              >
+                <Icon name="person-outline" size={24} color={colors.primary} />
+                <ListItem.Content>
+                  <ListItem.Title style={styles.itemText}>{displayHandle}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+            )
+          }}
           keyExtractor={(item) => item.username}
         />
         <View style={styles.buttonContainer}>
