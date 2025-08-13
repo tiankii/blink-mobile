@@ -540,7 +540,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           renderItem={({ item }) => {
             const username = item?.username?.trim() ?? ""
             const displayHandle =
-              username && username.includes("@")
+              username && !username.includes("@")
                 ? `${username}@${lnAddressHostname}`
                 : username
 
