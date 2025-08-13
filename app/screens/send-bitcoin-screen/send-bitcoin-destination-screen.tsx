@@ -85,12 +85,12 @@ type Props = {
 const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
   let contactPrettyNameMatchesSearchWord: boolean
 
-  const contactNameMatchesSearchWord = contact.username
+  const contactNameMatchesSearchWord = contact.handle
     .toLowerCase()
     .includes(searchWord.toLowerCase())
 
-  if (contact.username) {
-    contactPrettyNameMatchesSearchWord = contact.username
+  if (contact.handle) {
+    contactPrettyNameMatchesSearchWord = contact.handle
       .toLowerCase()
       .includes(searchWord.toLowerCase())
   } else {
@@ -300,7 +300,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       ) {
         if (
           !contacts
-            .map((contact) => contact.username.toLowerCase())
+            .map((contact) => contact.handle.toLowerCase())
             .includes(destination.validDestination.handle.toLowerCase())
         ) {
           dispatchDestinationStateAction({
@@ -444,9 +444,9 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     handleSelection(item.id)
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
-      payload: { unparsedDestination: item.username },
+      payload: { unparsedDestination: item.handle },
     })
-    initiateGoToNextScreen(item.username)
+    initiateGoToNextScreen(item.handle)
   }
 
   const handleScanPress = () => {
@@ -538,15 +538,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
           renderItem={({ item }) => {
-            const username = item?.username?.trim() ?? ""
+            const handle = item?.handle?.trim() ?? ""
             const displayHandle =
-              username && !username.includes("@")
-                ? `${username}@${lnAddressHostname}`
-                : username
+              handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
 
             return (
               <ListItem
-                key={item.username}
+                key={item.handle}
                 style={styles.item}
                 containerStyle={
                   item.id === selectedId ? styles.selectedContainer : styles.itemContainer
@@ -560,7 +558,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               </ListItem>
             )
           }}
-          keyExtractor={(item) => item.username}
+          keyExtractor={(item) => item.handle}
         />
         <View style={styles.buttonContainer}>
           <GaloyPrimaryButton
