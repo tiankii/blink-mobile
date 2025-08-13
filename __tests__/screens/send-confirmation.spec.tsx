@@ -245,7 +245,7 @@ describe("SendBitcoinConfirmationScreen", () => {
     })
   })
 
-  it("Does not call saveLnAddressContact when LNURL payment is PENDING", async () => {
+  it("Call saveLnAddressContact when LNURL payment is PENDING", async () => {
     const { createLnurlPaymentDetails } = PaymentDetailsLightning
     const paymentDetailLightning = createLnurlPaymentDetails(defaultLightningParams)
     const routeLnurl = {
@@ -270,6 +270,10 @@ describe("SendBitcoinConfirmationScreen", () => {
     })
 
     expect(sendPaymentMock).toHaveBeenCalledTimes(1)
-    expect(saveLnAddressContactMock).not.toHaveBeenCalled()
+    expect(saveLnAddressContactMock).toHaveBeenCalledTimes(1)
+    expect(saveLnAddressContactMock).toHaveBeenCalledWith({
+      paymentType: "lnurl",
+      destination: defaultLightningParams.lnurl,
+    })
   })
 })

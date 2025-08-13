@@ -148,9 +148,8 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
       })
 
       if (status === "SUCCESS" || status === "PENDING") {
-        if (status === "SUCCESS") {
-          await saveLnAddressContact({ paymentType, destination })
-        }
+        // Save contact if payment type is lnurl and destination is a valid ln address
+        await saveLnAddressContact({ paymentType, destination })
 
         navigation.dispatch((state) => {
           const routes = [
