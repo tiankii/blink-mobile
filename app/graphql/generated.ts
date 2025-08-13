@@ -2996,6 +2996,13 @@ export type OnChainUsdTxFeeAsBtcDenominatedQueryVariables = Exact<{
 
 export type OnChainUsdTxFeeAsBtcDenominatedQuery = { readonly __typename: 'Query', readonly onChainUsdTxFeeAsBtcDenominated: { readonly __typename: 'OnChainUsdTxFee', readonly amount: number } };
 
+export type ContactCreateMutationVariables = Exact<{
+  input: ContactCreateInput;
+}>;
+
+
+export type ContactCreateMutation = { readonly __typename: 'Mutation', readonly contactCreate: { readonly __typename: 'ContactPayload', readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }>, readonly contact?: { readonly __typename: 'Contact', readonly id: string } | null } };
+
 export type IntraLedgerPaymentSendMutationVariables = Exact<{
   input: IntraLedgerPaymentSendInput;
 }>;
@@ -6527,6 +6534,44 @@ export type OnChainUsdTxFeeAsBtcDenominatedQueryHookResult = ReturnType<typeof u
 export type OnChainUsdTxFeeAsBtcDenominatedLazyQueryHookResult = ReturnType<typeof useOnChainUsdTxFeeAsBtcDenominatedLazyQuery>;
 export type OnChainUsdTxFeeAsBtcDenominatedSuspenseQueryHookResult = ReturnType<typeof useOnChainUsdTxFeeAsBtcDenominatedSuspenseQuery>;
 export type OnChainUsdTxFeeAsBtcDenominatedQueryResult = Apollo.QueryResult<OnChainUsdTxFeeAsBtcDenominatedQuery, OnChainUsdTxFeeAsBtcDenominatedQueryVariables>;
+export const ContactCreateDocument = gql`
+    mutation contactCreate($input: ContactCreateInput!) {
+  contactCreate(input: $input) {
+    errors {
+      message
+    }
+    contact {
+      id
+    }
+  }
+}
+    `;
+export type ContactCreateMutationFn = Apollo.MutationFunction<ContactCreateMutation, ContactCreateMutationVariables>;
+
+/**
+ * __useContactCreateMutation__
+ *
+ * To run a mutation, you first call `useContactCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useContactCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [contactCreateMutation, { data, loading, error }] = useContactCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useContactCreateMutation(baseOptions?: Apollo.MutationHookOptions<ContactCreateMutation, ContactCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ContactCreateMutation, ContactCreateMutationVariables>(ContactCreateDocument, options);
+      }
+export type ContactCreateMutationHookResult = ReturnType<typeof useContactCreateMutation>;
+export type ContactCreateMutationResult = Apollo.MutationResult<ContactCreateMutation>;
+export type ContactCreateMutationOptions = Apollo.BaseMutationOptions<ContactCreateMutation, ContactCreateMutationVariables>;
 export const IntraLedgerPaymentSendDocument = gql`
     mutation intraLedgerPaymentSend($input: IntraLedgerPaymentSendInput!) {
   intraLedgerPaymentSend(input: $input) {
