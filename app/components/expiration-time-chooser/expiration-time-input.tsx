@@ -46,7 +46,7 @@ export const ExpirationTimeChooser: React.FC<ExpirationTimeInputProps> = ({
   }
 
   const getExpirationTimeFormat = (timeIn: { minutes?: number }) => {
-    let minutes = timeIn.minutes ?? 0
+    const minutes = timeIn.minutes ?? 0
     if (minutes === 0) return null
 
     const unidades = [
