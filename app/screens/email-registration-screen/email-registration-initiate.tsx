@@ -24,9 +24,12 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    marginBottom: 26,
+    marginBottom: 10,
   },
-
+  secondaryButtonContainer: {
+    marginTop: 15,
+    marginBottom: -15,
+  },
   inputContainer: {
     marginBottom: 20,
     flexDirection: "row",
@@ -34,7 +37,7 @@ const useStyles = makeStyles(({ colors }) => ({
     minHeight: 48,
   },
   textContainer: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   viewWrapper: { flex: 1 },
 
@@ -48,9 +51,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   errorContainer: {
     marginBottom: 20,
-  },
-  buttonSpacer: {
-    height: 40,
   },
 }))
 
@@ -157,7 +157,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -187,13 +187,12 @@ export const EmailRegistrationInitiateScreen: React.FC<
             disabled={!emailInput}
             onPress={submit}
           />
-          {onboarding ? (
+          {onboarding && (
             <GaloySecondaryButton
               title={LL.UpgradeAccountModal.notNow()}
               onPress={onboardingNavigate}
+              containerStyle={styles.secondaryButtonContainer}
             />
-          ) : (
-            <View style={styles.buttonSpacer} />
           )}
         </View>
       </View>

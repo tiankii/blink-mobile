@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useCallback, useState, useEffect } from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Keyboard } from "react-native"
 import { Text, makeStyles } from "@rneui/themed"
 
 import { gql } from "@apollo/client"
@@ -11,10 +11,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import {
-  SuccessIconAnimation,
-  CompletedTextAnimation,
-} from "@app/components/success-animation"
+import { SuccessIconAnimation } from "@app/components/success-animation"
 
 gql`
   mutation userEmailRegistrationValidate($input: UserEmailRegistrationValidateInput!) {
@@ -83,6 +80,7 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         }
 
         if (res.data?.userEmailRegistrationValidate.me?.email?.verified) {
+          Keyboard.dismiss()
           setShowSuccess(true)
         } else {
           throw new Error(LL.common.errorAuthToken())
@@ -126,12 +124,10 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.successOverlay}>
           <SuccessIconAnimation>
             <GaloyIcon name="email-add" size={128} />
-          </SuccessIconAnimation>
-          <CompletedTextAnimation>
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
-          </CompletedTextAnimation>
+          </SuccessIconAnimation>
         </View>
       )}
       <CodeInput
@@ -148,6 +144,8 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
 const useStyles = makeStyles(({ colors }) => ({
   successText: {
     marginTop: 20,
+    textAlign: "center",
+    alignSelf: "center",
   },
   successOverlay: {
     ...StyleSheet.absoluteFillObject,

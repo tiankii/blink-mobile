@@ -40,14 +40,10 @@ describe("EmailBenefitsScreen", () => {
     )
 
     expect(getByText(LL.OnboardingScreen.emailBenefits.title())).toBeTruthy()
+    expect(getByText(LL.OnboardingScreen.emailBenefits.backupDescription())).toBeTruthy()
+    expect(getByText(LL.OnboardingScreen.emailBenefits.supportDescription())).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.backupDescription()}`),
-    ).toBeTruthy()
-    expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.supportDescription()}`),
-    ).toBeTruthy()
-    expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.securityDescription()}`),
+      getByText(LL.OnboardingScreen.emailBenefits.securityDescription()),
     ).toBeTruthy()
   })
 

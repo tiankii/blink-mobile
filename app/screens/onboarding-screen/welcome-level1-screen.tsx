@@ -1,5 +1,5 @@
 import * as React from "react"
-import { RouteProp, useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation, useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -22,8 +22,20 @@ export const WelcomeLevel1Screen: React.FC<WelcomeLevel1ScreenProps> = ({ route 
 
   const { onboarding } = route.params
 
+  // Prevent back navigation
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+        if (e.data.action.type === "POP" || e.data.action.type === "GO_BACK") {
+          e.preventDefault()
+        }
+      })
+      return unsubscribe
+    }, [navigation]),
+  )
+
   const handlePrimaryAction = () => {
-    navigation.replace("onboarding", {
+    navigation.navigate("onboarding", {
       screen: "emailBenefits",
       params: { onboarding, hasUsername: Boolean(data?.me?.username) },
     })

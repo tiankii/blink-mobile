@@ -1676,8 +1676,8 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
   }
 }
 
-query upgradeModalShown {
-  upgradeModalShown @client
+query upgradeModalLastShownAt {
+  upgradeModalLastShownAt @client
 }
 
 query walletOverviewScreen {

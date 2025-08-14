@@ -42,9 +42,9 @@ describe("OnboardingLayout", () => {
   it("Shows title and all description lines", () => {
     renderComponent()
     expect(screen.getByText("Example Title")).toBeTruthy()
-    expect(screen.getByText("- Example Description 1")).toBeTruthy()
-    expect(screen.getByText("- Example Description 2")).toBeTruthy()
-    expect(screen.getByText("- Example Description 3")).toBeTruthy()
+    expect(screen.getByText("Example Description 1")).toBeTruthy()
+    expect(screen.getByText("Example Description 2")).toBeTruthy()
+    expect(screen.getByText("Example Description 3")).toBeTruthy()
   })
 
   it("Triggers primary button action", () => {

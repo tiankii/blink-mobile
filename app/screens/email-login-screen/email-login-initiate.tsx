@@ -23,10 +23,7 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    marginBottom: 26,
-  },
-  buttonSpacer: {
-    height: 40,
+    marginBottom: 10,
   },
   inputContainer: {
     marginBottom: 20,
@@ -130,7 +127,7 @@ export const EmailLoginInitiateScreen: React.FC = () => {
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.EmailLoginInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.EmailLoginInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -160,7 +157,6 @@ export const EmailLoginInitiateScreen: React.FC = () => {
             disabled={!emailInput}
             onPress={submit}
           />
-          <View style={styles.buttonSpacer} />
         </View>
       </View>
     </Screen>
