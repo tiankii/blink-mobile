@@ -137,10 +137,6 @@ const ReceiveScreen = () => {
     ) : undefined
 
   const isReady = request.state !== PaymentRequestState.Loading
-  const expiresAt =
-    request.info?.data?.invoiceType === Invoice.Lightning && request.info?.data?.expiresAt
-      ? request.info.data.expiresAt
-      : null
 
   const handlePressWallet = (id: string) => {
     if (isReady) {
@@ -319,7 +315,6 @@ const ReceiveScreen = () => {
         />
         <ExpirationTimeChooser
           expirationTime={request?.expirationTime ?? 0}
-          expiresAt={expiresAt}
           setExpirationTime={request.setExpirationTime}
           walletCurrency={request.receivingWalletDescriptor.currency}
           disabled={!request.canSetExpirationTime}
