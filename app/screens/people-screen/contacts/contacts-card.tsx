@@ -42,11 +42,11 @@ const Contact = ({ contact }: { contact: UserContact }) => {
 
   return (
     <View style={styles.contactContainer}>
-      <Text type="p1">{contact.username}</Text>
+      <Text type="p1">{contact.handle}</Text>
       <GaloyIconButton
         onPress={() =>
           rootNavigation.navigate("sendBitcoinDestination", {
-            username: contact.username,
+            username: contact.handle,
           })
         }
         name="send"

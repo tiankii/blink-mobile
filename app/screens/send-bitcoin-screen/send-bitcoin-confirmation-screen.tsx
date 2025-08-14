@@ -40,6 +40,7 @@ import { makeStyles, Text, useTheme } from "@rneui/themed"
 import { testProps } from "../../utils/testProps"
 import useFee from "./use-fee"
 import { useSendPayment } from "./use-send-payment"
+import { useSaveLnAddressContact } from "./use-save-lnaddress-contact"
 
 gql`
   query sendBitcoinConfirmationScreen {
@@ -86,6 +87,7 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
   } = paymentDetail
 
   const { formatDisplayAndWalletAmount } = useDisplayCurrency()
+  const saveLnAddressContact = useSaveLnAddressContact()
 
   const { data } = useSendBitcoinConfirmationScreenQuery({ skip: !useIsAuthed() })
 
@@ -146,6 +148,9 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
       })
 
       if (status === "SUCCESS" || status === "PENDING") {
+        // Save contact if payment type is lnurl and destination is a valid ln address
+        await saveLnAddressContact({ paymentType, destination })
+
         navigation.dispatch((state) => {
           const routes = [
             { name: "Primary" },
@@ -206,6 +211,9 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
     sendPayment,
     setPaymentError,
     sendingWalletDescriptor?.currency,
+    paymentType,
+    destination,
+    saveLnAddressContact,
   ])
 
   let validAmount = true

@@ -90,7 +90,7 @@ export const AllContactsScreen: React.FC = () => {
   const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
     let contactPrettyNameMatchesSearchWord: boolean
 
-    const contactNameMatchesSearchWord = contact.username
+    const contactNameMatchesSearchWord = contact.handle
       .toLowerCase()
       .includes(searchWord.toLowerCase())
 
@@ -167,7 +167,7 @@ export const AllContactsScreen: React.FC = () => {
         ListEmptyComponent={ListEmptyContent}
         renderItem={({ item }) => (
           <ListItem
-            key={item.username}
+            key={item.handle}
             style={styles.item}
             containerStyle={styles.itemContainer}
             onPress={() => navigation.navigate("contactDetail", { contact: item })}
@@ -178,7 +178,7 @@ export const AllContactsScreen: React.FC = () => {
             </ListItem.Content>
           </ListItem>
         )}
-        keyExtractor={(item) => item.username}
+        keyExtractor={(item) => item.handle}
       />
     </Screen>
   )
