@@ -7,7 +7,11 @@ import { useTheme, Text, makeStyles } from "@rneui/themed"
 
 export type ExpirationTimeButtonProps = {
   placeholder?: string
+<<<<<<< HEAD
   value: string | number | null
+=======
+  value?: string | number
+>>>>>>> 32a28abef2a011e1a783a0e0dee7095e92943d37
   iconName?: "pencil" | "info"
   error?: boolean
   disabled?: boolean
