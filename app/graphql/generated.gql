@@ -1666,10 +1666,6 @@ query upgradeModalLastShownAt {
   upgradeModalLastShownAt @client
 }
 
-query upgradeModalShown {
-  upgradeModalShown @client
-}
-
 query walletOverviewScreen {
   me {
     id

@@ -1769,7 +1769,6 @@ export type Query = {
   readonly realtimePrice: RealtimePrice;
   readonly region?: Maybe<Region>;
   readonly upgradeModalLastShownAt?: Maybe<Scalars['String']['output']>;
-  readonly upgradeModalShown: Scalars['Boolean']['output'];
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
   readonly usernameAvailable?: Maybe<Scalars['Boolean']['output']>;
@@ -2644,11 +2643,6 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
-
-export type UpgradeModalShownQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UpgradeModalShownQuery = { readonly __typename: 'Query', readonly upgradeModalShown: boolean };
 
 export type UpgradeModalLastShownAtQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4069,43 +4063,6 @@ export type InnerCircleValueQueryHookResult = ReturnType<typeof useInnerCircleVa
 export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCircleValueLazyQuery>;
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
-export const UpgradeModalShownDocument = gql`
-    query upgradeModalShown {
-  upgradeModalShown @client
-}
-    `;
-
-/**
- * __useUpgradeModalShownQuery__
- *
- * To run a query within a React component, call `useUpgradeModalShownQuery` and pass it any options that fit your needs.
- * When your component renders, `useUpgradeModalShownQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUpgradeModalShownQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUpgradeModalShownQuery(baseOptions?: Apollo.QueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
-      }
-export function useUpgradeModalShownLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
-        }
-export function useUpgradeModalShownSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>(UpgradeModalShownDocument, options);
-        }
-export type UpgradeModalShownQueryHookResult = ReturnType<typeof useUpgradeModalShownQuery>;
-export type UpgradeModalShownLazyQueryHookResult = ReturnType<typeof useUpgradeModalShownLazyQuery>;
-export type UpgradeModalShownSuspenseQueryHookResult = ReturnType<typeof useUpgradeModalShownSuspenseQuery>;
-export type UpgradeModalShownQueryResult = Apollo.QueryResult<UpgradeModalShownQuery, UpgradeModalShownQueryVariables>;
 export const UpgradeModalLastShownAtDocument = gql`
     query upgradeModalLastShownAt {
   upgradeModalLastShownAt @client
@@ -9471,7 +9428,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
   upgradeModalLastShownAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  upgradeModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
   welcomeLeaderboard?: Resolver<ResolversTypes['Leaderboard'], ParentType, ContextType, RequireFields<QueryWelcomeLeaderboardArgs, 'input'>>;
