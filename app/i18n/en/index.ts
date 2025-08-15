@@ -2802,6 +2802,9 @@ const en: BaseTranslation = {
       one: "Day",
       other: "Days"
     },
+    dollar: "Dollar",
+    all: "ALL",
+    allAccounts: "All accounts",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
