@@ -1,10 +1,8 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Platform, TouchableOpacity, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { gql } from "@apollo/client"
-import SwitchButton from "@app/assets/icons-redesign/transfer.svg"
-import { AmountInput } from "@app/components/amount-input"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import {
@@ -18,15 +16,19 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useConvertMoneyDetails } from "@app/screens/conversion-flow/use-convert-money-details"
 import {
-  DisplayCurrency,
   lessThan,
   toBtcMoneyAmount,
+  toDisplayAmount,
   toUsdMoneyAmount,
   toWalletAmount,
 } from "@app/types/amounts"
 import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { Input, makeStyles, Text, useTheme } from "@rneui/themed"
+import Icon from "react-native-vector-icons/Ionicons"
+import { CurrencyKeyboard } from "@app/components/currency-keyboard"
+import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
+import { CurrencyInputModal } from "@app/components/currency-input-modal"
 
 gql`
   query conversionScreen {
@@ -64,10 +66,40 @@ export const ConversionDetailsScreen = () => {
   })
 
   const { LL } = useI18nContext()
-  const { formatDisplayAndWalletAmount } = useDisplayCurrency()
+  const {
+    formatMoneyAmount,
+    moneyAmountToDisplayCurrencyString,
+    getCurrencySymbol,
+    displayCurrency,
+  } = useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
+
+  const [inputValues, setInputValues] = useState({
+    fromInput: "",
+    toInput: "",
+    currencyInput: "",
+  })
+
+  const [focusedInput, setFocusedInput] = useState<
+    "fromInput" | "toInput" | "currencyInput" | null
+  >(null)
+
+  const inputRefs = {
+    fromInput: useRef(null),
+    toInput: useRef(null),
+    currencyInput: useRef(null),
+  }
+
+  const handleCustomKeyboardPress = (key: string) => {
+    if (!focusedInput) return
+
+    setInputValues((prev) => ({
+      ...prev,
+      [focusedInput]: prev[focusedInput] + key,
+    }))
+  }
 
   const {
     fromWallet,
@@ -75,7 +107,6 @@ export const ConversionDetailsScreen = () => {
     setWallets,
     settlementSendAmount,
     setMoneyAmount,
-    convertMoneyAmount,
     isValidAmount,
     moneyAmount,
     canToggleWallet,
@@ -103,19 +134,37 @@ export const ConversionDetailsScreen = () => {
   const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance ?? NaN)
   const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance ?? NaN)
 
+  const [defaultCurrency, setDefaultCurrency] = useState(displayCurrency)
+  const [currencySymbol, setCurrencySymbol] = useState(
+    getCurrencySymbol({
+      currency: defaultCurrency,
+    }),
+  )
+  console.log(btcWalletBalance)
+  console.log(toDisplayAmount({ amount: 10, currencyCode: "BTC" }))
+
   const fromWalletBalance =
     fromWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
   const toWalletBalance =
     toWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
-  const fromWalletBalanceFormatted = formatDisplayAndWalletAmount({
-    displayAmount: convertMoneyAmount(fromWalletBalance, DisplayCurrency),
-    walletAmount: fromWalletBalance,
-  })
 
-  const toWalletBalanceFormatted = formatDisplayAndWalletAmount({
-    displayAmount: convertMoneyAmount(toWalletBalance, DisplayCurrency),
-    walletAmount: toWalletBalance,
-  })
+  const fromWalletBalanceFormatted = formatMoneyAmount({ moneyAmount: fromWalletBalance })
+  const fromSatsFormatted =
+    fromWallet.walletCurrency === WalletCurrency.Usd &&
+    displayCurrency === WalletCurrency.Usd
+      ? null
+      : moneyAmountToDisplayCurrencyString({
+          moneyAmount: fromWalletBalance,
+        })
+
+  const toWalletBalanceFormatted = formatMoneyAmount({ moneyAmount: toWalletBalance })
+  const toSatsFormatted =
+    toWallet.walletCurrency === WalletCurrency.Usd &&
+    displayCurrency === WalletCurrency.Usd
+      ? null
+      : moneyAmountToDisplayCurrencyString({
+          moneyAmount: toWalletBalance,
+        })
 
   let amountFieldError: string | undefined = undefined
 
@@ -146,62 +195,162 @@ export const ConversionDetailsScreen = () => {
     })
   }
 
+  useEffect(() => {
+    setInputValues((prev) => ({
+      ...prev,
+      fromInput: prev.toInput,
+      toInput: prev.fromInput,
+    }))
+  }, [fromWallet])
+
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.walletSelectorContainer}>
-          <View style={styles.walletsContainer}>
-            <View style={styles.fromFieldContainer}>
-              <View style={styles.walletSelectorInfoContainer}>
-                {fromWallet.walletCurrency === WalletCurrency.Btc ? (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.from()} ${LL.common.btcAccount()}`}</Text>
-                ) : (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.from()} ${LL.common.usdAccount()}`}</Text>
-                )}
-                <View style={styles.walletSelectorBalanceContainer}>
-                  <Text>{fromWalletBalanceFormatted}</Text>
-                </View>
+          <View style={styles.fromFieldContainer}>
+            <Input
+              ref={inputRefs.fromInput}
+              value={inputValues.fromInput}
+              onFocus={() => setFocusedInput("fromInput")}
+              onChangeText={(e) => {
+                // remove commas for ease of calculation later on
+                const val = e.replaceAll(",", "")
+                // TODO adjust for currencies that use commas instead of decimals
+
+                // test for string input that can be either numerical or float
+                if (/^\d*\.?\d*$/.test(val.trim())) {
+                  const num = Number(val)
+                  //onPaste(num)
+                }
+              }}
+              showSoftInputOnFocus={false}
+              containerStyle={styles.primaryNumberContainer}
+              inputStyle={styles.primaryNumberText}
+              placeholder={
+                fromWallet.walletCurrency === WalletCurrency.Usd &&
+                displayCurrency === WalletCurrency.Usd
+                  ? "$ 0.00"
+                  : "0 SAT"
+              }
+              placeholderTextColor={colors.grey3}
+              inputContainerStyle={styles.primaryNumberInputContainer}
+              renderErrorMessage={false}
+              autoFocus={
+                displayCurrency === WalletCurrency.Usd &&
+                defaultCurrency === WalletCurrency.Usd
+              }
+            />
+            <View>
+              {fromWallet.walletCurrency === WalletCurrency.Btc ? (
+                <GaloyCurrencyBubbleText
+                  currency="BTC"
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              ) : (
+                <GaloyCurrencyBubbleText
+                  currency="USD"
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              )}
+
+              <View style={styles.walletSelectorBalanceContainer}>
+                <Text style={styles.convertText}>{fromWalletBalanceFormatted}</Text>
+                <Text style={styles.convertText}>{fromSatsFormatted}</Text>
               </View>
             </View>
-            <View style={styles.walletSeparator}>
-              <View style={styles.line}></View>
-              <TouchableOpacity
-                style={styles.switchButton}
-                disabled={!canToggleWallet}
-                onPress={toggleWallet}
-              >
-                <SwitchButton color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.toFieldContainer}>
-              <View style={styles.walletSelectorInfoContainer}>
-                {toWallet.walletCurrency === WalletCurrency.Btc ? (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.to()} ${LL.common.btcAccount()}`}</Text>
-                ) : (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.to()} ${LL.common.usdAccount()}`}</Text>
-                )}
-                <View style={styles.walletSelectorBalanceContainer}>
-                  <Text>{toWalletBalanceFormatted}</Text>
-                </View>
+          </View>
+          <View style={styles.walletSeparator}>
+            <View style={styles.line}></View>
+            <TouchableOpacity
+              style={styles.switchButton}
+              disabled={!canToggleWallet}
+              onPress={toggleWallet}
+            >
+              <Icon name="arrow-down-outline" color={colors.primary} size={25} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.toFieldContainer}>
+            <Input
+              ref={inputRefs.toInput}
+              value={inputValues.toInput}
+              onFocus={() => setFocusedInput("toInput")}
+              onChangeText={(e) => {
+                // remove commas for ease of calculation later on
+                const val = e.replaceAll(",", "")
+                // TODO adjust for currencies that use commas instead of decimals
+
+                // test for string input that can be either numerical or float
+                if (/^\d*\.?\d*$/.test(val.trim())) {
+                  const num = Number(val)
+                  //onPaste(num)
+                }
+              }}
+              showSoftInputOnFocus={false}
+              containerStyle={styles.primaryNumberContainer}
+              inputStyle={styles.primaryNumberText}
+              placeholder={
+                fromWallet.walletCurrency === WalletCurrency.Usd &&
+                displayCurrency === WalletCurrency.Usd
+                  ? "0 SAT"
+                  : "$ 0.00"
+              }
+              placeholderTextColor={colors.grey3}
+              inputContainerStyle={styles.primaryNumberInputContainer}
+              renderErrorMessage={false}
+            />
+            <View>
+              {toWallet.walletCurrency === WalletCurrency.Btc ? (
+                <GaloyCurrencyBubbleText
+                  currency="BTC"
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              ) : (
+                <GaloyCurrencyBubbleText
+                  currency="USD"
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              )}
+
+              <View style={styles.walletSelectorBalanceContainer}>
+                <Text style={styles.convertText}>{toWalletBalanceFormatted}</Text>
+                <Text style={styles.convertText}>{toSatsFormatted}</Text>
               </View>
             </View>
           </View>
         </View>
+        {displayCurrency !== WalletCurrency.Usd &&
+          defaultCurrency !== WalletCurrency.Usd && (
+            <CurrencyInputModal
+              ref={inputRefs.currencyInput}
+              inputValue={inputValues.currencyInput}
+              onFocus={() => setFocusedInput("currencyInput")}
+              onChangeText={(e) => {
+                // remove commas for ease of calculation later on
+                const val = e.replaceAll(",", "")
+                // TODO adjust for currencies that use commas instead of decimals
+
+                // test for string input that can be either numerical or float
+                if (/^\d*\.?\d*$/.test(val.trim())) {
+                  const num = Number(val)
+                  //onPaste(num)
+                }
+              }}
+              defaultCurrency={defaultCurrency}
+              placeholder={`${currencySymbol} 0`}
+              currencySymbol={currencySymbol}
+            />
+          )}
         <View style={styles.fieldContainer}>
-          <AmountInput
+          {/* <AmountInput
             unitOfAccountAmount={moneyAmount}
             walletCurrency={fromWallet.walletCurrency}
             setAmount={setMoneyAmount}
             convertMoneyAmount={convertMoneyAmount}
-          />
+          /> */}
           {amountFieldError && (
             <View style={styles.errorContainer}>
               <Text color={colors.error}>{amountFieldError}</Text>
@@ -209,11 +358,6 @@ export const ConversionDetailsScreen = () => {
           )}
         </View>
         <View style={styles.fieldContainer}>
-          <View style={styles.percentageLabelContainer}>
-            <Text style={styles.percentageFieldLabel}>
-              {LL.TransferScreen.percentageToConvert()}
-            </Text>
-          </View>
           <View style={styles.percentageContainer}>
             <View style={styles.percentageFieldContainer}>
               <TouchableOpacity
@@ -221,33 +365,42 @@ export const ConversionDetailsScreen = () => {
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(25)}
               >
-                <Text>25%</Text>
+                <Text style={styles.percentageFieldText}>25%</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 {...testProps("convert-50%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(50)}
               >
-                <Text>50%</Text>
+                <Text style={styles.percentageFieldText}>50%</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 {...testProps("convert-75%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(75)}
               >
-                <Text>75%</Text>
+                <Text style={styles.percentageFieldText}>75%</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 {...testProps("convert-100%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(100)}
               >
-                <Text>100%</Text>
+                <Text style={styles.percentageFieldText}>100%</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </ScrollView>
+      <View style={styles.keyboardContainer}>
+        <CurrencyKeyboard onPress={handleCustomKeyboardPress} />
+      </View>
+      {/* <AmountInputScreen
+        walletCurrency={fromWallet.walletCurrency}
+        convertMoneyAmount={convertMoneyAmount}
+        setAmount={setMoneyAmount}
+        onSetPrimaryCurrencyFormattedAmount={handleCustomKeyboardPress}
+      /> */}
       <GaloyPrimaryButton
         title={LL.common.next()}
         containerStyle={styles.buttonContainer}
@@ -270,23 +423,21 @@ const useStyles = makeStyles(({ colors }) => ({
   toFieldContainer: {
     flexDirection: "row",
     marginTop: 15,
-    marginRight: 75,
+    alignItems: "center",
   },
   walletSelectorContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     backgroundColor: colors.grey5,
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
-  },
-  walletsContainer: {
-    flex: 1,
   },
   walletSeparator: {
     flexDirection: "row",
     height: 1,
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
   },
   line: {
     backgroundColor: colors.grey4,
@@ -294,8 +445,10 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
   },
   switchButton: {
-    height: 50,
-    width: 50,
+    position: "absolute",
+    left: 100,
+    height: 43,
+    width: 43,
     borderRadius: 50,
     elevation: Platform.OS === "android" ? 50 : 0,
     backgroundColor: colors.grey4,
@@ -305,50 +458,64 @@ const useStyles = makeStyles(({ colors }) => ({
   fromFieldContainer: {
     flexDirection: "row",
     marginBottom: 15,
-    marginRight: 75,
-  },
-  percentageFieldLabel: {
-    fontSize: 12,
-    fontWeight: "bold",
-    padding: 10,
-  },
-  walletSelectorInfoContainer: {
-    flex: 1,
-    flexDirection: "column",
-  },
-  walletCurrencyText: {
-    fontWeight: "bold",
-    fontSize: 18,
+    alignItems: "center",
   },
   walletSelectorBalanceContainer: {
+    marginTop: 5,
     flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+  },
+  convertText: {
+    textAlign: "right",
   },
   percentageFieldContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     flex: 1,
     flexWrap: "wrap",
+    gap: 12,
   },
   percentageField: {
     backgroundColor: colors.grey5,
     padding: 10,
-    borderRadius: 10,
-    justifyContent: "center",
+    borderRadius: 100,
     alignItems: "center",
     marginVertical: 5,
-    minWidth: 80,
+    minWidth: 50,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
-  percentageLabelContainer: {
-    flex: 1,
+  percentageFieldText: {
+    color: colors.primary,
+    fontWeight: "bold",
   },
   percentageContainer: {
     flexDirection: "row",
+    marginTop: 25,
   },
   buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
   errorContainer: {
     marginTop: 10,
     alignItems: "center",
+  },
+  keyboardContainer: {
+    paddingHorizontal: 30,
+    marginBottom: 30,
+  },
+  primaryNumberContainer: {
+    flex: 1,
+  },
+  primaryNumberText: {
+    fontSize: 28,
+    lineHeight: 32,
+    flex: 1,
+    fontWeight: "bold",
+    padding: 0,
+    margin: 0,
+  },
+  primaryNumberInputContainer: {
+    borderBottomWidth: 0,
   },
 }))

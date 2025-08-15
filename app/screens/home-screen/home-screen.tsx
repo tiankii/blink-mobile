@@ -390,7 +390,7 @@ export const HomeScreen: React.FC = () => {
     levelAccount === AccountLevel.Three
   ) {
     buttons.unshift({
-      title: LL.ConversionDetailsScreen.title(),
+      title: LL.ConversionDetailsScreen.transfer(),
       target: "conversionDetails" as Target,
       icon: "transfer" as IconNamesType,
     })

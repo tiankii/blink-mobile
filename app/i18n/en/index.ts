@@ -70,7 +70,8 @@ const en: BaseTranslation = {
     title: "Transactions with {username: string}",
   },
   ConversionDetailsScreen: {
-    title: "Convert",
+    title: "Transfer funds",
+    transfer: "Transfer",
     percentageToConvert: "% to convert",
   },
   ConversionConfirmationScreen: {

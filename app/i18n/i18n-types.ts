@@ -243,9 +243,13 @@ type RootTranslation = {
 	}
 	ConversionDetailsScreen: {
 		/**
-		 * C​o​n​v​e​r​t
+		 * T​r​a​n​s​f​e​r​ ​f​u​n​d​s
 		 */
 		title: string
+		/**
+		 * T​r​a​n​s​f​e​r
+		 */
+		transfer: string
 		/**
 		 * %​ ​t​o​ ​c​o​n​v​e​r​t
 		 */
@@ -9596,9 +9600,13 @@ export type TranslationFunctions = {
 	}
 	ConversionDetailsScreen: {
 		/**
-		 * Convert
+		 * Transfer funds
 		 */
 		title: () => LocalizedString
+		/**
+		 * Transfer
+		 */
+		transfer: () => LocalizedString
 		/**
 		 * % to convert
 		 */

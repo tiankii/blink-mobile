@@ -59,7 +59,8 @@
         "title": "Transacciones con {username: string}"
     },
     "ConversionDetailsScreen": {
-        "title": "Convertir",
+        "title": "Transferir fondos",
+        "transfer": "Transferir",
         "percentageToConvert": "% para convertir"
     },
     "ConversionConfirmationScreen": {
