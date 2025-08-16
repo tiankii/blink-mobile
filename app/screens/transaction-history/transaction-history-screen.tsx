@@ -3,12 +3,10 @@ import { ActivityIndicator, SectionList, Text, View } from "react-native"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { makeStyles, useTheme } from "@rneui/themed"
 import { gql } from "@apollo/client"
+import { RouteProp } from "@react-navigation/native"
 
 import { Screen } from "@app/components/screen"
-import {
-  WalletCurrency,
-  useTransactionListForDefaultAccountQuery,
-} from "@app/graphql/generated"
+import { useTransactionListForDefaultAccountQuery } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { groupTransactionsByDate } from "@app/graphql/transactions"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -16,6 +14,7 @@ import {
   WalletFilterDropdown,
   WalletValues,
 } from "@app/components/wallet-filter-dropdown"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
 import { MemoizedTransactionItem } from "../../components/transaction-item"
 import { toastShow } from "../../utils/toast"
@@ -24,28 +23,16 @@ gql`
   query transactionListForDefaultAccount(
     $first: Int
     $after: String
-    $last: Int
-    $before: String
     $walletIds: [WalletId!]
   ) {
     me {
       id
       defaultAccount {
         id
-        wallets {
-          id
-          walletCurrency
-        }
         pendingIncomingTransactions {
           ...Transaction
         }
-        transactions(
-          first: $first
-          after: $after
-          last: $last
-          before: $before
-          walletIds: $walletIds
-        ) {
+        transactions(first: $first, after: $after, walletIds: $walletIds) {
           ...TransactionList
         }
       }
@@ -53,41 +40,40 @@ gql`
   }
 `
 
-export const TransactionHistoryScreen: React.FC = () => {
+const INITIAL_ITEMS_TO_RENDER = 14
+const RENDER_BATCH_SIZE = 14
+const QUERY_BATCH_SIZE = INITIAL_ITEMS_TO_RENDER * 1.5
+
+type TransactionHistoryScreenProps = {
+  route: RouteProp<RootStackParamList, "transactionHistory">
+}
+
+export const TransactionHistoryScreen: React.FC<TransactionHistoryScreenProps> = ({
+  route,
+}) => {
   const {
     theme: { colors },
   } = useTheme()
   const styles = useStyles()
   const { LL, locale } = useI18nContext()
-
   const [walletFilter, setWalletFilter] = React.useState<WalletValues>("ALL")
+
+  const walletIdsByCurrency = React.useMemo(() => {
+    const wallets = route.params?.wallets ?? []
+    return wallets
+      .filter((w) => walletFilter === "ALL" || w.walletCurrency === walletFilter)
+      .map((w) => w.id)
+  }, [route.params?.wallets, walletFilter])
 
   const { data, error, fetchMore, refetch, loading } =
     useTransactionListForDefaultAccountQuery({
       skip: !useIsAuthed(),
+      fetchPolicy: "cache-and-network",
+      variables: {
+        first: QUERY_BATCH_SIZE,
+        walletIds: walletIdsByCurrency,
+      },
     })
-
-  const wallets = React.useMemo(
-    () => data?.me?.defaultAccount?.wallets ?? [],
-    [data?.me?.defaultAccount?.wallets],
-  )
-
-  const walletIdsByCurrency = React.useMemo(
-    () => ({
-      BTC: wallets
-        .filter((w) => w.walletCurrency === WalletCurrency.Btc)
-        .map((w) => w.id),
-      USD: wallets
-        .filter((w) => w.walletCurrency === WalletCurrency.Usd)
-        .map((w) => w.id),
-      ALL: wallets.map((w) => w.id),
-    }),
-    [wallets],
-  )
-
-  const getWalletIds = React.useCallback(() => {
-    return walletIdsByCurrency[walletFilter] ?? []
-  }, [walletFilter, walletIdsByCurrency])
 
   const pendingIncomingTransactions =
     data?.me?.defaultAccount?.pendingIncomingTransactions
@@ -105,12 +91,6 @@ export const TransactionHistoryScreen: React.FC = () => {
       }),
     [pendingIncomingTransactions, transactions, LL, locale],
   )
-
-  React.useEffect(() => {
-    if (!wallets.length) return
-
-    refetch({ walletIds: getWalletIds() })
-  }, [getWalletIds, refetch, wallets])
 
   if (error) {
     console.error(error)
@@ -132,10 +112,11 @@ export const TransactionHistoryScreen: React.FC = () => {
 
   const fetchNextTransactionsPage = () => {
     const pageInfo = transactions?.pageInfo
-
     if (pageInfo.hasNextPage) {
       fetchMore({
         variables: {
+          first: QUERY_BATCH_SIZE,
+          walletIds: walletIdsByCurrency,
           after: pageInfo.endCursor,
         },
       })
@@ -146,48 +127,42 @@ export const TransactionHistoryScreen: React.FC = () => {
     <Screen>
       <WalletFilterDropdown
         selected={walletFilter}
-        onSelect={setWalletFilter}
+        onSelectionChange={setWalletFilter}
         loading={loading}
       />
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator color={colors.primary} size={"large"} />
-        </View>
-      ) : (
-        <SectionList
-          showsVerticalScrollIndicator={false}
-          maxToRenderPerBatch={10}
-          initialNumToRender={20}
-          renderItem={({ item, index, section }) => (
-            <MemoizedTransactionItem
-              key={`txn-${item.id}`}
-              isFirst={index === 0}
-              isLast={index === section.data.length - 1}
-              txid={item.id}
-              subtitle
-              testId={`transaction-by-index-${index}`}
-            />
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <View style={styles.sectionHeaderContainer}>
-              <Text style={styles.sectionHeaderText}>{title}</Text>
-            </View>
-          )}
-          ListEmptyComponent={
-            <View style={styles.noTransactionView}>
-              <Text style={styles.noTransactionText}>
-                {LL.TransactionScreen.noTransaction()}
-              </Text>
-            </View>
-          }
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          onEndReached={fetchNextTransactionsPage}
-          onEndReachedThreshold={0.5}
-          onRefresh={() => refetch({ walletIds: getWalletIds() })}
-          refreshing={loading}
-        />
-      )}
+      <SectionList
+        showsVerticalScrollIndicator={false}
+        maxToRenderPerBatch={RENDER_BATCH_SIZE}
+        initialNumToRender={INITIAL_ITEMS_TO_RENDER}
+        renderItem={({ item, index, section }) => (
+          <MemoizedTransactionItem
+            key={`txn-${item.id}`}
+            isFirst={index === 0}
+            isLast={index === section.data.length - 1}
+            txid={item.id}
+            subtitle
+            testId={`transaction-by-index-${index}`}
+          />
+        )}
+        renderSectionHeader={({ section: { title } }) => (
+          <View style={styles.sectionHeaderContainer}>
+            <Text style={styles.sectionHeaderText}>{title}</Text>
+          </View>
+        )}
+        ListEmptyComponent={
+          <View style={styles.noTransactionView}>
+            <Text style={styles.noTransactionText}>
+              {LL.TransactionScreen.noTransaction()}
+            </Text>
+          </View>
+        }
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        onEndReached={fetchNextTransactionsPage}
+        onEndReachedThreshold={0.5}
+        onRefresh={() => refetch()}
+        refreshing={loading}
+      />
     </Screen>
   )
 }
