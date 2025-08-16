@@ -75,9 +75,11 @@ const en: BaseTranslation = {
     percentageToConvert: "% to convert",
   },
   ConversionConfirmationScreen: {
-    title: "Review conversion",
     youreConverting: "You're converting",
     receivingAccount: "Receiving account",
+    infoBitcoin: "Bitcoin amount is only approximate. It can vary by a small amount.",
+    infoDollar: "Dollar amount is only approximate. It can vary by a small amount.",
+    transferButtonText: "Transfer {fromWallet} to {toWallet}",
   },
   ConversionSuccessScreen: {
     title: "Conversion Success",

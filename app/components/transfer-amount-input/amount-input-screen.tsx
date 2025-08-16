@@ -235,14 +235,14 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     })
   }
 
-  // useEffect(() => {
-  //   console.log(numberPadState.numberPadNumber)
-  //   onSetPrimaryCurrencyFormattedAmount(
-  //     formatNumberPadNumber(numberPadState.numberPadNumber),
-  //   )
-  //   setAmount(newPrimaryAmount)
-  //   console.log(newPrimaryAmount)
-  // }, [numberPadState])
+  useEffect(() => {
+    console.log(numberPadState.numberPadNumber)
+    // onSetPrimaryCurrencyFormattedAmount(
+    //   formatNumberPadNumber(numberPadState.numberPadNumber),
+    // )
+    // setAmount(newPrimaryAmount)
+    console.log(newPrimaryAmount)
+  }, [numberPadState])
 
   return (
     <AmountInputScreenUI

@@ -29,6 +29,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { CurrencyKeyboard } from "@app/components/currency-keyboard"
 import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
+import { AmountInputScreen } from "@app/components/transfer-amount-input"
 
 gql`
   query conversionScreen {
@@ -107,6 +108,7 @@ export const ConversionDetailsScreen = () => {
     setWallets,
     settlementSendAmount,
     setMoneyAmount,
+    convertMoneyAmount,
     isValidAmount,
     moneyAmount,
     canToggleWallet,
@@ -393,14 +395,14 @@ export const ConversionDetailsScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.keyboardContainer}>
-        <CurrencyKeyboard onPress={handleCustomKeyboardPress} />
+        {/* <CurrencyKeyboard onPress={handleCustomKeyboardPress} /> */}
       </View>
-      {/* <AmountInputScreen
+      <AmountInputScreen
         walletCurrency={fromWallet.walletCurrency}
         convertMoneyAmount={convertMoneyAmount}
         setAmount={setMoneyAmount}
         onSetPrimaryCurrencyFormattedAmount={handleCustomKeyboardPress}
-      /> */}
+      />
       <GaloyPrimaryButton
         title={LL.common.next()}
         containerStyle={styles.buttonContainer}
