@@ -335,14 +335,14 @@ export const ConversionDetailsScreen = () => {
             setAmount={setMoneyAmount}
             convertMoneyAmount={convertMoneyAmount}
           /> */}
-          {/* {amountFieldError && ( */}
-          <View style={styles.errorContainer}>
-            <GaloyIcon color={colors._white} name="warning" size={18} />
-            <Text color={colors._white} type="p3">
-              123
-            </Text>
-          </View>
-          {/* )} */}
+          {amountFieldError && (
+            <View style={styles.errorContainer}>
+              <GaloyIcon color={colors._white} name="warning" size={20} />
+              <Text color={colors._white} type="p3">
+                {amountFieldError}
+              </Text>
+            </View>
+          )}
         </View>
         <View style={styles.fieldContainer}>
           <View style={styles.percentageContainer}>
@@ -486,13 +486,11 @@ const useStyles = makeStyles(({ colors }) => ({
   errorContainer: {
     marginTop: 10,
     alignItems: "center",
-    backgroundColor: colors.red,
+    backgroundColor: colors.error9,
     borderRadius: 8,
-    padding: 2,
-    display: "flex",
-    justifyContent: "flex-start",
-    alignSelf: "flex-start",
-    flex: 1,
+    padding: 7,
+    flexDirection: "row",
+    gap: 5,
   },
   keyboardContainer: {
     paddingHorizontal: 30,

@@ -240,7 +240,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     // onSetPrimaryCurrencyFormattedAmount(
     //   formatNumberPadNumber(numberPadState.numberPadNumber),
     // )
-    // setAmount(newPrimaryAmount)
+    setAmount(newPrimaryAmount)
     console.log(newPrimaryAmount)
   }, [numberPadState])
 

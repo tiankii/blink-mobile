@@ -114,7 +114,10 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
           isApproximate: true,
         })
 
-  const toWalletBalanceFormatted = formatMoneyAmount({ moneyAmount: toAmount })
+  const toWalletBalanceFormatted = formatMoneyAmount({
+    moneyAmount: toAmount,
+    isApproximate: true,
+  })
   const toSatsFormatted =
     toWallet.currency === WalletCurrency.Usd && displayCurrency === WalletCurrency.Usd
       ? null

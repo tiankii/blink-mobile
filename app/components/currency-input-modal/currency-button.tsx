@@ -115,7 +115,7 @@ const useStyles = makeStyles(({ colors }) => ({
   pressableBase: {
     paddingVertical: 7,
     paddingHorizontal: 15,
-    borderRadius: 8,
+    borderRadius: 13,
     justifyContent: "center",
   },
   defaultBackground: {
