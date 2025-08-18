@@ -23,7 +23,7 @@ import {
 } from "../amount-input-screen/number-pad-reducer"
 
 export type AmountInputScreenProps = {
-  setAmount: (amount: MoneyAmount<WalletOrDisplayCurrency>) => void
+  onAmountChange: (amount: MoneyAmount<WalletOrDisplayCurrency>) => void
   walletCurrency: WalletCurrency
   convertMoneyAmount: ConvertMoneyAmount
   maxAmount?: MoneyAmount<WalletOrDisplayCurrency>
@@ -126,7 +126,7 @@ const moneyAmountToNumberPadReducerState = ({
 }
 
 export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
-  setAmount,
+  onAmountChange,
   walletCurrency,
   convertMoneyAmount,
   maxAmount,
@@ -206,6 +206,25 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     }
   }, [initialAmount, setNumberPadAmount])
 
+  useEffect(() => {
+    const numberPadNumber = numberPadState.numberPadNumber
+    const formattedAmount = formatNumberPadNumber(numberPadNumber)
+    onSetPrimaryCurrencyFormattedAmount(formattedAmount)
+
+    const primaryAmount = numberPadNumberToMoneyAmount({
+      numberPadNumber,
+      currency: numberPadState.currency,
+      currencyInfo,
+    })
+    onAmountChange(primaryAmount)
+  }, [
+    numberPadState.numberPadNumber,
+    numberPadState.currency,
+    currencyInfo,
+    onAmountChange,
+    onSetPrimaryCurrencyFormattedAmount,
+  ])
+
   let errorMessage = ""
   const maxAmountInPrimaryCurrency =
     maxAmount && convertMoneyAmount(maxAmount, newPrimaryAmount.currency)
@@ -235,25 +254,12 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     })
   }
 
-  useEffect(() => {
-    console.log(numberPadState.numberPadNumber)
-    // onSetPrimaryCurrencyFormattedAmount(
-    //   formatNumberPadNumber(numberPadState.numberPadNumber),
-    // )
-    // setAmount(newPrimaryAmount)
-    console.log(newPrimaryAmount)
-  }, [numberPadState])
-
   return (
     <AmountInputScreenUI
-      // primaryCurrencyFormattedAmount={formatNumberPadNumber(
-      //   numberPadState.numberPadNumber,
-      // )}
       onPaste={onPaste}
       onClearAmount={onClear}
       errorMessage={errorMessage}
       onKeyPress={onKeyPress}
-      // onSetAmountPress={setAmount && (() => setAmount(newPrimaryAmount))}
     />
   )
 }

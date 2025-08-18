@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Platform, TouchableOpacity, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
@@ -17,10 +17,12 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useConvertMoneyDetails } from "@app/screens/conversion-flow/use-convert-money-details"
 import {
   lessThan,
+  MoneyAmount,
   toBtcMoneyAmount,
   toDisplayAmount,
   toUsdMoneyAmount,
   toWalletAmount,
+  WalletOrDisplayCurrency,
 } from "@app/types/amounts"
 import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
@@ -95,15 +97,6 @@ export const ConversionDetailsScreen = () => {
     currencyInput: useRef(null),
   }
 
-  const handleCustomKeyboardPress = (formatted: string) => {
-    if (!focusedInput) return
-
-    setInputValues((prev) => ({
-      ...prev,
-      [focusedInput]: formatted,
-    }))
-  }
-
   const {
     fromWallet,
     toWallet,
@@ -137,6 +130,25 @@ export const ConversionDetailsScreen = () => {
       toInput: prev.fromInput,
     }))
   }, [fromWallet])
+
+  const handleCustomKeyboardPress = useCallback(
+    (formatted: string) => {
+      if (!focusedInput) return
+
+      setInputValues((prev) => ({
+        ...prev,
+        [focusedInput]: formatted,
+      }))
+    },
+    [focusedInput],
+  )
+
+  const handleSetMoneyAmount = useCallback(
+    (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
+      setMoneyAmount(amount)
+    },
+    [setMoneyAmount],
+  )
 
   if (!data?.me?.defaultAccount || !fromWallet) {
     // TODO: proper error handling. non possible event?
@@ -385,7 +397,7 @@ export const ConversionDetailsScreen = () => {
       <AmountInputScreen
         walletCurrency={fromWallet.walletCurrency}
         convertMoneyAmount={convertMoneyAmount}
-        setAmount={setMoneyAmount}
+        onAmountChange={handleSetMoneyAmount}
         onSetPrimaryCurrencyFormattedAmount={handleCustomKeyboardPress}
       />
       <GaloyPrimaryButton
