@@ -274,27 +274,30 @@ export const EarnQuiz = ({ route }: Props) => {
   }
 
   const claimQuizWrapper = React.useCallback(
-    async (skipRewards: boolean): Promise<FetchResult<QuizClaimMutation>> => {
+    async (skipRewards?: boolean): Promise<FetchResult<QuizClaimMutation>> => {
       const result = await quizClaim({
         variables: { input: { id, skipRewards } },
       })
+      const errorCode = result.data?.quizClaim?.errors[0]
+        ?.code as ValidateQuizCodeErrorsType
+
+      if (!skipRewardErrorCodes(errorCode) && result.data?.quizClaim?.errors?.length) {
+        navigation.goBack()
+        toastShow({
+          message: getErrorMessages(result.data.quizClaim.errors),
+          LL,
+        })
+      }
       return result
     },
-    [quizClaim, id],
+    [quizClaim, id, LL, navigation],
   )
 
-  const claimQuizWithoutRewards = React.useCallback(async () => {
+  const handleClaimWithoutRewards = React.useCallback(async () => {
     markErrorCodeAlertAsShown(quizErrorCode)
-    const { data } = await claimQuizWrapper(true)
+    await claimQuizWrapper(true)
     setShowModal(false)
-
-    if (data?.quizClaim?.errors?.length) {
-      toastShow({
-        message: getErrorMessages(data.quizClaim.errors),
-        LL,
-      })
-    }
-  }, [claimQuizWrapper, quizErrorCode, LL])
+  }, [claimQuizWrapper, quizErrorCode])
 
   const answersShuffled: Array<React.ReactNode> = []
 
@@ -307,30 +310,22 @@ export const EarnQuiz = ({ route }: Props) => {
 
         if (data?.quizClaim?.errors?.length) {
           const errorCode = data.quizClaim.errors[0]?.code as ValidateQuizCodeErrorsType
-          const defualtErrorMessage = LL.EarnScreen.defualtErrorMessage({
+          const defaultErrorMessage = LL.EarnScreen.defaultErrorMessage({
             errorMessage: getErrorMessages(data.quizClaim.errors),
           })
           const customErrorMessage = LL.EarnScreen.customErrorMessage()
 
           if (skipRewardErrorCodes(errorCode)) {
             if (errorCodeAlertAlreadyShown(errorCode)) {
-              await claimQuizWithoutRewards()
+              await handleClaimWithoutRewards()
               return
             }
             setQuizErrorMessage(
-              errorCode === "INVALID_INPUT" ? customErrorMessage : defualtErrorMessage,
+              errorCode === "INVALID_INPUT" ? customErrorMessage : defaultErrorMessage,
             )
             setQuizErrorCode(errorCode)
             setShowModal(true)
-            return
           }
-
-          navigation.goBack()
-          // FIXME: message is hidden by the modal
-          toastShow({
-            message: getErrorMessages(data.quizClaim.errors),
-            LL,
-          })
         }
       }
     })()
@@ -340,9 +335,8 @@ export const EarnQuiz = ({ route }: Props) => {
     LL,
     completed,
     quizClaimLoading,
-    navigation,
     hasTriedClaim,
-    claimQuizWithoutRewards,
+    handleClaimWithoutRewards,
   ])
 
   const closeModal = () => {
@@ -491,7 +485,7 @@ export const EarnQuiz = ({ route }: Props) => {
             <Text style={styles.modalBodyText}>{quizErrorMessage}</Text>
           </View>
         }
-        primaryButtonOnPress={claimQuizWithoutRewards}
+        primaryButtonOnPress={handleClaimWithoutRewards}
         primaryButtonTitle={LL.EarnScreen.continueNoRewards()}
         secondaryButtonTitle={LL.common.close()}
         secondaryButtonOnPress={closeModal}
