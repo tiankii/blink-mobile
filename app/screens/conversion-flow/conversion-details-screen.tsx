@@ -30,6 +30,8 @@ import { CurrencyKeyboard } from "@app/components/currency-keyboard"
 import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
 import { AmountInputScreen } from "@app/components/transfer-amount-input"
+import { AmountInput } from "@app/components/amount-input"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
   query conversionScreen {
@@ -93,12 +95,12 @@ export const ConversionDetailsScreen = () => {
     currencyInput: useRef(null),
   }
 
-  const handleCustomKeyboardPress = (key: string) => {
+  const handleCustomKeyboardPress = (formatted: string) => {
     if (!focusedInput) return
 
     setInputValues((prev) => ({
       ...prev,
-      [focusedInput]: prev[focusedInput] + key,
+      [focusedInput]: formatted,
     }))
   }
 
@@ -128,6 +130,14 @@ export const ConversionDetailsScreen = () => {
     }
   }, [btcWallet, usdWallet, fromWallet, setWallets])
 
+  useEffect(() => {
+    setInputValues((prev) => ({
+      ...prev,
+      fromInput: prev.toInput,
+      toInput: prev.fromInput,
+    }))
+  }, [fromWallet])
+
   if (!data?.me?.defaultAccount || !fromWallet) {
     // TODO: proper error handling. non possible event?
     return <></>
@@ -142,8 +152,6 @@ export const ConversionDetailsScreen = () => {
       currency: defaultCurrency,
     }),
   )
-  console.log(btcWalletBalance)
-  console.log(toDisplayAmount({ amount: 10, currencyCode: "BTC" }))
 
   const fromWalletBalance =
     fromWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
@@ -197,14 +205,6 @@ export const ConversionDetailsScreen = () => {
     })
   }
 
-  useEffect(() => {
-    setInputValues((prev) => ({
-      ...prev,
-      fromInput: prev.toInput,
-      toInput: prev.fromInput,
-    }))
-  }, [fromWallet])
-
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
@@ -243,20 +243,11 @@ export const ConversionDetailsScreen = () => {
               }
             />
             <View>
-              {fromWallet.walletCurrency === WalletCurrency.Btc ? (
-                <GaloyCurrencyBubbleText
-                  currency="BTC"
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              ) : (
-                <GaloyCurrencyBubbleText
-                  currency="USD"
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              )}
-
+              <GaloyCurrencyBubbleText
+                currency={fromWallet.walletCurrency}
+                textSize="p2"
+                containerSize="medium"
+              />
               <View style={styles.walletSelectorBalanceContainer}>
                 <Text style={styles.convertText}>{fromWalletBalanceFormatted}</Text>
                 <Text style={styles.convertText}>{fromSatsFormatted}</Text>
@@ -303,20 +294,11 @@ export const ConversionDetailsScreen = () => {
               renderErrorMessage={false}
             />
             <View>
-              {toWallet.walletCurrency === WalletCurrency.Btc ? (
-                <GaloyCurrencyBubbleText
-                  currency="BTC"
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              ) : (
-                <GaloyCurrencyBubbleText
-                  currency="USD"
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              )}
-
+              <GaloyCurrencyBubbleText
+                currency={toWallet.walletCurrency}
+                textSize="p2"
+                containerSize="medium"
+              />
               <View style={styles.walletSelectorBalanceContainer}>
                 <Text style={styles.convertText}>{toWalletBalanceFormatted}</Text>
                 <Text style={styles.convertText}>{toSatsFormatted}</Text>
@@ -353,11 +335,14 @@ export const ConversionDetailsScreen = () => {
             setAmount={setMoneyAmount}
             convertMoneyAmount={convertMoneyAmount}
           /> */}
-          {amountFieldError && (
-            <View style={styles.errorContainer}>
-              <Text color={colors.error}>{amountFieldError}</Text>
-            </View>
-          )}
+          {/* {amountFieldError && ( */}
+          <View style={styles.errorContainer}>
+            <GaloyIcon color={colors._white} name="warning" size={18} />
+            <Text color={colors._white} type="p3">
+              123
+            </Text>
+          </View>
+          {/* )} */}
         </View>
         <View style={styles.fieldContainer}>
           <View style={styles.percentageContainer}>
@@ -430,7 +415,7 @@ const useStyles = makeStyles(({ colors }) => ({
   walletSelectorContainer: {
     flexDirection: "column",
     backgroundColor: colors.grey5,
-    borderRadius: 10,
+    borderRadius: 13,
     padding: 15,
     marginBottom: 15,
   },
@@ -501,6 +486,13 @@ const useStyles = makeStyles(({ colors }) => ({
   errorContainer: {
     marginTop: 10,
     alignItems: "center",
+    backgroundColor: colors.red,
+    borderRadius: 8,
+    padding: 2,
+    display: "flex",
+    justifyContent: "flex-start",
+    alignSelf: "flex-start",
+    flex: 1,
   },
   keyboardContainer: {
     paddingHorizontal: 30,
