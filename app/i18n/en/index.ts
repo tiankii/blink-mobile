@@ -82,8 +82,7 @@ const en: BaseTranslation = {
     transferButtonText: "Transfer {fromWallet} to {toWallet}",
   },
   ConversionSuccessScreen: {
-    title: "Conversion Success",
-    message: "Conversion successful",
+    message: "Transfer successful",
   },
   EarnScreen: {
     satoshi: "sat",

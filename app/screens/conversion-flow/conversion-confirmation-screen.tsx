@@ -351,7 +351,7 @@ const useStyles = makeStyles(({ colors }) => ({
   conversionInfoField: {
     marginBottom: 20,
   },
-  conversionInfoFieldTitle: { color: colors.grey1 },
+  conversionInfoFieldTitle: { color: colors.grey1, lineHeight: 25, fontWeight: "400" },
   conversionInfoFieldValue: {
     color: colors.grey0,
     fontWeight: "bold",
@@ -420,9 +420,10 @@ const useStyles = makeStyles(({ colors }) => ({
   infoContainer: {
     marginHorizontal: 20,
     backgroundColor: colors.grey5,
-    borderRadius: 13,
+    borderRadius: 6,
     padding: 20,
-    borderLeftWidth: 4,
+    paddingVertical: 12,
+    borderLeftWidth: 2,
     borderLeftColor: colors.black,
   },
   sliderContainer: {

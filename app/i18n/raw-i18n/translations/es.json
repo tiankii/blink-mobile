@@ -71,8 +71,7 @@
         "transferButtonText": "Transferir {fromWallet} a {toWallet}"
     },
     "ConversionSuccessScreen": {
-        "title": "Conversión exitosa",
-        "message": "Conversión exitosa"
+        "message": "Transferencia exitosa"
     },
     "EarnScreen": {
         "satoshi": "sat",

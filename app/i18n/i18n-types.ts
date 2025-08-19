@@ -281,11 +281,7 @@ type RootTranslation = {
 	}
 	ConversionSuccessScreen: {
 		/**
-		 * C​o​n​v​e​r​s​i​o​n​ ​S​u​c​c​e​s​s
-		 */
-		title: string
-		/**
-		 * C​o​n​v​e​r​s​i​o​n​ ​s​u​c​c​e​s​s​f​u​l
+		 * T​r​a​n​s​f​e​r​ ​s​u​c​c​e​s​s​f​u​l
 		 */
 		message: string
 	}
@@ -9646,11 +9642,7 @@ export type TranslationFunctions = {
 	}
 	ConversionSuccessScreen: {
 		/**
-		 * Conversion Success
-		 */
-		title: () => LocalizedString
-		/**
-		 * Conversion successful
+		 * Transfer successful
 		 */
 		message: () => LocalizedString
 	}
