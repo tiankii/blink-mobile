@@ -15,7 +15,7 @@ export type CurrencyModalButtonProps = {
   placeholder?: string
   selectedCurrency: string
   currencySymbol: string
-  inputValue: string
+  inputValue?: string
   iconName?: "pencil" | "info"
   primaryTextTestProps?: string
   onChangeText: (text: string) => void
@@ -54,7 +54,7 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
               alignItems: "center",
             }}
           >
-            {!!inputValue && (
+            {/* {!!inputValue && (
               <Text
                 style={[styles.primaryNumberText, styles.amountValueStyle]}
                 type="p2"
@@ -63,7 +63,7 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
               >
                 {currencySymbol}
               </Text>
-            )}
+            )} */}
             <Input
               ref={inputRef}
               value={inputValue}

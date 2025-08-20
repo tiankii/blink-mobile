@@ -14,7 +14,7 @@ import { forwardRef } from "react"
 export type CurrencyInputModalProps = {
   defaultCurrency: string
   placeholder: string
-  inputValue: string
+  inputValue?: string
   currencySymbol: string
   onChangeText: (text: string) => void
   onFocus: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void) &

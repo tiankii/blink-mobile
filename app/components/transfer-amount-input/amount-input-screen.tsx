@@ -8,6 +8,7 @@ import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-det
 import {
   DisplayCurrency,
   greaterThan,
+  isNonZeroMoneyAmount,
   lessThan,
   MoneyAmount,
   WalletOrDisplayCurrency,
@@ -21,15 +22,21 @@ import {
   NumberPadReducerActionType,
   NumberPadReducerState,
 } from "../amount-input-screen/number-pad-reducer"
+import {
+  IInputValues,
+  InputField,
+} from "@app/screens/conversion-flow/use-convert-money-details"
 
 export type AmountInputScreenProps = {
+  inputValues: IInputValues
   onAmountChange: (amount: MoneyAmount<WalletOrDisplayCurrency>) => void
-  walletCurrency: WalletCurrency
+  walletCurrency?: WalletCurrency
   convertMoneyAmount: ConvertMoneyAmount
   maxAmount?: MoneyAmount<WalletOrDisplayCurrency>
   minAmount?: MoneyAmount<WalletOrDisplayCurrency>
-  onSetPrimaryCurrencyFormattedAmount: (amount: string) => void
+  onSetFormattedAmount: (InputValue: IInputValues) => void
   initialAmount?: MoneyAmount<WalletOrDisplayCurrency>
+  focusedInput: InputField | null
 }
 
 const formatNumberPadNumber = (numberPadNumber: NumberPadNumber) => {
@@ -126,13 +133,15 @@ const moneyAmountToNumberPadReducerState = ({
 }
 
 export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
+  inputValues,
   onAmountChange,
   walletCurrency,
   convertMoneyAmount,
   maxAmount,
   minAmount,
-  onSetPrimaryCurrencyFormattedAmount,
+  onSetFormattedAmount,
   initialAmount,
+  focusedInput,
 }) => {
   const {
     currencyInfo,
@@ -157,11 +166,11 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     currencyInfo,
   })
 
-  const secondaryNewAmount = getSecondaryAmountIfCurrencyIsDifferent({
-    primaryAmount: newPrimaryAmount,
-    walletAmount: convertMoneyAmount(newPrimaryAmount, walletCurrency),
-    displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
-  })
+  // const secondaryNewAmount = getSecondaryAmountIfCurrencyIsDifferent({
+  //   primaryAmount: newPrimaryAmount,
+  //   walletAmount: convertMoneyAmount(newPrimaryAmount, walletCurrency),
+  //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
+  // })
 
   const onKeyPress = (key: Key) => {
     dispatchNumberPadAction({
@@ -199,7 +208,6 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     },
     [currencyInfo],
   )
-
   useEffect(() => {
     if (initialAmount) {
       setNumberPadAmount(initialAmount)
@@ -207,22 +215,126 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   }, [initialAmount, setNumberPadAmount])
 
   useEffect(() => {
+    if (!focusedInput || !inputValues) return
+
     const numberPadNumber = numberPadState.numberPadNumber
     const formattedAmount = formatNumberPadNumber(numberPadNumber)
-    onSetPrimaryCurrencyFormattedAmount(formattedAmount)
 
-    const primaryAmount = numberPadNumberToMoneyAmount({
+    // const newPrimaryAmount1 = numberPadNumberToMoneyAmount({
+    //   numberPadNumber,
+    //   currency: numberPadState.currency,
+    //   currencyInfo,
+    // })
+
+    //if (!isNonZeroMoneyAmount(newPrimaryAmount1)) return
+    const fromInputAmount = numberPadNumberToMoneyAmount({
       numberPadNumber,
-      currency: numberPadState.currency,
+      currency: inputValues.fromInput.amount.currency,
       currencyInfo,
     })
-    onAmountChange(primaryAmount)
+    const toInputAmount = numberPadNumberToMoneyAmount({
+      numberPadNumber,
+      currency: inputValues.toInput.amount.currency,
+      currencyInfo,
+    })
+    const currencyInputAmount = numberPadNumberToMoneyAmount({
+      numberPadNumber,
+      currency: inputValues.currencyInput.amount.currency,
+      currencyInfo,
+    })
+    // const secondaryNewAmount = getSecondaryAmountIfCurrencyIsDifferent({
+    //   primaryAmount: newPrimaryAmount,
+    //   walletAmount: convertMoneyAmount(newPrimaryAmount, WalletCurrency.Btc),
+    //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
+    // })
+    // const secondaryNewAmount2 = getSecondaryAmountIfCurrencyIsDifferent({
+    //   primaryAmount: newPrimaryAmount,
+    //   walletAmount: convertMoneyAmount(newPrimaryAmount, WalletCurrency.Usd),
+    //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
+    // })
+
+    // console.error(newPrimaryAmount)
+    // console.error(secondaryNewAmount)
+    // console.error(secondaryNewAmount2)
+
+    // const sats = getSecondaryAmountIfCurrencyIsDifferent({
+    //   primaryAmount: newPrimaryAmount1,
+    //   walletAmount: convertMoneyAmount(newPrimaryAmount1, WalletCurrency.Btc),
+    //   displayAmount: convertMoneyAmount(newPrimaryAmount1, DisplayCurrency),
+    // })
+    // const usd = getSecondaryAmountIfCurrencyIsDifferent({
+    //   primaryAmount: newPrimaryAmount1,
+    //   walletAmount: convertMoneyAmount(newPrimaryAmount1, WalletCurrency.Usd),
+    //   displayAmount: convertMoneyAmount(newPrimaryAmount1, DisplayCurrency),
+    // })
+
+    const fbtc = formatMoneyAmount({ moneyAmount: fromInputAmount })
+    const fto = formatMoneyAmount({ moneyAmount: toInputAmount, isApproximate: true })
+    const fcur = formatMoneyAmount({ moneyAmount: currencyInputAmount })
+    console.warn(formattedAmount)
+    console.warn(fbtc)
+    console.warn(fto)
+    console.warn(fcur)
+
+    onSetFormattedAmount({
+      formattedAmount,
+      fromInput: {
+        id: "fromInput",
+        currency: inputValues.fromInput.amount.currency,
+        formattedAmount: formattedAmount ? fbtc : "",
+        isFocused: focusedInput.id === "fromInput",
+        amount: fromInputAmount,
+      },
+      toInput: {
+        id: "toInput",
+        currency: inputValues.toInput.amount.currency,
+        formattedAmount: formattedAmount ? fto : "",
+        isFocused: focusedInput.id === "toInput",
+        amount: toInputAmount,
+      },
+      currencyInput: {
+        id: "currencyInput",
+        currency: inputValues.currencyInput.amount.currency,
+        formattedAmount: formattedAmount ? fcur : "",
+        isFocused: focusedInput.id === "currencyInput",
+        amount: currencyInputAmount,
+      },
+    })
+
+    // console.log(fromInputAmount)
+    // console.log(toInputAmount)
+    // console.log(currencyInputAmount)
+    // console.error(formattedAmount)
+
+    // console.warn(sats)
+    // console.warn(usd)
+
+    // console.error(fbtc)
+    // console.error(fto)
+    // console.error(fcur)
+
+    // const t1 = convertMoneyAmount(fromInputAmount, DisplayCurrency)
+    // const t2 = convertMoneyAmount(toInputAmount, DisplayCurrency)
+    // const t3 = convertMoneyAmount(currencyInputAmount, DisplayCurrency)
+    // console.log(t1)
+    // console.log(t2)
+    // console.log(t3)
+
+    // console.log({
+    //   id: focusedInput.id,
+    //   formattedAmount,
+    //   amount: primaryFocusedAmount,
+    // })
+
+    //onAmountChange(primaryAmount)
   }, [
     numberPadState.numberPadNumber,
     numberPadState.currency,
     currencyInfo,
-    onAmountChange,
-    onSetPrimaryCurrencyFormattedAmount,
+    //onAmountChange,
+    onSetFormattedAmount,
+    focusedInput,
+    inputValues,
   ])
 
   let errorMessage = ""
