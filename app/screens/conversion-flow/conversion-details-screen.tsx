@@ -285,7 +285,9 @@ export const ConversionDetailsScreen = () => {
                   : inputFormattedValues?.fromInput.formattedAmount
               }
               onFocus={() => {
-                setFocusedInputValues({ ...inputValues.fromInput })
+                setFocusedInputValues(
+                  inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
+                )
               }}
               onChangeText={(e) => {
                 // remove commas for ease of calculation later on
@@ -352,7 +354,9 @@ export const ConversionDetailsScreen = () => {
                   : inputFormattedValues?.toInput.formattedAmount
               }
               onFocus={() => {
-                setFocusedInputValues({ ...inputValues.toInput })
+                setFocusedInputValues(
+                  inputFormattedValues?.toInput ?? { ...inputValues.toInput },
+                )
               }}
               onChangeText={(e) => {
                 // remove commas for ease of calculation later on
@@ -396,7 +400,9 @@ export const ConversionDetailsScreen = () => {
                 : inputFormattedValues?.currencyInput.formattedAmount
             }
             onFocus={() => {
-              setFocusedInputValues({ ...inputValues.currencyInput })
+              setFocusedInputValues(
+                inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
+              )
             }}
             onChangeText={(e) => {
               // remove commas for ease of calculation later on

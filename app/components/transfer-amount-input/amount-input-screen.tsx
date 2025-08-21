@@ -1,14 +1,12 @@
 import * as React from "react"
-import { useCallback, useEffect, useReducer } from "react"
+import { useCallback, useEffect, useReducer, useRef } from "react"
 
 import { WalletCurrency } from "@app/graphql/generated"
 import { CurrencyInfo, useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
 import {
-  DisplayCurrency,
   greaterThan,
-  isNonZeroMoneyAmount,
   lessThan,
   MoneyAmount,
   WalletOrDisplayCurrency,
@@ -37,6 +35,12 @@ export type AmountInputScreenProps = {
   onSetFormattedAmount: (InputValue: IInputValues) => void
   initialAmount?: MoneyAmount<WalletOrDisplayCurrency>
   focusedInput: InputField | null
+}
+
+enum InputType {
+  FROM = "fromInput",
+  TO = "toInput",
+  CURRENCY = "currencyInput",
 }
 
 const formatNumberPadNumber = (numberPadNumber: NumberPadNumber) => {
@@ -132,10 +136,14 @@ const moneyAmountToNumberPadReducerState = ({
   }
 }
 
+/**
+ *
+ * TODO: Check if this component is the most appropriate place to implement the conversion functionality.
+ *
+ */
 export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   inputValues,
   onAmountChange,
-  walletCurrency,
   convertMoneyAmount,
   maxAmount,
   minAmount,
@@ -143,14 +151,12 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   initialAmount,
   focusedInput,
 }) => {
-  const {
-    currencyInfo,
-    getSecondaryAmountIfCurrencyIsDifferent,
-    formatMoneyAmount,
-    zeroDisplayAmount,
-  } = useDisplayCurrency()
-
+  const { currencyInfo, formatMoneyAmount, zeroDisplayAmount } = useDisplayCurrency()
   const { LL } = useI18nContext()
+
+  const lastValuesRef = useRef<IInputValues | null>(null)
+  const skipNextRecalcRef = useRef(false)
+  const focusedIdRef = useRef<InputField["id"] | null>(null)
 
   const [numberPadState, dispatchNumberPadAction] = useReducer(
     numberPadReducer,
@@ -160,41 +166,25 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     }),
   )
 
-  const newPrimaryAmount = numberPadNumberToMoneyAmount({
-    numberPadNumber: numberPadState.numberPadNumber,
-    currency: numberPadState.currency,
-    currencyInfo,
-  })
-
-  // const secondaryNewAmount = getSecondaryAmountIfCurrencyIsDifferent({
-  //   primaryAmount: newPrimaryAmount,
-  //   walletAmount: convertMoneyAmount(newPrimaryAmount, walletCurrency),
-  //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
-  // })
-
-  const onKeyPress = (key: Key) => {
+  const handleKeyPress = useCallback((key: Key) => {
     dispatchNumberPadAction({
       action: NumberPadReducerActionType.HandleKeyPress,
-      payload: {
-        key,
-      },
+      payload: { key },
     })
-  }
+  }, [])
 
-  const onPaste = (keys: number) => {
+  const handlePaste = useCallback((keys: number) => {
     dispatchNumberPadAction({
       action: NumberPadReducerActionType.HandlePaste,
-      payload: {
-        keys,
-      },
+      payload: { keys },
     })
-  }
+  }, [])
 
-  const onClear = () => {
+  const handleClear = useCallback(() => {
     dispatchNumberPadAction({
       action: NumberPadReducerActionType.ClearAmount,
     })
-  }
+  }, [])
 
   const setNumberPadAmount = useCallback(
     (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
@@ -208,6 +198,35 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     },
     [currencyInfo],
   )
+
+  const createFocusStates = useCallback(
+    (focusedId: InputField["id"] | null) => ({
+      fromInput: { isFocused: focusedId === InputType.FROM },
+      toInput: { isFocused: focusedId === InputType.TO },
+      currencyInput: { isFocused: focusedId === InputType.CURRENCY },
+    }),
+    [],
+  )
+
+  const convertToInputCurrencies = useCallback(
+    (
+      primaryAmount: MoneyAmount<WalletOrDisplayCurrency>,
+      primaryCurrency: WalletOrDisplayCurrency,
+    ) => {
+      const convertAmount = (targetCurrency: WalletOrDisplayCurrency) =>
+        targetCurrency === primaryCurrency
+          ? primaryAmount
+          : convertMoneyAmount(primaryAmount, targetCurrency)
+
+      return {
+        fromAmount: convertAmount(inputValues.fromInput.amount.currency),
+        toAmount: convertAmount(inputValues.toInput.amount.currency),
+        currencyAmount: convertAmount(inputValues.currencyInput.amount.currency),
+      }
+    },
+    [convertMoneyAmount, inputValues],
+  )
+
   useEffect(() => {
     if (initialAmount) {
       setNumberPadAmount(initialAmount)
@@ -215,163 +234,153 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   }, [initialAmount, setNumberPadAmount])
 
   useEffect(() => {
-    if (!focusedInput || !inputValues) return
+    if (!focusedInput) return
 
-    const numberPadNumber = numberPadState.numberPadNumber
-    const formattedAmount = formatNumberPadNumber(numberPadNumber)
+    skipNextRecalcRef.current = true
+    focusedIdRef.current = focusedInput.id
 
-    // const newPrimaryAmount1 = numberPadNumberToMoneyAmount({
-    //   numberPadNumber,
-    //   currency: numberPadState.currency,
-    //   currencyInfo,
-    // })
+    setNumberPadAmount(focusedInput.amount)
 
-    //if (!isNonZeroMoneyAmount(newPrimaryAmount1)) return
-    const fromInputAmount = numberPadNumberToMoneyAmount({
-      numberPadNumber,
-      currency: inputValues.fromInput.amount.currency,
+    const npState = moneyAmountToNumberPadReducerState({
+      moneyAmount: focusedInput.amount,
       currencyInfo,
     })
-    const toInputAmount = numberPadNumberToMoneyAmount({
-      numberPadNumber,
-      currency: inputValues.toInput.amount.currency,
-      currencyInfo,
-    })
-    const currencyInputAmount = numberPadNumberToMoneyAmount({
-      numberPadNumber,
-      currency: inputValues.currencyInput.amount.currency,
-      currencyInfo,
-    })
-    // const secondaryNewAmount = getSecondaryAmountIfCurrencyIsDifferent({
-    //   primaryAmount: newPrimaryAmount,
-    //   walletAmount: convertMoneyAmount(newPrimaryAmount, WalletCurrency.Btc),
-    //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
-    // })
-    // const secondaryNewAmount2 = getSecondaryAmountIfCurrencyIsDifferent({
-    //   primaryAmount: newPrimaryAmount,
-    //   walletAmount: convertMoneyAmount(newPrimaryAmount, WalletCurrency.Usd),
-    //   displayAmount: convertMoneyAmount(newPrimaryAmount, DisplayCurrency),
-    // })
+    const formattedOnFocus = formatNumberPadNumber(npState.numberPadNumber)
+    const focusStates = createFocusStates(focusedIdRef.current)
+    const baseValues = lastValuesRef.current || inputValues
 
-    // console.error(newPrimaryAmount)
-    // console.error(secondaryNewAmount)
-    // console.error(secondaryNewAmount2)
+    const updatedValues = {
+      ...baseValues,
+      formattedAmount: formattedOnFocus,
+      fromInput: { ...baseValues.fromInput, ...focusStates.fromInput },
+      toInput: { ...baseValues.toInput, ...focusStates.toInput },
+      currencyInput: { ...baseValues.currencyInput, ...focusStates.currencyInput },
+    }
 
-    // const sats = getSecondaryAmountIfCurrencyIsDifferent({
-    //   primaryAmount: newPrimaryAmount1,
-    //   walletAmount: convertMoneyAmount(newPrimaryAmount1, WalletCurrency.Btc),
-    //   displayAmount: convertMoneyAmount(newPrimaryAmount1, DisplayCurrency),
-    // })
-    // const usd = getSecondaryAmountIfCurrencyIsDifferent({
-    //   primaryAmount: newPrimaryAmount1,
-    //   walletAmount: convertMoneyAmount(newPrimaryAmount1, WalletCurrency.Usd),
-    //   displayAmount: convertMoneyAmount(newPrimaryAmount1, DisplayCurrency),
-    // })
-
-    const fbtc = formatMoneyAmount({ moneyAmount: fromInputAmount })
-    const fto = formatMoneyAmount({ moneyAmount: toInputAmount, isApproximate: true })
-    const fcur = formatMoneyAmount({ moneyAmount: currencyInputAmount })
-    console.warn(formattedAmount)
-    console.warn(fbtc)
-    console.warn(fto)
-    console.warn(fcur)
-
-    onSetFormattedAmount({
-      formattedAmount,
-      fromInput: {
-        id: "fromInput",
-        currency: inputValues.fromInput.amount.currency,
-        formattedAmount: formattedAmount ? fbtc : "",
-        isFocused: focusedInput.id === "fromInput",
-        amount: fromInputAmount,
-      },
-      toInput: {
-        id: "toInput",
-        currency: inputValues.toInput.amount.currency,
-        formattedAmount: formattedAmount ? fto : "",
-        isFocused: focusedInput.id === "toInput",
-        amount: toInputAmount,
-      },
-      currencyInput: {
-        id: "currencyInput",
-        currency: inputValues.currencyInput.amount.currency,
-        formattedAmount: formattedAmount ? fcur : "",
-        isFocused: focusedInput.id === "currencyInput",
-        amount: currencyInputAmount,
-      },
-    })
-
-    // console.log(fromInputAmount)
-    // console.log(toInputAmount)
-    // console.log(currencyInputAmount)
-    // console.error(formattedAmount)
-
-    // console.warn(sats)
-    // console.warn(usd)
-
-    // console.error(fbtc)
-    // console.error(fto)
-    // console.error(fcur)
-
-    // const t1 = convertMoneyAmount(fromInputAmount, DisplayCurrency)
-    // const t2 = convertMoneyAmount(toInputAmount, DisplayCurrency)
-    // const t3 = convertMoneyAmount(currencyInputAmount, DisplayCurrency)
-    // console.log(t1)
-    // console.log(t2)
-    // console.log(t3)
-
-    // console.log({
-    //   id: focusedInput.id,
-    //   formattedAmount,
-    //   amount: primaryFocusedAmount,
-    // })
-
-    //onAmountChange(primaryAmount)
+    onSetFormattedAmount(updatedValues)
   }, [
-    numberPadState.numberPadNumber,
-    numberPadState.currency,
-    currencyInfo,
-    //onAmountChange,
-    onSetFormattedAmount,
     focusedInput,
+    setNumberPadAmount,
+    onSetFormattedAmount,
+    currencyInfo,
     inputValues,
+    createFocusStates,
   ])
 
-  let errorMessage = ""
-  const maxAmountInPrimaryCurrency =
-    maxAmount && convertMoneyAmount(maxAmount, newPrimaryAmount.currency)
-  const minAmountInPrimaryCurrency =
-    minAmount && convertMoneyAmount(minAmount, newPrimaryAmount.currency)
+  useEffect(() => {
+    if (!inputValues || skipNextRecalcRef.current) {
+      if (skipNextRecalcRef.current) {
+        skipNextRecalcRef.current = false
+      }
+      return
+    }
 
-  if (
-    maxAmountInPrimaryCurrency &&
-    greaterThan({
-      value: convertMoneyAmount(newPrimaryAmount, maxAmountInPrimaryCurrency.currency),
-      greaterThan: maxAmountInPrimaryCurrency,
+    const { numberPadNumber, currency: primaryCurrency } = numberPadState
+    const formattedAmount = formatNumberPadNumber(numberPadNumber)
+
+    const primaryAmount = numberPadNumberToMoneyAmount({
+      numberPadNumber,
+      currency: primaryCurrency,
+      currencyInfo,
     })
-  ) {
-    errorMessage = LL.AmountInputScreen.maxAmountExceeded({
-      maxAmount: formatMoneyAmount({ moneyAmount: maxAmountInPrimaryCurrency }),
+
+    const { fromAmount, toAmount, currencyAmount } = convertToInputCurrencies(
+      primaryAmount,
+      primaryCurrency,
+    )
+
+    const formatAmount = (
+      amount: MoneyAmount<WalletOrDisplayCurrency>,
+      isApproximate = false,
+    ) =>
+      formattedAmount ? formatMoneyAmount({ moneyAmount: amount, isApproximate }) : ""
+
+    const payload: IInputValues = {
+      formattedAmount,
+      fromInput: {
+        id: InputType.FROM,
+        currency: inputValues.fromInput.amount.currency,
+        formattedAmount: formatAmount(fromAmount),
+        isFocused: focusedIdRef.current === InputType.FROM,
+        amount: fromAmount,
+      },
+      toInput: {
+        id: InputType.TO,
+        currency: inputValues.toInput.amount.currency,
+        formattedAmount: formatAmount(toAmount, true),
+        isFocused: focusedIdRef.current === InputType.TO,
+        amount: toAmount,
+      },
+      currencyInput: {
+        id: InputType.CURRENCY,
+        currency: inputValues.currencyInput.amount.currency,
+        formattedAmount: formatAmount(currencyAmount),
+        isFocused: focusedIdRef.current === InputType.CURRENCY,
+        amount: currencyAmount,
+      },
+    }
+
+    onSetFormattedAmount(payload)
+    lastValuesRef.current = payload
+    onAmountChange(primaryAmount)
+  }, [
+    numberPadState,
+    currencyInfo,
+    inputValues,
+    formatMoneyAmount,
+    onSetFormattedAmount,
+    onAmountChange,
+    convertToInputCurrencies,
+  ])
+
+  const getErrorMessage = () => {
+    const currentAmount = numberPadNumberToMoneyAmount({
+      numberPadNumber: numberPadState.numberPadNumber,
+      currency: numberPadState.currency,
+      currencyInfo,
     })
-  } else if (
-    minAmountInPrimaryCurrency &&
-    newPrimaryAmount.amount &&
-    lessThan({
-      value: convertMoneyAmount(newPrimaryAmount, minAmountInPrimaryCurrency.currency),
-      lessThan: minAmountInPrimaryCurrency,
-    })
-  ) {
-    errorMessage = LL.AmountInputScreen.minAmountNotMet({
-      minAmount: formatMoneyAmount({ moneyAmount: minAmountInPrimaryCurrency }),
-    })
+
+    if (maxAmount) {
+      const maxInPrimaryCurrency = convertMoneyAmount(maxAmount, currentAmount.currency)
+      const currentInMaxCurrency = convertMoneyAmount(
+        currentAmount,
+        maxInPrimaryCurrency.currency,
+      )
+
+      if (
+        greaterThan({ value: currentInMaxCurrency, greaterThan: maxInPrimaryCurrency })
+      ) {
+        return LL.AmountInputScreen.maxAmountExceeded({
+          maxAmount: formatMoneyAmount({ moneyAmount: maxInPrimaryCurrency }),
+        })
+      }
+    }
+
+    if (minAmount && currentAmount.amount) {
+      const minInPrimaryCurrency = convertMoneyAmount(minAmount, currentAmount.currency)
+      const currentInMinCurrency = convertMoneyAmount(
+        currentAmount,
+        minInPrimaryCurrency.currency,
+      )
+
+      if (lessThan({ value: currentInMinCurrency, lessThan: minInPrimaryCurrency })) {
+        return LL.AmountInputScreen.minAmountNotMet({
+          minAmount: formatMoneyAmount({ moneyAmount: minInPrimaryCurrency }),
+        })
+      }
+    }
+
+    return null
   }
+
+  const errorMessage = getErrorMessage()
 
   return (
     <AmountInputScreenUI
-      onPaste={onPaste}
-      onClearAmount={onClear}
-      errorMessage={errorMessage}
-      onKeyPress={onKeyPress}
+      onPaste={handlePaste}
+      onClearAmount={handleClear}
+      errorMessage={errorMessage || ""}
+      onKeyPress={handleKeyPress}
     />
   )
 }
