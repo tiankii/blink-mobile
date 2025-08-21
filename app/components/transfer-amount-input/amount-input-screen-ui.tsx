@@ -12,13 +12,15 @@ export type AmountInputScreenUIProps = {
   onKeyPress: (key: Key) => void
   onClearAmount: () => void
   onPaste: (keys: number) => void
+  responsive?: boolean
 }
 
 export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
   errorMessage,
   onKeyPress,
+  responsive = false,
 }) => {
-  const styles = useStyles()
+  const styles = useStyles(responsive)
 
   return (
     <View style={styles.amountInputScreenContainer}>
@@ -27,90 +29,28 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           {errorMessage && <GaloyErrorBox errorMessage={errorMessage} />}
         </View>
         <View style={styles.keyboardContainer}>
-          <CurrencyKeyboard onPress={onKeyPress} />
+          <CurrencyKeyboard onPress={onKeyPress} responsive={responsive} />
         </View>
       </View>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({}, responsive: boolean) => ({
   amountInputScreenContainer: {
     flex: 1,
   },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    borderBottomColor: colors.primary4,
-    borderBottomWidth: 1,
-  },
-  amountContainer: {
-    marginBottom: 16,
-  },
-  primaryNumberContainer: {
-    flex: 1,
-  },
-  primaryAmountContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  primaryCurrencySymbol: {
-    fontSize: 28,
-    lineHeight: 32,
-    fontWeight: "bold",
-  },
-  primaryNumberText: {
-    fontSize: 28,
-    lineHeight: 32,
-    flex: 1,
-    fontWeight: "bold",
-  },
-  primaryNumberInputContainer: {
-    borderBottomWidth: 0,
-  },
-  primaryCurrencyCodeText: {
-    fontSize: 28,
-    lineHeight: 32,
-    fontWeight: "bold",
-    textAlign: "right",
-  },
-  secondaryAmountContainer: {
-    flexDirection: "row",
-  },
-  secondaryAmountText: {
-    fontSize: 18,
-    lineHeight: 24,
-    fontWeight: "bold",
-    flex: 1,
-  },
-  secondaryAmountCurrencyCodeText: {
-    fontSize: 18,
-    lineHeight: 24,
-    fontWeight: "bold",
-  },
-  swapContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginVertical: 8,
-  },
-  horizontalLine: {
-    borderBottomColor: colors.primary4,
-    borderBottomWidth: 1,
-    flex: 1,
-  },
+
   infoContainer: {
-    flex: 1,
     justifyContent: "flex-start",
+    ...(responsive ? {} : { flex: 1 }),
   },
   bodyContainer: {
     flex: 1,
-    padding: 24,
+    ...(responsive ? {} : { padding: 24 }),
   },
-  buttonContainer: {},
+
   keyboardContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 30,
+    ...(responsive ? { flex: 1 } : { paddingHorizontal: 16, marginBottom: 30 }),
   },
 }))

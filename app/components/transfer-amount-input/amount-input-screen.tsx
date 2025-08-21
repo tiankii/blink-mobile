@@ -35,6 +35,7 @@ export type AmountInputScreenProps = {
   onSetFormattedAmount: (InputValue: IInputValues) => void
   initialAmount?: MoneyAmount<WalletOrDisplayCurrency>
   focusedInput: InputField | null
+  responsive?: boolean
 }
 
 enum InputType {
@@ -150,6 +151,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   onSetFormattedAmount,
   initialAmount,
   focusedInput,
+  responsive = false
 }) => {
   const { currencyInfo, formatMoneyAmount, zeroDisplayAmount } = useDisplayCurrency()
   const { LL } = useI18nContext()
@@ -381,6 +383,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
       onClearAmount={handleClear}
       errorMessage={errorMessage || ""}
       onKeyPress={handleKeyPress}
+      responsive={responsive}
     />
   )
 }

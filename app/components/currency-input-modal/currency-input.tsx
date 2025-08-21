@@ -15,7 +15,6 @@ export type CurrencyInputModalProps = {
   defaultCurrency: string
   placeholder: string
   inputValue?: string
-  currencySymbol: string
   onChangeText: (text: string) => void
   onFocus: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void) &
     ((event: NativeSyntheticEvent<TargetedEvent>) => void)
@@ -27,7 +26,6 @@ export const CurrencyInputModal = forwardRef<TextInput, CurrencyInputModalProps>
       defaultCurrency,
       inputValue,
       placeholder,
-      currencySymbol,
       onChangeText,
       onFocus,
     },
@@ -40,7 +38,6 @@ export const CurrencyInputModal = forwardRef<TextInput, CurrencyInputModalProps>
         onChangeText={onChangeText}
         onFocus={onFocus}
         placeholder={placeholder}
-        currencySymbol={currencySymbol}
         selectedCurrency={defaultCurrency}
         inputValue={inputValue}
         iconName="pencil"

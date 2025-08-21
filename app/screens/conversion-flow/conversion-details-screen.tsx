@@ -37,7 +37,6 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
 import { AmountInputScreen } from "@app/components/transfer-amount-input"
-import { AmountInput } from "@app/components/amount-input"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
@@ -61,7 +60,6 @@ export const ConversionDetailsScreen = () => {
     theme: { colors },
   } = useTheme()
 
-  const styles = useStyles()
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "conversionDetails">>()
 
@@ -82,6 +80,7 @@ export const ConversionDetailsScreen = () => {
     getCurrencySymbol,
     displayCurrency,
   } = useDisplayCurrency()
+  const styles = useStyles(displayCurrency !== WalletCurrency.Usd)
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
@@ -194,7 +193,6 @@ export const ConversionDetailsScreen = () => {
   const formattedInputValues = useCallback(
     (values: IInputValues | null) => {
       if (!values) return
-
       setInputFormattedValues(values)
       handleSetMoneyAmount(values.fromInput.amount)
     },
@@ -251,12 +249,6 @@ export const ConversionDetailsScreen = () => {
         currency: fromWallet.walletCurrency,
       }),
     )
-    // setMoneyAmount(
-    //   toWalletAmount({
-    //     amount: Math.round((fromWallet.balance * percentage) / 100),
-    //     currency: fromWallet.walletCurrency,
-    //   }),
-    // )
   }
 
   const moveToNextScreen = () => {
@@ -268,7 +260,7 @@ export const ConversionDetailsScreen = () => {
 
   return (
     <Screen preset="fixed">
-      <ScrollView style={styles.scrollViewContainer}>
+      <View style={styles.styleWalletContainer}>
         <View style={styles.walletSelectorContainer}>
           <View style={styles.fromFieldContainer}>
             <Input
@@ -417,68 +409,69 @@ export const ConversionDetailsScreen = () => {
             }}
             defaultCurrency={displayCurrency}
             placeholder={`${currencySymbol}0`}
-            currencySymbol={currencySymbol}
           />
         )}
-        <View style={styles.fieldContainer}>
-          {/* <AmountInput
-            unitOfAccountAmount={moneyAmount}
-            walletCurrency={fromWallet.walletCurrency}
-            setAmount={setMoneyAmount}
-            convertMoneyAmount={convertMoneyAmount}
-          /> */}
-          {amountFieldError && (
-            <View style={styles.errorContainer}>
-              <GaloyIcon color={colors._white} name="warning" size={20} />
-              <Text color={colors._white} type="p3">
-                {amountFieldError}
-              </Text>
-            </View>
-          )}
-        </View>
-        <View style={styles.fieldContainer}>
-          <View style={styles.percentageContainer}>
-            <View style={styles.percentageFieldContainer}>
-              <TouchableOpacity
-                {...testProps("convert-25%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(25)}
-              >
-                <Text style={styles.percentageFieldText}>25%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-50%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(50)}
-              >
-                <Text style={styles.percentageFieldText}>50%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-75%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(75)}
-              >
-                <Text style={styles.percentageFieldText}>75%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-100%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(100)}
-              >
-                <Text style={styles.percentageFieldText}>100%</Text>
-              </TouchableOpacity>
-            </View>
+        {amountFieldError && (
+          <View style={styles.errorContainer}>
+            <GaloyIcon color={colors._white} name="warning" size={20} />
+            <Text color={colors._white} type="p3">
+              {amountFieldError}
+            </Text>
+          </View>
+        )}
+      </View>
+      <View
+        style={{
+          flex: 1,
+          gap: 10,
+          marginBottom: 20,
+          minHeight: 0,
+        }}
+      >
+        <View style={styles.percentageContainer}>
+          <View style={styles.percentageFieldContainer}>
+            <TouchableOpacity
+              {...testProps("convert-25%")}
+              style={styles.percentageField}
+              onPress={() => setAmountToBalancePercentage(25)}
+            >
+              <Text style={styles.percentageFieldText}>25%</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              {...testProps("convert-50%")}
+              style={styles.percentageField}
+              onPress={() => setAmountToBalancePercentage(50)}
+            >
+              <Text style={styles.percentageFieldText}>50%</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              {...testProps("convert-75%")}
+              style={styles.percentageField}
+              onPress={() => setAmountToBalancePercentage(75)}
+            >
+              <Text style={styles.percentageFieldText}>75%</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              {...testProps("convert-100%")}
+              style={styles.percentageField}
+              onPress={() => setAmountToBalancePercentage(100)}
+            >
+              <Text style={styles.percentageFieldText}>100%</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-      <AmountInputScreen
-        inputValues={inputValues}
-        convertMoneyAmount={convertMoneyAmount}
-        onAmountChange={handleSetMoneyAmount}
-        onSetFormattedAmount={formattedInputValues}
-        focusedInput={focusedInputValues}
-        initialAmount={initialAmount}
-      />
+        <View style={{ flex: 1, minHeight: 0, maxHeight: 400, paddingHorizontal: 30 }}>
+          <AmountInputScreen
+            inputValues={inputValues}
+            convertMoneyAmount={convertMoneyAmount}
+            onAmountChange={handleSetMoneyAmount}
+            onSetFormattedAmount={formattedInputValues}
+            focusedInput={focusedInputValues}
+            initialAmount={initialAmount}
+            responsive
+          />
+        </View>
+      </View>
       <GaloyPrimaryButton
         title={LL.common.next()}
         containerStyle={styles.buttonContainer}
@@ -489,14 +482,13 @@ export const ConversionDetailsScreen = () => {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
-  scrollViewContainer: {
-    flex: 1,
+const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
+  styleWalletContainer: {
     flexDirection: "column",
     margin: 20,
-  },
-  fieldContainer: {
-    marginBottom: 20,
+    flex: 1,
+    ...(currencyInput ? { minHeight: 70 } : {}),
+    gap: 10,
   },
   toFieldContainer: {
     flexDirection: "row",
@@ -508,7 +500,6 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey5,
     borderRadius: 13,
     padding: 15,
-    marginBottom: 15,
   },
   walletSeparator: {
     flexDirection: "row",
@@ -540,7 +531,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   walletSelectorBalanceContainer: {
     marginTop: 5,
-    flex: 1,
     flexDirection: "column",
     alignItems: "flex-end",
     justifyContent: "flex-end",
@@ -571,11 +561,9 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   percentageContainer: {
     flexDirection: "row",
-    marginTop: 25,
   },
   buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
   errorContainer: {
-    marginTop: 10,
     alignItems: "center",
     backgroundColor: colors.error9,
     borderRadius: 8,
@@ -587,10 +575,10 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
   },
   primaryNumberText: {
-    fontSize: 28,
-    lineHeight: 32,
+    fontSize: 20,
+    lineHeight: 24,
     flex: 1,
-    fontWeight: "bold",
+    fontWeight: "600",
     padding: 0,
     margin: 0,
   },
