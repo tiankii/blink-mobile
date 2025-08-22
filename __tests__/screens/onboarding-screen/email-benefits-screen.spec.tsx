@@ -4,7 +4,6 @@ import { RouteProp, useNavigation } from "@react-navigation/native"
 
 import { EmailBenefitsScreen } from "@app/screens/onboarding-screen"
 import { OnboardingStackParamList } from "@app/navigation/stack-param-lists"
-import { useSettingsScreenQuery } from "@app/graphql/generated"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 
@@ -15,24 +14,7 @@ const route: RouteProp<OnboardingStackParamList, "emailBenefits"> = {
   name: "emailBenefits",
   params: {
     onboarding: true,
-  },
-}
-
-const usernameMock = {
-  loading: false,
-  data: {
-    me: {
-      username: "userexample",
-    },
-  },
-}
-
-const noUsernameMock = {
-  loading: false,
-  data: {
-    me: {
-      username: null,
-    },
+    hasUsername: true,
   },
 }
 
@@ -41,17 +23,10 @@ jest.mock("@react-navigation/native", () => ({
   useNavigation: jest.fn(),
 }))
 
-jest.mock("@app/graphql/generated", () => ({
-  ...jest.requireActual("@app/graphql/generated"),
-  useSettingsScreenQuery: jest.fn(),
-}))
-
 describe("EmailBenefitsScreen", () => {
   let LL: ReturnType<typeof i18nObject>
 
   beforeEach(() => {
-    ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(usernameMock)
-
     loadLocale("en")
     LL = i18nObject("en")
     jest.clearAllMocks()
@@ -65,14 +40,10 @@ describe("EmailBenefitsScreen", () => {
     )
 
     expect(getByText(LL.OnboardingScreen.emailBenefits.title())).toBeTruthy()
+    expect(getByText(LL.OnboardingScreen.emailBenefits.backupDescription())).toBeTruthy()
+    expect(getByText(LL.OnboardingScreen.emailBenefits.supportDescription())).toBeTruthy()
     expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.backupDescription()}`),
-    ).toBeTruthy()
-    expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.supportDescription()}`),
-    ).toBeTruthy()
-    expect(
-      getByText(`- ${LL.OnboardingScreen.emailBenefits.securityDescription()}`),
+      getByText(LL.OnboardingScreen.emailBenefits.securityDescription()),
     ).toBeTruthy()
   })
 
@@ -101,6 +72,7 @@ describe("EmailBenefitsScreen", () => {
 
     expect(mockNavigate).toHaveBeenCalledWith("emailRegistrationInitiate", {
       onboarding: true,
+      hasUsername: true,
     })
   })
 
@@ -124,11 +96,17 @@ describe("EmailBenefitsScreen", () => {
   it("Triggers secondary action and navigates to lightningBenefits when no username", () => {
     const mockNavigate = jest.fn()
     ;(useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate })
-    ;(useSettingsScreenQuery as jest.Mock).mockReturnValue(noUsernameMock)
+    const mockRoute: RouteProp<OnboardingStackParamList, "emailBenefits"> = {
+      ...route,
+      params: {
+        ...route.params,
+        hasUsername: false,
+      },
+    }
 
     const { getByText } = render(
       <ContextForScreen>
-        <EmailBenefitsScreen route={route} />
+        <EmailBenefitsScreen route={mockRoute} />
       </ContextForScreen>,
     )
 

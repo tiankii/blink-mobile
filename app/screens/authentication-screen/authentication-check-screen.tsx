@@ -24,7 +24,6 @@ export const AuthenticationCheckScreen: React.FC = () => {
 
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "authenticationCheck">>()
-
   const isAuthed = useIsAuthed()
   const { setAppUnlocked } = useAuthenticationContext()
 

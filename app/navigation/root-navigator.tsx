@@ -82,9 +82,7 @@ import { NotificationHistoryScreen } from "@app/screens/notification-history-scr
 import {
   WelcomeLevel1Screen,
   EmailBenefitsScreen,
-  EmailConfirmedScreen,
   LightningBenefitsScreen,
-  LightningConfirmedScreen,
   SupportOnboardingScreen,
 } from "@app/screens/onboarding-screen"
 import {
@@ -507,15 +505,6 @@ export const OnboardingNavigator = () => {
         component={EmailBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.emailBenefits.mainTitle(),
-          headerLeft: () => null,
-        }}
-      />
-      <Onboarding.Screen
-        name="emailConfirmed"
-        component={EmailConfirmedScreen}
-        options={{
-          title: LL.OnboardingScreen.emailConfirmed.mainTitle(),
-          headerLeft: () => null,
         }}
       />
       <Onboarding.Screen
@@ -523,13 +512,6 @@ export const OnboardingNavigator = () => {
         component={LightningBenefitsScreen}
         options={{
           title: LL.OnboardingScreen.lightningBenefits.mainTitle(),
-        }}
-      />
-      <Onboarding.Screen
-        name="lightningConfirmed"
-        component={LightningConfirmedScreen}
-        options={{
-          title: LL.OnboardingScreen.lightningConfirmed.mainTitle(),
           headerLeft: () => null,
         }}
       />

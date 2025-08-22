@@ -7,6 +7,7 @@ import remoteConfigInstance from "@react-native-firebase/remote-config"
 const DeviceAccountEnabledKey = "deviceAccountEnabledRestAuth"
 const BalanceLimitToTriggerUpgradeModalKey = "balanceLimitToTriggerUpgradeModal"
 const FeedbackEmailKey = "feedbackEmailAddress"
+const UpgradeModalCooldownDaysKey = "upgradeModalCooldownDays"
 
 type FeatureFlags = {
   deviceAccountEnabled: boolean
@@ -16,12 +17,14 @@ type RemoteConfig = {
   [DeviceAccountEnabledKey]: boolean
   [BalanceLimitToTriggerUpgradeModalKey]: number
   [FeedbackEmailKey]: string
+  [UpgradeModalCooldownDaysKey]: number
 }
 
 const defaultRemoteConfig: RemoteConfig = {
   deviceAccountEnabledRestAuth: false,
-  balanceLimitToTriggerUpgradeModal: 2100, // SATs
+  balanceLimitToTriggerUpgradeModal: 2100,
   feedbackEmailAddress: "feedback@blink.sv",
+  upgradeModalCooldownDays: 7,
 }
 
 const defaultFeatureFlags = {
@@ -66,10 +69,15 @@ export const FeatureFlagContextProvider: React.FC<React.PropsWithChildren> = ({
           .getValue(FeedbackEmailKey)
           .asString()
 
+        const upgradeModalCooldownDays = remoteConfigInstance()
+          .getValue(UpgradeModalCooldownDaysKey)
+          .asNumber()
+
         setRemoteConfig({
           deviceAccountEnabledRestAuth,
           balanceLimitToTriggerUpgradeModal,
           feedbackEmailAddress,
+          upgradeModalCooldownDays,
         })
       } catch (err) {
         console.error("Error fetching remote config:", err)

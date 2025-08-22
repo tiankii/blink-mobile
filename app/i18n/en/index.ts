@@ -2584,7 +2584,7 @@ const en: BaseTranslation = {
     telegram: "Send via Telegram",
   },
   LoginMethodScreen: {
-    title: "Select how you want to login to your account.",
+    title: "Select preferred login method.",
     useTelegram: "Use Telegram",
     useSms: "Use SMS",
     useWhatsapp: "Use WhatsApp",
@@ -2610,21 +2610,13 @@ const en: BaseTranslation = {
       securityDescription: "Increase account security",
       primaryButton: "Set up email login",
     },
-    emailConfirmed: {
-      mainTitle: "Email login added",
-      title: "New features unlocked for your account:",
-    },
     lightningBenefits: {
-      mainTitle: "Set up Lightning Address",
+      mainTitle: "Set up Custom Lightning Address",
       title: "Lightning Address benefits:",
       staticAddressDescription: "A static address to receive payments",
       easyToShareDescription: "Easy to memorize and share publicly or privately",
       blinkToolsDescription: "Unlocks various Blink tools useful for commerce",
-      primaryButton: "Set up Lightning Address",
-    },
-    lightningConfirmed: {
-      mainTitle: "Lightning Address set",
-      title: "New features unlocked for your account:",
+      primaryButton: "Set up Custom Address",
     },
     supportScreen: {
       mainTitle: "Blink feedback",
@@ -2807,6 +2799,15 @@ const en: BaseTranslation = {
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
     warning: "Warning",
     recommended: "Recommended",
+    expirationTime: "Expiration Time",
+    minute: "Minute",
+    day: {
+      one: "Day",
+      other: "Days"
+    },
+    dollar: "Dollar",
+    all: "ALL",
+    allAccounts: "All accounts",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",

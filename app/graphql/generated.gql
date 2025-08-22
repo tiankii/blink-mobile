@@ -242,6 +242,20 @@ mutation captchaRequestAuthCode($input: CaptchaRequestAuthCodeInput!) {
   }
 }
 
+mutation contactCreate($input: ContactCreateInput!) {
+  contactCreate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    contact {
+      id
+      __typename
+    }
+    __typename
+  }
+}
+
 mutation deviceNotificationTokenCreate($input: DeviceNotificationTokenCreateInput!) {
   deviceNotificationTokenCreate(input: $input) {
     errors {
@@ -868,6 +882,7 @@ query ContactsCard {
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1062,6 +1077,7 @@ query contacts {
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1444,6 +1460,7 @@ query scanningQRCodeScreen {
     }
     contacts {
       id
+      handle
       username
       __typename
     }
@@ -1485,6 +1502,7 @@ query sendBitcoinDestination {
     }
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -1639,7 +1657,7 @@ query transactionListForContact($username: Username!, $first: Int, $after: Strin
   }
 }
 
-query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, $before: String) {
+query transactionListForDefaultAccount($first: Int, $after: String, $walletIds: [WalletId!]) {
   me {
     id
     defaultAccount {
@@ -1648,7 +1666,7 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
         ...Transaction
         __typename
       }
-      transactions(first: $first, after: $after, last: $last, before: $before) {
+      transactions(first: $first, after: $after, walletIds: $walletIds) {
         ...TransactionList
         __typename
       }
@@ -1656,6 +1674,10 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
     }
     __typename
   }
+}
+
+query upgradeModalLastShownAt {
+  upgradeModalLastShownAt @client
 }
 
 query walletOverviewScreen {

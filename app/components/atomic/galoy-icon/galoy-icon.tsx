@@ -29,11 +29,9 @@ import Image from "@app/assets/icons-redesign/image.svg"
 import Info from "@app/assets/icons-redesign/info.svg"
 import Lightning from "@app/assets/icons-redesign/lightning.svg"
 import LightningAddress from "@app/assets/icons-redesign/lightning-address.svg"
-import LightningAddressSet from "@app/assets/icons-redesign/lightning-address-set.svg"
 import Link from "@app/assets/icons-redesign/link.svg"
 import Loading from "@app/assets/icons-redesign/loading.svg"
-import EmailCheck from "@app/assets/icons-redesign/email-check.svg"
-import EmailQuestion from "@app/assets/icons-redesign/email-question.svg"
+import EmailAdd from "@app/assets/icons-redesign/email-add.svg"
 import MagnifyingGlass from "@app/assets/icons-redesign/magnifying-glass.svg"
 import Map from "@app/assets/icons-redesign/map.svg"
 import Menu from "@app/assets/icons-redesign/menu.svg"
@@ -53,11 +51,13 @@ import User from "@app/assets/icons-redesign/user.svg"
 import Video from "@app/assets/icons-redesign/video.svg"
 import WarningWithBackground from "@app/assets/icons-redesign/warning-with-background.svg"
 import Warning from "@app/assets/icons-redesign/warning.svg"
-import Telegram from "@app/assets/icons-redesign/telegram.svg"
+import Telegram from "@app/assets/icons/telegram.svg"
+import TelegramSimple from "@app/assets/icons-redesign/telegram-simple.svg"
 import Note from "@app/assets/icons/note.svg"
 import People from "@app/assets/icons/people.svg"
 import Rank from "@app/assets/icons/rank.svg"
 import Refresh from "@app/assets/icons/refresh.svg"
+import Upgrade from "@app/assets/icons-redesign/upgrade.svg"
 import Welcome from "@app/assets/icons-redesign/welcome.svg"
 import { makeStyles, useTheme } from "@rneui/themed"
 
@@ -90,11 +90,9 @@ export const icons = {
   "info": Info,
   "lightning": Lightning,
   "lightning-address": LightningAddress,
-  "lightning-address-set": LightningAddressSet,
   "link": Link,
   "loading": Loading,
-  "email-check": EmailCheck,
-  "email-question": EmailQuestion,
+  "email-add": EmailAdd,
   "magnifying-glass": MagnifyingGlass,
   "map": Map,
   "menu": Menu,
@@ -119,6 +117,8 @@ export const icons = {
   "bell": Bell,
   "refresh": Refresh,
   "telegram": Telegram,
+  "telegram-simple": TelegramSimple,
+  "upgrade": Upgrade,
   "welcome": Welcome,
 } as const
 

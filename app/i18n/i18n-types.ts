@@ -8075,7 +8075,7 @@ type RootTranslation = {
 	}
 	LoginMethodScreen: {
 		/**
-		 * S​e​l​e​c​t​ ​h​o​w​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​i​n​ ​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​.
+		 * S​e​l​e​c​t​ ​p​r​e​f​e​r​r​e​d​ ​l​o​g​i​n​ ​m​e​t​h​o​d​.
 		 */
 		title: string
 		/**
@@ -8160,19 +8160,9 @@ type RootTranslation = {
 			 */
 			primaryButton: string
 		}
-		emailConfirmed: {
-			/**
-			 * E​m​a​i​l​ ​l​o​g​i​n​ ​a​d​d​e​d
-			 */
-			mainTitle: string
-			/**
-			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
-			 */
-			title: string
-		}
 		lightningBenefits: {
 			/**
-			 * S​e​t​ ​u​p​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+			 * S​e​t​ ​u​p​ ​C​u​s​t​o​m​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
 			 */
 			mainTitle: string
 			/**
@@ -8192,19 +8182,9 @@ type RootTranslation = {
 			 */
 			blinkToolsDescription: string
 			/**
-			 * S​e​t​ ​u​p​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+			 * S​e​t​ ​u​p​ ​C​u​s​t​o​m​ ​A​d​d​r​e​s​s
 			 */
 			primaryButton: string
-		}
-		lightningConfirmed: {
-			/**
-			 * L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s​ ​s​e​t
-			 */
-			mainTitle: string
-			/**
-			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
-			 */
-			title: string
 		}
 		supportScreen: {
 			/**
@@ -8847,6 +8827,36 @@ type RootTranslation = {
 		 * R​e​c​o​m​m​e​n​d​e​d
 		 */
 		recommended: string
+		/**
+		 * E​x​p​i​r​a​t​i​o​n​ ​T​i​m​e
+		 */
+		expirationTime: string
+		/**
+		 * M​i​n​u​t​e
+		 */
+		minute: string
+		day: {
+			/**
+			 * D​a​y
+			 */
+			one: string
+			/**
+			 * D​a​y​s
+			 */
+			other: string
+		}
+		/**
+		 * D​o​l​l​a​r
+		 */
+		dollar: string
+		/**
+		 * A​L​L
+		 */
+		all: string
+		/**
+		 * A​l​l​ ​a​c​c​o​u​n​t​s
+		 */
+		allAccounts: string
 	}
 	errors: {
 		/**
@@ -17388,7 +17398,7 @@ export type TranslationFunctions = {
 	}
 	LoginMethodScreen: {
 		/**
-		 * Select how you want to login to your account.
+		 * Select preferred login method.
 		 */
 		title: () => LocalizedString
 		/**
@@ -17473,19 +17483,9 @@ export type TranslationFunctions = {
 			 */
 			primaryButton: () => LocalizedString
 		}
-		emailConfirmed: {
-			/**
-			 * Email login added
-			 */
-			mainTitle: () => LocalizedString
-			/**
-			 * New features unlocked for your account:
-			 */
-			title: () => LocalizedString
-		}
 		lightningBenefits: {
 			/**
-			 * Set up Lightning Address
+			 * Set up Custom Lightning Address
 			 */
 			mainTitle: () => LocalizedString
 			/**
@@ -17505,19 +17505,9 @@ export type TranslationFunctions = {
 			 */
 			blinkToolsDescription: () => LocalizedString
 			/**
-			 * Set up Lightning Address
+			 * Set up Custom Address
 			 */
 			primaryButton: () => LocalizedString
-		}
-		lightningConfirmed: {
-			/**
-			 * Lightning Address set
-			 */
-			mainTitle: () => LocalizedString
-			/**
-			 * New features unlocked for your account:
-			 */
-			title: () => LocalizedString
 		}
 		supportScreen: {
 			/**
@@ -18149,6 +18139,36 @@ export type TranslationFunctions = {
 		 * Recommended
 		 */
 		recommended: () => LocalizedString
+		/**
+		 * Expiration Time
+		 */
+		expirationTime: () => LocalizedString
+		/**
+		 * Minute
+		 */
+		minute: () => LocalizedString
+		day: {
+			/**
+			 * Day
+			 */
+			one: () => LocalizedString
+			/**
+			 * Days
+			 */
+			other: () => LocalizedString
+		}
+		/**
+		 * Dollar
+		 */
+		dollar: () => LocalizedString
+		/**
+		 * ALL
+		 */
+		all: () => LocalizedString
+		/**
+		 * All accounts
+		 */
+		allAccounts: () => LocalizedString
 	}
 	errors: {
 		/**
