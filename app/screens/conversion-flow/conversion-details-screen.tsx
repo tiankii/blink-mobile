@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Platform, TouchableOpacity, View } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
+import { TouchableOpacity, View } from "react-native"
 
 import { gql } from "@apollo/client"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -17,7 +16,6 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import {
   IInputValues,
   InputField,
-  TInputCurrency,
   useConvertMoneyDetails,
 } from "@app/screens/conversion-flow/use-convert-money-details"
 import {
@@ -111,14 +109,6 @@ export const ConversionDetailsScreen = () => {
     }
   }, [btcWallet, usdWallet, fromWallet, setWallets])
 
-  // useEffect(() => {
-  //   setInputValues((prev) => ({
-  //     ...prev,
-  //     fromInput: prev.toInput,
-  //     toInput: prev.fromInput,
-  //   }))
-  // }, [fromWallet])
-
   const handleSetMoneyAmount = useCallback(
     (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
       setMoneyAmount(amount)
@@ -193,6 +183,7 @@ export const ConversionDetailsScreen = () => {
   const formattedInputValues = useCallback(
     (values: IInputValues | null) => {
       if (!values) return
+
       setInputFormattedValues(values)
       handleSetMoneyAmount(values.fromInput.amount)
     },
@@ -296,7 +287,7 @@ export const ConversionDetailsScreen = () => {
               containerStyle={styles.primaryNumberContainer}
               inputStyle={styles.primaryNumberText}
               placeholder={
-                fromWallet.walletCurrency === WalletCurrency.Usd ? "$0.00" : "0 SAT"
+                fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
               }
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
@@ -304,11 +295,13 @@ export const ConversionDetailsScreen = () => {
               autoFocus={displayCurrency === WalletCurrency.Usd}
             />
             <View>
-              <GaloyCurrencyBubbleText
-                currency={fromWallet.walletCurrency}
-                textSize="p2"
-                containerSize="medium"
-              />
+              <View style={styles.currencyBubbleText}>
+                <GaloyCurrencyBubbleText
+                  currency={fromWallet.walletCurrency}
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              </View>
               <View style={styles.walletSelectorBalanceContainer}>
                 <Text style={styles.convertText}>{fromWalletBalanceFormatted}</Text>
                 <Text style={styles.convertText}>{fromSatsFormatted}</Text>
@@ -365,18 +358,20 @@ export const ConversionDetailsScreen = () => {
               containerStyle={styles.primaryNumberContainer}
               inputStyle={styles.primaryNumberText}
               placeholder={
-                fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0.00"
+                fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
               }
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
             />
             <View>
-              <GaloyCurrencyBubbleText
-                currency={toWallet.walletCurrency}
-                textSize="p2"
-                containerSize="medium"
-              />
+              <View style={styles.currencyBubbleText}>
+                <GaloyCurrencyBubbleText
+                  currency={toWallet.walletCurrency}
+                  textSize="p2"
+                  containerSize="medium"
+                />
+              </View>
               <View style={styles.walletSelectorBalanceContainer}>
                 <Text style={styles.convertText}>{toWalletBalanceFormatted}</Text>
                 <Text style={styles.convertText}>{toSatsFormatted}</Text>
@@ -423,7 +418,7 @@ export const ConversionDetailsScreen = () => {
       <View
         style={{
           flex: 1,
-          gap: 10,
+          gap: 13,
           marginBottom: 20,
           minHeight: 0,
         }}
@@ -473,7 +468,7 @@ export const ConversionDetailsScreen = () => {
         </View>
       </View>
       <GaloyPrimaryButton
-        title={LL.common.next()}
+        title={LL.ConversionDetailsScreen.reviewTransfer()}
         containerStyle={styles.buttonContainer}
         disabled={!isValidAmount}
         onPress={moveToNextScreen}
@@ -499,7 +494,8 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     flexDirection: "column",
     backgroundColor: colors.grey5,
     borderRadius: 13,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
   walletSeparator: {
     flexDirection: "row",
@@ -519,7 +515,6 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     height: 43,
     width: 43,
     borderRadius: 50,
-    elevation: Platform.OS === "android" ? 50 : 0,
     backgroundColor: colors.grey4,
     justifyContent: "center",
     alignItems: "center",
@@ -585,4 +580,5 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   primaryNumberInputContainer: {
     borderBottomWidth: 0,
   },
+  currencyBubbleText: { display: "flex", alignItems: "flex-end" },
 }))

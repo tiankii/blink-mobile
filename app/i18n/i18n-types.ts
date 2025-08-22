@@ -254,6 +254,10 @@ type RootTranslation = {
 		 * %​ ​t​o​ ​c​o​n​v​e​r​t
 		 */
 		percentageToConvert: string
+		/**
+		 * R​e​v​i​e​w​ ​t​r​a​n​s​f​e​r
+		 */
+		reviewTransfer: string
 	}
 	ConversionConfirmationScreen: {
 		/**
@@ -9617,6 +9621,10 @@ export type TranslationFunctions = {
 		 * % to convert
 		 */
 		percentageToConvert: () => LocalizedString
+		/**
+		 * Review transfer
+		 */
+		reviewTransfer: () => LocalizedString
 	}
 	ConversionConfirmationScreen: {
 		/**

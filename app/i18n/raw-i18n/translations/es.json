@@ -61,7 +61,8 @@
     "ConversionDetailsScreen": {
         "title": "Transferir fondos",
         "transfer": "Transferir",
-        "percentageToConvert": "% para convertir"
+        "percentageToConvert": "% para convertir",
+        "reviewTransfer": "Revisar transferencia"
     },
     "ConversionConfirmationScreen": {
         "youreConverting": "Estás convirtiendo",

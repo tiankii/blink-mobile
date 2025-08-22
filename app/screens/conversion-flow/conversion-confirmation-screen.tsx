@@ -89,19 +89,6 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
       : { id: btcWallet.id, currency: WalletCurrency.Btc },
   )
 
-  const toggleWallets = () => {
-    setFromWallet((prevFrom) =>
-      prevFrom.currency === WalletCurrency.Btc
-        ? { id: usdWallet.id, currency: WalletCurrency.Usd }
-        : { id: btcWallet.id, currency: WalletCurrency.Btc },
-    )
-    setToWallet((prevTo) =>
-      prevTo.currency === WalletCurrency.Btc
-        ? { id: usdWallet.id, currency: WalletCurrency.Usd }
-        : { id: btcWallet.id, currency: WalletCurrency.Btc },
-    )
-  }
-
   const fromAmount = convertMoneyAmount(moneyAmount, fromWallet.currency)
   const toAmount = convertMoneyAmount(moneyAmount, toWallet.currency)
 
@@ -277,8 +264,8 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
           </View>
           <View style={styles.walletSeparator}>
             <View style={styles.line}></View>
-            <TouchableOpacity style={styles.switchButton} onPress={toggleWallets}>
-              <Icon name="arrow-down-outline" color={colors.black} size={25} />
+            <TouchableOpacity style={styles.switchButton} disabled>
+              <Icon name="arrow-down-outline" color={colors.grey3} size={25} />
             </TouchableOpacity>
           </View>
           <View style={styles.toFieldContainer}>
@@ -407,7 +394,6 @@ const useStyles = makeStyles(({ colors }) => ({
     height: 43,
     width: 43,
     borderRadius: 50,
-    elevation: Platform.OS === "android" ? 50 : 0,
     backgroundColor: colors.grey4,
     justifyContent: "center",
     alignItems: "center",

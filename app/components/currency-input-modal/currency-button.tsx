@@ -14,7 +14,6 @@ import { useTheme, Text, makeStyles, Input } from "@rneui/themed"
 export type CurrencyModalButtonProps = {
   placeholder?: string
   selectedCurrency: string
-  currencySymbol: string
   inputValue?: string
   iconName?: "pencil" | "info"
   primaryTextTestProps?: string
@@ -28,7 +27,6 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
     {
       placeholder,
       selectedCurrency,
-      currencySymbol,
       inputValue,
       primaryTextTestProps,
       onChangeText,
@@ -54,16 +52,6 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
               alignItems: "center",
             }}
           >
-            {/* {!!inputValue && (
-              <Text
-                style={[styles.primaryNumberText, styles.amountValueStyle]}
-                type="p2"
-                numberOfLines={1}
-                {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
-              >
-                {currencySymbol}
-              </Text>
-            )} */}
             <Input
               ref={inputRef}
               value={inputValue}
@@ -110,7 +98,6 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    flex: 1,
   },
   pressableBase: {
     paddingVertical: 7,
@@ -131,9 +118,10 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
   },
   primaryNumberText: {
-    fontSize: 28,
-    lineHeight: 32,
-    fontWeight: "bold",
+    fontSize: 20,
+    lineHeight: 24,
+    flex: 1,
+    fontWeight: "600",
     padding: 0,
     margin: 0,
   },

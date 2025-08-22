@@ -73,6 +73,7 @@ const en: BaseTranslation = {
     title: "Transfer funds",
     transfer: "Transfer",
     percentageToConvert: "% to convert",
+    reviewTransfer: "Review transfer",
   },
   ConversionConfirmationScreen: {
     youreConverting: "You're converting",
