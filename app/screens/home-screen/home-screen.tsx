@@ -218,7 +218,7 @@ export const HomeScreen: React.FC = () => {
   const loading = loadingAuthed || loadingPrice || loadingUnauthed || loadingSettings
 
   const wallets = dataAuthed?.me?.defaultAccount?.wallets
-  const { formattedBalance, satsBalance, numericBalance } = useTotalBalance(wallets)
+  const { formattedBalance, satsBalance } = useTotalBalance(wallets)
 
   const accountId = dataAuthed?.me?.defaultAccount?.id
   const levelAccount = dataAuthed?.me?.defaultAccount.level
@@ -409,7 +409,7 @@ export const HomeScreen: React.FC = () => {
     },
   ]
 
-  const isIosWithBalance = isIos && numericBalance > 0
+  const isIosWithBalance = isIos && satsBalance > 0
 
   if (
     !isIos ||
