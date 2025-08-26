@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import { TouchableOpacity, View } from "react-native"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { TouchableOpacity, View, ActivityIndicator, TextInput } from "react-native"
 
 import { gql } from "@apollo/client"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -53,6 +53,12 @@ gql`
   }
 `
 
+enum InputFieldType {
+  FROM_INPUT = "fromInput",
+  TO_INPUT = "toInput",
+  CURRENCY_INPUT = "currencyInput",
+}
+
 export const ConversionDetailsScreen = () => {
   const {
     theme: { colors },
@@ -61,10 +67,7 @@ export const ConversionDetailsScreen = () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "conversionDetails">>()
 
-  // forcing price refresh
-  useRealtimePriceQuery({
-    fetchPolicy: "network-only",
-  })
+  useRealtimePriceQuery({ fetchPolicy: "network-only" })
 
   const { data } = useConversionScreenQuery({
     fetchPolicy: "cache-and-network",
@@ -100,26 +103,6 @@ export const ConversionDetailsScreen = () => {
       : undefined,
   )
 
-  useEffect(() => {
-    if (!fromWallet && btcWallet && usdWallet) {
-      setWallets({
-        fromWallet: btcWallet,
-        toWallet: usdWallet,
-      })
-    }
-  }, [btcWallet, usdWallet, fromWallet, setWallets])
-
-  const handleSetMoneyAmount = useCallback(
-    (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
-      setMoneyAmount(amount)
-    },
-    [setMoneyAmount],
-  )
-
-  if (!data?.me?.defaultAccount || !fromWallet) {
-    // TODO: proper error handling. non possible event?
-    return <></>
-  }
   const [focusedInputValues, setFocusedInputValues] = useState<InputField | null>(null)
   const [initialAmount, setInitialAmount] =
     useState<MoneyAmount<WalletOrDisplayCurrency>>()
@@ -128,33 +111,21 @@ export const ConversionDetailsScreen = () => {
   )
   const [inputValues, setInputValues] = useState<IInputValues>({
     fromInput: {
-      id: "fromInput",
-      currency:
-        fromWallet.walletCurrency === WalletCurrency.Btc
-          ? WalletCurrency.Btc
-          : WalletCurrency.Usd,
-      amount:
-        fromWallet.walletCurrency === WalletCurrency.Btc
-          ? toBtcMoneyAmount(0)
-          : toUsdMoneyAmount(0),
+      id: InputFieldType.FROM_INPUT,
+      currency: WalletCurrency.Btc,
+      amount: toBtcMoneyAmount(0),
       isFocused: false,
       formattedAmount: "",
     },
     toInput: {
-      id: "toInput",
-      currency:
-        toWallet.walletCurrency === WalletCurrency.Btc
-          ? WalletCurrency.Btc
-          : WalletCurrency.Usd,
-      amount:
-        toWallet.walletCurrency === WalletCurrency.Btc
-          ? toBtcMoneyAmount(0)
-          : toUsdMoneyAmount(0),
+      id: InputFieldType.TO_INPUT,
+      currency: WalletCurrency.Usd,
+      amount: toUsdMoneyAmount(0),
       isFocused: false,
       formattedAmount: "",
     },
     currencyInput: {
-      id: "currencyInput",
+      id: InputFieldType.CURRENCY_INPUT,
       currency: displayCurrency as DisplayCurrency,
       amount: toDisplayAmount({ amount: 0, currencyCode: displayCurrency }),
       isFocused: false,
@@ -162,40 +133,262 @@ export const ConversionDetailsScreen = () => {
     },
     formattedAmount: "",
   })
-  const toggleInputs = () => {
-    setInputValues((prev) => {
-      return {
+
+  const [isTyping, setIsTyping] = useState(false)
+  const [typingInputId, setTypingInputId] = useState<InputField["id"] | null>(null)
+  const [uiLocked, setUiLocked] = useState(false)
+  const [overlaysReady, setOverlaysReady] = useState(false)
+
+  const fromInputRef = useRef<TextInput | null>(null)
+  const toInputRef = useRef<TextInput | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOverlaysReady(true)
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (!fromWallet && btcWallet && usdWallet) {
+      setWallets({ fromWallet: btcWallet, toWallet: usdWallet })
+    }
+  }, [btcWallet, usdWallet, fromWallet, setWallets])
+
+  const handleSetMoneyAmount = useCallback(
+    (amount: MoneyAmount<WalletOrDisplayCurrency>) => setMoneyAmount(amount),
+    [setMoneyAmount],
+  )
+
+  useEffect(() => {
+    if (fromWallet && toWallet) {
+      setInputValues((prev) => ({
         ...prev,
         fromInput: {
           ...prev.fromInput,
-          currency: prev.toInput.currency,
-          amount: prev.toInput.amount,
+          currency:
+            fromWallet.walletCurrency === WalletCurrency.Btc
+              ? WalletCurrency.Btc
+              : WalletCurrency.Usd,
         },
         toInput: {
           ...prev.toInput,
-          currency: prev.fromInput.currency,
-          amount: prev.fromInput.amount,
+          currency:
+            toWallet.walletCurrency === WalletCurrency.Btc
+              ? WalletCurrency.Btc
+              : WalletCurrency.Usd,
         },
+      }))
+    }
+  }, [fromWallet, fromWallet?.walletCurrency, toWallet, toWallet?.walletCurrency])
+
+  const onSetFormattedValues = useCallback((values: IInputValues | null) => {
+    if (!values) return
+    setInputFormattedValues((prev): IInputValues | null => {
+      if (!prev) return values
+      const sameSnapshot =
+        prev.formattedAmount === values.formattedAmount &&
+        prev.fromInput.formattedAmount === values.fromInput.formattedAmount &&
+        prev.toInput.formattedAmount === values.toInput.formattedAmount &&
+        prev.currencyInput.formattedAmount === values.currencyInput.formattedAmount &&
+        prev.fromInput.currency === values.fromInput.currency &&
+        prev.toInput.currency === values.toInput.currency &&
+        prev.currencyInput.currency === values.currencyInput.currency
+      return sameSnapshot ? prev : values
+    })
+  }, [])
+
+  const fieldFormatted = useCallback(
+    (id: InputField["id"]) =>
+      id === InputFieldType.FROM_INPUT
+        ? inputFormattedValues?.fromInput.formattedAmount || ""
+        : id === InputFieldType.TO_INPUT
+          ? inputFormattedValues?.toInput.formattedAmount || ""
+          : inputFormattedValues?.currencyInput.formattedAmount || "",
+    [inputFormattedValues],
+  )
+
+  const typedValue = useCallback(
+    (id: InputField["id"]) => {
+      const digits = inputFormattedValues?.formattedAmount ?? ""
+      if (!digits) return ""
+      const curr =
+        id === InputFieldType.FROM_INPUT
+          ? inputValues.fromInput.currency
+          : id === InputFieldType.TO_INPUT
+            ? inputValues.toInput.currency
+            : displayCurrency
+      const isBtc = curr === WalletCurrency.Btc
+      return isBtc ? digits : `${getCurrencySymbol({ currency: curr })}${digits}`
+    },
+    [inputFormattedValues, inputValues, displayCurrency, getCurrencySymbol],
+  )
+
+  const renderValue = useCallback(
+    (id: InputField["id"]) =>
+      isTyping && typingInputId === id ? typedValue(id) : fieldFormatted(id),
+    [isTyping, typingInputId, typedValue, fieldFormatted],
+  )
+
+  const caretSelectionFor = useCallback(
+    (id: InputField["id"]) => {
+      const value = renderValue(id) ?? ""
+      const satIdx =
+        value.indexOf(" SAT") >= 0
+          ? value.indexOf(" SAT")
+          : value.toUpperCase().indexOf(" SAT")
+      const pos = satIdx >= 0 ? satIdx : value.length
+      return { start: pos, end: pos } as const
+    },
+    [renderValue],
+  )
+
+  const handleInputPress = useCallback(
+    (id: InputField["id"]) => {
+      const ref = id === InputFieldType.FROM_INPUT ? fromInputRef : toInputRef
+      const value = renderValue(id) ?? ""
+      const satIdx =
+        value.indexOf(" SAT") >= 0
+          ? value.indexOf(" SAT")
+          : value.toUpperCase().indexOf(" SAT")
+      const pos = satIdx >= 0 ? satIdx : value.length
+
+      const inputToFocus =
+        id === InputFieldType.FROM_INPUT
+          ? inputFormattedValues?.fromInput ?? inputValues.fromInput
+          : inputFormattedValues?.toInput ?? inputValues.toInput
+
+      setFocusedInputValues({ ...inputToFocus })
+
+      setTimeout(() => {
+        ref.current?.focus()
+        ref.current?.setNativeProps({ selection: { start: pos, end: pos } })
+      }, 10)
+    },
+    [inputFormattedValues, inputValues, renderValue],
+  )
+
+  useEffect(() => {
+    if (displayCurrency === WalletCurrency.Usd && fromInputRef.current) {
+      const value = renderValue(InputFieldType.FROM_INPUT) ?? ""
+      const satIdx =
+        value.indexOf(" SAT") >= 0
+          ? value.indexOf(" SAT")
+          : value.toUpperCase().indexOf(" SAT")
+      const pos = satIdx >= 0 ? satIdx : value.length
+
+      setTimeout(() => {
+        fromInputRef.current?.setNativeProps({ selection: { start: pos, end: pos } })
+      }, 100)
+    }
+  }, [displayCurrency, renderValue])
+
+  const rightIcon = useMemo(
+    () => (
+      <View style={styles.iconSlotContainer}>
+        {isTyping ? <ActivityIndicator /> : null}
+      </View>
+    ),
+    [isTyping, styles.iconSlotContainer],
+  )
+
+  if (!data?.me?.defaultAccount || !fromWallet) return <></>
+
+  const stripApprox = (s?: string) => (s ? s.replace(/^\s*~\s*/, "") : s)
+  const ensureApprox = (s?: string) => (s ? (s.trim().startsWith("~") ? s : `~ ${s}`) : s)
+
+  const toggleInputs = () => {
+    if (uiLocked) return
+    setUiLocked(true)
+
+    const currentActiveAmount =
+      moneyAmount ||
+      inputFormattedValues?.fromInput?.amount ||
+      inputValues.fromInput.amount
+
+    const currentFocusedId = focusedInputValues?.id ?? null
+    const newFocusedId =
+      currentFocusedId && currentFocusedId !== InputFieldType.CURRENCY_INPUT
+        ? currentFocusedId === InputFieldType.FROM_INPUT
+          ? InputFieldType.TO_INPUT
+          : InputFieldType.FROM_INPUT
+        : null
+
+    if (newFocusedId) {
+      const baseTarget =
+        newFocusedId === InputFieldType.FROM_INPUT
+          ? (inputValues.toInput as InputField)
+          : (inputValues.fromInput as InputField)
+
+      setFocusedInputValues({
+        ...baseTarget,
+        id: newFocusedId,
+        isFocused: true,
+        amount: currentActiveAmount,
+      })
+    }
+
+    if (!newFocusedId) {
+      setFocusedInputValues(null)
+    }
+
+    setInputValues((prev) => ({
+      ...prev,
+      fromInput: {
+        ...prev.toInput,
+        id: InputFieldType.FROM_INPUT,
+        isFocused: newFocusedId === InputFieldType.FROM_INPUT,
+      },
+      toInput: {
+        ...prev.fromInput,
+        id: InputFieldType.TO_INPUT,
+        isFocused: newFocusedId === InputFieldType.TO_INPUT,
+      },
+      currencyInput: {
+        ...prev.currencyInput,
+        isFocused: currentFocusedId === InputFieldType.CURRENCY_INPUT,
+      },
+    }))
+
+    setInputFormattedValues((prev: IInputValues | null): IInputValues | null => {
+      if (!prev) return prev
+
+      const swappedFrom: InputField = {
+        ...prev.toInput,
+        id: InputFieldType.FROM_INPUT,
+        isFocused: newFocusedId === InputFieldType.FROM_INPUT,
+      }
+      const swappedTo: InputField = {
+        ...prev.fromInput,
+        id: InputFieldType.TO_INPUT,
+        isFocused: newFocusedId === InputFieldType.TO_INPUT,
+      }
+      const normalizedFrom: InputField = {
+        ...swappedFrom,
+        formattedAmount: stripApprox(swappedFrom.formattedAmount) ?? "",
+      }
+      const normalizedTo: InputField = {
+        ...swappedTo,
+        formattedAmount: ensureApprox(swappedTo.formattedAmount) ?? "",
+      }
+      return {
+        ...prev,
+        fromInput: normalizedFrom,
+        toInput: normalizedTo,
+        currencyInput: {
+          ...prev.currencyInput,
+          isFocused: currentFocusedId === InputFieldType.CURRENCY_INPUT,
+        },
+        formattedAmount: prev.formattedAmount,
       }
     })
+
+    if (toggleWallet) toggleWallet()
+    if (currentActiveAmount) handleSetMoneyAmount(currentActiveAmount)
   }
-
-  const formattedInputValues = useCallback(
-    (values: IInputValues | null) => {
-      if (!values) return
-
-      setInputFormattedValues(values)
-      handleSetMoneyAmount(values.fromInput.amount)
-    },
-    [setInputFormattedValues],
-  )
 
   const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance ?? NaN)
   const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance ?? NaN)
-
-  const currencySymbol = getCurrencySymbol({
-    currency: displayCurrency,
-  })
 
   const fromWalletBalance =
     fromWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
@@ -207,18 +400,14 @@ export const ConversionDetailsScreen = () => {
     fromWallet.walletCurrency === WalletCurrency.Usd &&
     displayCurrency === WalletCurrency.Usd
       ? null
-      : moneyAmountToDisplayCurrencyString({
-          moneyAmount: fromWalletBalance,
-        })
+      : moneyAmountToDisplayCurrencyString({ moneyAmount: fromWalletBalance })
 
   const toWalletBalanceFormatted = formatMoneyAmount({ moneyAmount: toWalletBalance })
   const toSatsFormatted =
     toWallet.walletCurrency === WalletCurrency.Usd &&
     displayCurrency === WalletCurrency.Usd
       ? null
-      : moneyAmountToDisplayCurrencyString({
-          moneyAmount: toWalletBalance,
-        })
+      : moneyAmountToDisplayCurrencyString({ moneyAmount: toWalletBalance })
 
   let amountFieldError: string | undefined = undefined
 
@@ -234,6 +423,8 @@ export const ConversionDetailsScreen = () => {
   }
 
   const setAmountToBalancePercentage = (percentage: number) => {
+    if (uiLocked) return
+    setUiLocked(true)
     setInitialAmount(
       toWalletAmount({
         amount: Math.round((fromWallet.balance * percentage) / 100),
@@ -255,36 +446,16 @@ export const ConversionDetailsScreen = () => {
         <View style={styles.walletSelectorContainer}>
           <View style={styles.fromFieldContainer}>
             <Input
-              value={
-                inputFormattedValues?.fromInput.isFocused &&
-                inputFormattedValues?.fromInput.currency !== WalletCurrency.Btc
-                  ? `${
-                      inputFormattedValues?.formattedAmount
-                        ? getCurrencySymbol({
-                            currency: inputFormattedValues?.fromInput.currency,
-                          })
-                        : ""
-                    }${inputFormattedValues?.formattedAmount}`
-                  : inputFormattedValues?.fromInput.formattedAmount
-              }
-              onFocus={() => {
+              ref={fromInputRef}
+              value={renderValue(InputFieldType.FROM_INPUT)}
+              onFocus={() =>
                 setFocusedInputValues(
                   inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
                 )
-              }}
-              onChangeText={(e) => {
-                // remove commas for ease of calculation later on
-                const val = e.replaceAll(",", "")
-                // TODO adjust for currencies that use commas instead of decimals
-
-                // test for string input that can be either numerical or float
-                if (/^\d*\.?\d*$/.test(val.trim())) {
-                  const num = Number(val)
-                  //onPaste(num)
-                }
-              }}
+              }
+              onChangeText={() => {}}
               showSoftInputOnFocus={false}
-              containerStyle={styles.primaryNumberContainer}
+              containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
               inputStyle={styles.primaryNumberText}
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
@@ -292,9 +463,16 @@ export const ConversionDetailsScreen = () => {
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
-              autoFocus={displayCurrency === WalletCurrency.Usd}
+              rightIcon={rightIcon}
+              selection={caretSelectionFor(InputFieldType.FROM_INPUT)}
+              pointerEvents="none"
             />
-            <View>
+            <TouchableOpacity
+              style={styles.inputOverlay}
+              activeOpacity={1}
+              onPress={() => overlaysReady && handleInputPress(InputFieldType.FROM_INPUT)}
+            />
+            <View style={styles.rightColumn}>
               <View style={styles.currencyBubbleText}>
                 <GaloyCurrencyBubbleText
                   currency={fromWallet.walletCurrency}
@@ -308,54 +486,30 @@ export const ConversionDetailsScreen = () => {
               </View>
             </View>
           </View>
+
           <View style={styles.walletSeparator}>
-            <View style={styles.line}></View>
+            <View style={styles.line} />
             <TouchableOpacity
               style={styles.switchButton}
-              disabled={!canToggleWallet}
-              onPress={() => {
-                toggleInputs()
-                if (toggleWallet) {
-                  toggleWallet()
-                }
-              }}
+              disabled={!canToggleWallet || uiLocked}
+              onPress={toggleInputs}
             >
               <Icon name="arrow-down-outline" color={colors.primary} size={25} />
             </TouchableOpacity>
           </View>
+
           <View style={styles.toFieldContainer}>
             <Input
-              value={
-                inputFormattedValues?.toInput.isFocused &&
-                inputFormattedValues?.toInput.currency !== WalletCurrency.Btc
-                  ? `${
-                      inputFormattedValues?.formattedAmount
-                        ? "~ " +
-                          getCurrencySymbol({
-                            currency: inputFormattedValues?.toInput.currency,
-                          })
-                        : ""
-                    }${inputFormattedValues?.formattedAmount}`
-                  : inputFormattedValues?.toInput.formattedAmount
-              }
-              onFocus={() => {
+              ref={toInputRef}
+              value={renderValue(InputFieldType.TO_INPUT)}
+              onFocus={() =>
                 setFocusedInputValues(
                   inputFormattedValues?.toInput ?? { ...inputValues.toInput },
                 )
-              }}
-              onChangeText={(e) => {
-                // remove commas for ease of calculation later on
-                const val = e.replaceAll(",", "")
-                // TODO adjust for currencies that use commas instead of decimals
-
-                // test for string input that can be either numerical or float
-                if (/^\d*\.?\d*$/.test(val.trim())) {
-                  const num = Number(val)
-                  //onPaste(num)
-                }
-              }}
+              }
+              onChangeText={() => {}}
               showSoftInputOnFocus={false}
-              containerStyle={styles.primaryNumberContainer}
+              containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
               inputStyle={styles.primaryNumberText}
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
@@ -363,8 +517,16 @@ export const ConversionDetailsScreen = () => {
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
+              rightIcon={rightIcon}
+              selection={caretSelectionFor(InputFieldType.TO_INPUT)}
+              pointerEvents="none"
             />
-            <View>
+            <TouchableOpacity
+              style={styles.inputOverlay}
+              activeOpacity={1}
+              onPress={() => overlaysReady && handleInputPress(InputFieldType.TO_INPUT)}
+            />
+            <View style={styles.rightColumn}>
               <View style={styles.currencyBubbleText}>
                 <GaloyCurrencyBubbleText
                   currency={toWallet.walletCurrency}
@@ -379,55 +541,43 @@ export const ConversionDetailsScreen = () => {
             </View>
           </View>
         </View>
-        {displayCurrency !== WalletCurrency.Usd && (
-          <CurrencyInputModal
-            inputValue={
-              inputFormattedValues?.currencyInput.isFocused
-                ? `${inputFormattedValues?.formattedAmount ? currencySymbol : ""}${inputFormattedValues?.formattedAmount}`
-                : inputFormattedValues?.currencyInput.formattedAmount
-            }
-            onFocus={() => {
-              setFocusedInputValues(
-                inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
-              )
-            }}
-            onChangeText={(e) => {
-              // remove commas for ease of calculation later on
-              const val = e.replaceAll(",", "")
-              // TODO adjust for currencies that use commas instead of decimals
 
-              // test for string input that can be either numerical or float
-              if (/^\d*\.?\d*$/.test(val.trim())) {
-                const num = Number(val)
-                //onPaste(num)
+        {displayCurrency !== WalletCurrency.Usd && (
+          <View style={styles.currencyInputContainer}>
+            <CurrencyInputModal
+              inputValue={renderValue(InputFieldType.CURRENCY_INPUT)}
+              onFocus={() =>
+                setFocusedInputValues(
+                  inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
+                )
               }
-            }}
-            defaultCurrency={displayCurrency}
-            placeholder={`${currencySymbol}0`}
-          />
-        )}
-        {amountFieldError && (
-          <View style={styles.errorContainer}>
-            <GaloyIcon color={colors._white} name="warning" size={20} />
-            <Text color={colors._white} type="p3">
-              {amountFieldError}
-            </Text>
+              onChangeText={() => {}}
+              defaultCurrency={displayCurrency}
+              placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
+              rightIcon={rightIcon}
+            />
           </View>
         )}
+
+        <View style={styles.errorBarContainer}>
+          {amountFieldError ? (
+            <View style={styles.errorContainer}>
+              <GaloyIcon color={colors._white} name="warning" size={20} />
+              <Text color={colors._white} type="p3">
+                {amountFieldError}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       </View>
-      <View
-        style={{
-          flex: 1,
-          gap: 13,
-          marginBottom: 20,
-          minHeight: 0,
-        }}
-      >
+
+      <View style={styles.flexArea}>
         <View style={styles.percentageContainer}>
           <View style={styles.percentageFieldContainer}>
             <TouchableOpacity
               {...testProps("convert-25%")}
               style={styles.percentageField}
+              disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(25)}
             >
               <Text style={styles.percentageFieldText}>25%</Text>
@@ -435,6 +585,7 @@ export const ConversionDetailsScreen = () => {
             <TouchableOpacity
               {...testProps("convert-50%")}
               style={styles.percentageField}
+              disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(50)}
             >
               <Text style={styles.percentageFieldText}>50%</Text>
@@ -442,6 +593,7 @@ export const ConversionDetailsScreen = () => {
             <TouchableOpacity
               {...testProps("convert-75%")}
               style={styles.percentageField}
+              disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(75)}
             >
               <Text style={styles.percentageFieldText}>75%</Text>
@@ -449,24 +601,33 @@ export const ConversionDetailsScreen = () => {
             <TouchableOpacity
               {...testProps("convert-100%")}
               style={styles.percentageField}
+              disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(100)}
             >
               <Text style={styles.percentageFieldText}>100%</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, minHeight: 0, maxHeight: 400, paddingHorizontal: 30 }}>
+
+        <View style={styles.keyboardContainer}>
           <AmountInputScreen
             inputValues={inputValues}
             convertMoneyAmount={convertMoneyAmount}
             onAmountChange={handleSetMoneyAmount}
-            onSetFormattedAmount={formattedInputValues}
+            onSetFormattedAmount={onSetFormattedValues}
             focusedInput={focusedInputValues}
             initialAmount={initialAmount}
             responsive
+            debounceMs={1000}
+            onTypingChange={(typing, focusedId) => {
+              setIsTyping(typing)
+              setTypingInputId(typing ? focusedId : null)
+            }}
+            onAfterRecalc={() => setUiLocked(false)}
           />
         </View>
       </View>
+
       <GaloyPrimaryButton
         title={LL.ConversionDetailsScreen.reviewTransfer()}
         containerStyle={styles.buttonContainer}
@@ -478,24 +639,51 @@ export const ConversionDetailsScreen = () => {
 }
 
 const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
+  iconSlotContainer: {
+    width: 30,
+    height: 22,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   styleWalletContainer: {
     flexDirection: "column",
-    margin: 20,
-    flex: 1,
+    marginHorizontal: 20,
+    marginTop: 16,
     ...(currencyInput ? { minHeight: 70 } : {}),
-    gap: 10,
-  },
-  toFieldContainer: {
-    flexDirection: "row",
-    marginTop: 15,
-    alignItems: "center",
   },
   walletSelectorContainer: {
     flexDirection: "column",
     backgroundColor: colors.grey5,
     borderRadius: 13,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  fromFieldContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 6,
+    paddingBottom: 6,
+    marginBottom: 4,
+    position: "relative",
+  },
+  toFieldContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 6,
+    paddingBottom: 6,
+    position: "relative",
+  },
+  inputWithOverlay: {
+    position: "relative",
+  },
+  inputOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10,
   },
   walletSeparator: {
     flexDirection: "row",
@@ -503,12 +691,9 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    marginVertical: 6,
   },
-  line: {
-    backgroundColor: colors.grey4,
-    height: 1,
-    flex: 1,
-  },
+  line: { backgroundColor: colors.grey4, height: 1, flex: 1 },
   switchButton: {
     position: "absolute",
     left: 100,
@@ -519,10 +704,16 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  fromFieldContainer: {
-    flexDirection: "row",
-    marginBottom: 15,
-    alignItems: "center",
+  rightColumn: {
+    minWidth: 96,
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+  },
+  currencyBubbleText: {
+    display: "flex",
+    alignItems: "flex-end",
+    alignSelf: "flex-end",
+    marginTop: 2,
   },
   walletSelectorBalanceContainer: {
     marginTop: 5,
@@ -530,8 +721,18 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     alignItems: "flex-end",
     justifyContent: "flex-end",
   },
-  convertText: {
-    textAlign: "right",
+  convertText: { textAlign: "right" },
+  currencyInputContainer: {
+    marginTop: 10,
+  },
+  flexArea: {
+    flex: 1,
+    minHeight: 0,
+    marginBottom: 20,
+  },
+  percentageContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
   },
   percentageFieldContainer: {
     flexDirection: "row",
@@ -542,33 +743,23 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   },
   percentageField: {
     backgroundColor: colors.grey5,
-    padding: 10,
     borderRadius: 100,
     alignItems: "center",
-    marginVertical: 5,
     minWidth: 50,
     paddingHorizontal: 15,
     paddingVertical: 8,
+    marginVertical: 6,
   },
-  percentageFieldText: {
-    color: colors.primary,
-    fontWeight: "bold",
-  },
-  percentageContainer: {
-    flexDirection: "row",
-  },
-  buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
-  errorContainer: {
-    alignItems: "center",
-    backgroundColor: colors.error9,
-    borderRadius: 8,
-    padding: 7,
-    flexDirection: "row",
-    gap: 5,
-  },
-  primaryNumberContainer: {
+  percentageFieldText: { color: colors.primary, fontWeight: "bold" },
+  keyboardContainer: {
     flex: 1,
+    maxHeight: 350,
+    maxWidth: 450,
+    paddingHorizontal: 45,
+    paddingVertical: 15,
+    justifyContent: "flex-end",
   },
+  primaryNumberContainer: { flex: 1, paddingHorizontal: 0 },
   primaryNumberText: {
     fontSize: 20,
     lineHeight: 24,
@@ -577,8 +768,20 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     padding: 0,
     margin: 0,
   },
-  primaryNumberInputContainer: {
-    borderBottomWidth: 0,
+  primaryNumberInputContainer: { borderBottomWidth: 0, paddingBottom: 0 },
+  errorBarContainer: {
+    height: 44,
+    marginTop: 8,
   },
-  currencyBubbleText: { display: "flex", alignItems: "flex-end" },
+  errorContainer: {
+    minHeight: 44,
+    alignItems: "center",
+    backgroundColor: colors.error9,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    flexDirection: "row",
+    gap: 6,
+  },
+  buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
 }))

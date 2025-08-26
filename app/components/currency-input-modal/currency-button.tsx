@@ -1,15 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useRef } from "react"
+import React, { forwardRef, useImperativeHandle, useRef, useCallback } from "react"
 import {
-  NativeSyntheticEvent,
-  PressableProps,
-  TargetedEvent,
-  TextInput,
-  TextInputFocusEventData,
   View,
+  TextInput,
+  PressableProps,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
+  TargetedEvent,
+  TouchableOpacity,
 } from "react-native"
+import { Input, Text, useTheme, makeStyles } from "@rneui/themed"
 
 import { testProps } from "@app/utils/testProps"
-import { useTheme, Text, makeStyles, Input } from "@rneui/themed"
 
 export type CurrencyModalButtonProps = {
   placeholder?: string
@@ -20,6 +21,7 @@ export type CurrencyModalButtonProps = {
   onChangeText: (text: string) => void
   onFocus: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void) &
     ((event: NativeSyntheticEvent<TargetedEvent>) => void)
+  rightIcon?: React.ReactNode
 } & PressableProps
 
 export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProps>(
@@ -31,6 +33,7 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
       primaryTextTestProps,
       onChangeText,
       onFocus,
+      rightIcon,
     },
     ref,
   ) => {
@@ -42,16 +45,29 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
 
     useImperativeHandle(ref, () => inputRef.current as TextInput)
 
+    const resolvedRightIcon = React.isValidElement(rightIcon) ? (
+      rightIcon
+    ) : (
+      <View style={styles.rightIconSpacer} />
+    )
+
+    const getEndSelection = useCallback(() => {
+      const text = inputValue ?? ""
+      const pos = text.length
+      return { start: pos, end: pos } as const
+    }, [inputValue])
+
+    const handleOverlayPress = useCallback(() => {
+      const text = inputValue ?? ""
+      const pos = text.length
+      inputRef.current?.focus()
+      inputRef.current?.setNativeProps({ selection: { start: pos, end: pos } })
+    }, [inputValue])
+
     return (
       <View style={[styles.pressableBase, styles.defaultBackground]}>
-        <View style={styles.contentContainerStyle}>
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              alignItems: "center",
-            }}
-          >
+        <View style={styles.contentContainer}>
+          <View style={[styles.inputRow, styles.inputWithOverlay]}>
             <Input
               ref={inputRef}
               value={inputValue}
@@ -64,24 +80,25 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
               autoFocus
+              rightIcon={resolvedRightIcon}
+              rightIconContainerStyle={styles.rightIconContainer}
+              selection={getEndSelection()}
+              pointerEvents="none"
               {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
+            />
+            <TouchableOpacity
+              style={styles.inputOverlay}
+              activeOpacity={1}
+              onPress={handleOverlayPress}
             />
           </View>
 
-          <View
-            style={{
-              borderColor: colors._white,
-              borderWidth: 1,
-              paddingHorizontal: 12,
-              paddingVertical: 5,
-              borderRadius: 10,
-            }}
-          >
+          <View style={styles.currencyBox}>
             <Text
               type="p2"
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={{ fontWeight: "bold" }}
+              style={styles.currencyText}
               {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
             >
               {selectedCurrency}
@@ -93,29 +110,30 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
   },
 )
 
+CurrencyModalButton.displayName = "CurrencyModalButton"
+
 const useStyles = makeStyles(({ colors }) => ({
-  contentContainerStyle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   pressableBase: {
     paddingVertical: 7,
     paddingHorizontal: 15,
     borderRadius: 13,
     justifyContent: "center",
   },
-  defaultBackground: {
-    backgroundColor: colors.grey5,
+  defaultBackground: { backgroundColor: colors.grey5 },
+  contentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  errorBackground: {
-    backgroundColor: colors.error9,
-  },
-  interactiveOpacity: {
-    opacity: 0.5,
-  },
-  primaryNumberContainer: {
-    flex: 1,
+  inputRow: { flexDirection: "row", flex: 1, alignItems: "center" },
+  inputWithOverlay: { position: "relative" },
+  inputOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10,
   },
   primaryNumberText: {
     fontSize: 20,
@@ -128,7 +146,22 @@ const useStyles = makeStyles(({ colors }) => ({
   primaryNumberInputContainer: {
     borderBottomWidth: 0,
   },
-  amountValueStyle: {
-    marginLeft: 11,
+  rightIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  rightIconSpacer: {
+    width: 30,
+    height: 22,
+  },
+  currencyBox: {
+    borderColor: colors._white,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  currencyText: {
+    fontWeight: "bold",
   },
 }))

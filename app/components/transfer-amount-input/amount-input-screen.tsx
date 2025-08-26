@@ -36,6 +36,9 @@ export type AmountInputScreenProps = {
   initialAmount?: MoneyAmount<WalletOrDisplayCurrency>
   focusedInput: InputField | null
   responsive?: boolean
+  debounceMs?: number
+  onTypingChange?: (typing: boolean, focusedId: InputField["id"] | null) => void
+  onAfterRecalc?: () => void
 }
 
 enum InputType {
@@ -46,16 +49,10 @@ enum InputType {
 
 const formatNumberPadNumber = (numberPadNumber: NumberPadNumber) => {
   const { majorAmount, minorAmount, hasDecimal } = numberPadNumber
-
-  if (!majorAmount && !minorAmount && !hasDecimal) {
-    return ""
-  }
+  if (!majorAmount && !minorAmount && !hasDecimal) return ""
 
   const formattedMajorAmount = Number(majorAmount).toLocaleString()
-
-  if (hasDecimal) {
-    return `${formattedMajorAmount}.${minorAmount}`
-  }
+  if (hasDecimal) return `${formattedMajorAmount}.${minorAmount}`
 
   return formattedMajorAmount
 }
@@ -74,20 +71,12 @@ const numberPadNumberToMoneyAmount = ({
 
   const majorAmountInMinorUnit =
     Math.pow(10, minorUnitToMajorUnitOffset) * Number(majorAmount)
-
-  // if minorUnitToMajorUnitOffset is 2, slice 234354 to 23
   const slicedMinorAmount = minorAmount.slice(0, minorUnitToMajorUnitOffset)
-  // if minorAmount is 4 and minorUnitToMajorUnitOffset is 2, then missing zeros is 1
   const minorAmountMissingZeros = minorUnitToMajorUnitOffset - slicedMinorAmount.length
 
   const amount =
     majorAmountInMinorUnit + Number(minorAmount) * Math.pow(10, minorAmountMissingZeros)
-
-  return {
-    amount,
-    currency,
-    currencyCode,
-  }
+  return { amount, currency, currencyCode }
 }
 
 const moneyAmountToNumberPadReducerState = ({
@@ -104,11 +93,7 @@ const moneyAmountToNumberPadReducerState = ({
   let numberPadNumber: NumberPadNumber
 
   if (amountString === "0") {
-    numberPadNumber = {
-      majorAmount: "",
-      minorAmount: "",
-      hasDecimal: false,
-    }
+    numberPadNumber = { majorAmount: "", minorAmount: "", hasDecimal: false }
   } else if (amountString.length <= minorUnitToMajorUnitOffset) {
     numberPadNumber = {
       majorAmount: "0",
@@ -137,11 +122,20 @@ const moneyAmountToNumberPadReducerState = ({
   }
 }
 
-/**
- *
- * TODO: Check if this component is the most appropriate place to implement the conversion functionality.
- *
- */
+const snapshotKey = (v: IInputValues) =>
+  [
+    v.formattedAmount,
+    v.fromInput.formattedAmount,
+    v.toInput.formattedAmount,
+    v.currencyInput.formattedAmount,
+    v.fromInput.currency,
+    v.toInput.currency,
+    v.currencyInput.currency,
+    v.fromInput.isFocused ? 1 : 0,
+    v.toInput.isFocused ? 1 : 0,
+    v.currencyInput.isFocused ? 1 : 0,
+  ].join("|")
+
 export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   inputValues,
   onAmountChange,
@@ -151,14 +145,19 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   onSetFormattedAmount,
   initialAmount,
   focusedInput,
-  responsive = false
+  responsive = false,
+  debounceMs = 600,
+  onTypingChange,
+  onAfterRecalc,
 }) => {
   const { currencyInfo, formatMoneyAmount, zeroDisplayAmount } = useDisplayCurrency()
   const { LL } = useI18nContext()
 
   const lastValuesRef = useRef<IInputValues | null>(null)
+  const lastSnapshotRef = useRef<string | null>(null)
   const skipNextRecalcRef = useRef(false)
   const focusedIdRef = useRef<InputField["id"] | null>(null)
+  const prevFocusSigRef = useRef<string | null>(null)
 
   const [numberPadState, dispatchNumberPadAction] = useReducer(
     numberPadReducer,
@@ -168,25 +167,47 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     }),
   )
 
-  const handleKeyPress = useCallback((key: Key) => {
-    dispatchNumberPadAction({
-      action: NumberPadReducerActionType.HandleKeyPress,
-      payload: { key },
-    })
-  }, [])
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const typingRef = useRef(false)
 
-  const handlePaste = useCallback((keys: number) => {
-    dispatchNumberPadAction({
-      action: NumberPadReducerActionType.HandlePaste,
-      payload: { keys },
-    })
-  }, [])
+  const notifyTyping = useCallback(
+    (typing: boolean) => {
+      typingRef.current = typing
+      if (onTypingChange) onTypingChange(typing, focusedIdRef.current)
+    },
+    [onTypingChange],
+  )
+
+  const startTyping = useCallback(() => {
+    if (!typingRef.current) notifyTyping(true)
+  }, [notifyTyping])
+
+  const handleKeyPress = useCallback(
+    (key: Key) => {
+      startTyping()
+      dispatchNumberPadAction({
+        action: NumberPadReducerActionType.HandleKeyPress,
+        payload: { key },
+      })
+    },
+    [startTyping],
+  )
+
+  const handlePaste = useCallback(
+    (keys: number) => {
+      startTyping()
+      dispatchNumberPadAction({
+        action: NumberPadReducerActionType.HandlePaste,
+        payload: { keys },
+      })
+    },
+    [startTyping],
+  )
 
   const handleClear = useCallback(() => {
-    dispatchNumberPadAction({
-      action: NumberPadReducerActionType.ClearAmount,
-    })
-  }, [])
+    startTyping()
+    dispatchNumberPadAction({ action: NumberPadReducerActionType.ClearAmount })
+  }, [startTyping])
 
   const setNumberPadAmount = useCallback(
     (amount: MoneyAmount<WalletOrDisplayCurrency>) => {
@@ -238,6 +259,12 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   useEffect(() => {
     if (!focusedInput) return
 
+    const focusSig = `${focusedInput.id}|${focusedInput.amount.amount}|${focusedInput.amount.currency}`
+    if (prevFocusSigRef.current === focusSig) {
+      return
+    }
+
+    prevFocusSigRef.current = focusSig
     skipNextRecalcRef.current = true
     focusedIdRef.current = focusedInput.id
 
@@ -251,7 +278,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     const focusStates = createFocusStates(focusedIdRef.current)
     const baseValues = lastValuesRef.current || inputValues
 
-    const updatedValues = {
+    const updatedValues: IInputValues = {
       ...baseValues,
       formattedAmount: formattedOnFocus,
       fromInput: { ...baseValues.fromInput, ...focusStates.fromInput },
@@ -259,7 +286,12 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
       currencyInput: { ...baseValues.currencyInput, ...focusStates.currencyInput },
     }
 
-    onSetFormattedAmount(updatedValues)
+    const nextSnap = snapshotKey(updatedValues)
+    if (nextSnap !== lastSnapshotRef.current) {
+      onSetFormattedAmount(updatedValues)
+      lastSnapshotRef.current = nextSnap
+      lastValuesRef.current = updatedValues
+    }
   }, [
     focusedInput,
     setNumberPadAmount,
@@ -270,61 +302,118 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   ])
 
   useEffect(() => {
+    if (!typingRef.current) return
+    const { numberPadNumber } = numberPadState
+    const formattedAmount = formatNumberPadNumber(numberPadNumber)
+    const baseValues = lastValuesRef.current || inputValues
+
+    const payload: IInputValues = {
+      ...baseValues,
+      formattedAmount,
+    }
+
+    const nextSnap = snapshotKey(payload)
+    if (nextSnap !== lastSnapshotRef.current) {
+      onSetFormattedAmount(payload)
+      lastSnapshotRef.current = nextSnap
+      lastValuesRef.current = payload
+    }
+  }, [numberPadState, inputValues, onSetFormattedAmount])
+
+  useEffect(() => {
     if (!inputValues || skipNextRecalcRef.current) {
-      if (skipNextRecalcRef.current) {
-        skipNextRecalcRef.current = false
-      }
+      if (skipNextRecalcRef.current) skipNextRecalcRef.current = false
       return
     }
 
-    const { numberPadNumber, currency: primaryCurrency } = numberPadState
-    const formattedAmount = formatNumberPadNumber(numberPadNumber)
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
 
-    const primaryAmount = numberPadNumberToMoneyAmount({
-      numberPadNumber,
-      currency: primaryCurrency,
-      currencyInfo,
-    })
+    debounceTimerRef.current = setTimeout(() => {
+      const { numberPadNumber } = numberPadState
 
-    const { fromAmount, toAmount, currencyAmount } = convertToInputCurrencies(
-      primaryAmount,
-      primaryCurrency,
-    )
+      const digitsEmpty =
+        !numberPadNumber.majorAmount &&
+        !numberPadNumber.minorAmount &&
+        !numberPadNumber.hasDecimal
 
-    const formatAmount = (
-      amount: MoneyAmount<WalletOrDisplayCurrency>,
-      isApproximate = false,
-    ) =>
-      formattedAmount ? formatMoneyAmount({ moneyAmount: amount, isApproximate }) : ""
+      let primaryAmount: MoneyAmount<WalletOrDisplayCurrency>
+      let primaryCurrency: WalletOrDisplayCurrency
 
-    const payload: IInputValues = {
-      formattedAmount,
-      fromInput: {
-        id: InputType.FROM,
-        currency: inputValues.fromInput.amount.currency,
-        formattedAmount: formatAmount(fromAmount),
-        isFocused: focusedIdRef.current === InputType.FROM,
-        amount: fromAmount,
-      },
-      toInput: {
-        id: InputType.TO,
-        currency: inputValues.toInput.amount.currency,
-        formattedAmount: formatAmount(toAmount, true),
-        isFocused: focusedIdRef.current === InputType.TO,
-        amount: toAmount,
-      },
-      currencyInput: {
-        id: InputType.CURRENCY,
-        currency: inputValues.currencyInput.amount.currency,
-        formattedAmount: formatAmount(currencyAmount),
-        isFocused: focusedIdRef.current === InputType.CURRENCY,
-        amount: currencyAmount,
-      },
+      if (digitsEmpty) {
+        const pick =
+          inputValues.fromInput.amount.amount > 0
+            ? inputValues.fromInput.amount
+            : inputValues.toInput.amount.amount > 0
+              ? inputValues.toInput.amount
+              : inputValues.currencyInput.amount
+
+        primaryAmount = pick
+        primaryCurrency = pick.currency
+      } else {
+        primaryCurrency = numberPadState.currency
+        primaryAmount = numberPadNumberToMoneyAmount({
+          numberPadNumber,
+          currency: primaryCurrency,
+          currencyInfo,
+        })
+      }
+
+      const primaryNpState = moneyAmountToNumberPadReducerState({
+        moneyAmount: primaryAmount,
+        currencyInfo,
+      })
+      const formattedAmount = formatNumberPadNumber(primaryNpState.numberPadNumber)
+
+      const { fromAmount, toAmount, currencyAmount } = convertToInputCurrencies(
+        primaryAmount,
+        primaryCurrency,
+      )
+
+      const formatAmount = (
+        amount: MoneyAmount<WalletOrDisplayCurrency>,
+        isApproximate = false,
+      ) => formatMoneyAmount({ moneyAmount: amount, isApproximate })
+
+      const payload: IInputValues = {
+        formattedAmount,
+        fromInput: {
+          id: InputType.FROM,
+          currency: inputValues.fromInput.amount.currency,
+          formattedAmount: formatAmount(fromAmount, false),
+          isFocused: focusedIdRef.current === InputType.FROM,
+          amount: fromAmount,
+        },
+        toInput: {
+          id: InputType.TO,
+          currency: inputValues.toInput.amount.currency,
+          formattedAmount: formatAmount(toAmount, true),
+          isFocused: focusedIdRef.current === InputType.TO,
+          amount: toAmount,
+        },
+        currencyInput: {
+          id: InputType.CURRENCY,
+          currency: inputValues.currencyInput.amount.currency,
+          formattedAmount: formatAmount(currencyAmount, false),
+          isFocused: focusedIdRef.current === InputType.CURRENCY,
+          amount: currencyAmount,
+        },
+      }
+
+      const nextSnap = snapshotKey(payload)
+      if (nextSnap !== lastSnapshotRef.current) {
+        onSetFormattedAmount(payload)
+        lastSnapshotRef.current = nextSnap
+        lastValuesRef.current = payload
+      }
+
+      onAmountChange(primaryAmount)
+      notifyTyping(false)
+      if (onAfterRecalc) onAfterRecalc()
+    }, debounceMs)
+
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
     }
-
-    onSetFormattedAmount(payload)
-    lastValuesRef.current = payload
-    onAmountChange(primaryAmount)
   }, [
     numberPadState,
     currencyInfo,
@@ -333,9 +422,14 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     onSetFormattedAmount,
     onAmountChange,
     convertToInputCurrencies,
+    debounceMs,
+    notifyTyping,
+    onAfterRecalc,
   ])
 
   const getErrorMessage = () => {
+    if (typingRef.current) return null
+
     const currentAmount = numberPadNumberToMoneyAmount({
       numberPadNumber: numberPadState.numberPadNumber,
       currency: numberPadState.currency,
