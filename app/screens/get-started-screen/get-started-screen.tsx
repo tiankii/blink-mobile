@@ -84,7 +84,7 @@ export const GetStartedScreen: React.FC = () => {
     <Screen>
       <View style={styles.container}>
         {NonProdInstanceHint}
-        <View style={styles.logoWrapper}>
+        <View style={styles.logoWrapper} pointerEvents="box-none">
           <Pressable
             onPress={() => setSecretMenuCounter(secretMenuCounter + 1)}
             style={styles.logoContainer}
@@ -96,7 +96,7 @@ export const GetStartedScreen: React.FC = () => {
         <View style={styles.bottom}>
           <GaloyPrimaryButton
             title={LL.GetStartedScreen.createAccount()}
-            onPress={() => handleCreateAccount()}
+            onPress={handleCreateAccount}
           />
           <GaloySecondaryButton
             title={LL.GetStartedScreen.login()}
@@ -131,7 +131,6 @@ const useStyles = makeStyles(() => ({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: -1,
   },
   logoContainer: {
     width: 288,
