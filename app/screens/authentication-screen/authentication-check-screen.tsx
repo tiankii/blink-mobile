@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useEffect } from "react"
+import { View } from "react-native"
 
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -54,16 +55,35 @@ export const AuthenticationCheckScreen: React.FC = () => {
   }, [isAuthed, navigation, setAppUnlocked, client])
 
   return (
-    <Screen style={styles.container}>
-      <AppLogo width={"100%"} height={"60%"} />
+    <Screen>
+      <View style={styles.container}>
+        <View style={styles.logoWrapper}>
+          <View style={styles.logoContainer}>
+            <AppLogo width={"100%"} height={"100%"} />
+          </View>
+        </View>
+      </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(() => ({
   container: {
-    alignItems: "center",
     flex: 1,
-    width: "100%",
+  },
+  logoWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+  },
+  logoContainer: {
+    width: 288,
+    height: 288,
   },
 }))

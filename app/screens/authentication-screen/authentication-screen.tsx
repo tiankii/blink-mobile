@@ -137,26 +137,29 @@ export const AuthenticationScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <Screen>
-      <AppLogo width={"100%"} height={"60%"} />
-      <View style={styles.bottom}>
-        <GaloyPrimaryButton
-          title={buttonTitle}
-          onPress={attemptAuthentication}
-          containerStyle={styles.buttonContainer}
-        />
-        {AlternateContent}
+      <View style={styles.container}>
+        <View style={styles.logoWrapper}>
+          <View style={styles.logoContainer}>
+            <AppLogo width={"100%"} height={"100%"} />
+          </View>
+        </View>
+        <View style={styles.bottom}>
+          <GaloyPrimaryButton
+            title={buttonTitle}
+            onPress={attemptAuthentication}
+            containerStyle={styles.buttonContainer}
+          />
+          {AlternateContent}
+        </View>
       </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(() => ({
-  logo: {
-    marginTop: 24,
-    maxHeight: "50%",
-    maxWidth: "50%",
+  container: {
+    flex: 1,
   },
-
   bottom: {
     alignItems: "center",
     flex: 1,
@@ -164,8 +167,22 @@ const useStyles = makeStyles(() => ({
     marginBottom: 36,
     width: "100%",
   },
-
   buttonContainer: {
     marginVertical: 12,
+  },
+  logoWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+  },
+  logoContainer: {
+    width: 288,
+    height: 288,
   },
 }))
