@@ -1,7 +1,7 @@
 import * as React from "react"
 import { View, FlatList } from "react-native"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
-import { useSafeAreaInsets, EdgeInsets } from "react-native-safe-area-context"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Screen } from "@app/components/screen"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -106,7 +106,7 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   )
 }
 
-const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
+const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
     flex: 1,
   },
@@ -148,7 +148,7 @@ const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
   bottom: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingBottom: (insets?.bottom ?? 0) + 10,
+    paddingBottom: 10,
   },
   iconWrapper: {
     position: "absolute",
