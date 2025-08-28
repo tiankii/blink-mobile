@@ -78,13 +78,13 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
               <View style={hasDescriptions && styles.customContent}>{customContent}</View>
             )}
           </View>
-
-          {iconName && (
-            <View style={styles.iconWrapper}>
-              <GaloyIcon name={iconName} color={colors.primary} size={110} />
-            </View>
-          )}
         </View>
+
+        {iconName && (
+          <View style={styles.iconWrapper}>
+            <GaloyIcon name={iconName} color={colors.primary} size={110} />
+          </View>
+        )}
 
         <View style={styles.bottom}>
           <GaloyPrimaryButton
@@ -112,9 +112,7 @@ const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    padding: 20,
   },
   secondaryButtonContainer: {
     marginTop: 15,
@@ -153,7 +151,12 @@ const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
     paddingBottom: (insets?.bottom ?? 0) + 10,
   },
   iconWrapper: {
+    position: "absolute",
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 }))

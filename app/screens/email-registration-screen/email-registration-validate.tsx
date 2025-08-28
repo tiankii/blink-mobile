@@ -129,7 +129,7 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
       >
         <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
-            <GaloyIcon name="email-add" size={128} />
+            <GaloyIcon name="email-add" size={110} />
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>

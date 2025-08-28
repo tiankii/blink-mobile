@@ -182,7 +182,7 @@ export const SetLightningAddressScreen: React.FC<{
       >
         <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
-            <GaloyIcon name="lightning-address" size={128} />
+            <GaloyIcon name="lightning-address" size={110} />
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
