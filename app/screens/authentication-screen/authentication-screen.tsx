@@ -10,7 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme } from "@rneui/themed"
 
 import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
-import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
+import AppLogoLightMode from "../../assets/logo/blink-logo-light.svg"
 import { Screen } from "../../components/screen"
 import useLogout from "../../hooks/use-logout"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
