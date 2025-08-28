@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { View, TextInput, StyleSheet, Keyboard } from "react-native"
+import { View, TextInput, Keyboard, Modal } from "react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
@@ -174,8 +174,13 @@ export const SetLightningAddressScreen: React.FC<{
 
   return (
     <Screen>
-      {showSuccess && (
-        <View style={styles.successOverlay}>
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSuccess(false)}
+      >
+        <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
             <GaloyIcon name="lightning-address" size={128} />
             <Text type="h2" style={styles.successText}>
@@ -183,7 +188,8 @@ export const SetLightningAddressScreen: React.FC<{
             </Text>
           </SuccessIconAnimation>
         </View>
-      )}
+      </Modal>
+
       <View style={styles.content}>
         <Text type={"h2"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
         <Text type={"h2"} color={colors.warning} bold>
@@ -231,12 +237,11 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     alignSelf: "center",
   },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  successAnimationContainer: {
+    flex: 1,
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
   },
   content: {
     flex: 1,

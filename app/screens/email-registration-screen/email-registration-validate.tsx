@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useCallback, useState, useEffect } from "react"
-import { View, StyleSheet, Keyboard } from "react-native"
+import { View, Keyboard, Modal } from "react-native"
 import { Text, makeStyles } from "@rneui/themed"
 
 import { gql } from "@apollo/client"
@@ -121,8 +121,13 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <>
-      {showSuccess && (
-        <View style={styles.successOverlay}>
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSuccess(false)}
+      >
+        <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
             <GaloyIcon name="email-add" size={128} />
             <Text type="h2" style={styles.successText}>
@@ -130,7 +135,8 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
             </Text>
           </SuccessIconAnimation>
         </View>
-      )}
+      </Modal>
+
       <CodeInput
         send={send}
         header={header}
@@ -148,11 +154,10 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     alignSelf: "center",
   },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  successAnimationContainer: {
+    flex: 1,
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
   },
 }))
