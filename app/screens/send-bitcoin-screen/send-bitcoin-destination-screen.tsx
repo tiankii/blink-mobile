@@ -8,6 +8,7 @@ import ScanIcon from "@app/assets/icons/scan.svg"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import { LNURL_DOMAINS } from "@app/config"
+import { useAppConfig } from "@app/hooks"
 import {
   UserContact,
   useAccountDefaultWalletLazyQuery,
@@ -57,6 +58,7 @@ gql`
       }
       contacts {
         id
+        handle
         username
         alias
         transactionsCount
@@ -83,12 +85,12 @@ type Props = {
 const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
   let contactPrettyNameMatchesSearchWord: boolean
 
-  const contactNameMatchesSearchWord = contact.username
+  const contactNameMatchesSearchWord = contact.handle
     .toLowerCase()
     .includes(searchWord.toLowerCase())
 
-  if (contact.username) {
-    contactPrettyNameMatchesSearchWord = contact.username
+  if (contact.handle) {
+    contactPrettyNameMatchesSearchWord = contact.handle
       .toLowerCase()
       .includes(searchWord.toLowerCase())
   } else {
@@ -161,6 +163,12 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       }),
     [contacts],
   )
+
+  const {
+    appConfig: {
+      galoyInstance: { lnAddressHostname },
+    },
+  } = useAppConfig()
 
   const [selectedId, setSelectedId] = useState("")
 
@@ -292,7 +300,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       ) {
         if (
           !contacts
-            .map((contact) => contact.username.toLowerCase())
+            .map((contact) => contact.handle.toLowerCase())
             .includes(destination.validDestination.handle.toLowerCase())
         ) {
           dispatchDestinationStateAction({
@@ -436,9 +444,9 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     handleSelection(item.id)
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
-      payload: { unparsedDestination: item.username },
+      payload: { unparsedDestination: item.handle },
     })
-    initiateGoToNextScreen(item.username)
+    initiateGoToNextScreen(item.handle)
   }
 
   const handleScanPress = () => {
@@ -529,22 +537,28 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           data={matchingContacts}
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
-          renderItem={({ item }) => (
-            <ListItem
-              key={item.username}
-              style={styles.item}
-              containerStyle={
-                item.id === selectedId ? styles.selectedContainer : styles.itemContainer
-              }
-              onPress={() => handleContactPress(item)}
-            >
-              <Icon name={"person-outline"} size={24} color={colors.primary} />
-              <ListItem.Content>
-                <ListItem.Title style={styles.itemText}>{item.username}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          )}
-          keyExtractor={(item) => item.username}
+          renderItem={({ item }) => {
+            const handle = item?.handle?.trim() ?? ""
+            const displayHandle =
+              handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
+
+            return (
+              <ListItem
+                key={item.handle}
+                style={styles.item}
+                containerStyle={
+                  item.id === selectedId ? styles.selectedContainer : styles.itemContainer
+                }
+                onPress={() => handleContactPress(item)}
+              >
+                <Icon name="person-outline" size={24} color={colors.primary} />
+                <ListItem.Content>
+                  <ListItem.Title style={styles.itemText}>{displayHandle}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+            )
+          }}
+          keyExtractor={(item) => item.handle}
         />
         <View style={styles.buttonContainer}>
           <GaloyPrimaryButton

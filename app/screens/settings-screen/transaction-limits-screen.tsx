@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useRef, useState, useCallback } from "react"
 import { ActivityIndicator, Button, View } from "react-native"
 import { LocalizedString } from "typesafe-i18n"
 
 import { gql } from "@apollo/client"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
-import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
+import { TrialAccountLimitsModal } from "@app/components/upgrade-account-modal"
 import { useAccountLimitsQuery } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { AccountLevel, useLevel } from "@app/graphql/level-context"
@@ -14,11 +14,9 @@ import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
-
-import { PhoneLoginInitiateType } from "../phone-auth-screen"
 
 const useStyles = makeStyles(({ colors }) => ({
   limitWrapper: {
@@ -137,12 +135,20 @@ export const TransactionLimitsScreen = () => {
   const { name: bankName } = appConfig.galoyInstance
   const { currentLevel } = useLevel()
 
-  const [isUpgradeAccountModalVisible, setIsUpgradeAccountModalVisible] =
-    React.useState(false)
+  const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false)
+  const reopenUpgradeModal = useRef(false)
 
-  const toggleIsUpgradeAccountModalVisible = () => {
-    setIsUpgradeAccountModalVisible(!isUpgradeAccountModalVisible)
-  }
+  const closeUpgradeModal = () => setIsUpgradeModalVisible(false)
+  const openUpgradeModal = () => setIsUpgradeModalVisible(true)
+
+  useFocusEffect(
+    useCallback(() => {
+      if (reopenUpgradeModal.current) {
+        openUpgradeModal()
+        reopenUpgradeModal.current = false
+      }
+    }, []),
+  )
 
   if (error) {
     return (
@@ -222,14 +228,9 @@ export const TransactionLimitsScreen = () => {
       {currentLevel === AccountLevel.Zero && (
         <GaloyPrimaryButton
           title={LL.TransactionLimitsScreen.increaseLimits()}
-          onPress={() =>
-            navigation.navigate("phoneFlow", {
-              screen: "phoneLoginInitiate",
-              params: {
-                type: PhoneLoginInitiateType.CreateAccount,
-              },
-            })
-          }
+          onPress={() => {
+            openUpgradeModal()
+          }}
           containerStyle={styles.increaseLimitsButtonContainer}
         />
       )}
@@ -241,9 +242,12 @@ export const TransactionLimitsScreen = () => {
         />
       )}
 
-      <UpgradeAccountModal
-        isVisible={isUpgradeAccountModalVisible}
-        closeModal={toggleIsUpgradeAccountModalVisible}
+      <TrialAccountLimitsModal
+        isVisible={isUpgradeModalVisible}
+        closeModal={closeUpgradeModal}
+        beforeSubmit={() => {
+          reopenUpgradeModal.current = true
+        }}
       />
     </Screen>
   )

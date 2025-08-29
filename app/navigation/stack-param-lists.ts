@@ -1,4 +1,4 @@
-import { LNURLPaySuccessAction } from "lnurl-pay/dist/types/types"
+import { LNURLPaySuccessAction } from "lnurl-pay"
 import { PhoneCodeChannelType, UserContact, WalletCurrency } from "@app/graphql/generated"
 import { EarnSectionType } from "@app/screens/earns-screen/sections"
 import { PhoneLoginInitiateType } from "@app/screens/phone-auth-screen"
@@ -20,6 +20,11 @@ export type RootStackParamList = {
     appCheckToken: string
   }
   developerScreen: undefined
+  login: {
+    type: PhoneLoginInitiateType
+    title?: string
+    onboarding?: boolean
+  }
   authenticationCheck: undefined
   authentication: {
     screenPurpose: AuthenticationScreenPurpose
@@ -56,6 +61,7 @@ export type RootStackParamList = {
     successAction?: LNURLPaySuccessAction
     preimage?: string
   }
+  setLightningAddress: { onboarding?: boolean }
   language: undefined
   currency: undefined
   security: {
@@ -85,15 +91,25 @@ export type RootStackParamList = {
   phoneRegistrationInitiate: undefined
   phoneRegistrationValidate: { phone: string; channel: PhoneCodeChannelType }
   transactionDetail: { txid: string }
-  transactionHistory?: undefined
+  transactionHistory?: {
+    wallets?: ReadonlyArray<{
+      readonly id: string
+      readonly walletCurrency: WalletCurrency
+    }>
+  }
   Earn: undefined
   accountScreen: undefined
   profileScreen: undefined
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   acceptTermsAndConditions: NewAccountFlowParamsList
-  emailRegistrationInitiate: undefined
-  emailRegistrationValidate: { email: string; emailRegistrationId: string }
+  emailRegistrationInitiate?: { onboarding?: boolean; hasUsername?: boolean }
+  emailRegistrationValidate: {
+    email: string
+    emailRegistrationId: string
+    onboarding?: boolean
+    hasUsername?: boolean
+  }
   emailLoginInitiate: undefined
   emailLoginValidate: { email: string; emailLoginId: string }
   totpRegistrationInitiate: undefined
@@ -103,6 +119,14 @@ export type RootStackParamList = {
   fullOnboardingFlow: undefined
   supportChat: undefined
   notificationHistory: undefined
+  onboarding: NavigatorScreenParams<OnboardingStackParamList>
+}
+
+export type OnboardingStackParamList = {
+  welcomeLevel1: { onboarding?: boolean }
+  emailBenefits: { onboarding?: boolean; hasUsername?: boolean }
+  lightningBenefits: { onboarding?: boolean; canGoBack?: boolean }
+  supportScreen?: { canGoBack?: boolean }
 }
 
 export type PeopleStackParamList = {
@@ -116,15 +140,20 @@ export type PhoneValidationStackParamList = {
   Primary: undefined
   phoneLoginInitiate: {
     type: PhoneLoginInitiateType
+    channel: PhoneCodeChannelType
+    title?: string
+    onboarding?: boolean
   }
   telegramLoginValidate: {
     phone: string
     type: PhoneLoginInitiateType
+    onboarding?: boolean
   }
   phoneLoginValidate: {
     phone: string
     channel: PhoneCodeChannelType
     type: PhoneLoginInitiateType
+    onboarding?: boolean
   }
   authentication: {
     screenPurpose: AuthenticationScreenPurpose

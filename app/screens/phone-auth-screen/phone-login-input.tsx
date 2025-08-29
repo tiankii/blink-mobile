@@ -3,8 +3,8 @@ import {
   getCountryCallingCode,
 } from "libphonenumber-js/mobile"
 import * as React from "react"
-import { useEffect } from "react"
-import { ActivityIndicator, View } from "react-native"
+import { useEffect, useRef } from "react"
+import { ActivityIndicator, View, TextInput } from "react-native"
 import CountryPicker, {
   CountryCode,
   DARK_THEME,
@@ -25,7 +25,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme, Text, Input } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
-import { PhoneChannelButtons } from "./phone-channel-buttons"
+import { PhoneChannelButton } from "./phone-channel-buttons"
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
 import {
   ErrorType,
@@ -71,6 +71,11 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
     flex: 1,
   },
+  bottom: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 14,
+  },
   inputComponentContainerStyle: {
     flex: 1,
     marginLeft: 20,
@@ -94,7 +99,6 @@ const useStyles = makeStyles(({ colors }) => ({
   contactSupportButton: {
     marginTop: 10,
   },
-
   loadingView: { flex: 1, justifyContent: "center", alignItems: "center" },
 }))
 
@@ -116,6 +120,8 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
   const { appConfig } = useAppConfig()
 
   const styles = useStyles()
+
+  const phoneInputRef = useRef<TextInput>(null)
 
   const navigation =
     useNavigation<
@@ -147,11 +153,26 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
   const { LL } = useI18nContext()
 
   const screenType = route.params.type
+  const phoneChannel = route.params.channel
+  const onboarding = route.params.onboarding
 
   const isDisabledCountryAndCreateAccount =
     screenType === PhoneLoginInitiateType.CreateAccount &&
     phoneInputInfo?.countryCode &&
     DisableCountriesForAccountCreation.includes(phoneInputInfo.countryCode)
+
+  const handleCountrySelect = (country: { cca2: string }) => {
+    setCountryCode(country.cca2 as PhoneNumberCountryCode)
+    setTimeout(() => {
+      phoneInputRef.current?.focus()
+    }, 100)
+  }
+
+  const handleCountryPickerClose = () => {
+    setTimeout(() => {
+      phoneInputRef.current?.focus()
+    }, 300)
+  }
 
   useEffect(() => {
     if (status !== RequestPhoneCodeStatus.SuccessRequestingCode) return
@@ -162,6 +183,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       navigation.navigate("telegramLoginValidate", {
         phone: validatedPhoneNumber || "",
         type: screenType,
+        onboarding,
       })
       return
     }
@@ -170,8 +192,17 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
       type: screenType,
       phone: validatedPhoneNumber || "",
       channel: phoneCodeChannel,
+      onboarding,
     })
-  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
+  }, [
+    status,
+    phoneCodeChannel,
+    validatedPhoneNumber,
+    navigation,
+    setStatus,
+    screenType,
+    onboarding,
+  ])
 
   useEffect(() => {
     if (!appConfig || appConfig.galoyInstance.id !== "Local") {
@@ -234,7 +265,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.PhoneLoginInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.PhoneLoginInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -244,7 +275,8 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
               (phoneInputInfo?.countryCode || DEFAULT_COUNTRY_CODE) as CountryCode
             }
             countryCodes={supportedCountries as CountryCode[]}
-            onSelect={(country) => setCountryCode(country.cca2 as PhoneNumberCountryCode)}
+            onSelect={handleCountrySelect}
+            onClose={handleCountryPickerClose}
             renderFlagButton={({ countryCode, onOpen }) => {
               return (
                 countryCode && (
@@ -269,6 +301,7 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
           />
           <Input
             {...testProps("telephoneNumber")}
+            ref={phoneInputRef}
             placeholder={PLACEHOLDER_PHONE_NUMBER}
             containerStyle={styles.inputComponentContainerStyle}
             inputContainerStyle={styles.inputContainerStyle}
@@ -291,14 +324,12 @@ export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> =
             <ContactSupportButton containerStyle={styles.contactSupportButton} />
           </View>
         )}
-        <PhoneChannelButtons
-          isTelegramSupported={isTelegramSupported}
-          isSmsSupported={isSmsSupported}
-          isWhatsAppSupported={isWhatsAppSupported}
-          phoneCodeChannel={phoneCodeChannel}
+        <PhoneChannelButton
+          phoneCodeChannel={phoneChannel}
           captchaLoading={captchaLoading}
           isDisabled={isDisabledCountryAndCreateAccount}
           submit={userSubmitPhoneNumber}
+          customStyle={styles.bottom}
         />
       </View>
     </Screen>

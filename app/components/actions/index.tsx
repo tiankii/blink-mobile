@@ -1,7 +1,7 @@
 import React from "react"
 import { SetLightningAddressModal } from "../set-lightning-address-modal"
 import { SetDefaultAccountModal } from "../set-default-account-modal"
-import { UpgradeAccountModal } from "../upgrade-account-modal"
+import { TrialAccountLimitsModal } from "../upgrade-account-modal"
 
 export const Action = {
   SetLnAddress: "SetLnAddress",
@@ -44,7 +44,7 @@ export const ActionModals: React.FC = () => {
         isVisible={activeAction === Action.SetDefaultAccount}
         toggleModal={closeModal}
       />
-      <UpgradeAccountModal
+      <TrialAccountLimitsModal
         isVisible={activeAction === Action.UpgradeAccount}
         closeModal={closeModal}
       />

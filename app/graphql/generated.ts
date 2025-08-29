@@ -26,6 +26,12 @@ export type Scalars = {
   CentAmount: { input: number; output: number; }
   /** An alias name that a user can set for a wallet (with which they have transactions) */
   ContactAlias: { input: string; output: string; }
+  /** A display name that a user can assign to a contact */
+  ContactDisplayName: { input: string; output: string; }
+  /** Unique handle used to identify a contact (e.g., username or lnAddress) */
+  ContactHandle: { input: string; output: string; }
+  /** Unique identifier of a contact */
+  ContactId: { input: string; output: string; }
   /** A CCA2 country code (ex US, FR, etc) */
   CountryCode: { input: string; output: string; }
   /** Display currency of an account */
@@ -467,9 +473,39 @@ export type ConsumerAccountWalletByIdArgs = {
 
 export type Contact = {
   readonly __typename: 'Contact';
+  /** Unix timestamp (number of seconds elapsed since January 1, 1970 00:00:00 UTC) */
+  readonly createdAt: Scalars['Timestamp']['output'];
+  /** DisplayName name the user assigns to the contact. */
+  readonly displayName?: Maybe<Scalars['ContactDisplayName']['output']>;
+  /** Username or lnAddress that identifies the contact. */
+  readonly handle: Scalars['ContactHandle']['output'];
+  /** ID of the contact user or external handle. */
+  readonly id: Scalars['ContactId']['output'];
   readonly prettyName: Scalars['String']['output'];
+  /** Total number of transactions with this contact. */
+  readonly transactionsCount: Scalars['Int']['output'];
+  /** Type of the contact (intraledger, lnaddress, etc.). */
+  readonly type: ContactType;
 };
 
+export type ContactCreateInput = {
+  readonly displayName?: InputMaybe<Scalars['ContactAlias']['input']>;
+  readonly handle?: InputMaybe<Scalars['ContactHandle']['input']>;
+  readonly type: ContactType;
+};
+
+export type ContactPayload = {
+  readonly __typename: 'ContactPayload';
+  readonly contact?: Maybe<Contact>;
+  readonly errors: ReadonlyArray<Error>;
+};
+
+export const ContactType = {
+  Intraledger: 'INTRALEDGER',
+  Lnaddress: 'LNADDRESS'
+} as const;
+
+export type ContactType = typeof ContactType[keyof typeof ContactType];
 export type Coordinates = {
   readonly __typename: 'Coordinates';
   readonly latitude: Scalars['Float']['output'];
@@ -804,6 +840,7 @@ export type LnInvoicePaymentInput = {
 export type LnInvoicePaymentStatus = {
   readonly __typename: 'LnInvoicePaymentStatus';
   readonly paymentHash?: Maybe<Scalars['PaymentHash']['output']>;
+  readonly paymentPreimage?: Maybe<Scalars['LnPaymentPreImage']['output']>;
   readonly paymentRequest?: Maybe<Scalars['LnPaymentRequest']['output']>;
   readonly status?: Maybe<InvoicePaymentStatus>;
 };
@@ -824,6 +861,7 @@ export type LnInvoicePaymentStatusPayload = {
   readonly __typename: 'LnInvoicePaymentStatusPayload';
   readonly errors: ReadonlyArray<Error>;
   readonly paymentHash?: Maybe<Scalars['PaymentHash']['output']>;
+  readonly paymentPreimage?: Maybe<Scalars['LnPaymentPreImage']['output']>;
   readonly paymentRequest?: Maybe<Scalars['LnPaymentRequest']['output']>;
   readonly status?: Maybe<InvoicePaymentStatus>;
 };
@@ -1020,6 +1058,7 @@ export type Mutation = {
   readonly callbackEndpointDelete: SuccessPayload;
   readonly captchaCreateChallenge: CaptchaCreateChallengePayload;
   readonly captchaRequestAuthCode: SuccessPayload;
+  readonly contactCreate: ContactPayload;
   readonly deviceNotificationTokenCreate: SuccessPayload;
   readonly feedbackSubmit: SuccessPayload;
   /**
@@ -1191,6 +1230,11 @@ export type MutationCallbackEndpointDeleteArgs = {
 
 export type MutationCaptchaRequestAuthCodeArgs = {
   input: CaptchaRequestAuthCodeInput;
+};
+
+
+export type MutationContactCreateArgs = {
+  input: ContactCreateInput;
 };
 
 
@@ -1586,10 +1630,19 @@ export const PaymentSendResult = {
 
 export type PaymentSendResult = typeof PaymentSendResult[keyof typeof PaymentSendResult];
 export const PayoutSpeed = {
-  Fast: 'FAST'
+  Fast: 'FAST',
+  Medium: 'MEDIUM',
+  Slow: 'SLOW'
 } as const;
 
 export type PayoutSpeed = typeof PayoutSpeed[keyof typeof PayoutSpeed];
+export type PayoutSpeeds = {
+  readonly __typename: 'PayoutSpeeds';
+  readonly description: Scalars['String']['output'];
+  readonly displayName: Scalars['String']['output'];
+  readonly speed: PayoutSpeed;
+};
+
 export const PhoneCodeChannelType = {
   Sms: 'SMS',
   Telegram: 'TELEGRAM',
@@ -1693,6 +1746,7 @@ export type Query = {
   /** Returns an estimated conversion rate for the given amount and currency */
   readonly currencyConversionEstimation: CurrencyConversionEstimation;
   readonly currencyList: ReadonlyArray<Currency>;
+  readonly deviceSessionCount: Scalars['Int']['output'];
   readonly feedbackModalShown: Scalars['Boolean']['output'];
   readonly globals?: Maybe<Globals>;
   readonly hasPromptedSetDefaultAccount: Scalars['Boolean']['output'];
@@ -1709,10 +1763,13 @@ export type Query = {
   readonly onChainTxFee: OnChainTxFee;
   readonly onChainUsdTxFee: OnChainUsdTxFee;
   readonly onChainUsdTxFeeAsBtcDenominated: OnChainUsdTxFee;
+  /** Returns the list of available speeds for on-chain payments */
+  readonly payoutSpeeds: ReadonlyArray<PayoutSpeeds>;
   readonly price?: Maybe<Scalars['String']['output']>;
   /** Returns 1 Sat and 1 Usd Cent price for the given currency in minor unit */
   readonly realtimePrice: RealtimePrice;
   readonly region?: Maybe<Region>;
+  readonly upgradeModalLastShownAt?: Maybe<Scalars['String']['output']>;
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
   readonly usernameAvailable?: Maybe<Scalars['Boolean']['output']>;
@@ -1806,6 +1863,7 @@ export type Quiz = {
 
 export type QuizClaimInput = {
   readonly id: Scalars['ID']['input'];
+  readonly skipRewards?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type QuizClaimPayload = {
@@ -2218,11 +2276,16 @@ export type UserContact = {
    * Only the user can see the alias attached to their contact.
    */
   readonly alias?: Maybe<Scalars['ContactAlias']['output']>;
-  readonly id: Scalars['Username']['output'];
+  /** Identifier of the contact (username or Lightning address). */
+  readonly handle: Scalars['ContactHandle']['output'];
+  readonly id: Scalars['ContactHandle']['output'];
   /** Paginated list of transactions sent to/from this contact. */
   readonly transactions?: Maybe<TransactionConnection>;
   readonly transactionsCount: Scalars['Int']['output'];
-  /** Actual identifier of the contact. */
+  /**
+   * Actual identifier of the contact. Deprecated: use `handle` instead.
+   * @deprecated Use `handle` field; this will be removed in a future release.
+   */
   readonly username: Scalars['Username']['output'];
 };
 
@@ -2488,11 +2551,6 @@ export type MobileUpdateQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MobileUpdateQuery = { readonly __typename: 'Query', readonly mobileVersions?: ReadonlyArray<{ readonly __typename: 'MobileVersions', readonly platform: string, readonly currentSupported: number, readonly minSupported: number } | null> | null };
 
-export type BalanceHeaderQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BalanceHeaderQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency } | { readonly __typename: 'UsdWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency }> } } | null };
-
 export type InviteQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2586,6 +2644,16 @@ export type InnerCircleValueQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InnerCircleValueQuery = { readonly __typename: 'Query', readonly innerCircleValue: number };
+
+export type UpgradeModalLastShownAtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UpgradeModalLastShownAtQuery = { readonly __typename: 'Query', readonly upgradeModalLastShownAt?: string | null };
+
+export type DeviceSessionCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeviceSessionCountQuery = { readonly __typename: 'Query', readonly deviceSessionCount: number };
 
 export type TransactionFragment = { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } };
 
@@ -2726,7 +2794,7 @@ export type CirclesQuery = { readonly __typename: 'Query', readonly me?: { reado
 export type ContactsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ContactsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
+export type ContactsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly handle: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
 
 export type TransactionListForContactQueryVariables = Exact<{
   username: Scalars['Username']['input'];
@@ -2742,7 +2810,7 @@ export type TransactionListForContactQuery = { readonly __typename: 'Query', rea
 export type ContactsCardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ContactsCardQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
+export type ContactsCardQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly handle: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
 
 export type UserContactUpdateAliasMutationVariables = Exact<{
   input: UserContactUpdateAliasInput;
@@ -2837,7 +2905,7 @@ export type LnUsdInvoiceCreateMutation = { readonly __typename: 'Mutation', read
 export type ScanningQrCodeScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ScanningQrCodeScreenQuery = { readonly __typename: 'Query', readonly globals?: { readonly __typename: 'Globals', readonly network: Network } | null, readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string } | { readonly __typename: 'UsdWallet', readonly id: string }> }, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly username: string }> } | null };
+export type ScanningQrCodeScreenQuery = { readonly __typename: 'Query', readonly globals?: { readonly __typename: 'Globals', readonly network: Network } | null, readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string } | { readonly __typename: 'UsdWallet', readonly id: string }> }, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly handle: string, readonly username: string }> } | null };
 
 export type SendBitcoinConfirmationScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2847,7 +2915,7 @@ export type SendBitcoinConfirmationScreenQuery = { readonly __typename: 'Query',
 export type SendBitcoinDestinationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SendBitcoinDestinationQuery = { readonly __typename: 'Query', readonly globals?: { readonly __typename: 'Globals', readonly network: Network } | null, readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string } | { readonly __typename: 'UsdWallet', readonly id: string }> }, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
+export type SendBitcoinDestinationQuery = { readonly __typename: 'Query', readonly globals?: { readonly __typename: 'Globals', readonly network: Network } | null, readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string } | { readonly __typename: 'UsdWallet', readonly id: string }> }, readonly contacts: ReadonlyArray<{ readonly __typename: 'UserContact', readonly id: string, readonly handle: string, readonly username: string, readonly alias?: string | null, readonly transactionsCount: number }> } | null };
 
 export type AccountDefaultWalletQueryVariables = Exact<{
   walletCurrency?: InputMaybe<WalletCurrency>;
@@ -2933,6 +3001,13 @@ export type OnChainUsdTxFeeAsBtcDenominatedQueryVariables = Exact<{
 
 
 export type OnChainUsdTxFeeAsBtcDenominatedQuery = { readonly __typename: 'Query', readonly onChainUsdTxFeeAsBtcDenominated: { readonly __typename: 'OnChainUsdTxFee', readonly amount: number } };
+
+export type ContactCreateMutationVariables = Exact<{
+  input: ContactCreateInput;
+}>;
+
+
+export type ContactCreateMutation = { readonly __typename: 'Mutation', readonly contactCreate: { readonly __typename: 'ContactPayload', readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }>, readonly contact?: { readonly __typename: 'Contact', readonly id: string } | null } };
 
 export type IntraLedgerPaymentSendMutationVariables = Exact<{
   input: IntraLedgerPaymentSendInput;
@@ -3145,8 +3220,7 @@ export type UserTotpRegistrationValidateMutation = { readonly __typename: 'Mutat
 export type TransactionListForDefaultAccountQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   after?: InputMaybe<Scalars['String']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  before?: InputMaybe<Scalars['String']['input']>;
+  walletIds?: InputMaybe<ReadonlyArray<Scalars['WalletId']['input']> | Scalars['WalletId']['input']>;
 }>;
 
 
@@ -3270,53 +3344,6 @@ export type MobileUpdateQueryHookResult = ReturnType<typeof useMobileUpdateQuery
 export type MobileUpdateLazyQueryHookResult = ReturnType<typeof useMobileUpdateLazyQuery>;
 export type MobileUpdateSuspenseQueryHookResult = ReturnType<typeof useMobileUpdateSuspenseQuery>;
 export type MobileUpdateQueryResult = Apollo.QueryResult<MobileUpdateQuery, MobileUpdateQueryVariables>;
-export const BalanceHeaderDocument = gql`
-    query balanceHeader {
-  me {
-    id
-    defaultAccount {
-      id
-      wallets {
-        id
-        balance
-        walletCurrency
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useBalanceHeaderQuery__
- *
- * To run a query within a React component, call `useBalanceHeaderQuery` and pass it any options that fit your needs.
- * When your component renders, `useBalanceHeaderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBalanceHeaderQuery({
- *   variables: {
- *   },
- * });
- */
-export function useBalanceHeaderQuery(baseOptions?: Apollo.QueryHookOptions<BalanceHeaderQuery, BalanceHeaderQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BalanceHeaderQuery, BalanceHeaderQueryVariables>(BalanceHeaderDocument, options);
-      }
-export function useBalanceHeaderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BalanceHeaderQuery, BalanceHeaderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BalanceHeaderQuery, BalanceHeaderQueryVariables>(BalanceHeaderDocument, options);
-        }
-export function useBalanceHeaderSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BalanceHeaderQuery, BalanceHeaderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BalanceHeaderQuery, BalanceHeaderQueryVariables>(BalanceHeaderDocument, options);
-        }
-export type BalanceHeaderQueryHookResult = ReturnType<typeof useBalanceHeaderQuery>;
-export type BalanceHeaderLazyQueryHookResult = ReturnType<typeof useBalanceHeaderLazyQuery>;
-export type BalanceHeaderSuspenseQueryHookResult = ReturnType<typeof useBalanceHeaderSuspenseQuery>;
-export type BalanceHeaderQueryResult = Apollo.QueryResult<BalanceHeaderQuery, BalanceHeaderQueryVariables>;
 export const InviteDocument = gql`
     query invite {
   me {
@@ -4048,6 +4075,80 @@ export type InnerCircleValueQueryHookResult = ReturnType<typeof useInnerCircleVa
 export type InnerCircleValueLazyQueryHookResult = ReturnType<typeof useInnerCircleValueLazyQuery>;
 export type InnerCircleValueSuspenseQueryHookResult = ReturnType<typeof useInnerCircleValueSuspenseQuery>;
 export type InnerCircleValueQueryResult = Apollo.QueryResult<InnerCircleValueQuery, InnerCircleValueQueryVariables>;
+export const UpgradeModalLastShownAtDocument = gql`
+    query upgradeModalLastShownAt {
+  upgradeModalLastShownAt @client
+}
+    `;
+
+/**
+ * __useUpgradeModalLastShownAtQuery__
+ *
+ * To run a query within a React component, call `useUpgradeModalLastShownAtQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUpgradeModalLastShownAtQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUpgradeModalLastShownAtQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUpgradeModalLastShownAtQuery(baseOptions?: Apollo.QueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+      }
+export function useUpgradeModalLastShownAtLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+        }
+export function useUpgradeModalLastShownAtSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>(UpgradeModalLastShownAtDocument, options);
+        }
+export type UpgradeModalLastShownAtQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtQuery>;
+export type UpgradeModalLastShownAtLazyQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtLazyQuery>;
+export type UpgradeModalLastShownAtSuspenseQueryHookResult = ReturnType<typeof useUpgradeModalLastShownAtSuspenseQuery>;
+export type UpgradeModalLastShownAtQueryResult = Apollo.QueryResult<UpgradeModalLastShownAtQuery, UpgradeModalLastShownAtQueryVariables>;
+export const DeviceSessionCountDocument = gql`
+    query deviceSessionCount {
+  deviceSessionCount @client
+}
+    `;
+
+/**
+ * __useDeviceSessionCountQuery__
+ *
+ * To run a query within a React component, call `useDeviceSessionCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDeviceSessionCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDeviceSessionCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeviceSessionCountQuery(baseOptions?: Apollo.QueryHookOptions<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>(DeviceSessionCountDocument, options);
+      }
+export function useDeviceSessionCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>(DeviceSessionCountDocument, options);
+        }
+export function useDeviceSessionCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>(DeviceSessionCountDocument, options);
+        }
+export type DeviceSessionCountQueryHookResult = ReturnType<typeof useDeviceSessionCountQuery>;
+export type DeviceSessionCountLazyQueryHookResult = ReturnType<typeof useDeviceSessionCountLazyQuery>;
+export type DeviceSessionCountSuspenseQueryHookResult = ReturnType<typeof useDeviceSessionCountSuspenseQuery>;
+export type DeviceSessionCountQueryResult = Apollo.QueryResult<DeviceSessionCountQuery, DeviceSessionCountQueryVariables>;
 export const NetworkDocument = gql`
     query network {
   globals {
@@ -5108,6 +5209,7 @@ export const ContactsDocument = gql`
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -5202,6 +5304,7 @@ export const ContactsCardDocument = gql`
     id
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -5831,6 +5934,7 @@ export const ScanningQrCodeScreenDocument = gql`
     }
     contacts {
       id
+      handle
       username
     }
   }
@@ -5930,6 +6034,7 @@ export const SendBitcoinDestinationDocument = gql`
     }
     contacts {
       id
+      handle
       username
       alias
       transactionsCount
@@ -6471,6 +6576,44 @@ export type OnChainUsdTxFeeAsBtcDenominatedQueryHookResult = ReturnType<typeof u
 export type OnChainUsdTxFeeAsBtcDenominatedLazyQueryHookResult = ReturnType<typeof useOnChainUsdTxFeeAsBtcDenominatedLazyQuery>;
 export type OnChainUsdTxFeeAsBtcDenominatedSuspenseQueryHookResult = ReturnType<typeof useOnChainUsdTxFeeAsBtcDenominatedSuspenseQuery>;
 export type OnChainUsdTxFeeAsBtcDenominatedQueryResult = Apollo.QueryResult<OnChainUsdTxFeeAsBtcDenominatedQuery, OnChainUsdTxFeeAsBtcDenominatedQueryVariables>;
+export const ContactCreateDocument = gql`
+    mutation contactCreate($input: ContactCreateInput!) {
+  contactCreate(input: $input) {
+    errors {
+      message
+    }
+    contact {
+      id
+    }
+  }
+}
+    `;
+export type ContactCreateMutationFn = Apollo.MutationFunction<ContactCreateMutation, ContactCreateMutationVariables>;
+
+/**
+ * __useContactCreateMutation__
+ *
+ * To run a mutation, you first call `useContactCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useContactCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [contactCreateMutation, { data, loading, error }] = useContactCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useContactCreateMutation(baseOptions?: Apollo.MutationHookOptions<ContactCreateMutation, ContactCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ContactCreateMutation, ContactCreateMutationVariables>(ContactCreateDocument, options);
+      }
+export type ContactCreateMutationHookResult = ReturnType<typeof useContactCreateMutation>;
+export type ContactCreateMutationResult = Apollo.MutationResult<ContactCreateMutation>;
+export type ContactCreateMutationOptions = Apollo.BaseMutationOptions<ContactCreateMutation, ContactCreateMutationVariables>;
 export const IntraLedgerPaymentSendDocument = gql`
     mutation intraLedgerPaymentSend($input: IntraLedgerPaymentSendInput!) {
   intraLedgerPaymentSend(input: $input) {
@@ -7891,7 +8034,7 @@ export type UserTotpRegistrationValidateMutationHookResult = ReturnType<typeof u
 export type UserTotpRegistrationValidateMutationResult = Apollo.MutationResult<UserTotpRegistrationValidateMutation>;
 export type UserTotpRegistrationValidateMutationOptions = Apollo.BaseMutationOptions<UserTotpRegistrationValidateMutation, UserTotpRegistrationValidateMutationVariables>;
 export const TransactionListForDefaultAccountDocument = gql`
-    query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, $before: String) {
+    query transactionListForDefaultAccount($first: Int, $after: String, $walletIds: [WalletId!]) {
   me {
     id
     defaultAccount {
@@ -7899,7 +8042,7 @@ export const TransactionListForDefaultAccountDocument = gql`
       pendingIncomingTransactions {
         ...Transaction
       }
-      transactions(first: $first, after: $after, last: $last, before: $before) {
+      transactions(first: $first, after: $after, walletIds: $walletIds) {
         ...TransactionList
       }
     }
@@ -7922,8 +8065,7 @@ ${TransactionListFragmentDoc}`;
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
- *      last: // value for 'last'
- *      before: // value for 'before'
+ *      walletIds: // value for 'walletIds'
  *   },
  * });
  */
@@ -8152,6 +8294,12 @@ export type ResolversTypes = {
   ConsumerAccount: ResolverTypeWrapper<ConsumerAccount>;
   Contact: ResolverTypeWrapper<Contact>;
   ContactAlias: ResolverTypeWrapper<Scalars['ContactAlias']['output']>;
+  ContactCreateInput: ContactCreateInput;
+  ContactDisplayName: ResolverTypeWrapper<Scalars['ContactDisplayName']['output']>;
+  ContactHandle: ResolverTypeWrapper<Scalars['ContactHandle']['output']>;
+  ContactId: ResolverTypeWrapper<Scalars['ContactId']['output']>;
+  ContactPayload: ResolverTypeWrapper<ContactPayload>;
+  ContactType: ContactType;
   Coordinates: ResolverTypeWrapper<Coordinates>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Country: ResolverTypeWrapper<Country>;
@@ -8260,6 +8408,7 @@ export type ResolversTypes = {
   PaymentSendPayload: ResolverTypeWrapper<PaymentSendPayload>;
   PaymentSendResult: PaymentSendResult;
   PayoutSpeed: PayoutSpeed;
+  PayoutSpeeds: ResolverTypeWrapper<PayoutSpeeds>;
   Phone: ResolverTypeWrapper<Scalars['Phone']['output']>;
   PhoneCodeChannelType: PhoneCodeChannelType;
   Price: ResolverTypeWrapper<Price>;
@@ -8390,6 +8539,11 @@ export type ResolversParentTypes = {
   ConsumerAccount: ConsumerAccount;
   Contact: Contact;
   ContactAlias: Scalars['ContactAlias']['output'];
+  ContactCreateInput: ContactCreateInput;
+  ContactDisplayName: Scalars['ContactDisplayName']['output'];
+  ContactHandle: Scalars['ContactHandle']['output'];
+  ContactId: Scalars['ContactId']['output'];
+  ContactPayload: ContactPayload;
   Coordinates: Coordinates;
   Float: Scalars['Float']['output'];
   Country: Country;
@@ -8490,6 +8644,7 @@ export type ResolversParentTypes = {
   PageInfo: PageInfo;
   PaymentHash: Scalars['PaymentHash']['output'];
   PaymentSendPayload: PaymentSendPayload;
+  PayoutSpeeds: PayoutSpeeds;
   Phone: Scalars['Phone']['output'];
   Price: Price;
   PriceInput: PriceInput;
@@ -8765,13 +8920,37 @@ export type ConsumerAccountResolvers<ContextType = any, ParentType extends Resol
 };
 
 export type ContactResolvers<ContextType = any, ParentType extends ResolversParentTypes['Contact'] = ResolversParentTypes['Contact']> = {
+  createdAt?: Resolver<ResolversTypes['Timestamp'], ParentType, ContextType>;
+  displayName?: Resolver<Maybe<ResolversTypes['ContactDisplayName']>, ParentType, ContextType>;
+  handle?: Resolver<ResolversTypes['ContactHandle'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ContactId'], ParentType, ContextType>;
   prettyName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transactionsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['ContactType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface ContactAliasScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ContactAlias'], any> {
   name: 'ContactAlias';
 }
+
+export interface ContactDisplayNameScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ContactDisplayName'], any> {
+  name: 'ContactDisplayName';
+}
+
+export interface ContactHandleScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ContactHandle'], any> {
+  name: 'ContactHandle';
+}
+
+export interface ContactIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ContactId'], any> {
+  name: 'ContactId';
+}
+
+export type ContactPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['ContactPayload'] = ResolversParentTypes['ContactPayload']> = {
+  contact?: Resolver<Maybe<ResolversTypes['Contact']>, ParentType, ContextType>;
+  errors?: Resolver<ReadonlyArray<ResolversTypes['Error']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type CoordinatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coordinates'] = ResolversParentTypes['Coordinates']> = {
   latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -8970,6 +9149,7 @@ export type LnInvoicePayloadResolvers<ContextType = any, ParentType extends Reso
 
 export type LnInvoicePaymentStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['LnInvoicePaymentStatus'] = ResolversParentTypes['LnInvoicePaymentStatus']> = {
   paymentHash?: Resolver<Maybe<ResolversTypes['PaymentHash']>, ParentType, ContextType>;
+  paymentPreimage?: Resolver<Maybe<ResolversTypes['LnPaymentPreImage']>, ParentType, ContextType>;
   paymentRequest?: Resolver<Maybe<ResolversTypes['LnPaymentRequest']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['InvoicePaymentStatus']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -8978,6 +9158,7 @@ export type LnInvoicePaymentStatusResolvers<ContextType = any, ParentType extend
 export type LnInvoicePaymentStatusPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LnInvoicePaymentStatusPayload'] = ResolversParentTypes['LnInvoicePaymentStatusPayload']> = {
   errors?: Resolver<ReadonlyArray<ResolversTypes['Error']>, ParentType, ContextType>;
   paymentHash?: Resolver<Maybe<ResolversTypes['PaymentHash']>, ParentType, ContextType>;
+  paymentPreimage?: Resolver<Maybe<ResolversTypes['LnPaymentPreImage']>, ParentType, ContextType>;
   paymentRequest?: Resolver<Maybe<ResolversTypes['LnPaymentRequest']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['InvoicePaymentStatus']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -9076,6 +9257,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   callbackEndpointDelete?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationCallbackEndpointDeleteArgs, 'input'>>;
   captchaCreateChallenge?: Resolver<ResolversTypes['CaptchaCreateChallengePayload'], ParentType, ContextType>;
   captchaRequestAuthCode?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationCaptchaRequestAuthCodeArgs, 'input'>>;
+  contactCreate?: Resolver<ResolversTypes['ContactPayload'], ParentType, ContextType, RequireFields<MutationContactCreateArgs, 'input'>>;
   deviceNotificationTokenCreate?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationDeviceNotificationTokenCreateArgs, 'input'>>;
   feedbackSubmit?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationFeedbackSubmitArgs, 'input'>>;
   intraLedgerPaymentSend?: Resolver<ResolversTypes['PaymentSendPayload'], ParentType, ContextType, RequireFields<MutationIntraLedgerPaymentSendArgs, 'input'>>;
@@ -9235,6 +9417,13 @@ export type PaymentSendPayloadResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PayoutSpeedsResolvers<ContextType = any, ParentType extends ResolversParentTypes['PayoutSpeeds'] = ResolversParentTypes['PayoutSpeeds']> = {
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  speed?: Resolver<ResolversTypes['PayoutSpeed'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface PhoneScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Phone'], any> {
   name: 'Phone';
 }
@@ -9305,6 +9494,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   countryCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   currencyConversionEstimation?: Resolver<ResolversTypes['CurrencyConversionEstimation'], ParentType, ContextType, RequireFields<QueryCurrencyConversionEstimationArgs, 'amount' | 'currency'>>;
   currencyList?: Resolver<ReadonlyArray<ResolversTypes['Currency']>, ParentType, ContextType>;
+  deviceSessionCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   feedbackModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   globals?: Resolver<Maybe<ResolversTypes['Globals']>, ParentType, ContextType>;
   hasPromptedSetDefaultAccount?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -9320,9 +9510,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   onChainTxFee?: Resolver<ResolversTypes['OnChainTxFee'], ParentType, ContextType, RequireFields<QueryOnChainTxFeeArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
   onChainUsdTxFee?: Resolver<ResolversTypes['OnChainUsdTxFee'], ParentType, ContextType, RequireFields<QueryOnChainUsdTxFeeArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
   onChainUsdTxFeeAsBtcDenominated?: Resolver<ResolversTypes['OnChainUsdTxFee'], ParentType, ContextType, RequireFields<QueryOnChainUsdTxFeeAsBtcDenominatedArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
+  payoutSpeeds?: Resolver<ReadonlyArray<ResolversTypes['PayoutSpeeds']>, ParentType, ContextType>;
   price?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
+  upgradeModalLastShownAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
   welcomeLeaderboard?: Resolver<ResolversTypes['Leaderboard'], ParentType, ContextType, RequireFields<QueryWelcomeLeaderboardArgs, 'input'>>;
@@ -9574,7 +9766,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type UserContactResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserContact'] = ResolversParentTypes['UserContact']> = {
   alias?: Resolver<Maybe<ResolversTypes['ContactAlias']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Username'], ParentType, ContextType>;
+  handle?: Resolver<ResolversTypes['ContactHandle'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ContactHandle'], ParentType, ContextType>;
   transactions?: Resolver<Maybe<ResolversTypes['TransactionConnection']>, ParentType, ContextType, Partial<UserContactTransactionsArgs>>;
   transactionsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['Username'], ParentType, ContextType>;
@@ -9717,6 +9910,10 @@ export type Resolvers<ContextType = any> = {
   ConsumerAccount?: ConsumerAccountResolvers<ContextType>;
   Contact?: ContactResolvers<ContextType>;
   ContactAlias?: GraphQLScalarType;
+  ContactDisplayName?: GraphQLScalarType;
+  ContactHandle?: GraphQLScalarType;
+  ContactId?: GraphQLScalarType;
+  ContactPayload?: ContactPayloadResolvers<ContextType>;
   Coordinates?: CoordinatesResolvers<ContextType>;
   Country?: CountryResolvers<ContextType>;
   CountryCode?: GraphQLScalarType;
@@ -9784,6 +9981,7 @@ export type Resolvers<ContextType = any> = {
   PageInfo?: PageInfoResolvers<ContextType>;
   PaymentHash?: GraphQLScalarType;
   PaymentSendPayload?: PaymentSendPayloadResolvers<ContextType>;
+  PayoutSpeeds?: PayoutSpeedsResolvers<ContextType>;
   Phone?: GraphQLScalarType;
   Price?: PriceResolvers<ContextType>;
   PriceInterface?: PriceInterfaceResolvers<ContextType>;

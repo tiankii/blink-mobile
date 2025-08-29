@@ -6321,6 +6321,10 @@ type RootTranslation = {
 		 */
 		exploreWallet: string
 		/**
+		 * L​o​g​i​n
+		 */
+		login: string
+		/**
 		 * L​o​g​ ​b​a​c​k​ ​i​n​ ​w​i​t​h
 		 */
 		logBackInWith: string
@@ -6354,6 +6358,10 @@ type RootTranslation = {
 		trialAccountHasLimits: string
 		trialAccountLimits: {
 			/**
+			 * U​p​g​r​a​d​e​ ​f​o​r​ ​m​o​r​e​ ​b​e​n​e​f​i​t​s
+			 */
+			modalTitle: string
+			/**
 			 * N​o​ ​b​a​c​k​u​p​ ​o​p​t​i​o​n
 			 */
 			noBackup: string
@@ -6365,6 +6373,18 @@ type RootTranslation = {
 			 * N​o​ ​r​e​c​e​i​v​i​n​g​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
 			 */
 			noOnchain: string
+			/**
+			 * R​e​c​o​v​e​r​ ​f​u​n​d​s​ ​b​y​ ​S​M​S​ ​o​r​ ​e​m​a​i​l
+			 */
+			recoveryOption: string
+			/**
+			 * $​1​0​0​0​ ​d​a​i​l​y​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t
+			 */
+			dailyLimit: string
+			/**
+			 * R​e​c​e​i​v​e​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
+			 */
+			onchainReceive: string
 		}
 	}
 	MapScreen: {
@@ -7906,6 +7926,20 @@ type RootTranslation = {
 		 * S​t​a​y​ ​i​n​ ​t​r​i​a​l​ ​m​o​d​e
 		 */
 		stayInTrialMode: string
+		/**
+		 * U​p​g​r​a​d​e​ ​t​o​ ​L​e​v​e​l​ ​{​l​e​v​e​l​}
+		 * @param {number} level
+		 */
+		upgradeToLevel: RequiredParams<'level'>
+		/**
+		 * N​o​t​ ​n​o​w
+		 */
+		notNow: string
+		/**
+		 * S​e​t​ ​u​p​ ​L​e​v​e​l​ ​{​l​e​v​e​l​}​ ​a​c​c​o​u​n​t
+		 * @param {number} level
+		 */
+		setUpLevelAccount: RequiredParams<'level'>
 	}
 	SetAddressModal: {
 		/**
@@ -7913,6 +7947,10 @@ type RootTranslation = {
 		 * @param {string} bankName
 		 */
 		title: RequiredParams<'bankName'>
+		/**
+		 * C​h​o​o​s​e​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+		 */
+		mainTitle: string
 		/**
 		 * S​e​t​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s
 		 */
@@ -7945,7 +7983,7 @@ type RootTranslation = {
 		 */
 		receiveMoney: RequiredParams<'bankName'>
 		/**
-		 * I​t​ ​c​a​n​'​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r​.
+		 * C​h​o​o​s​e​ ​w​e​l​l​ ​–​ ​i​t​ ​c​a​n​n​o​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r​!
 		 */
 		itCannotBeChanged: string
 	}
@@ -8024,6 +8062,139 @@ type RootTranslation = {
 		 * S​e​n​d​ ​v​i​a​ ​T​e​l​e​g​r​a​m
 		 */
 		telegram: string
+	}
+	LoginMethodScreen: {
+		/**
+		 * S​e​l​e​c​t​ ​p​r​e​f​e​r​r​e​d​ ​l​o​g​i​n​ ​m​e​t​h​o​d​.
+		 */
+		title: string
+		/**
+		 * U​s​e​ ​T​e​l​e​g​r​a​m
+		 */
+		useTelegram: string
+		/**
+		 * U​s​e​ ​S​M​S
+		 */
+		useSms: string
+		/**
+		 * U​s​e​ ​W​h​a​t​s​A​p​p
+		 */
+		useWhatsapp: string
+		/**
+		 * U​s​e​ ​E​m​a​i​l
+		 */
+		useEmail: string
+		/**
+		 * S​e​t​ ​u​p​ ​T​e​l​e​g​r​a​m​ ​l​o​g​i​n
+		 */
+		setupTelegram: string
+		/**
+		 * S​e​t​ ​u​p​ ​S​M​S​ ​l​o​g​i​n
+		 */
+		setupSms: string
+		/**
+		 * S​e​t​ ​u​p​ ​W​h​a​t​s​A​p​p​ ​l​o​g​i​n
+		 */
+		setupWhatsapp: string
+		/**
+		 * S​e​t​ ​u​p​ ​E​m​a​i​l​ ​l​o​g​i​n
+		 */
+		setupEmail: string
+	}
+	OnboardingScreen: {
+		welcomeLevel1: {
+			/**
+			 * W​e​l​c​o​m​e​ ​t​o​ ​L​e​v​e​l​ ​1
+			 */
+			mainTitle: string
+			/**
+			 * N​e​w​ ​f​e​a​t​u​r​e​s​ ​u​n​l​o​c​k​e​d​ ​f​o​r​ ​y​o​u​r​ ​a​c​c​o​u​n​t​:
+			 */
+			title: string
+			/**
+			 * R​e​c​e​i​v​e​ ​B​i​t​c​o​i​n​ ​u​s​i​n​g​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+			 */
+			receiveBitcoinDescription: string
+			/**
+			 * S​e​n​d​ ​u​p​ ​t​o​ ​$​1​,​0​0​0​ ​U​S​D​ ​p​e​r​ ​d​a​y
+			 */
+			dailyLimitDescription: string
+			/**
+			 * R​e​c​e​i​v​e​ ​o​n​-​c​h​a​i​n​ ​p​a​y​m​e​n​t​s
+			 */
+			onchainDescription: string
+		}
+		emailBenefits: {
+			/**
+			 * A​d​d​ ​e​m​a​i​l​ ​l​o​g​i​n
+			 */
+			mainTitle: string
+			/**
+			 * E​m​a​i​l​ ​l​o​g​i​n​ ​a​l​l​o​w​s​ ​y​o​u​ ​t​o​:
+			 */
+			title: string
+			/**
+			 * H​a​v​e​ ​a​ ​b​a​c​k​u​p​ ​t​o​ ​a​c​c​e​s​s​i​n​g​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+			 */
+			backupDescription: string
+			/**
+			 * M​a​k​e​ ​i​t​ ​e​a​s​i​e​r​ ​f​o​r​ ​u​s​ ​t​o​ ​g​i​v​e​ ​y​o​u​ ​s​u​p​p​o​r​t
+			 */
+			supportDescription: string
+			/**
+			 * I​n​c​r​e​a​s​e​ ​a​c​c​o​u​n​t​ ​s​e​c​u​r​i​t​y
+			 */
+			securityDescription: string
+			/**
+			 * S​e​t​ ​u​p​ ​e​m​a​i​l​ ​l​o​g​i​n
+			 */
+			primaryButton: string
+		}
+		lightningBenefits: {
+			/**
+			 * S​e​t​ ​u​p​ ​C​u​s​t​o​m​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+			 */
+			mainTitle: string
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s​ ​b​e​n​e​f​i​t​s​:
+			 */
+			title: string
+			/**
+			 * A​ ​s​t​a​t​i​c​ ​a​d​d​r​e​s​s​ ​t​o​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s
+			 */
+			staticAddressDescription: string
+			/**
+			 * E​a​s​y​ ​t​o​ ​m​e​m​o​r​i​z​e​ ​a​n​d​ ​s​h​a​r​e​ ​p​u​b​l​i​c​l​y​ ​o​r​ ​p​r​i​v​a​t​e​l​y
+			 */
+			easyToShareDescription: string
+			/**
+			 * U​n​l​o​c​k​s​ ​v​a​r​i​o​u​s​ ​B​l​i​n​k​ ​t​o​o​l​s​ ​u​s​e​f​u​l​ ​f​o​r​ ​c​o​m​m​e​r​c​e
+			 */
+			blinkToolsDescription: string
+			/**
+			 * S​e​t​ ​u​p​ ​C​u​s​t​o​m​ ​A​d​d​r​e​s​s
+			 */
+			primaryButton: string
+		}
+		supportScreen: {
+			/**
+			 * B​l​i​n​k​ ​f​e​e​d​b​a​c​k
+			 */
+			mainTitle: string
+			/**
+			 * A​l​l​ ​s​e​t​!
+			 */
+			title: string
+			/**
+			 * A​n​y​ ​f​e​e​d​b​a​c​k​ ​i​s​ ​m​o​s​t​ ​w​e​l​c​o​m​e​,​ ​f​e​e​l​ ​f​r​e​e​ ​t​o​ ​p​i​n​g​ ​u​s​ ​a​t​ ​{​e​m​a​i​l​}
+			 * @param {unknown} email
+			 */
+			description: RequiredParams<'email'>
+			/**
+			 * D​o​n​e
+			 */
+			primaryButton: string
+		}
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -8635,6 +8806,40 @@ type RootTranslation = {
 		 */
 		warning: string
 		/**
+		 * R​e​c​o​m​m​e​n​d​e​d
+		 */
+		recommended: string
+		/**
+		 * E​x​p​i​r​a​t​i​o​n​ ​T​i​m​e
+		 */
+		expirationTime: string
+		/**
+		 * M​i​n​u​t​e
+		 */
+		minute: string
+		day: {
+			/**
+			 * D​a​y
+			 */
+			one: string
+			/**
+			 * D​a​y​s
+			 */
+			other: string
+		}
+		/**
+		 * D​o​l​l​a​r
+		 */
+		dollar: string
+		/**
+		 * A​L​L
+		 */
+		all: string
+		/**
+		 * A​l​l​ ​a​c​c​o​u​n​t​s
+		 */
+		allAccounts: string
+		/**
 		 * P​r​o​f​i​l​e​s
 		 */
 		profiles: string
@@ -8728,6 +8933,10 @@ type RootTranslation = {
 		 * E​m​a​i​l
 		 */
 		email: string
+		/**
+		 * S​M​S
+		 */
+		sms: string
 		/**
 		 * F​A​Q
 		 */
@@ -15478,6 +15687,10 @@ export type TranslationFunctions = {
 		 */
 		exploreWallet: () => LocalizedString
 		/**
+		 * Login
+		 */
+		login: () => LocalizedString
+		/**
 		 * Log back in with
 		 */
 		logBackInWith: () => LocalizedString
@@ -15511,6 +15724,10 @@ export type TranslationFunctions = {
 		trialAccountHasLimits: () => LocalizedString
 		trialAccountLimits: {
 			/**
+			 * Upgrade for more benefits
+			 */
+			modalTitle: () => LocalizedString
+			/**
 			 * No backup option
 			 */
 			noBackup: () => LocalizedString
@@ -15522,6 +15739,18 @@ export type TranslationFunctions = {
 			 * No receiving bitcoin onchain
 			 */
 			noOnchain: () => LocalizedString
+			/**
+			 * Recover funds by SMS or email
+			 */
+			recoveryOption: () => LocalizedString
+			/**
+			 * $1000 daily transaction limit
+			 */
+			dailyLimit: () => LocalizedString
+			/**
+			 * Receive bitcoin onchain
+			 */
+			onchainReceive: () => LocalizedString
 		}
 	}
 	MapScreen: {
@@ -17018,12 +17247,28 @@ export type TranslationFunctions = {
 		 * Stay in trial mode
 		 */
 		stayInTrialMode: () => LocalizedString
+		/**
+		 * Upgrade to Level {level}
+		 */
+		upgradeToLevel: (arg: { level: number }) => LocalizedString
+		/**
+		 * Not now
+		 */
+		notNow: () => LocalizedString
+		/**
+		 * Set up Level {level} account
+		 */
+		setUpLevelAccount: (arg: { level: number }) => LocalizedString
 	}
 	SetAddressModal: {
 		/**
 		 * Set {bankName} address
 		 */
 		title: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Choose Lightning Address
+		 */
+		mainTitle: () => LocalizedString
 		/**
 		 * Set Lightning address
 		 */
@@ -17055,7 +17300,7 @@ export type TranslationFunctions = {
 		 */
 		receiveMoney: (arg: { bankName: string }) => LocalizedString
 		/**
-		 * It can't be changed later.
+		 * Choose well – it cannot be changed later!
 		 */
 		itCannotBeChanged: () => LocalizedString
 	}
@@ -17134,6 +17379,138 @@ export type TranslationFunctions = {
 		 * Send via Telegram
 		 */
 		telegram: () => LocalizedString
+	}
+	LoginMethodScreen: {
+		/**
+		 * Select preferred login method.
+		 */
+		title: () => LocalizedString
+		/**
+		 * Use Telegram
+		 */
+		useTelegram: () => LocalizedString
+		/**
+		 * Use SMS
+		 */
+		useSms: () => LocalizedString
+		/**
+		 * Use WhatsApp
+		 */
+		useWhatsapp: () => LocalizedString
+		/**
+		 * Use Email
+		 */
+		useEmail: () => LocalizedString
+		/**
+		 * Set up Telegram login
+		 */
+		setupTelegram: () => LocalizedString
+		/**
+		 * Set up SMS login
+		 */
+		setupSms: () => LocalizedString
+		/**
+		 * Set up WhatsApp login
+		 */
+		setupWhatsapp: () => LocalizedString
+		/**
+		 * Set up Email login
+		 */
+		setupEmail: () => LocalizedString
+	}
+	OnboardingScreen: {
+		welcomeLevel1: {
+			/**
+			 * Welcome to Level 1
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * New features unlocked for your account:
+			 */
+			title: () => LocalizedString
+			/**
+			 * Receive Bitcoin using your phone number
+			 */
+			receiveBitcoinDescription: () => LocalizedString
+			/**
+			 * Send up to $1,000 USD per day
+			 */
+			dailyLimitDescription: () => LocalizedString
+			/**
+			 * Receive on-chain payments
+			 */
+			onchainDescription: () => LocalizedString
+		}
+		emailBenefits: {
+			/**
+			 * Add email login
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * Email login allows you to:
+			 */
+			title: () => LocalizedString
+			/**
+			 * Have a backup to accessing your account
+			 */
+			backupDescription: () => LocalizedString
+			/**
+			 * Make it easier for us to give you support
+			 */
+			supportDescription: () => LocalizedString
+			/**
+			 * Increase account security
+			 */
+			securityDescription: () => LocalizedString
+			/**
+			 * Set up email login
+			 */
+			primaryButton: () => LocalizedString
+		}
+		lightningBenefits: {
+			/**
+			 * Set up Custom Lightning Address
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * Lightning Address benefits:
+			 */
+			title: () => LocalizedString
+			/**
+			 * A static address to receive payments
+			 */
+			staticAddressDescription: () => LocalizedString
+			/**
+			 * Easy to memorize and share publicly or privately
+			 */
+			easyToShareDescription: () => LocalizedString
+			/**
+			 * Unlocks various Blink tools useful for commerce
+			 */
+			blinkToolsDescription: () => LocalizedString
+			/**
+			 * Set up Custom Address
+			 */
+			primaryButton: () => LocalizedString
+		}
+		supportScreen: {
+			/**
+			 * Blink feedback
+			 */
+			mainTitle: () => LocalizedString
+			/**
+			 * All set!
+			 */
+			title: () => LocalizedString
+			/**
+			 * Any feedback is most welcome, feel free to ping us at {email}
+			 */
+			description: (arg: { email: unknown }) => LocalizedString
+			/**
+			 * Done
+			 */
+			primaryButton: () => LocalizedString
+		}
 	}
 	PhoneLoginValidationScreen: {
 		/**
@@ -17735,6 +18112,40 @@ export type TranslationFunctions = {
 		 */
 		warning: () => LocalizedString
 		/**
+		 * Recommended
+		 */
+		recommended: () => LocalizedString
+		/**
+		 * Expiration Time
+		 */
+		expirationTime: () => LocalizedString
+		/**
+		 * Minute
+		 */
+		minute: () => LocalizedString
+		day: {
+			/**
+			 * Day
+			 */
+			one: () => LocalizedString
+			/**
+			 * Days
+			 */
+			other: () => LocalizedString
+		}
+		/**
+		 * Dollar
+		 */
+		dollar: () => LocalizedString
+		/**
+		 * ALL
+		 */
+		all: () => LocalizedString
+		/**
+		 * All accounts
+		 */
+		allAccounts: () => LocalizedString
+		/**
 		 * Profiles
 		 */
 		profiles: () => LocalizedString
@@ -17827,6 +18238,10 @@ export type TranslationFunctions = {
 		 * Email
 		 */
 		email: () => LocalizedString
+		/**
+		 * SMS
+		 */
+		sms: () => LocalizedString
 		/**
 		 * FAQ
 		 */
