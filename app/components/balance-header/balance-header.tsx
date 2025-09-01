@@ -59,7 +59,6 @@ export const BalanceHeader: React.FC<Props> = ({ loading, formattedBalance }) =>
 
 const useStyles = makeStyles(({ colors }) => ({
   balanceHeaderContainer: {
-    flex: 1,
     flexDirection: "column",
     alignItems: "center",
   },

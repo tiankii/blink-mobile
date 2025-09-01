@@ -125,9 +125,7 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
   return (
     <>
       <TouchableOpacity
-        onPress={async () => {
-          await handleProfileSwitch(nextProfileToken)
-        }}
+        onPress={() => handleProfileSwitch()}
         {...testProps(LL.AccountScreen.switchAccount())}
       >
         <ListItem

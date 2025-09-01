@@ -487,16 +487,6 @@ export const HomeScreen: React.FC = () => {
         isVisible={isStablesatModalVisible}
         setIsVisible={setIsStablesatModalVisible}
       />
-      <View style={styles.multiAccountContianer}>
-        {!loading && currentProfile?.identifier && (
-          <Pressable onPress={isAtLeastLevelOne ? handleSwitchPress : null}>
-            <View style={styles.profileContainer}>
-              <Text type="p2">{currentProfile?.identifier}</Text>
-              {isAtLeastLevelOne && <GaloyIcon name={"caret-down"} size={18} />}
-            </View>
-          </Pressable>
-        )}
-      </View>
       <TrialAccountLimitsModal
         isVisible={isUpgradeModalVisible}
         closeModal={closeUpgradeModal}
@@ -504,20 +494,39 @@ export const HomeScreen: React.FC = () => {
           reopenUpgradeModal.current = true
         }}
       />
-      <View style={[styles.header, styles.container]}>
-        <GaloyIconButton
-          onPress={() => navigation.navigate("priceHistory")}
-          size={"medium"}
-          name="graph"
-          iconOnly={true}
-        />
-        <BalanceHeader loading={loading} formattedBalance={formattedBalance} />
-        <GaloyIconButton
-          onPress={() => navigation.navigate("settings")}
-          size={"medium"}
-          name="menu"
-          iconOnly={true}
-        />
+      <View style={[styles.balanceContainer, loading ? styles.balanceLoading : null]}>
+        <View
+          style={[
+            styles.header,
+            isAtLeastLevelOne && currentProfile?.identifier
+              ? styles.headerWithProfile
+              : styles.headerCentered,
+          ]}
+        >
+          <GaloyIconButton
+            onPress={() => navigation.navigate("priceHistory")}
+            size={"medium"}
+            name="graph"
+            iconOnly={true}
+          />
+          <View style={{ alignItems: "center", flexDirection: "column" }}>
+            {!loading && currentProfile?.identifier && (
+              <Pressable onPress={isAtLeastLevelOne ? handleSwitchPress : null}>
+                <View style={styles.profileContainer}>
+                  <Text type="p2">{currentProfile?.identifier}</Text>
+                  {isAtLeastLevelOne && <GaloyIcon name={"caret-down"} size={18} />}
+                </View>
+              </Pressable>
+            )}
+            <BalanceHeader loading={loading} formattedBalance={formattedBalance} />
+          </View>
+          <GaloyIconButton
+            onPress={() => navigation.navigate("settings")}
+            size={"medium"}
+            name="menu"
+            iconOnly={true}
+          />
+        </View>
       </View>
       <ScrollView
         {...testProps("home-screen")}
@@ -648,26 +657,34 @@ const useStyles = makeStyles(({ colors }) => ({
     width: "100%",
     maxWidth: 74,
   },
+  balanceContainer: {
+    marginBottom: 30,
+    display: "flex",
+    flexDirection: "row",
+  },
+  balanceLoading: {
+    marginBottom: 57,
+  },
   header: {
     flexDirection: "row",
+    flex: 1,
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    marginTop: 6,
+  },
+  headerWithProfile: {
+    alignItems: "flex-start",
+  },
+  headerCentered: {
     alignItems: "center",
-    marginBottom: 37,
   },
   error: {
     alignSelf: "center",
     color: colors.error,
   },
-  container: {
-    marginHorizontal: 20,
-  },
-  multiAccountContianer: {
-    alignSelf: "center",
-    marginTop: 37,
-  },
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 15,
-    marginBottom: 5,
   },
 }))

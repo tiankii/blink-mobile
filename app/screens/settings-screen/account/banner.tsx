@@ -51,17 +51,21 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
         })
       }
     >
-      <View style={styles.outer}>
-        <AccountIcon size={30} />
-        <Text type="p2">
-          {isUserLoggedIn ? usernameTitle : LL.SettingsScreen.logInOrCreateAccount()}
-        </Text>
+      <TouchableOpacity
+        style={styles.switch}
+        onPress={handleSwitchPress}
+        activeOpacity={0.7}
+      >
+        <View style={styles.outer}>
+          <AccountIcon size={30} />
+          <Text type="p2">
+            {isUserLoggedIn ? usernameTitle : LL.SettingsScreen.logInOrCreateAccount()}
+          </Text>
+        </View>
         {isUserLoggedIn && showSwitchAccountIcon && (
-          <TouchableOpacity style={styles.switch} onPress={handleSwitchPress}>
-            <GaloyIcon name="transfer" size={27} color={colors.primary} />
-          </TouchableOpacity>
+          <GaloyIcon name="transfer" size={27} color={colors.primary} />
         )}
-      </View>
+      </TouchableOpacity>
     </TouchableWithoutFeedback>
   )
 }
@@ -86,7 +90,6 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 4,
-    marginLeft: "auto",
+    justifyContent: "space-between",
   },
 }))
