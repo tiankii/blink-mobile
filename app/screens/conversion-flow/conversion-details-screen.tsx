@@ -287,10 +287,10 @@ export const ConversionDetailsScreen = () => {
   const rightIcon = useMemo(
     () => (
       <View style={styles.iconSlotContainer}>
-        {isTyping ? <ActivityIndicator /> : null}
+        {isTyping ? <ActivityIndicator color={colors.primary} /> : null}
       </View>
     ),
-    [isTyping, styles.iconSlotContainer],
+    [isTyping, styles.iconSlotContainer, colors.primary],
   )
 
   if (!data?.me?.defaultAccount || !fromWallet) return <></>
@@ -489,12 +489,12 @@ export const ConversionDetailsScreen = () => {
             <TouchableOpacity
               style={[
                 styles.switchButton,
-                !canToggleWallet && !uiLocked && styles.switchButtonDisabled,
+                (!canToggleWallet || uiLocked) && styles.switchButtonDisabled,
               ]}
               disabled={!canToggleWallet || uiLocked}
               onPress={toggleInputs}
             >
-              {uiLocked ? (
+              {toggleInitiated.current ? (
                 <ActivityIndicator color={colors.primary} />
               ) : (
                 <Icon name="arrow-down-outline" color={colors.primary} size={25} />
@@ -717,8 +717,7 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     alignItems: "center",
   },
   switchButtonDisabled: {
-    opacity: 1,
-    backgroundColor: colors.grey3,
+    opacity: 0.5,
   },
   rightColumn: {
     minWidth: 96,
