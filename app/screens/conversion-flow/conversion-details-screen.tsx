@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { TouchableOpacity, View, ActivityIndicator, TextInput } from "react-native"
 
 import { gql } from "@apollo/client"
@@ -285,13 +285,15 @@ export const ConversionDetailsScreen = () => {
     }
   }, [displayCurrency, renderValue])
 
-  const rightIcon = useMemo(
-    () => (
+  const rightIconFor = useCallback(
+    (id: InputField["id"]) => (
       <View style={styles.iconSlotContainer}>
-        {isTyping ? <ActivityIndicator color={colors.primary} /> : null}
+        {isTyping && typingInputId === id ? (
+          <ActivityIndicator color={colors.primary} />
+        ) : null}
       </View>
     ),
-    [isTyping, styles.iconSlotContainer, colors.primary],
+    [isTyping, typingInputId, colors.primary, styles.iconSlotContainer],
   )
 
   if (!data?.me?.defaultAccount || !fromWallet) return <></>
@@ -463,7 +465,7 @@ export const ConversionDetailsScreen = () => {
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
-              rightIcon={rightIcon}
+              rightIcon={rightIconFor(InputFieldType.FROM_INPUT)}
               selection={caretSelectionFor(InputFieldType.FROM_INPUT)}
               pointerEvents="none"
             />
@@ -524,7 +526,7 @@ export const ConversionDetailsScreen = () => {
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.primaryNumberInputContainer}
               renderErrorMessage={false}
-              rightIcon={rightIcon}
+              rightIcon={rightIconFor(InputFieldType.TO_INPUT)}
               selection={caretSelectionFor(InputFieldType.TO_INPUT)}
               pointerEvents="none"
             />
@@ -561,7 +563,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               defaultCurrency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
-              rightIcon={rightIcon}
+              rightIcon={rightIconFor(InputFieldType.CURRENCY_INPUT)}
             />
           </View>
         )}
