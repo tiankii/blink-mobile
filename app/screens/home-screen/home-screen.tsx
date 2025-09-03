@@ -509,7 +509,7 @@ export const HomeScreen: React.FC = () => {
             name="graph"
             iconOnly={true}
           />
-          <View style={{ alignItems: "center", flexDirection: "column" }}>
+          <View style={styles.balanceHeader}>
             {!loading && currentProfile?.identifier && (
               <Pressable onPress={isAtLeastLevelOne ? handleSwitchPress : null}>
                 <View style={styles.profileContainer}>
@@ -659,6 +659,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   balanceContainer: {
     marginBottom: 30,
+    marginTop: 7,
     display: "flex",
     flexDirection: "row",
   },
@@ -686,5 +687,9 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     alignItems: "center",
     gap: 15,
+  },
+  balanceHeader: {
+    alignItems: "center",
+    flexDirection: "column",
   },
 }))

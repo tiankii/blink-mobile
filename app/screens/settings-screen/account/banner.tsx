@@ -16,6 +16,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme, Skeleton } from "@rneui/themed"
+import { useAppConfig } from "@app/hooks"
 
 export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
   showSwitchAccountIcon = false,
@@ -25,6 +26,7 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
   const {
     theme: { colors },
   } = useTheme()
+  const { appConfig } = useAppConfig()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
@@ -33,7 +35,11 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
 
   const { data, loading } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
 
-  const usernameTitle = data?.me?.username || LL.common.blinkUser()
+  const hasUsername = Boolean(data?.me?.username)
+  const hostName = appConfig.galoyInstance.lnAddressHostname
+  const lnAddress = `${data?.me?.username}@${hostName}`
+
+  const usernameTitle = hasUsername ? lnAddress : LL.common.blinkUser()
 
   if (loading) return <Skeleton style={styles.outer} animation="pulse" />
 
@@ -57,7 +63,9 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
         activeOpacity={0.7}
       >
         <View style={styles.outer}>
-          <AccountIcon size={30} />
+          <View style={styles.iconContainer}>
+            <AccountIcon size={22} />
+          </View>
           <Text type="p2">
             {isUserLoggedIn ? usernameTitle : LL.SettingsScreen.logInOrCreateAccount()}
           </Text>
@@ -77,7 +85,7 @@ export const AccountIcon: React.FC<{ size: number }> = ({ size }) => {
   return <GaloyIcon name="user" size={size} backgroundColor={colors.grey4} />
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   outer: {
     height: 70,
     padding: 4,
@@ -91,5 +99,10 @@ const useStyles = makeStyles(() => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  iconContainer: {
+    backgroundColor: theme.colors.grey4,
+    borderRadius: 100,
+    padding: 3,
   },
 }))
