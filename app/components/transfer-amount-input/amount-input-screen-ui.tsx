@@ -36,10 +36,8 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
   )
 }
 
-const useStyles = makeStyles(({}, responsive: boolean) => ({
-  amountInputScreenContainer: {
-    flex: 1,
-  },
+const useStyles = makeStyles((_, responsive: boolean) => ({
+  amountInputScreenContainer: { flex: 1 },
 
   infoContainer: {
     justifyContent: "flex-start",
@@ -49,7 +47,6 @@ const useStyles = makeStyles(({}, responsive: boolean) => ({
     flex: 1,
     ...(responsive ? {} : { padding: 24 }),
   },
-
   keyboardContainer: {
     ...(responsive ? { flex: 1 } : { paddingHorizontal: 16, marginBottom: 30 }),
   },
