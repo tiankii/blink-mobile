@@ -138,6 +138,7 @@ export const ConversionDetailsScreen = () => {
   const [typingInputId, setTypingInputId] = useState<InputField["id"] | null>(null)
   const [uiLocked, setUiLocked] = useState(false)
   const [overlaysReady, setOverlaysReady] = useState(false)
+  const [loadingPercent, setLoadingPercent] = useState<number | null>(null)
 
   const fromInputRef = useRef<TextInput | null>(null)
   const toInputRef = useRef<TextInput | null>(null)
@@ -422,6 +423,8 @@ export const ConversionDetailsScreen = () => {
   const setAmountToBalancePercentage = (percentage: number) => {
     if (uiLocked) return
     setUiLocked(true)
+    setLoadingPercent(percentage)
+
     setInitialAmount(
       toWalletAmount({
         amount: Math.round((fromWallet.balance * percentage) / 100),
@@ -580,35 +583,51 @@ export const ConversionDetailsScreen = () => {
           <View style={styles.percentageFieldContainer}>
             <TouchableOpacity
               {...testProps("convert-25%")}
-              style={styles.percentageField}
+              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
               disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(25)}
             >
-              <Text style={styles.percentageFieldText}>25%</Text>
+              {loadingPercent === 25 ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : (
+                <Text style={styles.percentageFieldText}>25%</Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               {...testProps("convert-50%")}
-              style={styles.percentageField}
+              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
               disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(50)}
             >
-              <Text style={styles.percentageFieldText}>50%</Text>
+              {loadingPercent === 50 ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : (
+                <Text style={styles.percentageFieldText}>50%</Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               {...testProps("convert-75%")}
-              style={styles.percentageField}
+              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
               disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(75)}
             >
-              <Text style={styles.percentageFieldText}>75%</Text>
+              {loadingPercent === 75 ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : (
+                <Text style={styles.percentageFieldText}>75%</Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               {...testProps("convert-100%")}
-              style={styles.percentageField}
+              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
               disabled={uiLocked}
               onPress={() => setAmountToBalancePercentage(100)}
             >
-              <Text style={styles.percentageFieldText}>100%</Text>
+              {loadingPercent === 100 ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : (
+                <Text style={styles.percentageFieldText}>100%</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -629,6 +648,7 @@ export const ConversionDetailsScreen = () => {
             }}
             onAfterRecalc={() => {
               setUiLocked(false)
+              setLoadingPercent(null)
 
               if (toggleInitiated.current) {
                 toggleInitiated.current = false
@@ -764,6 +784,9 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     paddingHorizontal: 15,
     paddingVertical: 8,
     marginVertical: 6,
+  },
+  percentageFieldDisabled: {
+    opacity: 0.5,
   },
   percentageFieldText: { color: colors.primary, fontWeight: "bold" },
   keyboardContainer: {
