@@ -141,6 +141,7 @@ export const ConversionDetailsScreen = () => {
 
   const fromInputRef = useRef<TextInput | null>(null)
   const toInputRef = useRef<TextInput | null>(null)
+  const toggleInitiated = useRef(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -300,6 +301,7 @@ export const ConversionDetailsScreen = () => {
   const toggleInputs = () => {
     if (uiLocked) return
     setUiLocked(true)
+    toggleInitiated.current = true
 
     const currentActiveAmount =
       moneyAmount ||
@@ -308,11 +310,9 @@ export const ConversionDetailsScreen = () => {
 
     const currentFocusedId = focusedInputValues?.id ?? null
     const newFocusedId =
-      currentFocusedId && currentFocusedId !== InputFieldType.CURRENCY_INPUT
-        ? currentFocusedId === InputFieldType.FROM_INPUT
-          ? InputFieldType.TO_INPUT
-          : InputFieldType.FROM_INPUT
-        : null
+      currentFocusedId === InputFieldType.FROM_INPUT
+        ? InputFieldType.TO_INPUT
+        : InputFieldType.FROM_INPUT
 
     if (newFocusedId) {
       const baseTarget =
@@ -382,9 +382,6 @@ export const ConversionDetailsScreen = () => {
         formattedAmount: prev.formattedAmount,
       }
     })
-
-    if (toggleWallet) toggleWallet()
-    if (currentActiveAmount) handleSetMoneyAmount(currentActiveAmount)
   }
 
   const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance ?? NaN)
@@ -490,11 +487,18 @@ export const ConversionDetailsScreen = () => {
           <View style={styles.walletSeparator}>
             <View style={styles.line} />
             <TouchableOpacity
-              style={styles.switchButton}
+              style={[
+                styles.switchButton,
+                !canToggleWallet && !uiLocked && styles.switchButtonDisabled,
+              ]}
               disabled={!canToggleWallet || uiLocked}
               onPress={toggleInputs}
             >
-              <Icon name="arrow-down-outline" color={colors.primary} size={25} />
+              {uiLocked ? (
+                <ActivityIndicator color={colors.primary} />
+              ) : (
+                <Icon name="arrow-down-outline" color={colors.primary} size={25} />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -623,7 +627,15 @@ export const ConversionDetailsScreen = () => {
               setIsTyping(typing)
               setTypingInputId(typing ? focusedId : null)
             }}
-            onAfterRecalc={() => setUiLocked(false)}
+            onAfterRecalc={() => {
+              setUiLocked(false)
+
+              if (toggleInitiated.current) {
+                toggleInitiated.current = false
+                if (toggleWallet) toggleWallet()
+                if (moneyAmount) handleSetMoneyAmount(moneyAmount)
+              }
+            }}
           />
         </View>
       </View>
@@ -703,6 +715,10 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     backgroundColor: colors.grey4,
     justifyContent: "center",
     alignItems: "center",
+  },
+  switchButtonDisabled: {
+    opacity: 1,
+    backgroundColor: colors.grey3,
   },
   rightColumn: {
     minWidth: 96,
