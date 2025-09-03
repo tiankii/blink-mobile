@@ -184,7 +184,7 @@ export const EmailRegistrationInitiateScreen: React.FC<
           <GaloyPrimaryButton
             title={LL.EmailRegistrationInitiateScreen.send()}
             loading={loading}
-            disabled={!emailInput}
+            disabled={!validator.isEmail(emailInput)}
             onPress={submit}
           />
           {onboarding && (

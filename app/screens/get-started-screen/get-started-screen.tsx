@@ -15,7 +15,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
-import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
+import AppLogoLightMode from "../../assets/logo/blink-logo-light.svg"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import useAppCheckToken from "./use-device-token"
@@ -131,6 +131,7 @@ const useStyles = makeStyles(() => ({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 1,
   },
   logoContainer: {
     width: 288,
