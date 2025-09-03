@@ -559,8 +559,8 @@ export const ConversionDetailsScreen = () => {
             </View>
           </View>
 
-          <View style={styles.walletSeparator}>
-            <View style={styles.line} />
+          <View style={styles.walletSeparator} pointerEvents="box-none">
+            <View style={styles.line} pointerEvents="none" />
             <TouchableOpacity
               style={[
                 styles.switchButton,
@@ -810,22 +810,24 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   },
   walletSeparator: {
     flexDirection: "row",
-    height: 1,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
     marginVertical: 6,
+    zIndex: 2,
   },
   line: { backgroundColor: colors.grey4, height: 1, flex: 1 },
   switchButton: {
     position: "absolute",
     left: 100,
-    height: 43,
-    width: 43,
+    height: 50,
+    width: 50,
     borderRadius: 50,
     backgroundColor: colors.grey4,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 3,
+    elevation: 3,
   },
   switchButtonDisabled: {
     opacity: 0.5,
