@@ -8428,6 +8428,10 @@ type RootTranslation = {
 		 */
 		account: string
 		/**
+		 * A​c​c​o​u​n​t​s
+		 */
+		accounts: string
+		/**
 		 * A​c​c​o​u​n​t​ ​I​n​f​o​r​m​a​t​i​o​n
 		 */
 		accountInformation: string
@@ -17739,6 +17743,10 @@ export type TranslationFunctions = {
 		 * Account
 		 */
 		account: () => LocalizedString
+		/**
+		 * Accounts
+		 */
+		accounts: () => LocalizedString
 		/**
 		 * Account Information
 		 */
