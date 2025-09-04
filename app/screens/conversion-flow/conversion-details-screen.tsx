@@ -576,7 +576,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               defaultCurrency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
-              rightIcon={<View style={styles.iconSlotContainer} />}
+              rightIcon={rightIconFor(InputFieldType.CURRENCY_INPUT)}
             />
           )}
         </View>
