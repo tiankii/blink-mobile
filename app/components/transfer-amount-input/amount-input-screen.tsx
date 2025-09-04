@@ -42,7 +42,7 @@ export type AmountInputScreenProps = {
   lockFormattingUntilBlur?: boolean
 }
 
-enum InputType {
+export enum ConvertInputType {
   FROM = "fromInput",
   TO = "toInput",
   CURRENCY = "currencyInput",
@@ -205,9 +205,9 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
 
   const createFocusStates = useCallback(
     (focusedId: InputField["id"] | null) => ({
-      fromInput: { isFocused: focusedId === InputType.FROM },
-      toInput: { isFocused: focusedId === InputType.TO },
-      currencyInput: { isFocused: focusedId === InputType.CURRENCY },
+      fromInput: { isFocused: focusedId === ConvertInputType.FROM },
+      toInput: { isFocused: focusedId === ConvertInputType.TO },
+      currencyInput: { isFocused: focusedId === ConvertInputType.CURRENCY },
     }),
     [],
   )
@@ -364,24 +364,24 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
       const payload: IInputValues = {
         formattedAmount: formattedForParent,
         fromInput: {
-          id: InputType.FROM,
+          id: ConvertInputType.FROM,
           currency: inputValues.fromInput.amount.currency,
           formattedAmount: formatAmount(fromAmount, false),
-          isFocused: focusedIdRef.current === InputType.FROM,
+          isFocused: focusedIdRef.current === ConvertInputType.FROM,
           amount: fromAmount,
         },
         toInput: {
-          id: InputType.TO,
+          id: ConvertInputType.TO,
           currency: inputValues.toInput.amount.currency,
           formattedAmount: formatAmount(toAmount, true),
-          isFocused: focusedIdRef.current === InputType.TO,
+          isFocused: focusedIdRef.current === ConvertInputType.TO,
           amount: toAmount,
         },
         currencyInput: {
-          id: InputType.CURRENCY,
+          id: ConvertInputType.CURRENCY,
           currency: inputValues.currencyInput.amount.currency,
           formattedAmount: formatAmount(currencyAmount, false),
-          isFocused: focusedIdRef.current === InputType.CURRENCY,
+          isFocused: focusedIdRef.current === ConvertInputType.CURRENCY,
           amount: currencyAmount,
         },
       }

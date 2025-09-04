@@ -32,10 +32,15 @@ import {
 import { ErrorBanner } from "@app/components/error-banner"
 import { Screen } from "@app/components/screen"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
-import { AmountInputScreen } from "@app/components/transfer-amount-input"
+import {
+  AmountInputScreen,
+  ConvertInputType,
+} from "@app/components/transfer-amount-input"
 import { PercentageSelector } from "@app/components/percentage-selector"
 import { WalletAmountRow, WalletToggleButton } from "@app/components/wallet-selector"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+
+import { useConversionFormatting, useConversionOverlayFocus } from "./hooks"
 
 gql`
   query conversionScreen {
@@ -52,12 +57,6 @@ gql`
     }
   }
 `
-
-enum InputFieldType {
-  FROM_INPUT = "fromInput",
-  TO_INPUT = "toInput",
-  CURRENCY_INPUT = "currencyInput",
-}
 
 export const ConversionDetailsScreen = () => {
   const {
@@ -111,21 +110,21 @@ export const ConversionDetailsScreen = () => {
   )
   const [inputValues, setInputValues] = useState<IInputValues>({
     fromInput: {
-      id: InputFieldType.FROM_INPUT,
+      id: ConvertInputType.FROM,
       currency: WalletCurrency.Btc,
       amount: toBtcMoneyAmount(0),
       isFocused: false,
       formattedAmount: "",
     },
     toInput: {
-      id: InputFieldType.TO_INPUT,
+      id: ConvertInputType.TO,
       currency: WalletCurrency.Usd,
       amount: toUsdMoneyAmount(0),
       isFocused: false,
       formattedAmount: "",
     },
     currencyInput: {
-      id: InputFieldType.CURRENCY_INPUT,
+      id: ConvertInputType.CURRENCY,
       currency: displayCurrency as DisplayCurrency,
       amount: toDisplayAmount({ amount: 0, currencyCode: displayCurrency }),
       isFocused: false,
@@ -147,7 +146,7 @@ export const ConversionDetailsScreen = () => {
   const fromInputRef = useRef<TextInput | null>(null)
   const toInputRef = useRef<TextInput | null>(null)
   const toggleInitiated = useRef(false)
-  const pendingFocusId = useRef<InputFieldType | null>(null)
+  const pendingFocusId = useRef<ConvertInputType | null>(null)
   const hadInitialFocus = useRef(false)
 
   useEffect(() => {
@@ -157,12 +156,35 @@ export const ConversionDetailsScreen = () => {
     return () => clearTimeout(timer)
   }, [])
 
+  const { renderValue, caretSelectionFor } = useConversionFormatting({
+    inputValues,
+    inputFormattedValues,
+    isTyping,
+    typingInputId,
+    lockFormattingInputId,
+    displayCurrency: displayCurrency as DisplayCurrency,
+    getCurrencySymbol,
+  })
+
+  const { handleInputPress, focusPhysically } = useConversionOverlayFocus({
+    uiLocked,
+    lockFormattingInputId,
+    setLockFormattingInputId,
+    setIsTyping,
+    inputFormattedValues,
+    inputValues,
+    renderValue,
+    fromInputRef,
+    toInputRef,
+    setFocusedInputValues,
+  })
+
   useEffect(() => {
     if (!hadInitialFocus.current && overlaysReady && fromWallet && fromInputRef.current) {
       const baseTarget = inputFormattedValues?.fromInput ?? inputValues.fromInput
       setFocusedInputValues({
         ...baseTarget,
-        id: InputFieldType.FROM_INPUT,
+        id: ConvertInputType.FROM,
         isFocused: true,
       })
 
@@ -237,94 +259,14 @@ export const ConversionDetailsScreen = () => {
     })
   }, [])
 
-  const fieldFormatted = useCallback(
-    (id: InputField["id"]) =>
-      id === InputFieldType.FROM_INPUT
-        ? inputFormattedValues?.fromInput.formattedAmount || ""
-        : id === InputFieldType.TO_INPUT
-          ? inputFormattedValues?.toInput.formattedAmount || ""
-          : inputFormattedValues?.currencyInput.formattedAmount || "",
-    [inputFormattedValues],
-  )
-
-  const typedValue = useCallback(
-    (id: InputField["id"]) => {
-      const digits = inputFormattedValues?.formattedAmount ?? ""
-      if (!digits) return ""
-      const curr =
-        id === InputFieldType.FROM_INPUT
-          ? inputValues.fromInput.currency
-          : id === InputFieldType.TO_INPUT
-            ? inputValues.toInput.currency
-            : displayCurrency
-      const isBtc = curr === WalletCurrency.Btc
-      return isBtc ? digits : `${getCurrencySymbol({ currency: curr })}${digits}`
-    },
-    [inputFormattedValues, inputValues, displayCurrency, getCurrencySymbol],
-  )
-
-  const renderValue = useCallback(
-    (id: InputField["id"]) =>
-      (isTyping && typingInputId === id) || lockFormattingInputId === id
-        ? typedValue(id)
-        : fieldFormatted(id),
-    [isTyping, typingInputId, lockFormattingInputId, typedValue, fieldFormatted],
-  )
-
-  const caretSelectionFor = useCallback(
-    (id: InputField["id"]) => {
-      const value = renderValue(id) ?? ""
-      const satIdx =
-        value.indexOf(" SAT") >= 0
-          ? value.indexOf(" SAT")
-          : value.toUpperCase().indexOf(" SAT")
-      const pos = satIdx >= 0 ? satIdx : value.length
-      return { start: pos, end: pos } as const
-    },
-    [renderValue],
-  )
-
-  const handleInputPress = useCallback(
-    (id: InputField["id"]) => {
-      if (uiLocked) return
-
-      if (lockFormattingInputId && lockFormattingInputId !== id) {
-        setLockFormattingInputId(null)
-        setIsTyping(false)
-      }
-
-      const ref = id === InputFieldType.FROM_INPUT ? fromInputRef : toInputRef
-      const value = renderValue(id) ?? ""
-      const satIdx =
-        value.indexOf(" SAT") >= 0
-          ? value.indexOf(" SAT")
-          : value.toUpperCase().indexOf(" SAT")
-      const pos = satIdx >= 0 ? satIdx : value.length
-
-      const inputToFocus =
-        id === InputFieldType.FROM_INPUT
-          ? inputFormattedValues?.fromInput ?? inputValues.fromInput
-          : inputFormattedValues?.toInput ?? inputValues.toInput
-
-      setFocusedInputValues({ ...inputToFocus })
-
-      setTimeout(() => {
-        ref.current?.focus()
-        ref.current?.setNativeProps({ selection: { start: pos, end: pos } })
-      }, 10)
-    },
-    [uiLocked, lockFormattingInputId, inputFormattedValues, inputValues, renderValue],
-  )
-
   useEffect(() => {
     if (displayCurrency === WalletCurrency.Usd && fromInputRef.current) {
-      const value = renderValue(InputFieldType.FROM_INPUT) ?? ""
+      const value = renderValue(ConvertInputType.FROM) ?? ""
       const satIdx =
         value.indexOf(" SAT") >= 0
           ? value.indexOf(" SAT")
           : value.toUpperCase().indexOf(" SAT")
       const pos = satIdx >= 0 ? satIdx : value.length
-
       setTimeout(() => {
         fromInputRef.current?.setNativeProps({ selection: { start: pos, end: pos } })
       }, 100)
@@ -340,22 +282,6 @@ export const ConversionDetailsScreen = () => {
       </View>
     ),
     [isTyping, typingInputId, colors.primary, styles.iconSlotContainer],
-  )
-
-  const focusPhysically = useCallback(
-    (id: InputFieldType) => {
-      const ref = id === InputFieldType.FROM_INPUT ? fromInputRef : toInputRef
-      const value = renderValue(id) ?? ""
-      const satIdx =
-        value.indexOf(" SAT") >= 0
-          ? value.indexOf(" SAT")
-          : value.toUpperCase().indexOf(" SAT")
-      const pos = satIdx >= 0 ? satIdx : value.length
-
-      ref.current?.focus()
-      ref.current?.setNativeProps({ selection: { start: pos, end: pos } })
-    },
-    [renderValue],
   )
 
   if (!data?.me?.defaultAccount || !fromWallet) return <></>
@@ -377,13 +303,13 @@ export const ConversionDetailsScreen = () => {
       inputValues.fromInput.amount
     const currentFocusedId = focusedInputValues?.id ?? null
     const newFocusedId =
-      currentFocusedId === InputFieldType.FROM_INPUT
-        ? InputFieldType.TO_INPUT
-        : InputFieldType.FROM_INPUT
+      currentFocusedId === ConvertInputType.FROM
+        ? ConvertInputType.TO
+        : ConvertInputType.FROM
 
     pendingFocusId.current = newFocusedId
     const baseTarget =
-      newFocusedId === InputFieldType.FROM_INPUT
+      newFocusedId === ConvertInputType.FROM
         ? (inputValues.toInput as InputField)
         : (inputValues.fromInput as InputField)
 
@@ -398,17 +324,17 @@ export const ConversionDetailsScreen = () => {
       ...prev,
       fromInput: {
         ...prev.toInput,
-        id: InputFieldType.FROM_INPUT,
-        isFocused: newFocusedId === InputFieldType.FROM_INPUT,
+        id: ConvertInputType.FROM,
+        isFocused: newFocusedId === ConvertInputType.FROM,
       },
       toInput: {
         ...prev.fromInput,
-        id: InputFieldType.TO_INPUT,
-        isFocused: newFocusedId === InputFieldType.TO_INPUT,
+        id: ConvertInputType.TO,
+        isFocused: newFocusedId === ConvertInputType.TO,
       },
       currencyInput: {
         ...prev.currencyInput,
-        isFocused: currentFocusedId === InputFieldType.CURRENCY_INPUT,
+        isFocused: currentFocusedId === ConvertInputType.CURRENCY,
       },
     }))
 
@@ -417,13 +343,13 @@ export const ConversionDetailsScreen = () => {
 
       const swappedFrom: InputField = {
         ...prev.toInput,
-        id: InputFieldType.FROM_INPUT,
-        isFocused: newFocusedId === InputFieldType.FROM_INPUT,
+        id: ConvertInputType.FROM,
+        isFocused: newFocusedId === ConvertInputType.FROM,
       }
       const swappedTo: InputField = {
         ...prev.fromInput,
-        id: InputFieldType.TO_INPUT,
-        isFocused: newFocusedId === InputFieldType.TO_INPUT,
+        id: ConvertInputType.TO,
+        isFocused: newFocusedId === ConvertInputType.TO,
       }
       const normalizedFrom: InputField = {
         ...swappedFrom,
@@ -440,7 +366,7 @@ export const ConversionDetailsScreen = () => {
         toInput: normalizedTo,
         currencyInput: {
           ...prev.currencyInput,
-          isFocused: currentFocusedId === InputFieldType.CURRENCY_INPUT,
+          isFocused: currentFocusedId === ConvertInputType.CURRENCY,
         },
         formattedAmount: prev.formattedAmount,
       }
@@ -508,15 +434,15 @@ export const ConversionDetailsScreen = () => {
         <View style={styles.walletSelectorContainer}>
           <WalletAmountRow
             inputRef={fromInputRef}
-            value={renderValue(InputFieldType.FROM_INPUT)}
+            value={renderValue(ConvertInputType.FROM)}
             placeholder={
               fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
             }
-            rightIcon={rightIconFor(InputFieldType.FROM_INPUT)}
-            selection={caretSelectionFor(InputFieldType.FROM_INPUT)}
+            rightIcon={rightIconFor(ConvertInputType.FROM)}
+            selection={caretSelectionFor(ConvertInputType.FROM)}
             isLocked={uiLocked}
             onOverlayPress={() =>
-              overlaysReady && !uiLocked && handleInputPress(InputFieldType.FROM_INPUT)
+              overlaysReady && !uiLocked && handleInputPress(ConvertInputType.FROM)
             }
             onFocus={() =>
               setFocusedInputValues(
@@ -540,15 +466,15 @@ export const ConversionDetailsScreen = () => {
 
           <WalletAmountRow
             inputRef={toInputRef}
-            value={renderValue(InputFieldType.TO_INPUT)}
+            value={renderValue(ConvertInputType.TO)}
             placeholder={
               fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
             }
-            rightIcon={rightIconFor(InputFieldType.TO_INPUT)}
-            selection={caretSelectionFor(InputFieldType.TO_INPUT)}
+            rightIcon={rightIconFor(ConvertInputType.TO)}
+            selection={caretSelectionFor(ConvertInputType.TO)}
             isLocked={uiLocked}
             onOverlayPress={() =>
-              overlaysReady && !uiLocked && handleInputPress(InputFieldType.TO_INPUT)
+              overlaysReady && !uiLocked && handleInputPress(ConvertInputType.TO)
             }
             onFocus={() =>
               setFocusedInputValues(
@@ -567,7 +493,7 @@ export const ConversionDetailsScreen = () => {
         >
           {displayCurrency !== WalletCurrency.Usd && (
             <CurrencyInputModal
-              inputValue={renderValue(InputFieldType.CURRENCY_INPUT)}
+              inputValue={renderValue(ConvertInputType.CURRENCY)}
               onFocus={() =>
                 setFocusedInputValues(
                   inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
@@ -576,7 +502,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               defaultCurrency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
-              rightIcon={rightIconFor(InputFieldType.CURRENCY_INPUT)}
+              rightIcon={rightIconFor(ConvertInputType.CURRENCY)}
             />
           )}
         </View>

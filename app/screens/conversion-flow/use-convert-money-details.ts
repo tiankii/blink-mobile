@@ -2,6 +2,7 @@ import React from "react"
 
 import { Wallet } from "@app/graphql/generated"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { ConvertInputType } from "@app/components/transfer-amount-input"
 import { DisplayCurrency, MoneyAmount, WalletOrDisplayCurrency } from "@app/types/amounts"
 
 import { usePriceConversion } from "../../hooks/use-price-conversion"
@@ -12,7 +13,7 @@ type UseConvertMoneyDetailsParams = {
   initialFromWallet: WalletFragment
   initialToWallet: WalletFragment
 }
-export type TInputCurrency = "fromInput" | "toInput" | "currencyInput"
+export type TInputCurrency = (typeof ConvertInputType)[keyof typeof ConvertInputType]
 export interface InputField {
   id: TInputCurrency
   currency: WalletOrDisplayCurrency
