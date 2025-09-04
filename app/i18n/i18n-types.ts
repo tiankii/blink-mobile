@@ -7661,6 +7661,15 @@ type RootTranslation = {
 		 * f​r​o​m​ ​t​h​i​s​ ​d​e​v​i​c​e​?
 		 */
 		fromThisDevice: string
+		/**
+		 * Y​o​u​ ​s​w​i​t​c​h​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​a​c​c​o​u​n​t
+		 */
+		switchAccount: string
+		/**
+		 * Y​o​u​ ​r​e​m​o​v​e​d​ ​a​c​c​o​u​n​t​ ​{​i​d​e​n​t​i​f​i​e​r​}​.
+		 * @param {string} identifier
+		 */
+		removedAccount: RequiredParams<'identifier'>
 	}
 	TotpRegistrationInitiateScreen: {
 		/**
@@ -16993,6 +17002,14 @@ export type TranslationFunctions = {
 		 * from this device?
 		 */
 		fromThisDevice: () => LocalizedString
+		/**
+		 * You switched to another account
+		 */
+		switchAccount: () => LocalizedString
+		/**
+		 * You removed account {identifier}.
+		 */
+		removedAccount: (arg: { identifier: string }) => LocalizedString
 	}
 	TotpRegistrationInitiateScreen: {
 		/**

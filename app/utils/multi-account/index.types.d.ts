@@ -9,6 +9,8 @@ type ProfileProps = {
   accountId?: string
   isFirstItem?: boolean
   nextProfileToken?: string
+  hasUsername?: boolean
+  lnAddressHostname: string
 }
 
 type FetchUsername = LazyQueryExecFunction<GetUsernamesQuery, Record<string, never>>

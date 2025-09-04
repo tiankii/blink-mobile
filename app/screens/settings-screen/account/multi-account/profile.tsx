@@ -15,6 +15,7 @@ import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button/galoy-
 import Modal from "react-native-modal"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
+import { toastShow } from "@app/utils/toast"
 
 export const ProfileScreen: React.FC<ProfileProps> = ({
   identifier,
@@ -22,6 +23,8 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
   nextProfileToken,
   selected,
   isFirstItem,
+  hasUsername,
+  lnAddressHostname,
 }) => {
   const {
     theme: { colors },
@@ -49,6 +52,11 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
     })
 
     setSwitchLoading(false)
+    toastShow({
+      type: "success",
+      message: LL.ProfileScreen.switchAccount(),
+      LL,
+    })
     navigation.navigate("Primary")
   }
 
@@ -62,6 +70,11 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
     if (shouldSwitchProfile) {
       await logout({ stateToDefault: false, token })
       await handleProfileSwitch(nextProfileToken)
+      toastShow({
+        type: "success",
+        message: LL.ProfileScreen.removedAccount({ identifier }),
+        LL,
+      })
       return
     }
 
@@ -102,7 +115,7 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
             {LL.common.logout()}
           </Text>
           <Text type="h1" bold>
-            {identifier}
+            {hasUsername ? `${identifier}@${lnAddressHostname}` : identifier}
           </Text>
           <Text type="h1" bold>
             {LL.ProfileScreen.fromThisDevice()}
@@ -133,27 +146,29 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
           containerStyle={[styles.listStyle, isFirstItem && styles.firstItem]}
         >
           {selected ? (
-            <Icon name="checkmark-circle-outline" size={23} color={colors._green} />
+            <Icon name="checkmark-circle-outline" size={20} color={colors._green} />
           ) : (
             <View style={styles.spacerStyle} />
           )}
           <ListItem.Content>
-            <ListItem.Title>{identifier}</ListItem.Title>
+            <ListItem.Title>
+              {hasUsername ? `${identifier}@${lnAddressHostname}` : identifier}
+            </ListItem.Title>
           </ListItem.Content>
           {logoutLoading ? (
-            <ActivityIndicator size="large" color={styles.loadingIconColor.color} />
+            <ActivityIndicator size="small" color={colors.primary} />
           ) : (
             <GaloyIconButton
               name="close"
-              size="medium"
+              size="small"
               onPress={openModal}
-              backgroundColor={styles.iconColor.color}
+              backgroundColor={colors.grey4}
             />
           )}
         </ListItem>
       </TouchableOpacity>
       <Overlay isVisible={switchLoading} overlayStyle={styles.overlayStyle}>
-        <ActivityIndicator size={50} color={styles.loadingIconColor.color} />
+        <ActivityIndicator size={50} color={colors.primary} />
         <Text>{LL.AccountScreen.pleaseWait()}</Text>
       </Overlay>
       {logoutModal}
@@ -175,14 +190,8 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: "transparent",
     shadowColor: "transparent",
   },
-  loadingIconColor: {
-    color: colors.primary,
-  },
   spacerStyle: {
     width: 23,
-  },
-  iconColor: {
-    color: colors.grey5,
   },
   modalView: {
     marginHorizontal: 20,

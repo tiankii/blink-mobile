@@ -29,10 +29,19 @@ gql`
 export const useSaveSessionProfile = () => {
   const { LL } = useI18nContext()
   const client = useApolloClient()
-  const { saveToken } = useAppConfig()
+
+  const {
+    saveToken,
+    appConfig: {
+      token: currentToken,
+      galoyInstance: { lnAddressHostname },
+    },
+  } = useAppConfig()
+
   const { resetUpgradeModal } = useAutoShowUpgradeModal()
   const [fetchUsername] = useGetUsernamesLazyQuery({ fetchPolicy: "no-cache" })
   const blinkUserText = LL.common.blinkUser()
+  const hostName = lnAddressHostname
 
   const tryFetchUserProps = useCallback(
     async ({
@@ -62,12 +71,14 @@ export const useSaveSessionProfile = () => {
           phone,
           email: email?.address,
           accountId: defaultAccount?.id,
+          hasUsername: Boolean(username),
+          lnAddressHostname: hostName,
         }
       } catch (err) {
         if (err instanceof Error) crashlytics().recordError(err)
       }
     },
-    [blinkUserText],
+    [blinkUserText, hostName],
   )
 
   const saveProfile = useCallback(
@@ -104,7 +115,18 @@ export const useSaveSessionProfile = () => {
     [saveToken, tryFetchUserProps, fetchUsername, resetUpgradeModal, client],
   )
 
+  const updateCurrentProfile = useCallback(async (): Promise<void> => {
+    const profiles = await KeyStoreWrapper.getSessionProfiles()
+    const currentProfile = await tryFetchUserProps({ token: currentToken, fetchUsername })
+    if (!currentProfile) return
+    const updatedProfiles = profiles.map((p) =>
+      p.accountId === currentProfile.accountId ? currentProfile : p,
+    )
+    await KeyStoreWrapper.saveSessionProfiles(updatedProfiles)
+  }, [fetchUsername, tryFetchUserProps, currentToken])
+
   return {
     saveProfile,
+    updateCurrentProfile,
   }
 }

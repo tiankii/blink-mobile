@@ -2363,7 +2363,9 @@
     "ProfileScreen": {
         "addAccount": "Agregar una cuenta",
         "error": "No se pudo obtener la información de los perfiles en este momento",
-        "fromThisDevice": "desde este dispositivo?"
+        "fromThisDevice": "desde este dispositivo?",
+        "switchAccount": "Cambiaste a otra cuenta",
+        "removedAccount": "Eliminaste la cuenta {identifier: string}."
     },
     "TotpRegistrationInitiateScreen": {
         "title": "Autenticación de dos factores",

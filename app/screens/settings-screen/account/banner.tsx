@@ -26,7 +26,11 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
   const {
     theme: { colors },
   } = useTheme()
-  const { appConfig } = useAppConfig()
+  const {
+    appConfig: {
+      galoyInstance: { lnAddressHostname },
+    },
+  } = useAppConfig()
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
@@ -36,8 +40,7 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
   const { data, loading } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
 
   const hasUsername = Boolean(data?.me?.username)
-  const hostName = appConfig.galoyInstance.lnAddressHostname
-  const lnAddress = `${data?.me?.username}@${hostName}`
+  const lnAddress = `${data?.me?.username}@${lnAddressHostname}`
 
   const usernameTitle = hasUsername ? lnAddress : LL.common.blinkUser()
 

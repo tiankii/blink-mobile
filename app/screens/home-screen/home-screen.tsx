@@ -686,7 +686,7 @@ const useStyles = makeStyles(({ colors }) => ({
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 15,
+    gap: 12,
   },
   balanceHeader: {
     alignItems: "center",
