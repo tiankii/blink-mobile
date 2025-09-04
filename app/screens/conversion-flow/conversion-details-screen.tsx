@@ -28,13 +28,13 @@ import {
   toWalletAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { Input, makeStyles, Text, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
 import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
 import { AmountInputScreen } from "@app/components/transfer-amount-input"
+import { PercentageSelector } from "@app/components/percentage-selector"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
@@ -652,58 +652,13 @@ export const ConversionDetailsScreen = () => {
       </View>
 
       <View style={styles.flexArea}>
-        <View style={styles.percentageContainer}>
-          <View style={styles.percentageFieldContainer}>
-            <TouchableOpacity
-              {...testProps("convert-25%")}
-              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
-              disabled={uiLocked}
-              onPress={() => setAmountToBalancePercentage(25)}
-            >
-              {loadingPercent === 25 ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : (
-                <Text style={styles.percentageFieldText}>25%</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              {...testProps("convert-50%")}
-              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
-              disabled={uiLocked}
-              onPress={() => setAmountToBalancePercentage(50)}
-            >
-              {loadingPercent === 50 ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : (
-                <Text style={styles.percentageFieldText}>50%</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              {...testProps("convert-75%")}
-              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
-              disabled={uiLocked}
-              onPress={() => setAmountToBalancePercentage(75)}
-            >
-              {loadingPercent === 75 ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : (
-                <Text style={styles.percentageFieldText}>75%</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              {...testProps("convert-100%")}
-              style={[styles.percentageField, uiLocked && styles.percentageFieldDisabled]}
-              disabled={uiLocked}
-              onPress={() => setAmountToBalancePercentage(100)}
-            >
-              {loadingPercent === 100 ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : (
-                <Text style={styles.percentageFieldText}>100%</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
+        <PercentageSelector
+          isLocked={uiLocked}
+          loadingPercent={loadingPercent}
+          onSelect={setAmountToBalancePercentage}
+          testIdPrefix="convert"
+          containerStyle={styles.percentageContainer}
+        />
 
         <View
           style={[styles.keyboardContainer, uiLocked && styles.disabledOpacity]}
@@ -853,28 +808,10 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   },
   percentageContainer: {
     flexDirection: "row",
+    justifyContent: "space-around",
     paddingHorizontal: 20,
+    marginBottom: 8,
   },
-  percentageFieldContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    flex: 1,
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  percentageField: {
-    backgroundColor: colors.grey5,
-    borderRadius: 100,
-    alignItems: "center",
-    minWidth: 50,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginVertical: 6,
-  },
-  percentageFieldDisabled: {
-    opacity: 0.5,
-  },
-  percentageFieldText: { color: colors.primary, fontWeight: "bold" },
   keyboardContainer: {
     flex: 1,
     maxHeight: 350,
