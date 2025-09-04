@@ -1,11 +1,10 @@
 import * as React from "react"
 import { View } from "react-native"
-
 import { makeStyles } from "@rneui/themed"
 
-import { GaloyErrorBox } from "../atomic/galoy-error-box"
-import { CurrencyKeyboard } from "../currency-keyboard"
-import { Key } from "../amount-input-screen/number-pad-reducer"
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
+import { CurrencyKeyboard } from "@app/components/currency-keyboard"
+import { Key } from "@app/components/amount-input-screen/number-pad-reducer"
 
 export type AmountInputScreenUIProps = {
   errorMessage?: string
