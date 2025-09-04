@@ -364,39 +364,34 @@ export const ConversionDetailsScreen = () => {
 
   const toggleInputs = () => {
     if (uiLocked) return
-    setUiLocked(true)
-    toggleInitiated.current = true
 
+    toggleInitiated.current = true
     setLockFormattingInputId(null)
     setIsTyping(false)
+    setUiLocked(true)
 
     const currentActiveAmount =
       moneyAmount ||
       inputFormattedValues?.fromInput?.amount ||
       inputValues.fromInput.amount
-
     const currentFocusedId = focusedInputValues?.id ?? null
     const newFocusedId =
       currentFocusedId === InputFieldType.FROM_INPUT
         ? InputFieldType.TO_INPUT
         : InputFieldType.FROM_INPUT
 
-    if (newFocusedId) {
-      pendingFocusId.current = newFocusedId
-      const baseTarget =
-        newFocusedId === InputFieldType.FROM_INPUT
-          ? (inputValues.toInput as InputField)
-          : (inputValues.fromInput as InputField)
+    pendingFocusId.current = newFocusedId
+    const baseTarget =
+      newFocusedId === InputFieldType.FROM_INPUT
+        ? (inputValues.toInput as InputField)
+        : (inputValues.fromInput as InputField)
 
-      setFocusedInputValues({
-        ...baseTarget,
-        id: newFocusedId,
-        isFocused: true,
-        amount: currentActiveAmount,
-      })
-    } else {
-      setFocusedInputValues(null)
-    }
+    setFocusedInputValues({
+      ...baseTarget,
+      id: newFocusedId,
+      isFocused: true,
+      amount: currentActiveAmount,
+    })
 
     setInputValues((prev) => ({
       ...prev,
@@ -437,6 +432,7 @@ export const ConversionDetailsScreen = () => {
         ...swappedTo,
         formattedAmount: ensureApprox(swappedTo.formattedAmount) ?? "",
       }
+
       return {
         ...prev,
         fromInput: normalizedFrom,
