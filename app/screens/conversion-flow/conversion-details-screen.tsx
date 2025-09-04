@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { TouchableOpacity, View, ActivityIndicator, TextInput } from "react-native"
+import { View, ActivityIndicator, TextInput } from "react-native"
 
 import { gql } from "@apollo/client"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -29,13 +29,12 @@ import {
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { Input, makeStyles, Text, useTheme } from "@rneui/themed"
-import Icon from "react-native-vector-icons/Ionicons"
-import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
 import { AmountInputScreen } from "@app/components/transfer-amount-input"
 import { PercentageSelector } from "@app/components/percentage-selector"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { WalletAmountRow, WalletToggleButton } from "@app/components/wallet-selector"
 
 gql`
   query conversionScreen {
@@ -510,113 +509,59 @@ export const ConversionDetailsScreen = () => {
     <Screen preset="fixed">
       <View style={styles.styleWalletContainer}>
         <View style={styles.walletSelectorContainer}>
-          <View style={[styles.fromFieldContainer, uiLocked && styles.disabledOpacity]}>
-            <Input
-              ref={fromInputRef}
-              value={renderValue(InputFieldType.FROM_INPUT)}
-              onFocus={() =>
-                setFocusedInputValues(
-                  inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
-                )
-              }
-              onChangeText={() => {}}
-              showSoftInputOnFocus={false}
-              containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
-              inputStyle={styles.primaryNumberText}
-              placeholder={
-                fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
-              }
-              placeholderTextColor={colors.grey3}
-              inputContainerStyle={styles.primaryNumberInputContainer}
-              renderErrorMessage={false}
-              rightIcon={rightIconFor(InputFieldType.FROM_INPUT)}
-              selection={caretSelectionFor(InputFieldType.FROM_INPUT)}
-              pointerEvents="none"
-            />
-            <TouchableOpacity
-              style={styles.inputOverlay}
-              activeOpacity={1}
-              onPress={() =>
-                overlaysReady && !uiLocked && handleInputPress(InputFieldType.FROM_INPUT)
-              }
-            />
-            <View style={styles.rightColumn}>
-              <View style={styles.currencyBubbleText}>
-                <GaloyCurrencyBubbleText
-                  currency={fromWallet.walletCurrency}
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              </View>
-              <View style={styles.walletSelectorBalanceContainer}>
-                <Text style={styles.convertText}>{fromWalletBalanceFormatted}</Text>
-                <Text style={styles.convertText}>{fromSatsFormatted}</Text>
-              </View>
-            </View>
-          </View>
+          <WalletAmountRow
+            inputRef={fromInputRef}
+            value={renderValue(InputFieldType.FROM_INPUT)}
+            placeholder={
+              fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
+            }
+            rightIcon={rightIconFor(InputFieldType.FROM_INPUT)}
+            selection={caretSelectionFor(InputFieldType.FROM_INPUT)}
+            isLocked={uiLocked}
+            onOverlayPress={() =>
+              overlaysReady && !uiLocked && handleInputPress(InputFieldType.FROM_INPUT)
+            }
+            onFocus={() =>
+              setFocusedInputValues(
+                inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
+              )
+            }
+            currency={fromWallet.walletCurrency}
+            balancePrimary={fromWalletBalanceFormatted}
+            balanceSecondary={fromSatsFormatted}
+          />
 
           <View style={styles.walletSeparator} pointerEvents="box-none">
             <View style={styles.line} pointerEvents="none" />
-            <TouchableOpacity
-              style={[
-                styles.switchButton,
-                (!canToggleWallet || uiLocked) && styles.switchButtonDisabled,
-              ]}
+            <WalletToggleButton
+              loading={toggleInitiated.current}
               disabled={!canToggleWallet || uiLocked}
               onPress={toggleInputs}
-            >
-              {toggleInitiated.current ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : (
-                <Icon name="arrow-down-outline" color={colors.primary} size={25} />
-              )}
-            </TouchableOpacity>
+              containerStyle={styles.switchButton}
+            />
           </View>
 
-          <View style={[styles.toFieldContainer, uiLocked && styles.disabledOpacity]}>
-            <Input
-              ref={toInputRef}
-              value={renderValue(InputFieldType.TO_INPUT)}
-              onFocus={() =>
-                setFocusedInputValues(
-                  inputFormattedValues?.toInput ?? { ...inputValues.toInput },
-                )
-              }
-              onChangeText={() => {}}
-              showSoftInputOnFocus={false}
-              containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
-              inputStyle={styles.primaryNumberText}
-              placeholder={
-                fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
-              }
-              placeholderTextColor={colors.grey3}
-              inputContainerStyle={styles.primaryNumberInputContainer}
-              renderErrorMessage={false}
-              rightIcon={rightIconFor(InputFieldType.TO_INPUT)}
-              selection={caretSelectionFor(InputFieldType.TO_INPUT)}
-              pointerEvents="none"
-            />
-            <TouchableOpacity
-              style={styles.inputOverlay}
-              activeOpacity={1}
-              onPress={() =>
-                overlaysReady && !uiLocked && handleInputPress(InputFieldType.TO_INPUT)
-              }
-            />
-            <View style={styles.rightColumn}>
-              <View style={styles.currencyBubbleText}>
-                <GaloyCurrencyBubbleText
-                  currency={toWallet.walletCurrency}
-                  textSize="p2"
-                  containerSize="medium"
-                />
-              </View>
-              <View style={styles.walletSelectorBalanceContainer}>
-                <Text style={styles.convertText}>{toWalletBalanceFormatted}</Text>
-                <Text style={styles.convertText}>{toSatsFormatted}</Text>
-              </View>
-            </View>
-          </View>
+          <WalletAmountRow
+            inputRef={toInputRef}
+            value={renderValue(InputFieldType.TO_INPUT)}
+            placeholder={
+              fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
+            }
+            rightIcon={rightIconFor(InputFieldType.TO_INPUT)}
+            selection={caretSelectionFor(InputFieldType.TO_INPUT)}
+            isLocked={uiLocked}
+            onOverlayPress={() =>
+              overlaysReady && !uiLocked && handleInputPress(InputFieldType.TO_INPUT)
+            }
+            onFocus={() =>
+              setFocusedInputValues(
+                inputFormattedValues?.toInput ?? { ...inputValues.toInput },
+              )
+            }
+            currency={toWallet.walletCurrency}
+            balancePrimary={toWalletBalanceFormatted}
+            balanceSecondary={toSatsFormatted}
+          />
         </View>
 
         <View
@@ -634,7 +579,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               defaultCurrency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
-              rightIcon={rightIconFor(InputFieldType.CURRENCY_INPUT)}
+              rightIcon={<View style={styles.iconSlotContainer} />}
             />
           )}
         </View>
@@ -730,32 +675,6 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     paddingTop: 10,
     paddingBottom: 10,
   },
-  fromFieldContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 6,
-    paddingBottom: 6,
-    marginBottom: 4,
-    position: "relative",
-  },
-  toFieldContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 6,
-    paddingBottom: 6,
-    position: "relative",
-  },
-  inputWithOverlay: {
-    position: "relative",
-  },
-  inputOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 10,
-  },
   walletSeparator: {
     flexDirection: "row",
     justifyContent: "center",
@@ -768,36 +687,10 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   switchButton: {
     position: "absolute",
     left: 100,
-    height: 50,
-    width: 50,
-    borderRadius: 50,
-    backgroundColor: colors.grey4,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 3,
-    elevation: 3,
   },
   switchButtonDisabled: {
     opacity: 0.5,
   },
-  rightColumn: {
-    minWidth: 96,
-    alignItems: "flex-end",
-    justifyContent: "flex-start",
-  },
-  currencyBubbleText: {
-    display: "flex",
-    alignItems: "flex-end",
-    alignSelf: "flex-end",
-    marginTop: 2,
-  },
-  walletSelectorBalanceContainer: {
-    marginTop: 5,
-    flexDirection: "column",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-  },
-  convertText: { textAlign: "right" },
   currencyInputContainer: {
     marginTop: 10,
   },
@@ -820,17 +713,7 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     paddingVertical: 15,
     justifyContent: "flex-end",
   },
-  primaryNumberContainer: { flex: 1, paddingHorizontal: 0 },
-  primaryNumberText: {
-    fontSize: 20,
-    lineHeight: 24,
-    flex: 1,
-    fontWeight: "600",
-    padding: 0,
-    margin: 0,
-  },
   disabledOpacity: { opacity: 0.5 },
-  primaryNumberInputContainer: { borderBottomWidth: 0, paddingBottom: 0 },
   errorBarContainer: {
     height: 44,
     marginTop: 8,
