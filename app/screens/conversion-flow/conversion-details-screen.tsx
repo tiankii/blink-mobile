@@ -691,7 +691,7 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     flexDirection: "row",
     justifyContent: "space-around",
     paddingHorizontal: 20,
-    marginBottom: 8,
+    marginVertical: 10,
   },
   keyboardContainer: {
     flex: 1,
