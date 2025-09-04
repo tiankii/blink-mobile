@@ -522,11 +522,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               showSoftInputOnFocus={false}
               containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
-              inputStyle={[
-                styles.primaryNumberText,
-                focusedInputValues?.id === InputFieldType.FROM_INPUT &&
-                  styles.activeInput,
-              ]}
+              inputStyle={styles.primaryNumberText}
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
               }
@@ -589,10 +585,7 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               showSoftInputOnFocus={false}
               containerStyle={[styles.primaryNumberContainer, styles.inputWithOverlay]}
-              inputStyle={[
-                styles.primaryNumberText,
-                focusedInputValues?.id === InputFieldType.TO_INPUT && styles.activeInput,
-              ]}
+              inputStyle={styles.primaryNumberText}
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
               }
@@ -899,7 +892,6 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     padding: 0,
     margin: 0,
   },
-  activeInput: { color: colors.primary },
   disabledOpacity: { opacity: 0.5 },
   primaryNumberInputContainer: { borderBottomWidth: 0, paddingBottom: 0 },
   errorBarContainer: {
