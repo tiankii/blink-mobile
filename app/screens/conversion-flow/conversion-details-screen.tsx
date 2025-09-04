@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { View, ActivityIndicator, TextInput } from "react-native"
-
+import { makeStyles, useTheme } from "@rneui/themed"
 import { gql } from "@apollo/client"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { Screen } from "@app/components/screen"
+
 import {
   useConversionScreenQuery,
   useRealtimePriceQuery,
@@ -28,13 +28,14 @@ import {
   toWalletAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+
+import { ErrorBanner } from "@app/components/error-banner"
+import { Screen } from "@app/components/screen"
 import { CurrencyInputModal } from "@app/components/currency-input-modal"
 import { AmountInputScreen } from "@app/components/transfer-amount-input"
 import { PercentageSelector } from "@app/components/percentage-selector"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { WalletAmountRow, WalletToggleButton } from "@app/components/wallet-selector"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 
 gql`
   query conversionScreen {
@@ -580,16 +581,7 @@ export const ConversionDetailsScreen = () => {
           )}
         </View>
 
-        <View style={styles.errorBarContainer}>
-          {amountFieldError ? (
-            <View style={styles.errorContainer}>
-              <GaloyIcon color={colors._white} name="warning" size={20} />
-              <Text color={colors._white} type="p3">
-                {amountFieldError}
-              </Text>
-            </View>
-          ) : null}
-        </View>
+        <ErrorBanner message={amountFieldError} />
       </View>
 
       <View style={styles.flexArea}>
@@ -710,19 +702,5 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     justifyContent: "flex-end",
   },
   disabledOpacity: { opacity: 0.5 },
-  errorBarContainer: {
-    height: 44,
-    marginTop: 8,
-  },
-  errorContainer: {
-    minHeight: 44,
-    alignItems: "center",
-    backgroundColor: colors.error9,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    flexDirection: "row",
-    gap: 6,
-  },
   buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
 }))
