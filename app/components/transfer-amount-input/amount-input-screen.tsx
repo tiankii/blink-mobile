@@ -2,6 +2,7 @@ import * as React from "react"
 import { useCallback, useEffect, useReducer, useRef } from "react"
 
 import { WalletCurrency } from "@app/graphql/generated"
+import { useDebouncedEffect } from "@app/hooks/use-debounce"
 import { CurrencyInfo, useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
@@ -162,7 +163,6 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     }),
   )
 
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const freezeFormatRef = useRef(false)
   const typingRef = useRef(false)
 
@@ -303,14 +303,15 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   }, [numberPadState, inputValues, onSetFormattedAmount])
 
   useEffect(() => {
-    if (!inputValues || skipNextRecalcRef.current) {
-      if (skipNextRecalcRef.current) skipNextRecalcRef.current = false
-      return
+    if (skipNextRecalcRef.current) {
+      skipNextRecalcRef.current = false
     }
+  }, [focusedInput])
 
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+  const debounceEnabled = Boolean(inputValues) && !skipNextRecalcRef.current
 
-    debounceTimerRef.current = setTimeout(() => {
+  useDebouncedEffect(
+    () => {
       const { numberPadNumber } = numberPadState
 
       const digitsEmpty =
@@ -397,23 +398,21 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
       notifyTyping(false)
 
       if (onAfterRecalc) onAfterRecalc()
-    }, debounceMs)
-
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    }
-  }, [
-    numberPadState,
-    currencyInfo,
-    inputValues,
-    formatMoneyAmount,
-    onSetFormattedAmount,
-    onAmountChange,
-    convertToInputCurrencies,
+    },
     debounceMs,
-    notifyTyping,
-    onAfterRecalc,
-  ])
+    [
+      numberPadState,
+      currencyInfo,
+      inputValues,
+      formatMoneyAmount,
+      onSetFormattedAmount,
+      onAmountChange,
+      convertToInputCurrencies,
+      notifyTyping,
+      onAfterRecalc,
+    ],
+    { enabled: debounceEnabled, leading: false, trailing: true },
+  )
 
   const getErrorMessage = () => {
     if (typingRef.current) return null
