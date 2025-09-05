@@ -114,8 +114,9 @@ CurrencyModalButton.displayName = "CurrencyModalButton"
 
 const useStyles = makeStyles(({ colors }) => ({
   pressableBase: {
-    paddingVertical: 7,
-    paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingRight: 15,
+    paddingLeft: 5,
     borderRadius: 13,
     justifyContent: "center",
   },
