@@ -615,9 +615,11 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   },
   percentageContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
     marginVertical: 10,
+    gap: 12,
   },
   keyboardContainer: {
     flex: 1,
