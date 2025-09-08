@@ -51,8 +51,9 @@ export const useConversionFormatting = ({
           : id === "toInput"
             ? inputValues.toInput.currency
             : displayCurrency
-      const isBtc = curr === WalletCurrency.Btc
-      return isBtc ? digits : `${getCurrencySymbol({ currency: curr })}${digits}`
+      if (curr === WalletCurrency.Btc) return `${digits} SAT`
+
+      return `${getCurrencySymbol({ currency: curr })}${digits}`
     },
     [inputFormattedValues, inputValues, displayCurrency, getCurrencySymbol],
   )
