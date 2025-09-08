@@ -72,7 +72,9 @@ export const WalletAmountRow: React.FC<WalletAmountRowProps> = ({
         </View>
         <View style={styles.walletSelectorBalanceContainer}>
           <Text style={styles.convertText}>{balancePrimary}</Text>
-          <Text style={styles.convertText}>{balanceSecondary ?? ""}</Text>
+          <Text style={styles.convertText}>
+            {balanceSecondary ? `~ ${balanceSecondary}` : ""}
+          </Text>
         </View>
       </View>
     </View>
