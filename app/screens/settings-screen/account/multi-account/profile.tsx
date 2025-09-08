@@ -191,7 +191,7 @@ const useStyles = makeStyles(({ colors }) => ({
     shadowColor: "transparent",
   },
   spacerStyle: {
-    width: 23,
+    width: 20,
   },
   modalView: {
     marginHorizontal: 20,
