@@ -123,7 +123,6 @@ const useStyles = makeStyles(() => ({
     fontSize: 20,
     lineHeight: 24,
     flex: 1,
-    fontWeight: "600",
     padding: 0,
     margin: 0,
   },

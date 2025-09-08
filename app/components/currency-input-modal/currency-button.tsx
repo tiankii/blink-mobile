@@ -98,7 +98,6 @@ export const CurrencyModalButton = forwardRef<TextInput, CurrencyModalButtonProp
               type="p2"
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={styles.currencyText}
               {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
             >
               {selectedCurrency}
@@ -140,7 +139,6 @@ const useStyles = makeStyles(({ colors }) => ({
     fontSize: 20,
     lineHeight: 24,
     flex: 1,
-    fontWeight: "600",
     padding: 0,
     margin: 0,
   },
@@ -161,8 +159,5 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 10,
-  },
-  currencyText: {
-    fontWeight: "bold",
   },
 }))
