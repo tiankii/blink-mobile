@@ -31,7 +31,7 @@ import {
 
 import { ErrorBanner } from "@app/components/error-banner"
 import { Screen } from "@app/components/screen"
-import { CurrencyInputModal } from "@app/components/currency-input-modal"
+import { CurrencyInput } from "@app/components/currency-input"
 import {
   AmountInputScreen,
   ConvertInputType,
@@ -492,15 +492,15 @@ export const ConversionDetailsScreen = () => {
           pointerEvents={uiLocked ? "none" : "auto"}
         >
           {displayCurrency !== WalletCurrency.Usd && (
-            <CurrencyInputModal
-              inputValue={renderValue(ConvertInputType.CURRENCY)}
+            <CurrencyInput
+              value={renderValue(ConvertInputType.CURRENCY)}
               onFocus={() =>
                 setFocusedInputValues(
                   inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
                 )
               }
               onChangeText={() => {}}
-              defaultCurrency={displayCurrency}
+              currency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
               rightIcon={rightIconFor(ConvertInputType.CURRENCY)}
             />
