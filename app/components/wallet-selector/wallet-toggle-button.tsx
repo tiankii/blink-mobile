@@ -1,7 +1,6 @@
 import React from "react"
-import { ActivityIndicator, TouchableOpacity, ViewStyle, StyleProp } from "react-native"
+import { ActivityIndicator, TouchableHighlight, ViewStyle, StyleProp } from "react-native"
 import { useTheme, makeStyles } from "@rneui/themed"
-
 import Icon from "react-native-vector-icons/Ionicons"
 
 export type WalletToggleButtonProps = {
@@ -23,17 +22,18 @@ export const WalletToggleButton: React.FC<WalletToggleButtonProps> = ({
   const styles = useStyles()
 
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       style={[styles.button, containerStyle, disabled && styles.buttonDisabled]}
       disabled={disabled}
       onPress={onPress}
+      underlayColor={colors.grey6}
     >
       {loading ? (
         <ActivityIndicator color={colors.primary} />
       ) : (
         <Icon name="arrow-down-outline" color={colors.primary} size={25} />
       )}
-    </TouchableOpacity>
+    </TouchableHighlight>
   )
 }
 
@@ -49,6 +49,6 @@ const useStyles = makeStyles(({ colors }) => ({
     elevation: 3,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    backgroundColor: colors.grey6,
   },
 }))
