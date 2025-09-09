@@ -6,10 +6,15 @@ import {
   TextInputFocusEventData,
   TargetedEvent,
   TouchableOpacity,
+  Animated,
+  StyleProp,
+  ViewStyle,
 } from "react-native"
 import { Input, Text, useTheme, makeStyles } from "@rneui/themed"
 
 import { testProps } from "@app/utils/testProps"
+
+type AnimatedViewStyle = Animated.WithAnimatedValue<StyleProp<ViewStyle>>
 
 type CurrencyInputProps = {
   placeholder?: string
@@ -18,9 +23,11 @@ type CurrencyInputProps = {
   onChangeText: (text: string) => void
   onFocus?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void) &
     ((event: NativeSyntheticEvent<TargetedEvent>) => void)
+  isFocused?: boolean
   rightIcon?: React.ReactNode
   testId?: string
   autoFocus?: boolean
+  AnimatedViewStyle?: AnimatedViewStyle
 }
 
 export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
@@ -34,13 +41,15 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
       rightIcon,
       testId,
       autoFocus = false,
+      isFocused = false,
+      AnimatedViewStyle,
     },
     ref,
   ) => {
     const {
       theme: { colors },
     } = useTheme()
-    const styles = useStyles()
+    const styles = useStyles(isFocused)
     const inputRef = useRef<TextInput>(null)
 
     useImperativeHandle(ref, () => inputRef.current as TextInput)
@@ -65,7 +74,7 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
     )
 
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.containerBase, AnimatedViewStyle]}>
         <View style={styles.contentContainer}>
           <View style={styles.inputSection}>
             <Input
@@ -104,7 +113,7 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
             </Text>
           </View>
         </View>
-      </View>
+      </Animated.View>
     )
   },
 )
@@ -112,7 +121,7 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
 CurrencyInput.displayName = "CurrencyInput"
 
 const useStyles = makeStyles(({ colors }) => ({
-  container: {
+  containerBase: {
     paddingVertical: 10,
     paddingRight: 15,
     paddingLeft: 5,

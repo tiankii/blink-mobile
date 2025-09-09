@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { View, ActivityIndicator, TextInput } from "react-native"
+import { View, ActivityIndicator, TextInput, Animated, Easing } from "react-native"
 import { makeStyles, useTheme } from "@rneui/themed"
 import { gql } from "@apollo/client"
 
@@ -57,6 +57,12 @@ gql`
     }
   }
 `
+
+const ANIMATION_CONFIG = {
+  duration: 120,
+  easing: Easing.inOut(Easing.quad),
+  useNativeDriver: false,
+}
 
 export const ConversionDetailsScreen = () => {
   const {
@@ -148,6 +154,34 @@ export const ConversionDetailsScreen = () => {
   const toggleInitiated = useRef(false)
   const pendingFocusId = useRef<ConvertInputType | null>(null)
   const hadInitialFocus = useRef(false)
+  const inputAnimations = useRef(
+    Object.fromEntries(
+      [ConvertInputType.FROM, ConvertInputType.TO, ConvertInputType.CURRENCY].map(
+        (type) => [type, new Animated.Value(0)],
+      ),
+    ),
+  ).current
+
+  useEffect(() => {
+    const focusedId = focusedInputValues?.id
+
+    Animated.parallel(
+      [ConvertInputType.FROM, ConvertInputType.TO, ConvertInputType.CURRENCY].map(
+        (type) =>
+          Animated.timing(inputAnimations[type], {
+            toValue: type === focusedId ? 1 : 0,
+            ...ANIMATION_CONFIG,
+          }),
+      ),
+    ).start()
+  }, [focusedInputValues?.id, inputAnimations])
+
+  const getAnimatedBackground = (type: ConvertInputType) => ({
+    backgroundColor: inputAnimations[type].interpolate({
+      inputRange: [0, 1],
+      outputRange: [colors.grey5, colors.grey6],
+    }),
+  })
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -432,30 +466,42 @@ export const ConversionDetailsScreen = () => {
     <Screen preset="fixed">
       <View style={styles.styleWalletContainer}>
         <View style={styles.walletSelectorContainer}>
-          <WalletAmountRow
-            inputRef={fromInputRef}
-            value={renderValue(ConvertInputType.FROM)}
-            placeholder={
-              fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
-            }
-            rightIcon={rightIconFor(ConvertInputType.FROM)}
-            selection={caretSelectionFor(ConvertInputType.FROM)}
-            isLocked={uiLocked}
-            onOverlayPress={() =>
-              overlaysReady && !uiLocked && handleInputPress(ConvertInputType.FROM)
-            }
-            onFocus={() =>
-              setFocusedInputValues(
-                inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
-              )
-            }
-            currency={fromWallet.walletCurrency}
-            balancePrimary={fromWalletBalanceFormatted}
-            balanceSecondary={fromSatsFormatted}
-          />
+          <Animated.View
+            style={[styles.rowWrapTop, getAnimatedBackground(ConvertInputType.FROM)]}
+          >
+            <WalletAmountRow
+              inputRef={fromInputRef}
+              value={renderValue(ConvertInputType.FROM)}
+              placeholder={
+                fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
+              }
+              rightIcon={rightIconFor(ConvertInputType.FROM)}
+              selection={caretSelectionFor(ConvertInputType.FROM)}
+              isLocked={uiLocked}
+              onOverlayPress={() =>
+                overlaysReady && !uiLocked && handleInputPress(ConvertInputType.FROM)
+              }
+              onFocus={() =>
+                setFocusedInputValues(
+                  inputFormattedValues?.fromInput ?? { ...inputValues.fromInput },
+                )
+              }
+              currency={fromWallet.walletCurrency}
+              balancePrimary={fromWalletBalanceFormatted}
+              balanceSecondary={fromSatsFormatted}
+            />
+          </Animated.View>
 
           <View style={styles.walletSeparator} pointerEvents="box-none">
-            <View style={styles.line} pointerEvents="none" />
+            <View
+              style={[
+                styles.line,
+                (focusedInputValues?.id === ConvertInputType.FROM ||
+                  focusedInputValues?.id === ConvertInputType.TO) &&
+                  styles.lineHidden,
+              ]}
+              pointerEvents="none"
+            />
             <WalletToggleButton
               loading={toggleInitiated.current}
               disabled={!canToggleWallet || uiLocked}
@@ -464,27 +510,31 @@ export const ConversionDetailsScreen = () => {
             />
           </View>
 
-          <WalletAmountRow
-            inputRef={toInputRef}
-            value={renderValue(ConvertInputType.TO)}
-            placeholder={
-              fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
-            }
-            rightIcon={rightIconFor(ConvertInputType.TO)}
-            selection={caretSelectionFor(ConvertInputType.TO)}
-            isLocked={uiLocked}
-            onOverlayPress={() =>
-              overlaysReady && !uiLocked && handleInputPress(ConvertInputType.TO)
-            }
-            onFocus={() =>
-              setFocusedInputValues(
-                inputFormattedValues?.toInput ?? { ...inputValues.toInput },
-              )
-            }
-            currency={toWallet.walletCurrency}
-            balancePrimary={toWalletBalanceFormatted}
-            balanceSecondary={toSatsFormatted}
-          />
+          <Animated.View
+            style={[styles.rowWrapBottom, getAnimatedBackground(ConvertInputType.TO)]}
+          >
+            <WalletAmountRow
+              inputRef={toInputRef}
+              value={renderValue(ConvertInputType.TO)}
+              placeholder={
+                fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
+              }
+              rightIcon={rightIconFor(ConvertInputType.TO)}
+              selection={caretSelectionFor(ConvertInputType.TO)}
+              isLocked={uiLocked}
+              onOverlayPress={() =>
+                overlaysReady && !uiLocked && handleInputPress(ConvertInputType.TO)
+              }
+              onFocus={() =>
+                setFocusedInputValues(
+                  inputFormattedValues?.toInput ?? { ...inputValues.toInput },
+                )
+              }
+              currency={toWallet.walletCurrency}
+              balancePrimary={toWalletBalanceFormatted}
+              balanceSecondary={toSatsFormatted}
+            />
+          </Animated.View>
         </View>
 
         <View
@@ -503,6 +553,7 @@ export const ConversionDetailsScreen = () => {
               currency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
               rightIcon={rightIconFor(ConvertInputType.CURRENCY)}
+              AnimatedViewStyle={getAnimatedBackground(ConvertInputType.CURRENCY)}
             />
           )}
         </View>
@@ -586,17 +637,35 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     backgroundColor: colors.grey5,
     borderRadius: 13,
     paddingHorizontal: 15,
+    paddingTop: 0,
+    paddingBottom: 0,
+    overflow: "hidden",
+    position: "relative",
+  },
+  rowWrapTop: {
+    marginHorizontal: -15,
+    paddingHorizontal: 15,
     paddingTop: 10,
+    paddingBottom: 6,
+  },
+  rowWrapBottom: {
+    marginHorizontal: -15,
+    paddingHorizontal: 15,
+    paddingTop: 6,
     paddingBottom: 10,
+  },
+  rowHighlight: {
+    backgroundColor: colors.grey6,
   },
   walletSeparator: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    marginVertical: 6,
+    marginVertical: 0,
     zIndex: 2,
   },
+  lineHidden: { opacity: 0 },
   line: { backgroundColor: colors.grey4, height: 1, flex: 1 },
   switchButton: {
     position: "absolute",
