@@ -261,6 +261,10 @@ type RootTranslation = {
 	}
 	ConversionConfirmationScreen: {
 		/**
+		 * C​o​n​f​i​r​m​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
 		 * Y​o​u​'​r​e​ ​c​o​n​v​e​r​t​i​n​g
 		 */
 		youreConverting: string
@@ -9637,6 +9641,10 @@ export type TranslationFunctions = {
 		reviewTransfer: () => LocalizedString
 	}
 	ConversionConfirmationScreen: {
+		/**
+		 * Confirm transfer
+		 */
+		title: () => LocalizedString
 		/**
 		 * You're converting
 		 */

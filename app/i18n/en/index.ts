@@ -76,6 +76,7 @@ const en: BaseTranslation = {
     reviewTransfer: "Review transfer",
   },
   ConversionConfirmationScreen: {
+    title: "Confirm transfer",
     youreConverting: "You're converting",
     receivingAccount: "Receiving account",
     infoBitcoin: "Bitcoin amount is only approximate. It can vary by a small amount.",
