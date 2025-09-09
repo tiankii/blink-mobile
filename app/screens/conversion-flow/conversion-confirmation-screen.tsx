@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql"
 import React, { useState } from "react"
-import { Platform, Text, TouchableOpacity, View } from "react-native"
+import { Platform, TouchableOpacity, View } from "react-native"
 import { PanGestureHandler, ScrollView } from "react-native-gesture-handler"
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 
@@ -32,7 +32,7 @@ import {
   RouteProp,
   useNavigation,
 } from "@react-navigation/native"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { makeStyles, useTheme, Text } from "@rneui/themed"
 import { GaloyCurrencyBubbleText } from "@app/components/atomic/galoy-currency-bubble-text"
 import Icon from "react-native-vector-icons/Ionicons"
 import GaloySliderButton from "@app/components/atomic/galoy-slider-button/galoy-slider-button"
@@ -234,14 +234,14 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
     <Screen>
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.conversionRate}>
-          <Text style={styles.conversionRateText}>
+          <Text type="p2" style={styles.conversionRateText}>
             1 BTC ={" "}
             {formatMoneyAmount({
               moneyAmount: convertMoneyAmount(
                 toBtcMoneyAmount(Number(SATS_PER_BTC)),
                 WalletCurrency.Usd,
               ),
-              isApproximate: true,
+              isApproximate: false,
             })}{" "}
           </Text>
         </View>
@@ -333,7 +333,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   conversionRateText: {
     color: colors.grey0,
-    fontSize: 20,
   },
   conversionInfoField: {
     marginBottom: 20,
