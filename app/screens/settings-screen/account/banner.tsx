@@ -5,7 +5,7 @@
  * Later on, this will support switching between accounts
  */
 import React from "react"
-import { TouchableOpacity, View } from "react-native"
+import { View } from "react-native"
 import { TouchableWithoutFeedback } from "react-native-gesture-handler"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
@@ -18,14 +18,9 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme, Skeleton } from "@rneui/themed"
 import { useAppConfig } from "@app/hooks"
 
-export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
-  showSwitchAccountIcon = false,
-}) => {
+export const AccountBanner: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const {
-    theme: { colors },
-  } = useTheme()
   const {
     appConfig: {
       galoyInstance: { lnAddressHostname },
@@ -46,10 +41,6 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
 
   if (loading) return <Skeleton style={styles.outer} animation="pulse" />
 
-  const handleSwitchPress = () => {
-    navigation.navigate("profileScreen")
-  }
-
   return (
     <TouchableWithoutFeedback
       onPress={() =>
@@ -60,23 +51,14 @@ export const AccountBanner: React.FC<{ showSwitchAccountIcon?: boolean }> = ({
         })
       }
     >
-      <TouchableOpacity
-        style={styles.switch}
-        onPress={handleSwitchPress}
-        activeOpacity={0.7}
-      >
-        <View style={styles.outer}>
-          <View style={styles.iconContainer}>
-            <AccountIcon size={22} />
-          </View>
-          <Text type="p2">
-            {isUserLoggedIn ? usernameTitle : LL.SettingsScreen.logInOrCreateAccount()}
-          </Text>
+      <View style={styles.outer}>
+        <View style={styles.iconContainer}>
+          <AccountIcon size={22} />
         </View>
-        {isUserLoggedIn && showSwitchAccountIcon && (
-          <GaloyIcon name="transfer" size={27} color={colors.primary} />
-        )}
-      </TouchableOpacity>
+        <Text type="p2">
+          {isUserLoggedIn ? usernameTitle : LL.SettingsScreen.logInOrCreateAccount()}
+        </Text>
+      </View>
     </TouchableWithoutFeedback>
   )
 }

@@ -664,7 +664,7 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
   },
   balanceLoading: {
-    marginBottom: 57,
+    marginBottom: 67,
   },
   header: {
     flexDirection: "row",
@@ -692,5 +692,6 @@ const useStyles = makeStyles(({ colors }) => ({
   balanceHeader: {
     alignItems: "center",
     flexDirection: "column",
+    gap: 6,
   },
 }))

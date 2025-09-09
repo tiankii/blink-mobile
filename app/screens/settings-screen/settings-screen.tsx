@@ -34,6 +34,7 @@ import { ThemeSetting } from "./settings/preferences-theme"
 import { NotificationSetting } from "./settings/sp-notifications"
 import { OnDeviceSecuritySetting } from "./settings/sp-security"
 import { TotpSetting } from "./totp"
+import { SwitchAccountSetting } from "./settings/multi-account"
 
 // All queries in settings have to be set here so that the server is not hit with
 // multiple requests for each query
@@ -80,7 +81,7 @@ export const SettingsScreen: React.FC = () => {
     fetchPolicy: "cache-and-network",
   })
 
-  const accountItems = [AccountLevelSetting, TxLimits]
+  const accountItems = [AccountLevelSetting, TxLimits, SwitchAccountSetting]
 
   const items = {
     account: [...accountItems],
@@ -121,7 +122,7 @@ export const SettingsScreen: React.FC = () => {
   return (
     <Screen keyboardShouldPersistTaps="handled">
       <ScrollView contentContainerStyle={styles.outer}>
-        <AccountBanner showSwitchAccountIcon={isAtLeastLevelOne} />
+        <AccountBanner />
         <SettingsGroup name={LL.common.accountInformation()} items={items.account} />
         {isAtLeastLevelOne && (
           <SettingsGroup
