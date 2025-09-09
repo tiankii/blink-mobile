@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { View, ActivityIndicator, TextInput, Animated, Easing } from "react-native"
+import { View, TextInput, Animated, Easing } from "react-native"
 import { makeStyles, useTheme } from "@rneui/themed"
 import { gql } from "@apollo/client"
 
@@ -307,17 +307,6 @@ export const ConversionDetailsScreen = () => {
     }
   }, [displayCurrency, renderValue])
 
-  const rightIconFor = useCallback(
-    (id: InputField["id"]) => (
-      <View style={styles.iconSlotContainer}>
-        {isTyping && typingInputId === id ? (
-          <ActivityIndicator color={colors.primary} />
-        ) : null}
-      </View>
-    ),
-    [isTyping, typingInputId, colors.primary, styles.iconSlotContainer],
-  )
-
   if (!data?.me?.defaultAccount || !fromWallet) return <></>
 
   const stripApprox = (s?: string) => (s ? s.replace(/^\s*~\s*/, "") : s)
@@ -475,7 +464,6 @@ export const ConversionDetailsScreen = () => {
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "$0" : "0 SAT"
               }
-              rightIcon={rightIconFor(ConvertInputType.FROM)}
               selection={caretSelectionFor(ConvertInputType.FROM)}
               isLocked={uiLocked}
               onOverlayPress={() =>
@@ -503,7 +491,7 @@ export const ConversionDetailsScreen = () => {
               pointerEvents="none"
             />
             <WalletToggleButton
-              loading={toggleInitiated.current}
+              loading={toggleInitiated.current || isTyping}
               disabled={!canToggleWallet || uiLocked}
               onPress={toggleInputs}
               containerStyle={styles.switchButton}
@@ -519,7 +507,6 @@ export const ConversionDetailsScreen = () => {
               placeholder={
                 fromWallet.walletCurrency === WalletCurrency.Usd ? "0 SAT" : "$0"
               }
-              rightIcon={rightIconFor(ConvertInputType.TO)}
               selection={caretSelectionFor(ConvertInputType.TO)}
               isLocked={uiLocked}
               onOverlayPress={() =>
@@ -552,7 +539,6 @@ export const ConversionDetailsScreen = () => {
               onChangeText={() => {}}
               currency={displayCurrency}
               placeholder={`${getCurrencySymbol({ currency: displayCurrency })}0`}
-              rightIcon={rightIconFor(ConvertInputType.CURRENCY)}
               AnimatedViewStyle={getAnimatedBackground(ConvertInputType.CURRENCY)}
             />
           )}
@@ -670,9 +656,6 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   switchButton: {
     position: "absolute",
     left: 100,
-  },
-  switchButtonDisabled: {
-    opacity: 0.5,
   },
   currencyInputContainer: {
     marginTop: 10,
