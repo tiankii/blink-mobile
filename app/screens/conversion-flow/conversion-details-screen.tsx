@@ -491,7 +491,7 @@ export const ConversionDetailsScreen = () => {
               pointerEvents="none"
             />
             <WalletToggleButton
-              loading={toggleInitiated.current || isTyping}
+              loading={toggleInitiated.current || isTyping || Boolean(loadingPercent)}
               disabled={!canToggleWallet || uiLocked}
               onPress={toggleInputs}
               containerStyle={styles.switchButton}
