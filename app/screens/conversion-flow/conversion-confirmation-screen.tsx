@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Platform, TouchableOpacity, View } from "react-native"
 import { PanGestureHandler, ScrollView } from "react-native-gesture-handler"
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"
@@ -71,6 +71,18 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
+
+  const btcToUsdRate = useMemo(() => {
+    if (!convertMoneyAmount) return null
+
+    const oneBtc = toBtcMoneyAmount(SATS_PER_BTC)
+    const usdEquivalent = convertMoneyAmount(oneBtc, WalletCurrency.Usd)
+
+    return formatMoneyAmount({
+      moneyAmount: usdEquivalent,
+      isApproximate: false,
+    })
+  }, [convertMoneyAmount, formatMoneyAmount])
 
   if (!data?.me || !usdWallet || !btcWallet || !convertMoneyAmount) {
     // TODO: handle errors and or provide some loading state
@@ -235,14 +247,7 @@ export const ConversionConfirmationScreen: React.FC<Props> = ({ route }) => {
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.conversionRate}>
           <Text type="p2" style={styles.conversionRateText}>
-            1 BTC ={" "}
-            {formatMoneyAmount({
-              moneyAmount: convertMoneyAmount(
-                toBtcMoneyAmount(Number(SATS_PER_BTC)),
-                WalletCurrency.Usd,
-              ),
-              isApproximate: false,
-            })}{" "}
+            1 BTC = {btcToUsdRate}
           </Text>
         </View>
         <View style={styles.conversionInfoCard}>
