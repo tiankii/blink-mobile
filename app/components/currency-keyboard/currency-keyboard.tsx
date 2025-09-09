@@ -18,10 +18,25 @@ const useStyles = makeStyles(({ colors }, responsive: boolean) => ({
           marginBottom: 30,
         }),
   },
+  keyRowCompact: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    ...(responsive
+      ? { flex: 1 }
+      : {
+          alignItems: "center",
+          marginBottom: 20,
+        }),
+  },
   lastKeyRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  lastKeyRowCompact: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
   keyText: {
     color: colors.grey2,
@@ -42,17 +57,21 @@ type CurrencyKeyboardProps = {
   onPress: (pressed: KeyType) => void
   responsive?: boolean
   safeMode?: boolean
+  compact?: boolean
 }
 
 export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
   onPress,
   responsive = false,
   safeMode = false,
+  compact = false,
 }) => {
   const styles = useStyles(responsive)
+  const keyRowStyle = compact ? styles.keyRowCompact : styles.keyRow
+  const lastKeyRowStyle = compact ? styles.lastKeyRowCompact : styles.lastKeyRow
   return (
     <View style={styles.container}>
-      <View style={styles.keyRow}>
+      <View style={keyRowStyle}>
         <Key
           numberPadKey={KeyType[1]}
           handleKeyPress={onPress}
@@ -72,7 +91,7 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
           safeMode={safeMode}
         />
       </View>
-      <View style={styles.keyRow}>
+      <View style={keyRowStyle}>
         <Key
           numberPadKey={KeyType[4]}
           handleKeyPress={onPress}
@@ -92,7 +111,7 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
           safeMode={safeMode}
         />
       </View>
-      <View style={styles.keyRow}>
+      <View style={keyRowStyle}>
         <Key
           numberPadKey={KeyType[7]}
           handleKeyPress={onPress}
@@ -112,7 +131,7 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
           safeMode={safeMode}
         />
       </View>
-      <View style={styles.lastKeyRow}>
+      <View style={lastKeyRowStyle}>
         <Key
           numberPadKey={KeyType.Decimal}
           handleKeyPress={onPress}

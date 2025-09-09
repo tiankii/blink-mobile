@@ -623,10 +623,10 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   },
   keyboardContainer: {
     flex: 1,
-    maxHeight: 350,
+    maxHeight: 270,
     maxWidth: 450,
     paddingHorizontal: 45,
-    paddingVertical: 15,
+    paddingTop: 20,
     justifyContent: "flex-end",
   },
   disabledOpacity: { opacity: 0.5 },
