@@ -49,9 +49,9 @@ export const FiltersContent: FC<FiltersContentProps> = ({
       const newFilters = new Set(prev)
       if (newFilters.has(category)) {
         newFilters.delete(category)
-      } else {
-        newFilters.add(category)
+        return newFilters
       }
+      newFilters.add(category)
       return newFilters
     })
   }, [])
