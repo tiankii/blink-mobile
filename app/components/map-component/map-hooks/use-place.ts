@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react"
-import { BTCMAP_V4_API_BASE } from "@app/config"
 import axios from "axios"
 
-/**
- * Hook using V4 place endpoint to dynamic fetch place data.
- * Mostly used for not critical data that aren't stored on device
- * todo: add payment and offer tags here
- * @param id - BTCMap place id
- */
+import { BTCMAP_V4_API_BASE } from "@app/config"
+
 export const usePlace = (id?: number | null) => {
   const [error, setError] = useState<string | null>(null)
   const [placeData, setPlaceData] = useState<{
@@ -20,7 +15,6 @@ export const usePlace = (id?: number | null) => {
   const [isLoading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    // reset state when id changes
     setError(null)
     setPlaceData(null)
 

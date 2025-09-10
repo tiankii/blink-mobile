@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react"
-import type { GetAreaResponse, AreaDataRpc, Area } from "../map-types"
 import axios, { AxiosHeaders } from "axios"
+
+import type { Area, AreaDataRpc } from "../map-types"
 import { BTCMAP_RPC_URL } from "@app/config"
 
-/**
- * ---
- * Since there's no v4 endpoint for areas, we need to use v3, which will get deprecated soon.
- * ---
- * Hook to fetch area (communities also) data by id
- * @param id Community ID. Usually pased from search modal.
- */
 export const useArea = (id: number | null) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -25,9 +19,7 @@ export const useArea = (id: number | null) => {
           return
         }
         const start = performance.now()
-        const { data } = await axios.get<GetAreaResponse>(
-          `https://api.btcmap.org/v3/areas/${id}`,
-        )
+        const { data } = await axios.get<Area>(`https://api.btcmap.org/v3/areas/${id}`)
 
         if (!cancelled) {
           setCommunity(data)
@@ -54,11 +46,6 @@ export const useArea = (id: number | null) => {
   return { community, isLoading, error }
 }
 
-/**
- * Hook for fetching area data (community) by rpc. In 99% cases it's better to use REST version.
- *
- * @param id Community id
- */
 export const useCommunityRpc = (id: string | null) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)

@@ -1,6 +1,7 @@
 import React from "react"
 import { View } from "react-native"
 import { makeStyles, BottomSheet } from "@rneui/themed"
+
 import { SearchContent, FiltersContent, EventContent } from "."
 import { IMarker } from "@app/screens/map-screen/btc-map-interface"
 import { Category } from "@app/components/map-component/categories.ts"

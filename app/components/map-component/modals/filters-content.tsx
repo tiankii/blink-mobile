@@ -2,6 +2,7 @@ import { FC, useMemo, useState, useCallback } from "react"
 import { View, ScrollView, TouchableOpacity, Dimensions } from "react-native"
 import { CheckBox, makeStyles, Text, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
+
 import {
   Category,
   categoryNames,

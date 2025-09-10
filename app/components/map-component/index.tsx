@@ -2,18 +2,17 @@ import debounce from "lodash.debounce"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Dimensions, View } from "react-native"
 import MapView, { Region } from "react-native-maps"
-
 import { useApolloClient } from "@apollo/client"
+import { ListItem, makeStyles, useTheme } from "@rneui/themed"
+import Icon from "react-native-vector-icons/Ionicons"
+import { useClusterer, isPointCluster, supercluster } from "react-native-clusterer"
+
 import { updateMapLastCoords } from "@app/graphql/client-only-query"
 import { MapMarker } from "@app/graphql/generated"
-import { ListItem, makeStyles, useTheme } from "@rneui/themed"
-
 import ButtonMapsContainer from "./button-maps-container"
 import MapStyles from "./map-styles.json"
 import { OpenBottomModal, OpenBottomModalElement, TModal } from "./modals/modal-container"
-import Icon from "react-native-vector-icons/Ionicons"
 import { IMarker } from "@app/screens/map-screen/btc-map-interface"
-import { useClusterer, isPointCluster, supercluster } from "react-native-clusterer"
 import ClusterComponent from "@app/components/map-component/map-elements/cluster-component.tsx"
 import MarkerComponent from "@app/components/map-component/map-elements/marker-component.tsx"
 import { Category } from "@app/components/map-component/categories.ts"
@@ -31,7 +30,6 @@ type Props = {
 
 const { width, height } = Dimensions.get("window")
 
-// config, we will need to finetune this
 const CLUSTER_OPTIONS = {
   radius: 50,
   maxZoom: 16,
@@ -51,7 +49,6 @@ export default function MapComponent({ data, userLocation }: Props) {
   const [region, setRegion] = useState(userLocation)
   const [nameField, setNameField] = useState<string | null>(null)
 
-  // communication with modals
   const openBottomModalRef = React.useRef<OpenBottomModalElement>(null)
   const [selectedCommunityId, setSelectedCommunityId] = React.useState<number | null>(
     null,
@@ -59,7 +56,6 @@ export default function MapComponent({ data, userLocation }: Props) {
   const [selectedMarkerId, setSelectedMarkerId] = React.useState<number | null>(null)
   const [categoryFilters, setCategoryFilters] = useState<Set<Category>>(new Set())
 
-  // Toggle modal from inside modal component instead of here in the parent
   const toggleModal = React.useCallback(
     (type: TModal) => openBottomModalRef.current?.toggleVisibility(type),
     [],
@@ -71,7 +67,6 @@ export default function MapComponent({ data, userLocation }: Props) {
     if (!selectedMarkerId || !geoPoints) {
       return
     }
-    // select marker by id
     const marker = geoPoints.filter(
       (point) => point.properties.id === selectedMarkerId,
     )[0]
@@ -155,7 +150,6 @@ export default function MapComponent({ data, userLocation }: Props) {
     CLUSTER_OPTIONS,
   )
 
-  // Render markers
   const renderedMarkers = useMemo(() => {
     return points.map((point, index) => {
       const key = `point-${index}`
@@ -171,7 +165,6 @@ export default function MapComponent({ data, userLocation }: Props) {
 
   const debouncedHandleRegionChange = useCallback(
     (newRegion: Region) => {
-      // update region state first, so clusterer can do the job, but wait for updating coords in API
       setRegion(newRegion)
       debounce(() => {
         updateMapLastCoords(client, newRegion)

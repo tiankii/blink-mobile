@@ -2,6 +2,7 @@ import { FC } from "react"
 import { View, TouchableOpacity, Platform, Linking } from "react-native"
 import { makeStyles, Skeleton, Text, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
+
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { IMarker } from "@app/screens/map-screen/btc-map-interface.ts"
 

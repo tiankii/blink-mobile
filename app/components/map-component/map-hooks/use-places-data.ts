@@ -1,17 +1,17 @@
 import axios from "axios"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useState, useEffect } from "react"
+
 import { categories } from "../categories"
 import type { BasePlacesData, CdnPlace, Place } from "../map-types"
-import { MILLISECONDS_IN_MINUTE, BTCMAP_V4_API_BASE, BTCMAP_V4_PLACES_CDN } from "@app/config"
+import {
+  MILLISECONDS_IN_MINUTE,
+  BTCMAP_V4_API_BASE,
+  BTCMAP_V4_PLACES_CDN,
+} from "@app/config"
 
 const LIMIT = 5000
 
-/**
- * Function containing whole place fetching logic. Reads data from asyncStorege cache,
- * tries to sync them with btcmap API. Contains "cold start" logic, which fetches places from CDN.
- * Maps icons to react-native-material-icons and writes categories based on icon set.
- */
 export const usePlacesData = () => {
   const [error, setError] = useState<string | null>(null)
   const [places, setPlaces] = useState<BasePlacesData | null>(null)
@@ -23,7 +23,6 @@ export const usePlacesData = () => {
       try {
         setLoading(true)
 
-        // check if we have cached data
         const cachedData = await AsyncStorage.getItem("btcmap_places_v4")
         let currentData: BasePlacesData
 
@@ -31,11 +30,9 @@ export const usePlacesData = () => {
           currentData = JSON.parse(cachedData)
           console.log(`Restored: ${currentData.baseData.length} places`)
         } else {
-          // initialize from scratch
           const { data, needsNameEnrichment } = await initializeBasePlaces()
           currentData = data
 
-          // only enrich with names if we got data from CDN (which doesn't include names)
           if (needsNameEnrichment) {
             await enrichPlacesWithNames(currentData)
           }
@@ -47,7 +44,6 @@ export const usePlacesData = () => {
 
         setPlaces(currentData)
 
-        // check if we need to update (don't refetch too often)
         const timeSinceLastUpdate =
           Date.now() - new Date(currentData.lastUpdated).getTime()
         if (timeSinceLastUpdate <= 5 * MILLISECONDS_IN_MINUTE) {
@@ -56,7 +52,6 @@ export const usePlacesData = () => {
 
         console.log("Fetching updates...")
 
-        // fetch updates
         const newPlaces = (await fetchPlacesFromApi(
           currentData.lastUpdated,
           true,
@@ -69,7 +64,6 @@ export const usePlacesData = () => {
 
         console.log(`New places fetched: ${newPlaces.length}`)
 
-        // update data
         const newPlacesIds = newPlaces.map((place) => place.id)
         const oldFiltered = currentData.baseData.filter(
           (p) => !newPlacesIds.includes(p.id),
@@ -98,13 +92,6 @@ export const usePlacesData = () => {
   return { places, error, isLoading }
 }
 
-// ----- Helpers for hooks ------
-
-/**
- * Function fetching places from API. May be used to enrich cdn places in data, or to fetch new data.
- * @param updatedSince - pagination by data, we're fetching data since this iso string date
- * @param includeAllFields - if true, returns Place[], else Omit<Place, "lat" | "lon" | "icon">[]
- */
 const fetchPlacesFromApi = async (
   updatedSince: string = "1970-01-01T00:00:00Z",
   includeAllFields: boolean = false,
@@ -144,7 +131,6 @@ const initializeBasePlaces = async (): Promise<{
   data: BasePlacesData
   needsNameEnrichment: boolean
 }> => {
-  // try CDN first
   try {
     const cdnData = await axios.get<CdnPlace[]>(BTCMAP_V4_PLACES_CDN)
     const headers = cdnData.headers
@@ -160,7 +146,6 @@ const initializeBasePlaces = async (): Promise<{
   } catch (error) {
     console.warn("CDN failed, falling back to API with full data:", error)
 
-    // fallback to API - fetch everything with ALL fields (including names)
     const places = (await fetchPlacesFromApi("1970-01-01T00:00:00Z", true)) as Place[]
     console.log(`API fallback: initialized ${places.length} places with names`)
 

@@ -1,4 +1,5 @@
 import { Geometry } from "geojson"
+
 import { Category } from "../categories.ts"
 
 type CdnPlace = {
@@ -37,7 +38,7 @@ type AreaDataRpc = {
   id: number
 }
 
-export type GetAreaResponse = {
+export type Area = {
   id: number
   updated_at: string
   tags: Record<string, unknown> & {
@@ -54,7 +55,5 @@ export type GetAreaElementsResponse = {
   updated_at: Date
   deleted_at: Date
 }[]
-
-export type Area = GetAreaResponse // & { elementIds: number[] }
 
 export type { CdnPlace, Place, BasePlacesData, AreaDataRpc, ClusterPoint }
