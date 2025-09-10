@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { GetAreaResponse, AreaDataRpc, Area } from "../map-types"
 import axios, { AxiosHeaders } from "axios"
-import { RPC_URL } from "../map-constants"
+import { BTCMAP_RPC_URL } from "@app/config"
 
 /**
  * ---
@@ -85,7 +85,7 @@ export const useCommunityRpc = (id: string | null) => {
 
       setLoading(true)
       ;(async () => {
-        const { data } = await axios.post<AreaDataRpc>(RPC_URL, request, {
+        const { data } = await axios.post<AreaDataRpc>(BTCMAP_RPC_URL, request, {
           headers,
         })
         setCommunity(data)

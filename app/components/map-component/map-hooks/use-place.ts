@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { V4_API_BASE } from "../map-constants"
+import { BTCMAP_V4_API_BASE } from "@app/config"
 import axios from "axios"
 
 /**
@@ -39,7 +39,7 @@ export const usePlace = (id?: number | null) => {
           phone: string
           website: string
           address: string
-        }>(`${V4_API_BASE}/places/${id}?fields=id,name,phone,website,address`)
+        }>(`${BTCMAP_V4_API_BASE}/places/${id}?fields=id,name,phone,website,address`)
         setPlaceData(data)
       } catch (error) {
         console.error(error)

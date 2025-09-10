@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useState, useEffect } from "react"
 import { categories } from "../categories"
 import type { BasePlacesData, CdnPlace, Place } from "../map-types"
-import { MILISECONDS_IN_MINUTE, V4_API_BASE, V4_PLACES_CDN } from "../map-constants"
+import { MILLISECONDS_IN_MINUTE, BTCMAP_V4_API_BASE, BTCMAP_V4_PLACES_CDN } from "@app/config"
 
 const LIMIT = 5000
 
@@ -50,7 +50,7 @@ export const usePlacesData = () => {
         // check if we need to update (don't refetch too often)
         const timeSinceLastUpdate =
           Date.now() - new Date(currentData.lastUpdated).getTime()
-        if (timeSinceLastUpdate <= 5 * MILISECONDS_IN_MINUTE) {
+        if (timeSinceLastUpdate <= 5 * MILLISECONDS_IN_MINUTE) {
           return
         }
 
@@ -122,7 +122,7 @@ const fetchPlacesFromApi = async (
       : "id,name,updated_at,icon"
 
     const { data } = await axios.get<Place[] | Omit<Place, "lat" | "lon" | "icon">[]>(
-      `${V4_API_BASE}/places?updated_since=${currentUpdatedSince}&limit=${LIMIT}&fields=${fields}`,
+      `${BTCMAP_V4_API_BASE}/places?updated_since=${currentUpdatedSince}&limit=${LIMIT}&fields=${fields}`,
     )
 
     if (!data.length) break
@@ -146,7 +146,7 @@ const initializeBasePlaces = async (): Promise<{
 }> => {
   // try CDN first
   try {
-    const cdnData = await axios.get<CdnPlace[]>(V4_PLACES_CDN)
+    const cdnData = await axios.get<CdnPlace[]>(BTCMAP_V4_PLACES_CDN)
     const headers = cdnData.headers
     const lastUpdatedRaw =
       headers["last-modified"] || headers["Last-Modified"] || headers["Last Modified"]
