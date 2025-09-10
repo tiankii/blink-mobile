@@ -1,10 +1,11 @@
 import React from "react"
-import { Marker } from "react-native-maps"
 import { View } from "react-native"
-import { Text } from "@rneui/themed"
-import { useStyles } from "../index"
+import { Marker } from "react-native-maps"
 import { supercluster } from "react-native-clusterer"
+import { Text } from "@rneui/themed"
+
 import { IMarker } from "@app/screens/map-screen/btc-map-interface.ts"
+import { useStyles } from "../index"
 
 const ClusterComponent = React.memo(
   ({

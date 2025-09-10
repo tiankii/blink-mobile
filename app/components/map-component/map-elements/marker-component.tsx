@@ -1,10 +1,11 @@
 import React from "react"
-import { IMarker } from "@app/screens/map-screen/btc-map-interface.ts"
-import { Marker } from "react-native-maps"
 import { View } from "react-native"
-import PinIcon from "./pinIcon.tsx"
+import { Marker } from "react-native-maps"
 import MaterialIcon from "react-native-vector-icons/MaterialIcons"
+
+import { IMarker } from "@app/screens/map-screen/btc-map-interface.ts"
 import { useStyles } from "@app/components/map-component/index.tsx"
+import PinIcon from "./pinIcon.tsx"
 
 const MarkerComponent = React.memo(
   ({ pin, onSelect }: { pin: IMarker; onSelect: (pin: IMarker) => void }) => {
