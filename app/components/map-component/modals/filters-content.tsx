@@ -9,6 +9,8 @@ import {
 } from "@app/components/map-component/categories.ts"
 import MaterialIcon from "react-native-vector-icons/MaterialIcons"
 
+const { height: screenHeight } = Dimensions.get("window")
+
 type FiltersContentProps = {
   closeModal: () => void
   filters: Set<Category>
@@ -24,7 +26,6 @@ export const FiltersContent: FC<FiltersContentProps> = ({
   const {
     theme: { colors },
   } = useTheme()
-  const { height: screenHeight } = Dimensions.get("window")
 
   const [tempFilters, setTempFilters] = useState(() => new Set(filters))
 
@@ -63,7 +64,7 @@ export const FiltersContent: FC<FiltersContentProps> = ({
   }, [])
 
   return (
-    <View style={{ minHeight: screenHeight - 300, maxHeight: screenHeight - 300 }}>
+    <View style={styles.componentWrapper}>
       <View style={styles.titleContent}>
         <Text style={styles.titleModal}>Categories filters</Text>
         <Icon
@@ -110,8 +111,8 @@ export const FiltersContent: FC<FiltersContentProps> = ({
     </View>
   )
 }
-
 const useStyles = makeStyles(({ colors }) => ({
+  componentWrapper: { minHeight: screenHeight - 300, maxHeight: screenHeight - 300 },
   titleContent: {
     alignItems: "center",
     justifyContent: "space-between",

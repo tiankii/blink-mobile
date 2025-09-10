@@ -4,6 +4,9 @@ import { ListItem, makeStyles, SearchBar, Text } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
 import debounce from "lodash.debounce"
 import axios from "axios"
+import { BTCMAP_V4_API_BASE } from "@app/config"
+
+const screenHeight = Dimensions.get("window").height
 
 type SearchResponse = {
   results: SearchResult[]
@@ -39,7 +42,6 @@ export const SearchContent: FC<SearchContentProps> = ({
   setSelectedMarker,
 }) => {
   const styles = useStyles()
-  const screenHeight = useMemo(() => Dimensions.get("window").height, [])
   const [search, setSearch] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null)
@@ -51,7 +53,7 @@ export const SearchContent: FC<SearchContentProps> = ({
         try {
           setIsLoading(true)
           const { data } = await axios.get<SearchResponse>(
-            `https://api.btcmap.org/v4/search?q=${query}`,
+            `${BTCMAP_V4_API_BASE}/search?q=${query}`,
           )
           setSearchResponse(data)
           setError(null)
@@ -80,7 +82,7 @@ export const SearchContent: FC<SearchContentProps> = ({
       setSearchResponse(null)
       setError(null)
     }
-  }, [search])
+  }, [search, debouncedSearch])
 
   useEffect(() => {
     return () => {
@@ -118,7 +120,7 @@ export const SearchContent: FC<SearchContentProps> = ({
   }, [searchResponse])
 
   return (
-    <View style={{ minHeight: screenHeight - 300, maxHeight: screenHeight - 300 }}>
+    <View style={styles.componentWrapper}>
       <View style={styles.titleContent}>
         <Text style={styles.titleModal}>Search</Text>
         <Icon
@@ -131,10 +133,10 @@ export const SearchContent: FC<SearchContentProps> = ({
       </View>
 
       <SearchBar
-        containerStyle={{ backgroundColor: "transparent", borderColor: "transparent" }}
+        containerStyle={styles.searchContainer}
         round
-        inputContainerStyle={{ height: 40 }}
-        inputStyle={{ fontSize: 15 }}
+        inputContainerStyle={styles.searchInputContainer}
+        inputStyle={styles.searchInput}
         onChangeText={updateSearch}
         value={search}
         lightTheme
@@ -155,10 +157,7 @@ export const SearchContent: FC<SearchContentProps> = ({
       <ScrollView>
         {isLoading && <Text style={styles.statusInfo}>Loading...</Text>}
 
-        {error && (
-          // eslint-disable-next-line react-native/no-color-literals
-          <Text style={styles.error}>{error.message}</Text>
-        )}
+        {error && <Text style={styles.error}>{error.message}</Text>}
 
         {!isLoading && search && searchResponse?.results?.length === 0 && (
           <Text style={styles.statusInfo}>No results found.</Text>
@@ -175,6 +174,10 @@ export const SearchContent: FC<SearchContentProps> = ({
 }
 
 const useStyles = makeStyles(({ colors }) => ({
+  componentWrapper: { minHeight: screenHeight - 300, maxHeight: screenHeight - 300 },
+  searchContainer: { backgroundColor: "transparent", borderColor: "transparent" },
+  searchInputContainer: { height: 40 },
+  searchInput: { fontSize: 15 },
   titleContent: {
     display: "flex",
     alignItems: "center",

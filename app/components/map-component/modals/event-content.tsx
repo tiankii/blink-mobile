@@ -46,30 +46,21 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
         <Text style={styles.titleModal} ellipsizeMode="tail" numberOfLines={1}>
           {placeData?.name ?? selectedMarker?.name ?? "An unnamed place"}
         </Text>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Icon
-            color="grey"
-            name="share-social"
-            size={22}
-            style={{ paddingHorizontal: 1 }}
-          />
+        <View style={styles.iconContainer}>
+          <Icon color="grey" name="share-social" size={22} style={styles.icon} />
           <Icon
             color="grey"
             name="close"
             size={22}
-            style={{ paddingHorizontal: 1 }}
+            style={styles.icon}
             onPress={closeModal}
           />
         </View>
       </View>
-      <View
-        style={{ flexDirection: "row", gap: 10, alignItems: "center", marginTop: 15 }}
-      >
+      <View style={styles.buttonContainer}>
         <GaloyPrimaryButton
           title="Pay this bussines"
-          containerStyle={{
-            flex: 1,
-          }}
+          containerStyle={styles.payButton}
           disabled
         />
         <TouchableOpacity
@@ -154,4 +145,10 @@ const useStyles = makeStyles(() => ({
   detailsTitle: {
     fontSize: 16,
   },
+  icon: { paddingHorizontal: 1 },
+  payButton: {
+    flex: 1,
+  },
+  iconContainer: { flexDirection: "row", gap: 10 },
+  buttonContainer: { flexDirection: "row", gap: 10, alignItems: "center", marginTop: 15 },
 }))
