@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { View, Alert, TouchableHighlight, ScrollView } from "react-native"
+import { View, Alert, ScrollView, Text } from "react-native"
 import InAppReview from "react-native-in-app-review"
 import Share from "react-native-share"
 import ViewShot, { captureRef } from "react-native-view-shot"
@@ -7,7 +7,10 @@ import ViewShot, { captureRef } from "react-native-view-shot"
 import { useApolloClient } from "@apollo/client"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { Screen } from "@app/components/screen"
-import { SuccessIconAnimation } from "@app/components/success-animation"
+import {
+  CompletedTextAnimation,
+  SuccessIconAnimation,
+} from "@app/components/success-animation"
 import { SuccessActionComponent } from "@app/components/success-action"
 import { setFeedbackModalShown } from "@app/graphql/client-only-query"
 import {
@@ -20,10 +23,9 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { logAppFeedback } from "@app/utils/analytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Button, makeStyles, useTheme } from "@rneui/themed"
+import { makeStyles, useTheme } from "@rneui/themed"
 
 import { testProps } from "../../utils/testProps"
-
 import { SuggestionModal } from "./suggestion-modal"
 import { PaymentSendCompletedStatus } from "./use-send-payment"
 import LogoLightMode from "@app/assets/logo/blink-logo-light.svg"
@@ -32,125 +34,95 @@ import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { SuccessActionTag } from "@app/components/success-action/success-action.props"
 import { utils } from "lnurl-pay"
 import { formatUnixTimestampYMDHM } from "@app/utils/date"
+import {
+  formatTimeToMempool,
+  timeToMempool,
+} from "../transaction-detail-screen/format-time"
+import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
+import { LNURLPaySuccessAction } from "lnurl-pay/dist/types/types"
+import { GaloyInstance } from "@app/config/galoy-instances"
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 
-type Props = {
+type StatusProcessed = "SUCCESS" | "PENDING" | "QUEUED"
+
+interface Props {
   route: RouteProp<RootStackParamList, "sendBitcoinCompleted">
 }
 
-// TODO: proper type from the backend so we don't need this processing in the front end
-// ie: it should return QUEUED for an onchain send payment
-type StatusProcessed = "SUCCESS" | "PENDING" | "QUEUED"
+const FEEDBACK_DELAY = 3000
+const SUCCESS_ICON_DURATION = 2000
+const SCREENSHOT_DELAY = 100
 
-const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
-  const viewRef = useRef<View | null>(null)
-  const {
-    arrivalAtMempoolEstimate,
-    status: statusRaw,
-    successAction,
-    preimage,
-    formatAmount,
-    feeDisplayText,
-    destination,
-    paymentType,
-    createdAt,
-  } = route.params
-  const styles = useStyles()
-  const {
-    theme: { mode, colors },
-  } = useTheme()
+const processStatus = ({
+  status,
+  arrivalAtMempoolEstimate,
+}: {
+  status: PaymentSendCompletedStatus
+  arrivalAtMempoolEstimate: number | undefined
+}): StatusProcessed => {
+  if (status === "SUCCESS") return "SUCCESS"
+  return arrivalAtMempoolEstimate ? "QUEUED" : "PENDING"
+}
 
-  const status = processStatus({ arrivalAtMempoolEstimate, status: statusRaw })
-  const [showSuggestionModal, setShowSuggestionModal] = useState(false)
-  const [isTakingScreenshot, setIsTakingScreenshot] = useState(false)
+const formatPaymentType = (paymentType?: string): string => {
+  return paymentType === "intraledger" ? "Blink to Blink" : paymentType ?? ""
+}
 
-  const navigation =
-    useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinCompleted">>()
+const useSuccessMessage = (
+  successAction?: LNURLPaySuccessAction,
+  preimage?: string,
+): string => {
+  return useCallback(() => {
+    if (!successAction) return ""
 
+    const { tag, message, description, url } = successAction
+    const decryptedMessage =
+      tag === SuccessActionTag.AES && preimage
+        ? utils.decipherAES({ successAction, preimage })
+        : null
+
+    const messageParts = [message, url, description, decryptedMessage].filter(Boolean)
+
+    return messageParts.join(" ")
+  }, [successAction, preimage])()
+}
+
+const useFeedbackHandler = () => {
   const client = useApolloClient()
-  const feedbackShownData = useFeedbackModalShownQuery()
-  const feedbackModalShown = feedbackShownData?.data?.feedbackModalShown
-  const { data } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
-
   const { LL } = useI18nContext()
-  const usernameTitle = data?.me?.username || LL.common.blinkUser()
-
-  const iDontEnjoyTheApp = () => {
-    logAppFeedback({
-      isEnjoingApp: false,
-    })
-    setShowSuggestionModal(true)
-  }
-
-  const iEnjoyTheApp = () => {
-    logAppFeedback({
-      isEnjoingApp: true,
-    })
-    InAppReview.RequestInAppReview()
-  }
-
   const { appConfig } = useAppConfig()
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false)
+
+  const handleNegativeFeedback = useCallback(() => {
+    logAppFeedback({ isEnjoingApp: false })
+    setShowSuggestionModal(true)
+  }, [])
+
+  const handlePositiveFeedback = useCallback(() => {
+    logAppFeedback({ isEnjoingApp: true })
+    InAppReview.RequestInAppReview()
+  }, [])
 
   const requestFeedback = useCallback(() => {
-    if (!appConfig || appConfig.galoyInstance.id === "Local") {
-      return
-    }
+    if (!shouldShowFeedback(appConfig)) return
 
     if (InAppReview.isAvailable()) {
-      Alert.alert(
-        "",
-        LL.support.enjoyingApp(),
-        [
-          {
-            text: LL.common.No(),
-            onPress: () => iDontEnjoyTheApp(),
-          },
-          {
-            text: LL.common.yes(),
-            onPress: () => iEnjoyTheApp(),
-          },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => {},
-        },
-      )
+      showFeedbackAlert(LL, handleNegativeFeedback, handlePositiveFeedback)
       setFeedbackModalShown(client, true)
     }
-  }, [LL, client, appConfig])
+  }, [LL, client, appConfig, handleNegativeFeedback, handlePositiveFeedback])
 
-  const FEEDBACK_DELAY = 3000
-  // const CALLBACK_DELAY = 3000
-  useEffect(() => {
-    if (!feedbackModalShown) {
-      const feedbackTimeout = setTimeout(() => {
-        requestFeedback()
-      }, FEEDBACK_DELAY)
-      return () => {
-        clearTimeout(feedbackTimeout)
-      }
-    }
-    // if (!successAction?.tag && !showSuggestionModal) {
-    //   const navigateToHomeTimeout = setTimeout(navigation.popToTop, CALLBACK_DELAY)
-    //   return () => clearTimeout(navigateToHomeTimeout)
-    // }
-  }, [
-    client,
-    feedbackModalShown,
-    LL,
-    showSuggestionModal,
-    navigation,
-    requestFeedback,
-    successAction,
-  ])
+  return { requestFeedback, showSuggestionModal, setShowSuggestionModal }
+}
 
-  const captureAndShare = async () => {
+const useScreenshot = (viewRef: React.RefObject<View>) => {
+  const [isTakingScreenshot, setIsTakingScreenshot] = useState(false)
+
+  const captureAndShare = useCallback(async () => {
     try {
       setIsTakingScreenshot(true)
 
-      // To wait before hiding buttons
-      await new Promise<void>((resolve) => {
-        setTimeout(() => resolve(), 100)
-      })
+      await delay(SCREENSHOT_DELAY)
 
       const uri = await captureRef(viewRef, {
         format: "jpg",
@@ -161,101 +133,282 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
         url: uri,
         failOnCancel: false,
       })
-    } catch (_) {
+    } catch {
       // Do nothing
+    } finally {
+      setIsTakingScreenshot(false)
     }
-    setIsTakingScreenshot(false)
+  }, [viewRef])
+
+  return { isTakingScreenshot, captureAndShare }
+}
+
+const shouldShowFeedback = (appConfig: {
+  token: string
+  galoyInstance: GaloyInstance
+}): boolean => {
+  return appConfig && appConfig.galoyInstance.id !== "Local"
+}
+
+const showFeedbackAlert = (
+  LL: TranslationFunctions,
+  onNegative: () => void,
+  onPositive: () => void,
+) => {
+  Alert.alert(
+    "",
+    LL.support.enjoyingApp(),
+    [
+      { text: LL.common.No(), onPress: onNegative },
+      { text: LL.common.yes(), onPress: onPositive },
+    ],
+    { cancelable: true },
+  )
+}
+
+const delay = (ms: number): Promise<void> =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms)
+  })
+
+const SuccessIconComponent: React.FC<{
+  status: StatusProcessed
+  arrivalAtMempoolEstimate: number | undefined
+}> = ({ status, arrivalAtMempoolEstimate }) => {
+  const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
+  const { LL, locale } = useI18nContext()
+
+  const getStatusIcon = () => {
+    const iconMap = {
+      SUCCESS: () => <GaloyIcon name="payment-success" size={100} />,
+      QUEUED: () => <GaloyIcon name="payment-pending" size={100} />,
+      PENDING: () => <GaloyIcon name="warning" color={colors._orange} size={100} />,
+    }
+    return iconMap[status]()
   }
 
-  const MainIcon = () => {
-    switch (status) {
-      case "SUCCESS":
-        return <GaloyIcon name={"payment-success"} size={70} />
-      case "QUEUED":
-        return <GaloyIcon name={"payment-pending"} size={70} />
-      case "PENDING":
-        return <GaloyIcon name={"warning"} color={colors._orange} size={70} />
+  const getStatusText = () => {
+    const textMap = {
+      SUCCESS: () => LL.SendBitcoinScreen.success(),
+      QUEUED: () =>
+        LL.TransactionDetailScreen.txNotBroadcast({
+          countdown: formatTimeToMempool(
+            timeToMempool(arrivalAtMempoolEstimate as number),
+            LL,
+            locale,
+          ),
+        }),
+      PENDING: () => LL.SendBitcoinScreen.pendingPayment(),
     }
+    return textMap[status]()
   }
 
+  return (
+    <View style={styles.successViewContainer} {...testProps(status)}>
+      <SuccessIconAnimation>{getStatusIcon()}</SuccessIconAnimation>
+      <CompletedTextAnimation>
+        <Text style={styles.completedText}>{getStatusText()}</Text>
+      </CompletedTextAnimation>
+    </View>
+  )
+}
+
+const PaymentDetailsSection: React.FC<{
+  currencyAmount?: string
+  satAmount?: string
+  feeDisplayText?: string
+  usernameTitle: string
+  destination?: string
+  createdAt?: number
+  paymentType?: string
+  LL: TranslationFunctions
+}> = ({
+  currencyAmount,
+  satAmount,
+  feeDisplayText,
+  usernameTitle,
+  destination,
+  createdAt,
+  paymentType,
+  LL,
+}) => {
+  const styles = useStyles()
+
+  return (
+    <>
+      <View style={styles.successActionFieldContainer}>
+        <SuccessActionComponent
+          title={LL.SendBitcoinScreen.amount()}
+          text={currencyAmount}
+          subText={satAmount}
+          key="amount"
+          visible={Boolean(currencyAmount)}
+        />
+        <SuccessActionComponent
+          title={LL.SendBitcoinScreen.feeLabel()}
+          text={feeDisplayText}
+          key="fee"
+          visible={Boolean(feeDisplayText)}
+        />
+        <SuccessActionComponent
+          title={LL.SendBitcoinScreen.sender()}
+          text={usernameTitle}
+          key="sender"
+          visible={Boolean(usernameTitle)}
+        />
+        <SuccessActionComponent
+          title={LL.SendBitcoinScreen.recipient()}
+          text={destination}
+          key="recipient"
+          visible={Boolean(destination)}
+        />
+      </View>
+
+      <View style={styles.successActionFieldContainer}>
+        <SuccessActionComponent
+          title={LL.SendBitcoinScreen.time()}
+          text={formatUnixTimestampYMDHM(createdAt!)}
+          key="time"
+          visible={Boolean(createdAt)}
+        />
+        <SuccessActionComponent
+          title="Type"
+          text={formatPaymentType(paymentType)}
+          key="type"
+          visible={Boolean(paymentType)}
+        />
+      </View>
+    </>
+  )
+}
+
+const NoteSection: React.FC<{
+  noteMessage: string
+  LL: TranslationFunctions
+}> = ({ noteMessage, LL }) => {
+  const styles = useStyles()
+
+  if (!noteMessage) return null
+
+  return (
+    <View style={styles.successActionFieldContainer}>
+      <SuccessActionComponent
+        title={LL.SendBitcoinScreen.noteLabel()}
+        text={noteMessage}
+        key="note"
+        visible={Boolean(noteMessage)}
+      />
+    </View>
+  )
+}
+
+const HeaderSection: React.FC<{
+  isTakingScreenshot: boolean
+  onClose: () => void
+}> = ({ isTakingScreenshot, onClose }) => {
+  const styles = useStyles()
+
+  if (isTakingScreenshot) return null
+
+  return (
+    <View style={styles.headerContainer}>
+      <GaloyIconButton iconOnly size="large" name="close" onPress={onClose} />
+    </View>
+  )
+}
+
+const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
+  const [showSuccessIcon, setShowSuccessIcon] = useState(true)
+  const viewRef = useRef<View>(null)
+
+  const {
+    arrivalAtMempoolEstimate,
+    status: statusRaw,
+    successAction,
+    preimage,
+    currencyAmount,
+    satAmount,
+    feeDisplayText,
+    destination,
+    paymentType,
+    createdAt,
+  } = route.params
+
+  const styles = useStyles()
+  const {
+    theme: { mode },
+  } = useTheme()
+  const navigation =
+    useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinCompleted">>()
+  const { LL } = useI18nContext()
+
+  const feedbackShownData = useFeedbackModalShownQuery()
+  const { data } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
+
+  const status = processStatus({ arrivalAtMempoolEstimate, status: statusRaw })
+  const usernameTitle = data?.me?.username || LL.common.blinkUser()
+  const noteMessage = useSuccessMessage(successAction, preimage)
   const Logo = mode === "dark" ? LogoDarkMode : LogoLightMode
 
-  const noteMessage = (): string => {
-    if (!successAction) return ""
+  const { requestFeedback, showSuggestionModal, setShowSuggestionModal } =
+    useFeedbackHandler()
+  const { isTakingScreenshot, captureAndShare } = useScreenshot(viewRef)
 
-    const { tag, message, description, url } = successAction
-    const decryptedMessage =
-      tag === SuccessActionTag.AES && preimage
-        ? utils.decipherAES({ successAction, preimage })
-        : null
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSuccessIcon(false), SUCCESS_ICON_DURATION)
+    return () => clearTimeout(timer)
+  }, [])
 
-    const parts = []
+  useEffect(() => {
+    const feedbackModalShown = feedbackShownData?.data?.feedbackModalShown
 
-    if (message) {
-      parts.push(message)
+    if (!feedbackModalShown) {
+      const feedbackTimeout = setTimeout(requestFeedback, FEEDBACK_DELAY)
+      return () => clearTimeout(feedbackTimeout)
     }
-    if (url) {
-      parts.push(url)
-    }
-    if (description) {
-      parts.push(description)
-    }
-    if (decryptedMessage) {
-      parts.push(decryptedMessage)
-    }
+  }, [feedbackShownData?.data?.feedbackModalShown, requestFeedback])
 
-    return parts.join(" ")
+  const handleNavigateHome = () => navigation.navigate("Primary")
+
+  if (showSuccessIcon) {
+    return (
+      <Screen>
+        <SuccessIconComponent
+          status={status}
+          arrivalAtMempoolEstimate={arrivalAtMempoolEstimate}
+        />
+      </Screen>
+    )
   }
 
   return (
     <Screen>
+      <HeaderSection
+        isTakingScreenshot={isTakingScreenshot}
+        onClose={handleNavigateHome}
+      />
+
       <ViewShot ref={viewRef} style={styles.viewShot}>
         <View style={styles.screenContainer} {...testProps("Success Text")}>
-          <View style={styles.successIcon} {...testProps(status)}>
-            <SuccessIconAnimation>{MainIcon()}</SuccessIconAnimation>
-          </View>
-          <Logo height={65} />
+          <Logo height={110} />
+
           <View style={styles.container}>
             <ScrollView>
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.amount()}
-                text={formatAmount}
-                key={1}
-                visible={Boolean(formatAmount)}
+              <PaymentDetailsSection
+                currencyAmount={currencyAmount}
+                satAmount={satAmount}
+                feeDisplayText={feeDisplayText}
+                usernameTitle={usernameTitle}
+                destination={destination}
+                createdAt={createdAt}
+                paymentType={paymentType}
+                LL={LL}
               />
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.feeLabel()}
-                text={`${feeDisplayText} | ${paymentType === "intraledger" ? "Blink to Blink" : paymentType}`}
-                key={2}
-                visible={Boolean(feeDisplayText)}
-              />
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.sender()}
-                text={usernameTitle}
-                key={3}
-                visible={Boolean(usernameTitle)}
-                {...(!isTakingScreenshot && { icon: "pencil" })}
-              />
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.recipient()}
-                text={destination}
-                key={4}
-                visible={Boolean(destination)}
-                {...(!isTakingScreenshot && { icon: "pencil" })}
-              />
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.time()}
-                text={formatUnixTimestampYMDHM(createdAt!)}
-                key={5}
-                visible={Boolean(createdAt)}
-              />
-              <SuccessActionComponent
-                title={LL.SendBitcoinScreen.noteLabel()}
-                text={noteMessage()}
-                key={6}
-                visible={Boolean(noteMessage())}
-                {...(!isTakingScreenshot && { icon: "copy-paste" })}
-              />
+
+              <NoteSection noteMessage={noteMessage} LL={LL} />
             </ScrollView>
           </View>
 
@@ -266,46 +419,25 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
               title={LL.common.share()}
             />
           )}
-
-          {!isTakingScreenshot && (
-            <Button
-              title={LL.common.close()}
-              onPress={() => navigation.navigate("Primary")}
-              TouchableComponent={TouchableHighlight}
-              titleStyle={{ color: colors.primary }}
-              containerStyle={styles.containerStyle}
-              buttonStyle={styles.buttonStyle}
-            />
-          )}
-          <SuggestionModal
-            navigation={navigation}
-            showSuggestionModal={showSuggestionModal}
-            setShowSuggestionModal={setShowSuggestionModal}
-          />
         </View>
       </ViewShot>
+
+      <SuggestionModal
+        navigation={navigation}
+        showSuggestionModal={showSuggestionModal}
+        setShowSuggestionModal={setShowSuggestionModal}
+      />
     </Screen>
   )
 }
 
-const processStatus = ({
-  status,
-  arrivalAtMempoolEstimate,
-}: {
-  status: PaymentSendCompletedStatus
-  arrivalAtMempoolEstimate: number | undefined
-}): StatusProcessed => {
-  if (status === "SUCCESS") {
-    return "SUCCESS"
-  }
-
-  if (arrivalAtMempoolEstimate) {
-    return "QUEUED"
-  }
-  return "PENDING"
-}
-
 const useStyles = makeStyles(({ colors }) => ({
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    padding: 16,
+  },
   screenContainer: {
     flexGrow: 1,
     marginHorizontal: 20,
@@ -317,31 +449,32 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     marginTop: 20,
     marginHorizontal: 28,
-  },
-  successIcon: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 110,
+    fontSize: 16,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
-  },
-  containerStyle: {
-    height: 42,
-    borderRadius: 12,
-    marginBottom: 20,
     marginTop: 10,
-  },
-  buttonStyle: {
-    height: 42,
-    borderRadius: 12,
-    backgroundColor: colors.transparent,
   },
   shareButton: {
     marginTop: 10,
+    marginBottom: 20,
+  },
+  successActionFieldContainer: {
+    overflow: "hidden",
+    gap: 20,
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 14,
+    marginBottom: 12,
+  },
+  successViewContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 }))
 

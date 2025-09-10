@@ -2289,7 +2289,7 @@ const en: BaseTranslation = {
     notConfirmed:
       "Payment has been sent\nbut is not confirmed yet\n\nYou can check the status\nof the payment in Transactions",
     note: "Note or label",
-    success: "Payment has been sent successfully",
+    success: "Transaction sent successfully",
     suggestionInput: "Enter your suggestion",
     max: "Max",
     maxAmount: "Max Amount",

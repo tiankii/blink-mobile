@@ -1,10 +1,7 @@
 import React from "react"
-import { View, Text, TouchableOpacity, TextInput, Linking } from "react-native"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import { makeStyles, useTheme } from "@rneui/themed"
-import { FieldWithIconProps } from "./field-with-icon.props"
-import Clipboard from "@react-native-clipboard/clipboard"
-import { toastShow } from "@app/utils/toast"
+import { View, Text, Linking } from "react-native"
+import { makeStyles } from "@rneui/themed"
+import { FieldWithEventProps } from "./field-with-icon.props"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 
@@ -12,86 +9,49 @@ type TTextWithUrl = {
   text: string
   url?: string
 }
-export const FieldWithIconEvent = ({ title, value, iconName }: FieldWithIconProps) => {
+
+export const FieldWithEvent = ({ title, value, subValue }: FieldWithEventProps) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-
-  const {
-    theme: { colors },
-  } = useTheme()
-  const [inputText, setInputText] = React.useState<string>(() => value)
-  const [isEditing, setIsEditing] = React.useState<boolean>(false)
 
   const handleTextWithUrl = (text: string): TTextWithUrl => {
     const regex = /(https?:\/\/[^\s]+)/i
     const match = text.match(regex)
-
     if (match) {
       const url = match[0]
-      const textoSinURL = text.replace(url, "").trim()
-      return { text: textoSinURL, url }
+      const textWithoutURL = text.replace(url, "").trim()
+      return { text: textWithoutURL, url }
     }
     return { text }
   }
 
-  const copyToClipboard = (text: string) => {
-    Clipboard.setString(text)
-    toastShow({
-      type: "success",
-      message: LL.SendBitcoinScreen.copiedSuccessMessage(),
-      LL,
-    })
-  }
+  const textData = handleTextWithUrl(value)
 
-  const handleEvent = () => {
-    if (iconName === "copy-paste") {
-      let value = null
-      if (handleTextWithUrl(inputText)?.url) {
-        value = `${handleTextWithUrl(inputText).text} ${handleTextWithUrl(inputText).url}`
-        copyToClipboard(value)
-        return
-      }
-      copyToClipboard(handleTextWithUrl(inputText).text)
-      return
-    }
-    if (iconName === "pencil") {
-      setIsEditing((prev) => !prev)
-    }
-  }
   return (
     <View style={styles.successActionFieldContainer}>
-      {title && <Text style={styles.titleFieldBackground}>{title}</Text>}
+      <Text style={styles.titleFieldBackground}>{title}</Text>
       <View style={styles.fieldBackground}>
-        {isEditing ? (
-          <TextInput
-            value={inputText}
-            onChangeText={setInputText}
-            onBlur={() => setIsEditing(false)}
-            style={styles.editingInput}
-            autoFocus
-          />
-        ) : (
-          <View>
-            {handleTextWithUrl(inputText).text && (
-              <Text style={styles.inputStyle}>{handleTextWithUrl(inputText).text}</Text>
-            )}
-            {handleTextWithUrl(inputText).url && (
-              <TouchableOpacity
+        <View>
+          <Text style={styles.inputStyle}>
+            {textData.text}
+            {textData.url && " "}
+            {textData.url && (
+              <Text
                 {...testProps(LL.ScanningQRCodeScreen.openLinkTitle())}
-                onPress={() => Linking.openURL(handleTextWithUrl(inputText).url!)}
-                hitSlop={23}
+                style={styles.inputUlr}
+                onPress={() => Linking.openURL(textData.url!)}
               >
-                <Text style={styles.inputUlr}>{handleTextWithUrl(inputText).url}</Text>
-              </TouchableOpacity>
+                {textData.url}
+              </Text>
             )}
-          </View>
-        )}
+          </Text>
+          {subValue && (
+            <Text
+              style={[styles.inputStyle, styles.subValueStyle]}
+            >{`(${subValue})`}</Text>
+          )}
+        </View>
       </View>
-      {iconName && (
-        <TouchableOpacity style={styles.iconContainer} onPress={handleEvent} hitSlop={30}>
-          <GaloyIcon name={iconName} size={23} color={colors.primary} />
-        </TouchableOpacity>
-      )}
     </View>
   )
 }
@@ -100,40 +60,32 @@ const useStyles = makeStyles(({ colors }) => ({
   successActionFieldContainer: {
     flexDirection: "row",
     overflow: "hidden",
-    backgroundColor: colors.grey5,
-    borderRadius: 10,
-    alignItems: "center",
-    padding: 14,
-    minHeight: 60,
-    marginBottom: 12,
+    alignItems: "flex-start",
   },
   titleFieldBackground: {
     fontSize: 14,
+    fontWeight: "300",
+    fontStyle: "normal",
     color: colors.black,
-    width: 80,
+    minWidth: 80,
   },
   fieldBackground: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "center",
+    justifyContent: "flex-end",
     fontSize: 14,
     color: colors.black,
-  },
-  editingInput: {
-    padding: 0,
-    margin: 0,
   },
   inputStyle: {
     fontSize: 14,
     color: colors.black,
+    textAlign: "right",
   },
   inputUlr: {
     fontSize: 14,
     color: colors.primary,
   },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "flex-start",
-    paddingLeft: 20,
+  subValueStyle: {
+    marginTop: 2,
   },
 }))

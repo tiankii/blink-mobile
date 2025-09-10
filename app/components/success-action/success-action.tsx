@@ -1,14 +1,14 @@
 import React from "react"
 import { View } from "react-native"
 import { SuccessActionComponentProps } from "./success-action.props"
-import { FieldWithIconEvent } from "./field-with-icon"
+import { FieldWithEvent } from "./field-with-icon"
 import { makeStyles } from "@rneui/themed"
 
 export const SuccessActionComponent: React.FC<SuccessActionComponentProps> = ({
   visible,
-  icon,
   title,
   text,
+  subText,
 }) => {
   const styles = useStyles()
 
@@ -17,7 +17,7 @@ export const SuccessActionComponent: React.FC<SuccessActionComponentProps> = ({
   }
   return (
     <View style={styles.fieldContainer}>
-      <FieldWithIconEvent title={title} value={text!} iconName={icon} />
+      <FieldWithEvent title={title} value={text!} subValue={subText} />
     </View>
   )
 }

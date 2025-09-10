@@ -1,8 +1,8 @@
 export type SuccessActionComponentProps = {
   visible?: boolean
-  icon?: "copy-paste" | "pencil"
-  title?: string
+  title: string
   text?: string | null
+  subText?: string
 }
 
 export enum SuccessActionTag {

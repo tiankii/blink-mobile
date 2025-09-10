@@ -7142,7 +7142,7 @@ type RootTranslation = {
 		 */
 		note: string
 		/**
-		 * P​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​s​e​n​t​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 * T​r​a​n​s​a​c​t​i​o​n​ ​s​e​n​t​ ​s​u​c​c​e​s​s​f​u​l​l​y
 		 */
 		success: string
 		/**
@@ -16273,7 +16273,7 @@ export type TranslationFunctions = {
 		 */
 		note: () => LocalizedString
 		/**
-		 * Payment has been sent successfully
+		 * Transaction sent successfully
 		 */
 		success: () => LocalizedString
 		/**

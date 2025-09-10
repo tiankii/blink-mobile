@@ -1,7 +1,5 @@
-import { IconNamesType } from "@app/components/atomic/galoy-icon"
-
-export type FieldWithIconProps = {
-  title?: string
+export type FieldWithEventProps = {
+  title: string
   value: string
-  iconName?: IconNamesType
+  subValue?: string
 }
