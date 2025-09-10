@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useCallback } from "react"
+import React, { forwardRef, useImperativeHandle, useCallback, useEffect } from "react"
 import {
   View,
   TextInput,
@@ -20,13 +20,12 @@ type CurrencyInputProps = {
   placeholder?: string
   currency: string
   value?: string
+  inputRef?: React.RefObject<TextInput>
   onChangeText: (text: string) => void
   onFocus?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void) &
     ((event: NativeSyntheticEvent<TargetedEvent>) => void)
   isFocused?: boolean
-  rightIcon?: React.ReactNode
   testId?: string
-  autoFocus?: boolean
   AnimatedViewStyle?: AnimatedViewStyle
 }
 
@@ -36,11 +35,10 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
       placeholder,
       currency,
       value,
+      inputRef,
       onChangeText,
       onFocus,
-      rightIcon,
       testId,
-      autoFocus = false,
       isFocused = false,
       AnimatedViewStyle,
     },
@@ -50,9 +48,8 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
       theme: { colors },
     } = useTheme()
     const styles = useStyles(isFocused)
-    const inputRef = useRef<TextInput>(null)
 
-    useImperativeHandle(ref, () => inputRef.current as TextInput)
+    useImperativeHandle(ref, () => inputRef?.current as TextInput)
 
     const getEndSelection = useCallback(() => {
       const text = value ?? ""
@@ -60,18 +57,11 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
       return { start: pos, end: pos } as const
     }, [value])
 
-    const handleOverlayPress = useCallback(() => {
-      const text = value ?? ""
-      const pos = text.length
-      inputRef.current?.focus()
-      inputRef.current?.setNativeProps({ selection: { start: pos, end: pos } })
-    }, [value])
+    const handleFocus = useCallback(() => inputRef?.current?.focus(), [inputRef])
 
-    const resolvedRightIcon = React.isValidElement(rightIcon) ? (
-      <View style={styles.rightIconBox}>{rightIcon}</View>
-    ) : (
-      <View style={styles.rightIconSpacer} />
-    )
+    useEffect(() => {
+      if (isFocused) handleFocus()
+    }, [handleFocus, isFocused])
 
     return (
       <Animated.View style={[styles.containerBase, AnimatedViewStyle]}>
@@ -88,9 +78,6 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
               placeholderTextColor={colors.grey3}
               inputContainerStyle={styles.inputContainer}
               renderErrorMessage={false}
-              autoFocus={autoFocus}
-              rightIcon={resolvedRightIcon}
-              rightIconContainerStyle={styles.rightIconContainer}
               selection={getEndSelection()}
               pointerEvents="none"
               {...(testId ? testProps(testId) : {})}
@@ -98,7 +85,7 @@ export const CurrencyInput = forwardRef<TextInput, CurrencyInputProps>(
             <TouchableOpacity
               style={styles.inputOverlay}
               activeOpacity={1}
-              onPress={handleOverlayPress}
+              onPress={handleFocus}
             />
           </View>
 
@@ -157,10 +144,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   inputContainer: {
     borderBottomWidth: 0,
-  },
-  rightIconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
   },
   rightIconBox: {
     width: 30,

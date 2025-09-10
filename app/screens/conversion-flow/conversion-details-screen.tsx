@@ -151,6 +151,7 @@ export const ConversionDetailsScreen = () => {
 
   const fromInputRef = useRef<TextInput | null>(null)
   const toInputRef = useRef<TextInput | null>(null)
+  const currencyInputRef = useRef<TextInput | null>(null)
   const toggleInitiated = useRef(false)
   const pendingFocusId = useRef<ConvertInputType | null>(null)
   const hadInitialFocus = useRef(false)
@@ -212,29 +213,38 @@ export const ConversionDetailsScreen = () => {
     toInputRef,
     setFocusedInputValues,
   })
+  const isCurrencyVisible = displayCurrency !== WalletCurrency.Usd
 
   useEffect(() => {
-    if (!hadInitialFocus.current && overlaysReady && fromWallet && fromInputRef.current) {
-      const baseTarget = inputFormattedValues?.fromInput ?? inputValues.fromInput
-      setFocusedInputValues({
-        ...baseTarget,
-        id: ConvertInputType.FROM,
-        isFocused: true,
-      })
+    if (hadInitialFocus.current || !overlaysReady) return
 
+    const initialId = isCurrencyVisible
+      ? ConvertInputType.CURRENCY
+      : ConvertInputType.FROM
+
+    const baseTarget =
+      initialId === ConvertInputType.CURRENCY
+        ? inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput }
+        : inputFormattedValues?.fromInput ?? { ...inputValues.fromInput }
+
+    setFocusedInputValues({
+      ...baseTarget,
+      id: initialId,
+      isFocused: true,
+    })
+
+    if (initialId === ConvertInputType.FROM && fromInputRef.current) {
       const value = (baseTarget.formattedAmount ?? "") as string
-      const satIdx =
-        value.indexOf(" SAT") >= 0
-          ? value.indexOf(" SAT")
-          : value.toUpperCase().indexOf(" SAT")
-      const pos = satIdx >= 0 ? satIdx : value.length
+      const idx = value.toUpperCase().indexOf(" SAT")
+      const pos = idx >= 0 ? idx : value.length
       setTimeout(() => {
         fromInputRef.current?.focus()
         fromInputRef.current?.setNativeProps({ selection: { start: pos, end: pos } })
       }, 10)
-      hadInitialFocus.current = true
     }
-  }, [overlaysReady, fromWallet, inputFormattedValues, inputValues])
+
+    hadInitialFocus.current = true
+  }, [overlaysReady, isCurrencyVisible, inputFormattedValues, inputValues])
 
   useEffect(() => {
     if (!focusedInputValues) return
@@ -531,6 +541,8 @@ export const ConversionDetailsScreen = () => {
           {displayCurrency !== WalletCurrency.Usd && (
             <CurrencyInput
               value={renderValue(ConvertInputType.CURRENCY)}
+              inputRef={currencyInputRef}
+              isFocused={focusedInputValues?.id === ConvertInputType.CURRENCY}
               onFocus={() =>
                 setFocusedInputValues(
                   inputFormattedValues?.currencyInput ?? { ...inputValues.currencyInput },
