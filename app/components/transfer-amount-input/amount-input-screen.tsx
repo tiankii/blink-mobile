@@ -319,32 +319,32 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
         !numberPadNumber.minorAmount &&
         !numberPadNumber.hasDecimal
 
-      let primaryAmount: MoneyAmount<WalletOrDisplayCurrency>
-      let primaryCurrency: WalletOrDisplayCurrency
+      if (digitsEmpty && !lastValuesRef.current) return
 
-      if (digitsEmpty) {
-        const pick =
-          inputValues.fromInput.amount.amount > 0
-            ? inputValues.fromInput.amount
-            : inputValues.toInput.amount.amount > 0
-              ? inputValues.toInput.amount
-              : inputValues.currencyInput.amount
+      const pickWhenEmpty =
+        inputValues.fromInput.amount.amount > 0
+          ? inputValues.fromInput.amount
+          : inputValues.toInput.amount.amount > 0
+            ? inputValues.toInput.amount
+            : inputValues.currencyInput.amount
 
-        primaryAmount = pick
-        primaryCurrency = pick.currency
-      } else {
-        primaryCurrency = numberPadState.currency
-        primaryAmount = numberPadNumberToMoneyAmount({
-          numberPadNumber,
-          currency: primaryCurrency,
-          currencyInfo,
-        })
-      }
+      const primaryCurrency: WalletOrDisplayCurrency = digitsEmpty
+        ? pickWhenEmpty.currency
+        : numberPadState.currency
+
+      const primaryAmount: MoneyAmount<WalletOrDisplayCurrency> = digitsEmpty
+        ? pickWhenEmpty
+        : numberPadNumberToMoneyAmount({
+            numberPadNumber,
+            currency: primaryCurrency,
+            currencyInfo,
+          })
 
       const primaryNpState = moneyAmountToNumberPadReducerState({
         moneyAmount: primaryAmount,
         currencyInfo,
       })
+
       const formattedFromPrimary = formatNumberPadNumber(primaryNpState.numberPadNumber)
 
       const { fromAmount, toAmount, currencyAmount } = convertToInputCurrencies(
@@ -362,26 +362,35 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
           formatNumberPadNumber(numberPadState.numberPadNumber)
         : formattedFromPrimary
 
+      const getFormattedAmount = (
+        amount: MoneyAmount<WalletOrDisplayCurrency>,
+        isApproximate = false,
+      ) => {
+        if (digitsEmpty || primaryAmount.amount === 0) return ""
+
+        return formatAmount(amount, isApproximate)
+      }
+
       const payload: IInputValues = {
-        formattedAmount: formattedForParent,
+        formattedAmount: digitsEmpty ? "" : formattedForParent,
         fromInput: {
           id: ConvertInputType.FROM,
           currency: inputValues.fromInput.amount.currency,
-          formattedAmount: formatAmount(fromAmount, false),
+          formattedAmount: getFormattedAmount(fromAmount, false),
           isFocused: focusedIdRef.current === ConvertInputType.FROM,
           amount: fromAmount,
         },
         toInput: {
           id: ConvertInputType.TO,
           currency: inputValues.toInput.amount.currency,
-          formattedAmount: formatAmount(toAmount, true),
+          formattedAmount: getFormattedAmount(toAmount, true),
           isFocused: focusedIdRef.current === ConvertInputType.TO,
           amount: toAmount,
         },
         currencyInput: {
           id: ConvertInputType.CURRENCY,
           currency: inputValues.currencyInput.amount.currency,
-          formattedAmount: formatAmount(currencyAmount, false),
+          formattedAmount: getFormattedAmount(currencyAmount, false),
           isFocused: focusedIdRef.current === ConvertInputType.CURRENCY,
           amount: currencyAmount,
         },
@@ -396,8 +405,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
 
       onAmountChange(primaryAmount)
       notifyTyping(false)
-
-      if (onAfterRecalc) onAfterRecalc()
+      onAfterRecalc?.()
     },
     debounceMs,
     [
