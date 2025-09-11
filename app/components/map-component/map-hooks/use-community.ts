@@ -18,15 +18,12 @@ export const useArea = (id: number | null) => {
           setCommunity(null)
           return
         }
-        const start = performance.now()
         const { data } = await axios.get<Area>(`https://api.btcmap.org/v3/areas/${id}`)
 
         if (!cancelled) {
           setCommunity(data)
         }
-        console.log(`Downloading area data took ${performance.now() - start} ms`)
       } catch (e) {
-        console.error(e)
         if (!cancelled) {
           setError("Could not fetch community data, please try again later")
         }
@@ -78,7 +75,6 @@ export const useCommunityRpc = (id: string | null) => {
         setCommunity(data)
       })()
     } catch (e) {
-      console.error(e)
       setError("Could not fetch community data, please try again later")
     } finally {
       setLoading(false)

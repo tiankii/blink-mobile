@@ -35,8 +35,8 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
     if (scheme) {
       try {
         Linking.openURL(scheme)
-      } catch (error) {
-        console.error("Error opening map: ", error)
+      } catch (_) {
+        /* empty */
       }
     }
   }

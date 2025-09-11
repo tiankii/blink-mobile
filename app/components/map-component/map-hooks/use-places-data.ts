@@ -19,7 +19,6 @@ export const usePlacesData = () => {
 
   useEffect(() => {
     const fetchAndUpdate = async () => {
-      const start = performance.now()
       try {
         setLoading(true)
 
@@ -28,7 +27,6 @@ export const usePlacesData = () => {
 
         if (cachedData) {
           currentData = JSON.parse(cachedData)
-          console.log(`Restored: ${currentData.baseData.length} places`)
         } else {
           const { data, needsNameEnrichment } = await initializeBasePlaces()
           currentData = data
@@ -39,7 +37,6 @@ export const usePlacesData = () => {
 
           normalize(currentData)
           await AsyncStorage.setItem("btcmap_places_v4", JSON.stringify(currentData))
-          console.log(`Initialized: ${currentData.baseData.length} places`)
         }
 
         setPlaces(currentData)
@@ -50,19 +47,14 @@ export const usePlacesData = () => {
           return
         }
 
-        console.log("Fetching updates...")
-
         const newPlaces = (await fetchPlacesFromApi(
           currentData.lastUpdated,
           true,
         )) as Place[]
 
         if (!newPlaces.length) {
-          console.log("No new places found")
           return
         }
-
-        console.log(`New places fetched: ${newPlaces.length}`)
 
         const newPlacesIds = newPlaces.map((place) => place.id)
         const oldFiltered = currentData.baseData.filter(
@@ -78,10 +70,8 @@ export const usePlacesData = () => {
         await AsyncStorage.setItem("btcmap_places_v4", JSON.stringify(updatedData))
         setPlaces(updatedData)
       } catch (error) {
-        console.error(error)
         setError("Could not sync BTC Map data, please try again or contact BTC Map.")
       } finally {
-        console.log(`Operation took ${performance.now() - start} ms`)
         setLoading(false)
       }
     }
@@ -138,16 +128,12 @@ const initializeBasePlaces = async (): Promise<{
       headers["last-modified"] || headers["Last-Modified"] || headers["Last Modified"]
     const lastUpdated = new Date(lastUpdatedRaw).toISOString()
 
-    console.log(`CDN: initialized ${cdnData.data.length} places`)
     return {
       data: { baseData: cdnData.data, lastUpdated },
       needsNameEnrichment: true,
     }
   } catch (error) {
-    console.warn("CDN failed, falling back to API with full data:", error)
-
     const places = (await fetchPlacesFromApi("1970-01-01T00:00:00Z", true)) as Place[]
-    console.log(`API fallback: initialized ${places.length} places with names`)
 
     return {
       data: {
@@ -171,8 +157,6 @@ const enrichPlacesWithNames = async (places: BasePlacesData): Promise<void> => {
       place.name = nameData.name
     }
   }
-
-  console.log("Names enriched")
 }
 
 const normalize = (apiData: BasePlacesData): void => {

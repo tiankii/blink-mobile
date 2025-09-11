@@ -36,7 +36,6 @@ export const usePlace = (id?: number | null) => {
         }>(`${BTCMAP_V4_API_BASE}/places/${id}?fields=id,name,phone,website,address`)
         setPlaceData(data)
       } catch (error) {
-        console.error(error)
         setError("Could not fetch place data, please try again")
       } finally {
         setLoading(false)

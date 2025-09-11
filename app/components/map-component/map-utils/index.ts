@@ -16,7 +16,6 @@ export function isPointInArea(point: LatLng, geometry: Geometry): boolean {
     latitude: lat,
     longitude: lon,
   })
-  // initial filtering out elements by bbox - O(1)
   const bbox = calculateBounds(geometry)
   if (
     point.longitude > bbox.maxLng ||
@@ -27,7 +26,6 @@ export function isPointInArea(point: LatLng, geometry: Geometry): boolean {
     return false
   }
 
-  // filtering pre-filtered set by ray-casting algorithm - O(n)
   switch (geometry.type) {
     case "Polygon":
       return isPointInPolygonWithHoles(
@@ -51,7 +49,6 @@ export function isPointInArea(point: LatLng, geometry: Geometry): boolean {
   }
 }
 
-// ==== Helpers for isPointInArea ====
 function isPointInPolygonWithHoles(point: LatLng, rings: LatLng[][]): boolean {
   const [outer, ...holes] = rings
   if (!outer || !isPointInPolygon(point, outer)) return false
@@ -64,7 +61,6 @@ function isPointInPolygon(point: LatLng, polygon: LatLng[]): boolean {
   const { latitude, longitude } = point
   let isInside = false
 
-  // Ray casting algorithm - O(n) where n is number of vertices in polygon
   // eslint-disable-next-line no-plusplus
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const vertexI = polygon[i]
@@ -85,13 +81,6 @@ function isPointInPolygon(point: LatLng, polygon: LatLng[]): boolean {
   return isInside
 }
 
-/**
- * Helper for moving the view to selectected goemetry. Useful for areas.
- * @param mapRef
- * @param geometry
- * @param padding
- * @param duration
- */
 // eslint-disable-next-line max-params
 export function navigateToGeometry(
   mapRef: React.RefObject<MapView>,
@@ -159,7 +148,7 @@ function calculateCenterAndRegion(geometry: Geometry, padding: number = 0.1): Re
   return {
     latitude: centerLatitude,
     longitude: centerLongitude,
-    latitudeDelta: Math.max(latitudeDelta, 0.01), // minimum zoom
+    latitudeDelta: Math.max(latitudeDelta, 0.01),
     longitudeDelta: Math.max(longitudeDelta, 0.01),
   }
 }

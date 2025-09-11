@@ -170,5 +170,5 @@ export const categories: Record<string, Category> = {
   "public": Category.ServicesMedical,
   "tour": Category.ServicesMedical,
 
-  "question-mark": Category.ServicesMedical, // fallback or unknown
+  "question-mark": Category.ServicesMedical,
 }
