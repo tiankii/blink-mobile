@@ -362,7 +362,7 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
   useEffect(() => {
     const timer = setTimeout(() => setShowSuccessIcon(false), successIconDuration)
     return () => clearTimeout(timer)
-  }, [])
+  }, [successIconDuration])
 
   useEffect(() => {
     const feedbackModalShown = feedbackShownData?.data?.feedbackModalShown

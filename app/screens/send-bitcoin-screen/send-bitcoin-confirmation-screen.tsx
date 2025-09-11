@@ -238,7 +238,6 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
     currencyAmount,
     satAmount,
     feeDisplayText,
-    destination,
   ])
 
   let validAmount = true

@@ -104,7 +104,7 @@ describe("SendBitcoinCompletedScreen", () => {
     )
 
     act(() => {
-      jest.advanceTimersByTime(2000)
+      jest.advanceTimersByTime(2300)
     })
 
     expect(screen.getByText(lud09MessageRoute.params.successAction.message)).toBeTruthy()
@@ -146,7 +146,7 @@ describe("SendBitcoinCompletedScreen", () => {
     )
 
     act(() => {
-      jest.advanceTimersByTime(2000)
+      jest.advanceTimersByTime(2300)
     })
 
     const button = await waitFor(() =>
@@ -194,7 +194,7 @@ describe("SendBitcoinCompletedScreen", () => {
       </ContextForScreen>,
     )
     act(() => {
-      jest.advanceTimersByTime(2000)
+      jest.advanceTimersByTime(2300)
     })
     const button = await waitFor(() =>
       screen.findByTestId(LL.ScanningQRCodeScreen.openLinkTitle()),
@@ -206,7 +206,9 @@ describe("SendBitcoinCompletedScreen", () => {
     )
 
     expect(
-      screen.getByText(lud09URLWithDescRoute.params.successAction.description, { exact: false }),
+      screen.getByText(lud09URLWithDescRoute.params.successAction.description, {
+        exact: false,
+      }),
     ).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.successAction.url)).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.currencyAmount)).toBeTruthy()
@@ -248,7 +250,7 @@ describe("SendBitcoinCompletedScreen", () => {
       </ContextForScreen>,
     )
     act(() => {
-      jest.advanceTimersByTime(2000)
+      jest.advanceTimersByTime(2300)
     })
 
     expect(
