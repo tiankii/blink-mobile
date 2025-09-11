@@ -1,5 +1,5 @@
 import React from "react"
-import { Pressable, TouchableOpacity, View } from "react-native"
+import { Pressable, View } from "react-native"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
@@ -15,11 +15,11 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
-import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
+import AppLogoLightMode from "../../assets/logo/blink-logo-light.svg"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
-import { PhoneLoginInitiateType } from "../phone-auth-screen"
 import useAppCheckToken from "./use-device-token"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
 
 export const GetStartedScreen: React.FC = () => {
   const navigation =
@@ -48,33 +48,6 @@ export const GetStartedScreen: React.FC = () => {
 
   const handleCreateAccount = () => {
     logGetStartedAction({
-      action: "log_in",
-      createDeviceAccountEnabled: Boolean(appCheckToken),
-    })
-    navigation.navigate("acceptTermsAndConditions", { flow: "phone" })
-  }
-
-  const handleLoginWithPhone = () => {
-    logGetStartedAction({
-      action: "log_in",
-      createDeviceAccountEnabled: Boolean(appCheckToken),
-    })
-    navigation.navigate("phoneFlow", {
-      screen: "phoneLoginInitiate",
-      params: { type: PhoneLoginInitiateType.Login },
-    })
-  }
-
-  const handleExploreWallet = () => {
-    logGetStartedAction({
-      action: "explore_wallet",
-      createDeviceAccountEnabled: Boolean(appCheckToken),
-    })
-    navigation.navigate("Primary")
-  }
-
-  const handleCreateDeviceAccount = async () => {
-    logGetStartedAction({
       action: "create_device_account",
       createDeviceAccountEnabled: Boolean(appCheckToken),
     })
@@ -82,13 +55,14 @@ export const GetStartedScreen: React.FC = () => {
     navigation.navigate("acceptTermsAndConditions", { flow: "trial" })
   }
 
-  const handleLoginWithEmail = async () => {
+  const handleLogin = () => {
     logGetStartedAction({
-      action: "login_with_email",
+      action: "log_in",
       createDeviceAccountEnabled: Boolean(appCheckToken),
     })
-
-    navigation.navigate("emailLoginInitiate")
+    navigation.navigate("login", {
+      type: PhoneLoginInitiateType.Login,
+    })
   }
 
   const {
@@ -108,48 +82,27 @@ export const GetStartedScreen: React.FC = () => {
 
   return (
     <Screen>
-      {NonProdInstanceHint}
-      <Pressable
-        onPress={() => setSecretMenuCounter(secretMenuCounter + 1)}
-        style={styles.logoContainer}
-        {...testProps("logo-button")}
-      >
-        <AppLogo width={"100%"} height={"100%"} />
-      </Pressable>
-      <View style={styles.bottom}>
-        <GaloyPrimaryButton
-          title={LL.GetStartedScreen.createAccount()}
-          onPress={() => handleCreateAccount()}
-          containerStyle={styles.buttonContainer}
-        />
-        {appCheckToken ? (
-          <GaloySecondaryButton
-            title={LL.GetStartedScreen.startTrialAccount()}
-            onPress={handleCreateDeviceAccount}
-          />
-        ) : (
-          <GaloySecondaryButton
-            title={LL.GetStartedScreen.exploreWallet()}
-            onPress={handleExploreWallet}
-          />
-        )}
-        <View style={styles.loginFooterContainer}>
-          <Text type="p2">{LL.GetStartedScreen.logBackInWith()} </Text>
-          <TouchableOpacity activeOpacity={0.5} onPress={handleLoginWithPhone}>
-            <Text type="p2" style={styles.buttonText}>
-              {LL.common.phone()}
-            </Text>
-          </TouchableOpacity>
-          <Text type="p2"> {LL.common.or()} </Text>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={handleLoginWithEmail}
-            {...testProps("email-button")}
+      <View style={styles.container}>
+        {NonProdInstanceHint}
+        <View style={styles.logoWrapper} pointerEvents="box-none">
+          <Pressable
+            onPress={() => setSecretMenuCounter(secretMenuCounter + 1)}
+            style={styles.logoContainer}
+            {...testProps("logo-button")}
           >
-            <Text type="p2" style={styles.buttonText}>
-              {LL.common.email()}
-            </Text>
-          </TouchableOpacity>
+            <AppLogo width={"100%"} height={"100%"} />
+          </Pressable>
+        </View>
+        <View style={styles.bottom}>
+          <GaloyPrimaryButton
+            title={LL.GetStartedScreen.createAccount()}
+            onPress={handleCreateAccount}
+          />
+          <GaloySecondaryButton
+            title={LL.GetStartedScreen.login()}
+            onPress={handleLogin}
+            containerStyle={styles.secondaryButtonContainer}
+          />
         </View>
       </View>
     </Screen>
@@ -157,34 +110,38 @@ export const GetStartedScreen: React.FC = () => {
 }
 
 const useStyles = makeStyles(() => ({
+  container: {
+    flex: 1,
+  },
   bottom: {
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: "flex-end",
-    marginBottom: 36,
   },
 
-  buttonContainer: {
-    marginVertical: 6,
+  secondaryButtonContainer: {
+    marginVertical: 15,
   },
-
-  logoContainer: { width: "100%", height: "50%", marginTop: 50 },
-
-  loginFooterContainer: {
-    marginTop: 24,
+  logoWrapper: {
+    flex: 1,
     justifyContent: "center",
-    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
   },
-
+  logoContainer: {
+    width: 288,
+    height: 288,
+  },
   textInstance: {
     justifyContent: "center",
     flexDirection: "row",
     textAlign: "center",
     marginTop: 24,
     marginBottom: -24,
-  },
-
-  buttonText: {
-    textDecorationLine: "underline",
   },
 }))

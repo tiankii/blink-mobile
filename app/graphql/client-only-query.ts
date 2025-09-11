@@ -23,6 +23,10 @@ import {
   IntroducingCirclesModalShownQuery,
   RegionDocument,
   RegionQuery,
+  UpgradeModalLastShownAtDocument,
+  UpgradeModalLastShownAtQuery,
+  DeviceSessionCountDocument,
+  DeviceSessionCountQuery,
 } from "./generated"
 
 export default gql`
@@ -69,6 +73,14 @@ export default gql`
 
   query innerCircleValue {
     innerCircleValue @client
+  }
+
+  query upgradeModalLastShownAt {
+    upgradeModalLastShownAt @client
+  }
+
+  query deviceSessionCount {
+    deviceSessionCount @client
   }
 `
 
@@ -227,4 +239,51 @@ export const setInnerCircleCachedValue = (
   } catch {
     console.warn("unable to update InnerCircleValueDocument")
   }
+}
+
+export const setUpgradeModalLastShownAt = (
+  client: ApolloClient<unknown>,
+  isoDatetime: string | null,
+): string | null => {
+  try {
+    client.writeQuery<UpgradeModalLastShownAtQuery>({
+      query: UpgradeModalLastShownAtDocument,
+      data: {
+        __typename: "Query",
+        upgradeModalLastShownAt: isoDatetime,
+      },
+    })
+    return isoDatetime
+  } catch {
+    return null
+  }
+}
+
+export const setDeviceSessionCount = (
+  client: ApolloClient<unknown>,
+  count: number,
+): number | null => {
+  try {
+    client.writeQuery<DeviceSessionCountQuery>({
+      query: DeviceSessionCountDocument,
+      data: { __typename: "Query", deviceSessionCount: count },
+    })
+    return count
+  } catch {
+    return null
+  }
+}
+
+export const updateDeviceSessionCount = (
+  client: ApolloClient<unknown>,
+  { reset = false }: { reset?: boolean } = {},
+): number | null => {
+  if (reset) return setDeviceSessionCount(client, 0)
+
+  const prev =
+    client.readQuery<DeviceSessionCountQuery>({
+      query: DeviceSessionCountDocument,
+    })?.deviceSessionCount ?? 0
+
+  return setDeviceSessionCount(client, prev + 1)
 }

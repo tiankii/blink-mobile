@@ -12,6 +12,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { PeopleStackParamList } from "@app/navigation/stack-param-lists"
 import { testProps } from "@app/utils/testProps"
 import { toastShow } from "@app/utils/toast"
+import { useAppConfig } from "@app/hooks"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { SearchBar } from "@rneui/base"
@@ -23,6 +24,7 @@ gql`
       id
       contacts {
         id
+        handle
         username
         alias
         transactionsCount
@@ -36,6 +38,12 @@ export const AllContactsScreen: React.FC = () => {
   const {
     theme: { colors },
   } = useTheme()
+
+  const {
+    appConfig: {
+      galoyInstance: { lnAddressHostname },
+    },
+  } = useAppConfig()
 
   const navigation = useNavigation<StackNavigationProp<PeopleStackParamList>>()
 
@@ -89,7 +97,7 @@ export const AllContactsScreen: React.FC = () => {
   const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
     let contactPrettyNameMatchesSearchWord: boolean
 
-    const contactNameMatchesSearchWord = contact.username
+    const contactNameMatchesSearchWord = contact.handle
       .toLowerCase()
       .includes(searchWord.toLowerCase())
 
@@ -164,20 +172,26 @@ export const AllContactsScreen: React.FC = () => {
         contentContainerStyle={styles.listContainer}
         data={matchingContacts}
         ListEmptyComponent={ListEmptyContent}
-        renderItem={({ item }) => (
-          <ListItem
-            key={item.username}
-            style={styles.item}
-            containerStyle={styles.itemContainer}
-            onPress={() => navigation.navigate("contactDetail", { contact: item })}
-          >
-            <Icon name={"person-outline"} size={24} color={colors.primary} />
-            <ListItem.Content>
-              <ListItem.Title style={styles.itemText}>{item.alias}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        )}
-        keyExtractor={(item) => item.username}
+        renderItem={({ item }) => {
+          const handle = item?.handle?.trim() ?? ""
+          const displayHandle =
+            handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
+
+          return (
+            <ListItem
+              key={item.handle}
+              style={styles.item}
+              containerStyle={styles.itemContainer}
+              onPress={() => navigation.navigate("contactDetail", { contact: item })}
+            >
+              <Icon name={"person-outline"} size={24} color={colors.primary} />
+              <ListItem.Content>
+                <ListItem.Title style={styles.itemText}>{displayHandle}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          )
+        }}
+        keyExtractor={(item) => item.handle}
       />
     </Screen>
   )

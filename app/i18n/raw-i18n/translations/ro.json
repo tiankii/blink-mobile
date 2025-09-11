@@ -2162,10 +2162,10 @@
         "feeLabel": "Taxă",
         "memoLabel": "Notă:",
         "paymentFinal": "Plățile sunt finale.",
-        "stalePrice": "Prețul bitcoin este vechi și a fost actualizat ultima dată {timePeriod} în urmă. Vă rugăm să reporniți aplicația înainte de a efectua o plată.",
+        "stalePrice": "Prețul bitcoin este vechi și a fost actualizat ultima dată {timePeriod: string} în urmă. Vă rugăm să reporniți aplicația înainte de a efectua o plată.",
         "title": "Confirmați plata",
         "totalLabel": "Total:",
-        "totalExceed": "Total depășește soldul {sold: șir}",
+        "totalExceed": "Total depășește soldul {sold: string}",
         "maxFeeSelected": "Aceasta este taxa maximă care vi se va percepe pentru această tranzacție. Poate ajunge să fie mai mică odată ce plata a fost efectuată.",
         "feeError": "Nu se poate calcula taxa",
         "invoiceAlreadyPaid": "Această factură a fost deja plătită",
@@ -2273,7 +2273,11 @@
         "nfcOnlyReceive": "Momentan este disponibilă numai primirea de la NFC",
         "nfcScanNow": "Scanați NFC acum",
         "nfcNotSupported": "NFC nu este disponibil pe acest dispozitiv",
-        "logInOrCreateAccount": "Conectați-vă sau creați un cont"
+        "logInOrCreateAccount": "Conectați-vă sau creați un cont",
+        "logOutFromOneAccount": "Deconectează-te de la acest cont",
+        "logoutOneAccountAlertTitle": "Ești sigur că vrei să te deconectezi de la acest cont?",
+        "logoutOneAccountAlertContent": "Vei fi deconectat din sesiunea legată de {identifier: string}.\n Asigură-te că ai acces pentru a te conecta din nou în viitor.",
+        "logoutOneAccountConfirm": "Înțeleg. Te rog să mă deconectezi."
     },
     "NotificationSettingsScreen": {
         "title": "Setări pentru notificări",
@@ -2307,6 +2311,8 @@
         "tapToAddPhoneNumber": "Atinge pentru a adăuga un număr de telefon",
         "loginMethods": "Metode de conectare",
         "level": "Nivel {level: string}",
+        "switchAccount": "Schimbă contul",
+        "pleaseWait": "Te rog să aștepți.",
         "accountLevel": "Nivel de cont",
         "upgrade": "Upgrade la cont",
         "logOutAndDeleteLocalData": "Deconectați-vă și ștergeți toate datele locale",
@@ -2347,6 +2353,10 @@
         "yourAccountId": "ID-ul contului dvs.",
         "accountId": "ID-ul contului",
         "copy": "Copiați"
+    },
+    "ProfileScreen": {
+        "addAccount": "Adaugă cont",
+        "error": "Nu se pot obține profilurile în acest moment"
     },
     "TotpRegistrationInitiateScreen": {
         "title": "Autentificare cu doi factori",
@@ -2464,7 +2474,8 @@
         "placeholder": "Număr de telefon",
         "verify": "Click pentru verificare",
         "sms": "Trimitere via SMS",
-        "whatsapp": "Trimitere via WhatsApp"
+        "whatsapp": "Trimitere via WhatsApp",
+        "telegram": "Trimite prin Telegram"
     },
     "PhoneLoginValidationScreen": {
         "errorLoggingIn": "Eroare la conectare. Ați folosit codul corect?",
@@ -2477,6 +2488,16 @@
         "sendAgain": "Retrimitere",
         "tryAgain": "Încearcă din nou",
         "sendViaOtherChannel": "Ați selectat să primiți codul prin {channel: string}. Puteți încerca să primiți prin {other: string}"
+    },
+    "TelegramValidationScreen": {
+        "text": "Telegram Passport",
+        "description": "După autorizarea în Telegram, vei fi conectat automat",
+        "loginWithTelegram": "Conectează-te cu Telegram",
+        "waitingForAuthorization": "Așteptând autorizarea în Telegram...",
+        "errorFetchParams": "Nu s-au putut obține parametrii de autentificare Telegram",
+        "errorFetchLogin": "Nu s-a putut obține autentificarea Telegram",
+        "errorAuthTimeout": "Autorizarea a expirat. Te rog să încerci din nou.",
+        "errorOpenAppError": "Nu s-a putut deschide Telegram. Te rog să te asiguri că aplicația este instalată."
     },
     "PhoneRegistrationInitiateScreen": {
         "title": "Configurare număr de telefon",
@@ -2656,7 +2677,7 @@
         "thankYouText": "Vă mulțumim pentru feedback, doriți să sugerați o îmbunătățire?",
         "defaultEmailSubject": "{bankName: string} - Asistență",
         "defaultSupportMessage": "Bună! Am nevoie de ajutor cu {bankName: string}, folosesc versiunea {version: string} pe {os: string}.",
-        "emailCopied": "e-mail {email: șir} copiat în clipboard",
+        "emailCopied": "e-mail {email: string} copiat în clipboard",
         "deleteAccount": "Ștergeți contul",
         "delete": "delete",
         "typeDelete": "Tastați \"{delete: string}\" pentru a confirma ștergerea contului",

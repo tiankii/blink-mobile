@@ -3,17 +3,18 @@ import { Alert, View } from "react-native"
 import validator from "validator"
 
 import { gql } from "@apollo/client"
-import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { useUserEmailRegistrationInitiateMutation } from "@app/graphql/generated"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { testProps } from "@app/utils/testProps"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { Input, Text, makeStyles } from "@rneui/themed"
 
-import { Screen } from "../../components/screen"
+import { testProps } from "@app/utils/testProps"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { Screen } from "@app/components/screen"
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
+import { useUserEmailRegistrationInitiateMutation } from "@app/graphql/generated"
 
 const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
@@ -23,8 +24,12 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonsContainer: {
     flex: 1,
     justifyContent: "flex-end",
+    marginBottom: 10,
   },
-
+  secondaryButtonContainer: {
+    marginTop: 15,
+    marginBottom: -15,
+  },
   inputContainer: {
     marginBottom: 20,
     flexDirection: "row",
@@ -32,7 +37,7 @@ const useStyles = makeStyles(({ colors }) => ({
     minHeight: 48,
   },
   textContainer: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   viewWrapper: { flex: 1 },
 
@@ -67,7 +72,13 @@ gql`
   }
 `
 
-export const EmailRegistrationInitiateScreen: React.FC = () => {
+type EmailRegistrationInitiateScreenProps = {
+  route: RouteProp<RootStackParamList, "emailRegistrationInitiate">
+}
+
+export const EmailRegistrationInitiateScreen: React.FC<
+  EmailRegistrationInitiateScreenProps
+> = ({ route }) => {
   const styles = useStyles()
 
   const navigation =
@@ -76,9 +87,9 @@ export const EmailRegistrationInitiateScreen: React.FC = () => {
   const [emailInput, setEmailInput] = React.useState<string>("")
   const [errorMessage, setErrorMessage] = React.useState<string>("")
   const [loading, setLoading] = React.useState<boolean>(false)
+  const { onboarding = false, hasUsername = false } = route.params ?? {}
 
   const { LL } = useI18nContext()
-
   const [setEmailMutation] = useUserEmailRegistrationInitiateMutation()
 
   const submit = async () => {
@@ -107,6 +118,8 @@ export const EmailRegistrationInitiateScreen: React.FC = () => {
         navigation.navigate("emailRegistrationValidate", {
           emailRegistrationId,
           email: emailInput,
+          onboarding,
+          hasUsername,
         })
       } else {
         setErrorMessage(LL.EmailRegistrationInitiateScreen.missingEmailRegistrationId())
@@ -121,6 +134,20 @@ export const EmailRegistrationInitiateScreen: React.FC = () => {
     }
   }
 
+  const onboardingNavigate = () => {
+    if (hasUsername) {
+      navigation.navigate("onboarding", {
+        screen: "supportScreen",
+      })
+      return
+    }
+
+    navigation.navigate("onboarding", {
+      screen: "lightningBenefits",
+      params: { onboarding },
+    })
+  }
+
   return (
     <Screen
       preset="scroll"
@@ -130,7 +157,7 @@ export const EmailRegistrationInitiateScreen: React.FC = () => {
     >
       <View style={styles.viewWrapper}>
         <View style={styles.textContainer}>
-          <Text type={"p1"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
+          <Text type={"h2"}>{LL.EmailRegistrationInitiateScreen.header()}</Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -157,9 +184,16 @@ export const EmailRegistrationInitiateScreen: React.FC = () => {
           <GaloyPrimaryButton
             title={LL.EmailRegistrationInitiateScreen.send()}
             loading={loading}
-            disabled={!emailInput}
+            disabled={!validator.isEmail(emailInput)}
             onPress={submit}
           />
+          {onboarding && (
+            <GaloySecondaryButton
+              title={LL.UpgradeAccountModal.notNow()}
+              onPress={onboardingNavigate}
+              containerStyle={styles.secondaryButtonContainer}
+            />
+          )}
         </View>
       </View>
     </Screen>

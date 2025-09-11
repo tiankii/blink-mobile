@@ -42,6 +42,9 @@
 				<string>bitcoinbeach</string>
 				<string>blink</string>
 				<string>lapp</string>
+				<string>lnurlw</string>
+				<string>lnurlp</string>
+				<string>lnurl</string>
 			</array>
 		</dict>
 		<dict>
@@ -70,7 +73,7 @@
 	  	<string>tg</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>750</string>
+	<string>772</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>

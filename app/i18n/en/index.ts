@@ -1277,7 +1277,7 @@ const en: BaseTranslation = {
               "Wow, that's an ambitious goal! While it's true that mining requires a significant amount of computational power, I'm pretty sure the main purpose is not to create an army of AI overlords. Better luck next time!",
             ],
             question: "What is the main purpose of mining in the bitcoin network",
-            text: "When a user wants to send a transaction in the bitcoin network, they need to sign the transaction with their private key to prove that they are the owner of the funds being transferred. Once the transaction is signed, it is broadcasted to the peer-to-peer network.\n\nMining is the process of adding transactions to the bitcoin blockchain. When a transaction is broadcasted to the network, it is picked up by miners, who verify that the transaction is valid (i.e., the user has the necessary funds and the private key used to sign the transaction corresponds to the public key associated with the funds).\n\nOnce a transaction has been verified, it is added to a block of transactions, along with a mathematical puzzle. Miners compete to solve the puzzle, and the first one to solve it gets to add the block to the blockchain and claim a reward in bitcoin. The reward is currently 6.25 bitcoins, plus any transaction fees that were included in the block.\n\nIn addition to adding transactions to the blockchain, mining also serves to secure the bitcoin network. This is because solving the puzzle requires a significant amount of computational power, and adding a block to the blockchain requires other miners to verify the solution. This makes it very difficult for any one person or group to manipulate the blockchain.\n",
+            text: "When a user wants to send a transaction in the bitcoin network, they need to sign the transaction with their private key to prove that they are the owner of the funds being transferred. Once the transaction is signed, it is broadcasted to the peer-to-peer network.\n\nMining is the process of adding transactions to the bitcoin blockchain. When a transaction is broadcasted to the network, it is picked up by miners, who verify that the transaction is valid (i.e., the user has the necessary funds and the private key used to sign the transaction corresponds to the public key associated with the funds).\n\nOnce a transaction has been verified, it is added to a block of transactions, along with a mathematical puzzle. Miners compete to solve the puzzle, and the first one to solve it gets to add the block to the blockchain and claim a reward in bitcoin. The reward is currently 3.125 bitcoins, plus any transaction fees that were included in the block.\n\nIn addition to adding transactions to the blockchain, mining also serves to secure the bitcoin network. This is because solving the puzzle requires a significant amount of computational power, and adding a block to the blockchain requires other miners to verify the solution. This makes it very difficult for any one person or group to manipulate the blockchain.\n",
             title: "Mining",
           },
           proofOfWork: {
@@ -1298,18 +1298,18 @@ const en: BaseTranslation = {
           },
           difficultyAdjustment: {
             answers: [
-              "It is reduced by half",
-              "It is doubled",
-              "It is multiplied by a random number chosen by the bitcoin software",
+              "It adjusts every 2 weeks to maintain a steady block time of 10 minutes",
+              "It adjusts once a year based on market price",
+              "It is randomly changed by miners through consensus",
             ],
             feedback: [
-              "That's right! Satoshi determined the reduction of new bitcoin supply by half in the very first release of the Bitcoin software in 2009 and it is practically impossible to change",
-              "Sorry, but the block reward is not doubled every four years. You must be confusing Bitcoin with the supplies of fiat currencies which are ever expanding at a faster rate. Try again",
-              "Very creative, but wrong. The Bitcoin supply schedule is anything but random. Its predictability provides certainty for economic actors unlike anything in the history of mankind. Try again!",
+              "That's right! The Bitcoin software automatically adjusts the mining difficulty every 2016 blocks—roughly every two weeks—to target a steady pace of one block every 10 minutes. This is one of the most elegant features of the protocol.",
+              "Not quite. While price does influence how many miners are active, the difficulty adjustment has nothing to do with price. It is based solely on time—specifically, how long it took to mine the last 2016 blocks. Try again!",
+              "Nice try, but no. Miners can't randomly change difficulty. It's baked into the protocol and happens automatically. This prevents manipulation and ensures a consistent issuance schedule. Try again!",
             ],
             question:
-              "What happens to the block reward in the bitcoin network every four years",
-            text: "A crucial element of the Bitcoin protocol is the Difficulty Adjustment. This algorithm ensures that new blocks are found every 10 minutes on average.\n\nWhen more miners join the network, the average time required to find a new block goes down. In the opposite case, when miners leave the network, it takes longer to add a new block. The Difficulty Adjustment algorithm adjusts the difficulty of the mathematical puzzle to match changes in the combined computing power of all miners. This prevents the creation of more (or less) bitcoin units than the predetermined supply schedule.\n\nThis is in stark contrast to physical mining of precious metals like gold where adding more gold miners leads to a higher supply of gold and therefore a decrease in its price. In Bitcoin however, the addition of new miners only adds more security to the network.\n",
+              "How does the Bitcoin network ensure that new blocks are added roughly every 10 minutes?",
+            text: 'Another critical component of the Bitcoin network is the "Difficulty Adjustment"—an automatic recalibration mechanism that ensures blocks are found at a regular interval of about 10 minutes, regardless of how many miners are participating.\n\nEvery 2016 blocks—roughly every two weeks—the Bitcoin software checks how long it took to mine the previous batch. If blocks were being mined too quickly, it makes the cryptographic puzzle more difficult. If they were too slow, it makes the puzzle easier. This keeps the issuance of new bitcoin on a predictable schedule.\n\nThis mechanism is unlike anything in the physical world. For example, when more gold miners join the hunt for gold, the supply increases. In Bitcoin, more miners simply increase network security, not the issuance rate. The Difficulty Adjustment is what keeps the Bitcoin machine ticking on time.',
             title: "Difficulty Adjustment",
           },
           halving: {
@@ -1325,7 +1325,7 @@ const en: BaseTranslation = {
             ],
             question:
               "What happens to the block reward in the bitcoin network every four years",
-            text: 'One final element that is important to understand, is that the block reward in the bitcoin network is reduced by half every four years, or every 210,000 blocks.\n\nThis event, known as the "halving", is programmed into the bitcoin software that all users run. When bitcoin was first launched, miners received 50 new bitcoins for each block they added to the blockchain. Currently, the block reward is 6.25 bitcoins, but it will be reduced to 3.125 bitcoins in 2024 when the next halving occurs.\n\nThese halvings will continue to take place until the year 2140, at which point the total number of bitcoins that will have been mined will be capped at 21 million. As of 2023, around 92% of all bitcoins (\\~19.3 million) have already been mined.\n\nUnlike fiat currencies, which can be inflationary, bitcoin is disinflationary in nature. This makes it more scarce than fiat and precious metals such as gold and silver, or anything else known in the universe.\n',
+            text: 'One final element that is important to understand, is that the block reward in the bitcoin network is reduced by half every four years, or every 210,000 blocks.\n\nThis event, known as the "halving", is programmed into the bitcoin software that all users run. When bitcoin was first launched, miners received 50 new bitcoins for each block they added to the blockchain. Currently, the block reward is 3.125 bitcoins, but it will be reduced to 1.5625 bitcoins in 2028 when the next halving occurs.\n\nThese halvings will continue to take place until the year 2140, at which point the total number of bitcoins that will have been mined will be capped at 21 million. As of 2023, around 92% of all bitcoins (\\~19.3 million) have already been mined.\n\nUnlike fiat currencies, which can be inflationary, bitcoin is disinflationary in nature. This makes it more scarce than fiat and precious metals such as gold and silver, or anything else known in the universe.\n',
             title: "The Halving",
           },
         },
@@ -2045,6 +2045,7 @@ const en: BaseTranslation = {
     logInCreateAccount: "Log in / create account",
     createAccount: "Create new account",
     exploreWallet: "Explore wallet",
+    login: "Login",
     logBackInWith: "Log back in with",
     headline: "Wallet powered by Galoy",
     startTrialAccount: "Start with a trial account",
@@ -2055,9 +2056,13 @@ const en: BaseTranslation = {
       "Unfortunately, we were unable to create your trial account. Try again later or create an account with a phone number.",
     trialAccountHasLimits: "Trial account has limits",
     trialAccountLimits: {
+      modalTitle: "Upgrade for more benefits",
       noBackup: "No backup option",
       sendingLimit: "Reduced daily sending limit",
       noOnchain: "No receiving bitcoin onchain",
+      recoveryOption: "Recover funds by SMS or email",
+      dailyLimit: "$1000 daily transaction limit",
+      onchainReceive: "Receive bitcoin onchain",
     },
   },
   MapScreen: {
@@ -2534,9 +2539,13 @@ const en: BaseTranslation = {
     onlyAPhoneNumber: "Quick and easy phone number verification",
     letsGo: "Let's go!",
     stayInTrialMode: "Stay in trial mode",
+    upgradeToLevel: "Upgrade to Level {level: number}",
+    notNow: "Not now",
+    setUpLevelAccount: "Set up Level {level: number} account",
   },
   SetAddressModal: {
     title: "Set {bankName: string} address",
+    mainTitle: "Choose Lightning Address",
     setLightningAddress: "Set Lightning address",
     Errors: {
       tooShort: "Address must be at least 3 characters long",
@@ -2547,7 +2556,7 @@ const en: BaseTranslation = {
     },
     receiveMoney:
       "Receive money from other lightning wallets and {bankName: string} users with this address.",
-    itCannotBeChanged: "It can't be changed later.",
+    itCannotBeChanged: "Choose well – it cannot be changed later!",
   },
   WelcomeFirstScreen: {
     bank: "Bitcoin is designed to let you store, send and receive money, without relying on a bank or credit card.",
@@ -2576,6 +2585,48 @@ const en: BaseTranslation = {
     whatsapp: "Send via WhatsApp",
     telegram: "Send via Telegram",
   },
+  LoginMethodScreen: {
+    title: "Select preferred login method.",
+    useTelegram: "Use Telegram",
+    useSms: "Use SMS",
+    useWhatsapp: "Use WhatsApp",
+    useEmail: "Use Email",
+    setupTelegram: "Set up Telegram login",
+    setupSms: "Set up SMS login",
+    setupWhatsapp: "Set up WhatsApp login",
+    setupEmail: "Set up Email login",
+  },
+  OnboardingScreen: {
+    welcomeLevel1: {
+      mainTitle: "Welcome to Level 1",
+      title: "New features unlocked for your account:",
+      receiveBitcoinDescription: "Receive Bitcoin using your phone number",
+      dailyLimitDescription: "Send up to $1,000 USD per day",
+      onchainDescription: "Receive on-chain payments",
+    },
+    emailBenefits: {
+      mainTitle: "Add email login",
+      title: "Email login allows you to:",
+      backupDescription: "Have a backup to accessing your account",
+      supportDescription: "Make it easier for us to give you support",
+      securityDescription: "Increase account security",
+      primaryButton: "Set up email login",
+    },
+    lightningBenefits: {
+      mainTitle: "Set up Custom Lightning Address",
+      title: "Lightning Address benefits:",
+      staticAddressDescription: "A static address to receive payments",
+      easyToShareDescription: "Easy to memorize and share publicly or privately",
+      blinkToolsDescription: "Unlocks various Blink tools useful for commerce",
+      primaryButton: "Set up Custom Address",
+    },
+    supportScreen: {
+      mainTitle: "We love feedback",
+      title: "All set!",
+      description: "Any feedback is most welcome, feel free to ping us at {email}",
+      primaryButton: "Done",
+    }
+  },
   PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",
     errorTooManyAttempts: "Too many attempts. Please try again later.",
@@ -2601,7 +2652,7 @@ const en: BaseTranslation = {
     errorFetchLogin: "Failed to fetch Telegram login",
     errorAuthTimeout: "Authorization timed out. Please try again.",
     errorOpenAppError: "Failed to open Telegram. Please make sure the app is installed.",
-  },  
+  },
   PhoneRegistrationInitiateScreen: {
     title: "Phone set up",
     header: "Enter your phone number, and we'll text you an access code.",
@@ -2747,6 +2798,16 @@ const en: BaseTranslation = {
     problemMaybeReauth:
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
     warning: "Warning",
+    recommended: "Recommended",
+    expirationTime: "Expiration Time",
+    minute: "Minute",
+    day: {
+      one: "Day",
+      other: "Days"
+    },
+    dollar: "Dollar",
+    all: "ALL",
+    allAccounts: "All accounts",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
@@ -2778,6 +2839,7 @@ const en: BaseTranslation = {
     joinTheCommunity: "Join the community",
     whatsapp: "WhatsApp",
     email: "Email",
+    sms: "SMS",
     faq: "FAQ",
     enjoyingApp: "Enjoying the app?",
     statusPage: "Status Page",

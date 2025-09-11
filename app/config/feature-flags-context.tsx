@@ -5,6 +5,10 @@ import { useAppConfig } from "@app/hooks"
 import remoteConfigInstance from "@react-native-firebase/remote-config"
 
 const DeviceAccountEnabledKey = "deviceAccountEnabledRestAuth"
+const BalanceLimitToTriggerUpgradeModalKey = "balanceLimitToTriggerUpgradeModal"
+const FeedbackEmailKey = "feedbackEmailAddress"
+const UpgradeModalCooldownDaysKey = "upgradeModalCooldownDays"
+const UpgradeModalShowAtSessionNumberKey = "upgradeModalShowAtSessionNumber"
 
 type FeatureFlags = {
   deviceAccountEnabled: boolean
@@ -12,10 +16,18 @@ type FeatureFlags = {
 
 type RemoteConfig = {
   [DeviceAccountEnabledKey]: boolean
+  [BalanceLimitToTriggerUpgradeModalKey]: number
+  [FeedbackEmailKey]: string
+  [UpgradeModalCooldownDaysKey]: number
+  [UpgradeModalShowAtSessionNumberKey]: number
 }
 
 const defaultRemoteConfig: RemoteConfig = {
   deviceAccountEnabledRestAuth: false,
+  balanceLimitToTriggerUpgradeModal: 2100,
+  feedbackEmailAddress: "feedback@blink.sv",
+  upgradeModalCooldownDays: 7,
+  upgradeModalShowAtSessionNumber: 1,
 }
 
 const defaultFeatureFlags = {
@@ -29,6 +41,7 @@ remoteConfigInstance().setConfigSettings({
 })
 
 export const FeatureFlagContext = createContext<FeatureFlags>(defaultFeatureFlags)
+export const RemoteConfigContext = createContext<RemoteConfig>(defaultRemoteConfig)
 
 export const FeatureFlagContextProvider: React.FC<React.PropsWithChildren> = ({
   children,
@@ -46,12 +59,36 @@ export const FeatureFlagContextProvider: React.FC<React.PropsWithChildren> = ({
     ;(async () => {
       try {
         await remoteConfigInstance().fetchAndActivate()
+
         const deviceAccountEnabledRestAuth = remoteConfigInstance()
           .getValue(DeviceAccountEnabledKey)
           .asBoolean()
-        setRemoteConfig({ deviceAccountEnabledRestAuth })
+
+        const balanceLimitToTriggerUpgradeModal = remoteConfigInstance()
+          .getValue(BalanceLimitToTriggerUpgradeModalKey)
+          .asNumber()
+
+        const feedbackEmailAddress = remoteConfigInstance()
+          .getValue(FeedbackEmailKey)
+          .asString()
+
+        const upgradeModalCooldownDays = remoteConfigInstance()
+          .getValue(UpgradeModalCooldownDaysKey)
+          .asNumber()
+
+        const upgradeModalShowAtSessionNumber = remoteConfigInstance()
+          .getValue(UpgradeModalShowAtSessionNumberKey)
+          .asNumber()
+
+        setRemoteConfig({
+          deviceAccountEnabledRestAuth,
+          balanceLimitToTriggerUpgradeModal,
+          feedbackEmailAddress,
+          upgradeModalCooldownDays,
+          upgradeModalShowAtSessionNumber,
+        })
       } catch (err) {
-        console.error("Error fetching remote config: ", err)
+        console.error("Error fetching remote config:", err)
       } finally {
         setRemoteConfigReady(true)
       }
@@ -69,9 +106,12 @@ export const FeatureFlagContextProvider: React.FC<React.PropsWithChildren> = ({
 
   return (
     <FeatureFlagContext.Provider value={featureFlags}>
-      {children}
+      <RemoteConfigContext.Provider value={remoteConfig}>
+        {children}
+      </RemoteConfigContext.Provider>
     </FeatureFlagContext.Provider>
   )
 }
 
 export const useFeatureFlags = () => useContext(FeatureFlagContext)
+export const useRemoteConfig = () => useContext(RemoteConfigContext)
