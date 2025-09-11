@@ -11,15 +11,15 @@ export type AmountInputScreenUIProps = {
   onKeyPress: (key: Key) => void
   onClearAmount: () => void
   onPaste: (keys: number) => void
-  responsive?: boolean
+  compact?: boolean
 }
 
 export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
   errorMessage,
   onKeyPress,
-  responsive = false,
+  compact = false,
 }) => {
-  const styles = useStyles(responsive)
+  const styles = useStyles(compact)
 
   return (
     <View style={styles.amountInputScreenContainer}>
@@ -28,25 +28,25 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           {errorMessage && <GaloyErrorBox errorMessage={errorMessage} />}
         </View>
         <View style={styles.keyboardContainer}>
-          <CurrencyKeyboard onPress={onKeyPress} responsive={responsive} safeMode />
+          <CurrencyKeyboard onPress={onKeyPress} compact={compact} safeMode />
         </View>
       </View>
     </View>
   )
 }
 
-const useStyles = makeStyles((_, responsive: boolean) => ({
+const useStyles = makeStyles((_, compact: boolean) => ({
   amountInputScreenContainer: { flex: 1 },
 
   infoContainer: {
     justifyContent: "flex-start",
-    ...(responsive ? {} : { flex: 1 }),
+    ...(compact ? {} : { flex: 1 }),
   },
   bodyContainer: {
     flex: 1,
-    ...(responsive ? {} : { padding: 24 }),
+    ...(compact ? {} : { padding: 24 }),
   },
   keyboardContainer: {
-    ...(responsive ? { flex: 1 } : { paddingHorizontal: 16, marginBottom: 30 }),
+    ...(compact ? { flex: 1 } : { paddingHorizontal: 16, marginBottom: 30 }),
   },
 }))

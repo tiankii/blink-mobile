@@ -6,13 +6,13 @@ import { makeStyles, useTheme, Text } from "@rneui/themed"
 
 import { Key as KeyType } from "../amount-input-screen/number-pad-reducer"
 
-const useStyles = makeStyles(({ colors }, responsive: boolean) => ({
-  container: { ...(responsive ? { flex: 1 } : {}) },
+const useStyles = makeStyles(({ colors }, compact: boolean) => ({
+  container: { ...(compact ? { flex: 1 } : {}) },
   keyRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    ...(responsive
-      ? { flex: 1 }
+    ...(compact
+      ? { alignItems: "center", marginBottom: 15 }
       : {
           alignItems: "center",
           marginBottom: 30,
@@ -40,35 +40,35 @@ const useStyles = makeStyles(({ colors }, responsive: boolean) => ({
 
 type CurrencyKeyboardProps = {
   onPress: (pressed: KeyType) => void
-  responsive?: boolean
+  compact?: boolean
   safeMode?: boolean
 }
 
 export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
   onPress,
-  responsive = false,
+  compact = false,
   safeMode = false,
 }) => {
-  const styles = useStyles(responsive)
+  const styles = useStyles(compact)
   return (
     <View style={styles.container}>
       <View style={styles.keyRow}>
         <Key
           numberPadKey={KeyType[1]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[2]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[3]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
       </View>
@@ -76,19 +76,19 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
         <Key
           numberPadKey={KeyType[4]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[5]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[6]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
       </View>
@@ -96,19 +96,19 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
         <Key
           numberPadKey={KeyType[7]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[8]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[9]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
       </View>
@@ -116,19 +116,19 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
         <Key
           numberPadKey={KeyType.Decimal}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType[0]}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
         <Key
           numberPadKey={KeyType.Backspace}
           handleKeyPress={onPress}
-          responsive={responsive}
+          compact={compact}
           safeMode={safeMode}
         />
       </View>
@@ -139,18 +139,18 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
 const Key = ({
   handleKeyPress,
   numberPadKey,
-  responsive,
+  compact,
   safeMode,
 }: {
   numberPadKey: KeyType
   handleKeyPress: (key: KeyType) => void
-  responsive?: boolean
+  compact?: boolean
   safeMode?: boolean
 }) => {
   const {
     theme: { colors },
   } = useTheme()
-  const styles = useStyles(responsive)
+  const styles = useStyles(compact)
   const pressableStyle = ({ pressed }: { pressed: boolean }): StyleProp<ViewStyle> => {
     const baseStyle: StyleProp<ViewStyle> = {
       height: 40,
@@ -158,7 +158,6 @@ const Key = ({
       borderRadius: 40,
       maxWidth: 40,
       maxHeight: 40,
-      ...(responsive ? { flex: 1 } : {}),
       display: "flex",
       alignItems: "center",
       justifyContent: "center",

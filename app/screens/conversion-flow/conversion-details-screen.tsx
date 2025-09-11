@@ -579,7 +579,7 @@ export const ConversionDetailsScreen = () => {
             onSetFormattedAmount={onSetFormattedValues}
             focusedInput={focusedInputValues}
             initialAmount={initialAmount}
-            responsive
+            compact
             debounceMs={1000}
             lockFormattingUntilBlur={Boolean(lockFormattingInputId)}
             onTypingChange={(typing, focusedId) => {

@@ -36,7 +36,7 @@ export type AmountInputScreenProps = {
   onSetFormattedAmount: (InputValue: IInputValues) => void
   initialAmount?: MoneyAmount<WalletOrDisplayCurrency>
   focusedInput: InputField | null
-  responsive?: boolean
+  compact?: boolean
   debounceMs?: number
   onTypingChange?: (typing: boolean, focusedId: InputField["id"] | null) => void
   onAfterRecalc?: () => void
@@ -140,7 +140,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   onSetFormattedAmount,
   initialAmount,
   focusedInput,
-  responsive = false,
+  compact = false,
   debounceMs = 600,
   onTypingChange,
   onAfterRecalc,
@@ -483,7 +483,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
       }}
       errorMessage={errorMessage || ""}
       onKeyPress={handleKeyPress}
-      responsive={responsive}
+      compact={compact}
     />
   )
 }
