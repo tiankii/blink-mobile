@@ -32,14 +32,13 @@ import LogoLightMode from "@app/assets/logo/blink-logo-light.svg"
 import LogoDarkMode from "@app/assets/logo/app-logo-dark.svg"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { SuccessActionTag } from "@app/components/success-action/success-action.props"
-import { utils } from "lnurl-pay"
+import { LNURLPaySuccessAction, utils } from "lnurl-pay"
 import { formatUnixTimestampYMDHM } from "@app/utils/date"
 import {
   formatTimeToMempool,
   timeToMempool,
 } from "../transaction-detail-screen/format-time"
 import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
-import { LNURLPaySuccessAction } from "lnurl-pay/dist/types/types"
 import { GaloyInstance } from "@app/config/galoy-instances"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { useRemoteConfig } from "@app/config/feature-flags-context"
