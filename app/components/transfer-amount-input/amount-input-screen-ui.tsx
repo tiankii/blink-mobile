@@ -28,12 +28,7 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           {errorMessage && <GaloyErrorBox errorMessage={errorMessage} />}
         </View>
         <View style={styles.keyboardContainer}>
-          <CurrencyKeyboard
-            onPress={onKeyPress}
-            responsive={responsive}
-            safeMode
-            compact
-          />
+          <CurrencyKeyboard onPress={onKeyPress} responsive={responsive} safeMode />
         </View>
       </View>
     </View>
