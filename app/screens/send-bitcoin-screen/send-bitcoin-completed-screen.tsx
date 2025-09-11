@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { View, Alert, ScrollView, Text } from "react-native"
+import { View, Alert, ScrollView } from "react-native"
 import InAppReview from "react-native-in-app-review"
 import Share from "react-native-share"
 import ViewShot, { captureRef } from "react-native-view-shot"
@@ -23,7 +23,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { logAppFeedback } from "@app/utils/analytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { makeStyles, useTheme, Text } from "@rneui/themed"
 
 import { testProps } from "../../utils/testProps"
 import { SuggestionModal } from "./suggestion-modal"
@@ -42,6 +42,7 @@ import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
 import { LNURLPaySuccessAction } from "lnurl-pay/dist/types/types"
 import { GaloyInstance } from "@app/config/galoy-instances"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
+import { useRemoteConfig } from "@app/config/feature-flags-context"
 
 type StatusProcessed = "SUCCESS" | "PENDING" | "QUEUED"
 
@@ -50,7 +51,6 @@ interface Props {
 }
 
 const FEEDBACK_DELAY = 3000
-const SUCCESS_ICON_DURATION = 2000
 const SCREENSHOT_DELAY = 100
 
 const processStatus = ({
@@ -210,7 +210,7 @@ const SuccessIconComponent: React.FC<{
     <View style={styles.successViewContainer} {...testProps("Success Text")}>
       <SuccessIconAnimation>{getStatusIcon()}</SuccessIconAnimation>
       <CompletedTextAnimation>
-        <Text style={styles.completedText} {...testProps(status)}>
+        <Text style={styles.completedText} {...testProps(status)} type={"p2"}>
           {getStatusText()}
         </Text>
       </CompletedTextAnimation>
@@ -349,6 +349,7 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
 
   const feedbackShownData = useFeedbackModalShownQuery()
   const { data } = useSettingsScreenQuery({ fetchPolicy: "cache-first" })
+  const { successIconDuration } = useRemoteConfig()
 
   const status = processStatus({ arrivalAtMempoolEstimate, status: statusRaw })
   const usernameTitle = data?.me?.username || LL.common.blinkUser()
@@ -360,7 +361,7 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
   const { isTakingScreenshot, captureAndShare } = useScreenshot(viewRef)
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSuccessIcon(false), SUCCESS_ICON_DURATION)
+    const timer = setTimeout(() => setShowSuccessIcon(false), successIconDuration)
     return () => clearTimeout(timer)
   }, [])
 
@@ -451,7 +452,6 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     marginTop: 20,
     marginHorizontal: 28,
-    fontSize: 16,
   },
   container: {
     flex: 1,

@@ -1,6 +1,6 @@
 import React from "react"
-import { View, Text, Linking } from "react-native"
-import { makeStyles } from "@rneui/themed"
+import { View, Linking } from "react-native"
+import { makeStyles, Text } from "@rneui/themed"
 import { FieldWithEventProps } from "./field-with-icon.props"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
@@ -29,10 +29,12 @@ export const FieldWithEvent = ({ title, value, subValue }: FieldWithEventProps) 
 
   return (
     <View style={styles.successActionFieldContainer}>
-      <Text style={styles.titleFieldBackground}>{title}</Text>
+      <Text style={styles.titleFieldBackground} type={"p3"}>
+        {title}
+      </Text>
       <View style={styles.fieldBackground}>
         <View>
-          <Text style={styles.inputStyle}>
+          <Text style={styles.inputStyle} type={"p3"}>
             {textData.text}
             {textData.url && " "}
             {textData.url && (
@@ -47,6 +49,7 @@ export const FieldWithEvent = ({ title, value, subValue }: FieldWithEventProps) 
           </Text>
           {subValue && (
             <Text
+              type={"p3"}
               style={[styles.inputStyle, styles.subValueStyle]}
             >{`(${subValue})`}</Text>
           )}
@@ -63,26 +66,22 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "flex-start",
   },
   titleFieldBackground: {
-    fontSize: 14,
     fontWeight: "300",
     fontStyle: "normal",
-    color: colors.black,
+    color: colors.grey2,
     minWidth: 80,
   },
   fieldBackground: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
-    fontSize: 14,
     color: colors.black,
   },
   inputStyle: {
-    fontSize: 14,
     color: colors.black,
     textAlign: "right",
   },
   inputUlr: {
-    fontSize: 14,
     color: colors.primary,
   },
   subValueStyle: {
