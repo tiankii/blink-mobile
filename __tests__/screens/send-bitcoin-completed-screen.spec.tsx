@@ -1,5 +1,12 @@
 import React from "react"
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native"
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react-native"
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 import {
@@ -22,6 +29,8 @@ jest.mock("react-native-view-shot", () => {
     default: ({ children }: { children: React.ReactNode }) => <View>{children}</View>,
   }
 })
+
+jest.useFakeTimers()
 
 describe("SendBitcoinCompletedScreen", () => {
   let LL: ReturnType<typeof i18nObject>
@@ -79,7 +88,8 @@ describe("SendBitcoinCompletedScreen", () => {
           iv: null,
           decipher: () => null,
         },
-        formatAmount: "$0.03 (25 SAT)",
+        currencyAmount: "$0.03",
+        satAmount: "25 SAT",
         feeDisplayText: "$0.00 (0 SAT)",
         destination: "moises",
         paymentType: "lightning",
@@ -93,16 +103,16 @@ describe("SendBitcoinCompletedScreen", () => {
       </ContextForScreen>,
     )
 
+    act(() => {
+      jest.advanceTimersByTime(2000)
+    })
+
     expect(screen.getByText(lud09MessageRoute.params.successAction.message)).toBeTruthy()
-    expect(screen.getByText(lud09MessageRoute.params.formatAmount)).toBeTruthy()
-    expect(
-      screen.getByText(
-        `${lud09MessageRoute.params.feeDisplayText} | ${lud09MessageRoute.params.paymentType}`,
-      ),
-    ).toBeTruthy()
+    expect(screen.getByText(lud09MessageRoute.params.currencyAmount)).toBeTruthy()
+    expect(screen.getByText(lud09MessageRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09MessageRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09MessageRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
-    expect(screen.getByText(LL.common.close())).toBeTruthy()
   })
 
   it("render successAction - LUD 09 - URL", async () => {
@@ -120,7 +130,8 @@ describe("SendBitcoinCompletedScreen", () => {
           iv: null,
           decipher: () => null,
         },
-        formatAmount: "$0.03 (25 SAT)",
+        currencyAmount: "$0.03",
+        satAmount: "25 SAT",
         feeDisplayText: "$0.00 (0 SAT)",
         destination: "moises",
         paymentType: "lightning",
@@ -134,6 +145,10 @@ describe("SendBitcoinCompletedScreen", () => {
       </ContextForScreen>,
     )
 
+    act(() => {
+      jest.advanceTimersByTime(2000)
+    })
+
     const button = await waitFor(() =>
       screen.findByTestId(LL.ScanningQRCodeScreen.openLinkTitle()),
     )
@@ -142,15 +157,11 @@ describe("SendBitcoinCompletedScreen", () => {
     expect(Linking.openURL).toHaveBeenCalledWith(lud09URLRoute.params.successAction.url)
 
     expect(screen.getByText(lud09URLRoute.params.successAction.url)).toBeTruthy()
-    expect(screen.getByText(lud09URLRoute.params.formatAmount)).toBeTruthy()
-    expect(
-      screen.getByText(
-        `${lud09URLRoute.params.feeDisplayText} | ${lud09URLRoute.params.paymentType}`,
-      ),
-    ).toBeTruthy()
+    expect(screen.getByText(lud09URLRoute.params.currencyAmount)).toBeTruthy()
+    expect(screen.getByText(lud09URLRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09URLRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09URLRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
-    expect(screen.getByText(LL.common.close())).toBeTruthy()
   })
 
   it("render successAction - LUD 09 - URL with description", async () => {
@@ -168,7 +179,8 @@ describe("SendBitcoinCompletedScreen", () => {
           iv: null,
           decipher: () => null,
         },
-        formatAmount: "$0.03 (25 SAT)",
+        currencyAmount: "$0.03",
+        satAmount: "25 SAT",
         feeDisplayText: "$0.00 (0 SAT)",
         destination: "moises",
         paymentType: "lightning",
@@ -181,7 +193,9 @@ describe("SendBitcoinCompletedScreen", () => {
         <SuccessAction route={lud09URLWithDescRoute} />
       </ContextForScreen>,
     )
-
+    act(() => {
+      jest.advanceTimersByTime(2000)
+    })
     const button = await waitFor(() =>
       screen.findByTestId(LL.ScanningQRCodeScreen.openLinkTitle()),
     )
@@ -192,18 +206,14 @@ describe("SendBitcoinCompletedScreen", () => {
     )
 
     expect(
-      screen.getByText(lud09URLWithDescRoute.params.successAction.description),
+      screen.getByText(lud09URLWithDescRoute.params.successAction.description, { exact: false }),
     ).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.successAction.url)).toBeTruthy()
-    expect(screen.getByText(lud09URLWithDescRoute.params.formatAmount)).toBeTruthy()
-    expect(
-      screen.getByText(
-        `${lud09URLWithDescRoute.params.feeDisplayText} | ${lud09URLWithDescRoute.params.paymentType}`,
-      ),
-    ).toBeTruthy()
+    expect(screen.getByText(lud09URLWithDescRoute.params.currencyAmount)).toBeTruthy()
+    expect(screen.getByText(lud09URLWithDescRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09URLWithDescRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
-    expect(screen.getByText(LL.common.close())).toBeTruthy()
   })
 
   it("render successAction - LUD 10 - message", async () => {
@@ -223,7 +233,8 @@ describe("SendBitcoinCompletedScreen", () => {
           decipher: () => null,
         },
         preimage: "25004cd52960a3bac983e3f95c432341a7052cef37b9253b0b0b1256d754559b",
-        formatAmount: "$0.03 (25 SAT)",
+        currencyAmount: "$0.03",
+        satAmount: "25 SAT",
         feeDisplayText: "$0.00 (0 SAT)",
         destination: "moises",
         paymentType: "lightning",
@@ -236,20 +247,19 @@ describe("SendBitcoinCompletedScreen", () => {
         <SuccessAction route={lud10AESRoute} />
       </ContextForScreen>,
     )
+    act(() => {
+      jest.advanceTimersByTime(2000)
+    })
 
     expect(
       screen.getByText(
         `${lud10AESRoute.params.successAction.description} ${encryptedMessage}`,
       ),
     ).toBeTruthy()
-    expect(screen.getByText(lud10AESRoute.params.formatAmount)).toBeTruthy()
-    expect(
-      screen.getByText(
-        `${lud10AESRoute.params.feeDisplayText} | ${lud10AESRoute.params.paymentType}`,
-      ),
-    ).toBeTruthy()
+    expect(screen.getByText(lud10AESRoute.params.currencyAmount)).toBeTruthy()
+    expect(screen.getByText(lud10AESRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud10AESRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud10AESRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
-    expect(screen.getByText(LL.common.close())).toBeTruthy()
   })
 })

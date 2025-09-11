@@ -207,10 +207,12 @@ const SuccessIconComponent: React.FC<{
   }
 
   return (
-    <View style={styles.successViewContainer} {...testProps(status)}>
+    <View style={styles.successViewContainer} {...testProps("Success Text")}>
       <SuccessIconAnimation>{getStatusIcon()}</SuccessIconAnimation>
       <CompletedTextAnimation>
-        <Text style={styles.completedText}>{getStatusText()}</Text>
+        <Text style={styles.completedText} {...testProps(status)}>
+          {getStatusText()}
+        </Text>
       </CompletedTextAnimation>
     </View>
   )
@@ -392,7 +394,7 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
       />
 
       <ViewShot ref={viewRef} style={styles.viewShot}>
-        <View style={styles.screenContainer} {...testProps("Success Text")}>
+        <View style={styles.screenContainer}>
           <Logo height={110} />
 
           <View style={styles.container}>
