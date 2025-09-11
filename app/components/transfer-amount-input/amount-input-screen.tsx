@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useEffect, useReducer, useRef } from "react"
+import { useCallback, useEffect, useReducer, useRef, useState } from "react"
 
 import { WalletCurrency } from "@app/graphql/generated"
 import { useDebouncedEffect } from "@app/hooks/use-debounce"
@@ -165,10 +165,13 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
 
   const freezeFormatRef = useRef(false)
   const typingRef = useRef(false)
+  const [typingState, setTypingState] = useState(false)
+  const forceDebounceRef = useRef(false)
 
   const notifyTyping = useCallback(
     (typing: boolean) => {
       typingRef.current = typing
+      setTypingState(typing)
       if (onTypingChange) onTypingChange(typing, focusedIdRef.current)
     },
     [onTypingChange],
@@ -250,6 +253,19 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     focusedIdRef.current = focusedInput.id
     freezeFormatRef.current = false
 
+    const currentAmountFromNp = numberPadNumberToMoneyAmount({
+      numberPadNumber: moneyAmountToNumberPadReducerState({
+        moneyAmount: zeroDisplayAmount,
+        currencyInfo,
+      }).numberPadNumber,
+      currency: focusedInput.amount.currency,
+      currencyInfo,
+    })
+
+    forceDebounceRef.current =
+      currentAmountFromNp.amount !== focusedInput.amount.amount ||
+      currentAmountFromNp.currency !== focusedInput.amount.currency
+
     setNumberPadAmount(focusedInput.amount)
 
     const npState = moneyAmountToNumberPadReducerState({
@@ -260,12 +276,36 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     const focusStates = createFocusStates(focusedIdRef.current)
     const baseValues = lastValuesRef.current || inputValues
 
+    const strip = (s?: string) => (s ? s.replace(/^\s*~\s*/, "") : s)
+    const ensure = (s?: string) => (s ? (s.trim().startsWith("~") ? s : `~ ${s}`) : s)
+
     const updatedValues: IInputValues = {
       ...baseValues,
       formattedAmount: formattedOnFocus,
-      fromInput: { ...baseValues.fromInput, ...focusStates.fromInput },
-      toInput: { ...baseValues.toInput, ...focusStates.toInput },
-      currencyInput: { ...baseValues.currencyInput, ...focusStates.currencyInput },
+      fromInput: {
+        ...baseValues.fromInput,
+        ...focusStates.fromInput,
+        formattedAmount:
+          focusedIdRef.current === ConvertInputType.FROM
+            ? strip(baseValues.fromInput.formattedAmount) ?? ""
+            : ensure(baseValues.fromInput.formattedAmount) ?? "",
+      },
+      toInput: {
+        ...baseValues.toInput,
+        ...focusStates.toInput,
+        formattedAmount:
+          focusedIdRef.current === ConvertInputType.TO
+            ? strip(baseValues.toInput.formattedAmount) ?? ""
+            : ensure(baseValues.toInput.formattedAmount) ?? "",
+      },
+      currencyInput: {
+        ...baseValues.currencyInput,
+        ...focusStates.currencyInput,
+        formattedAmount:
+          focusedIdRef.current === ConvertInputType.CURRENCY
+            ? strip(baseValues.currencyInput.formattedAmount) ?? ""
+            : ensure(baseValues.currencyInput.formattedAmount) ?? "",
+      },
     }
 
     const nextSnap = snapshotKey(updatedValues)
@@ -281,6 +321,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     currencyInfo,
     inputValues,
     createFocusStates,
+    zeroDisplayAmount,
   ])
 
   useEffect(() => {
@@ -308,7 +349,10 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
     }
   }, [focusedInput])
 
-  const debounceEnabled = Boolean(inputValues) && !skipNextRecalcRef.current
+  const debounceEnabled =
+    Boolean(inputValues) &&
+    !skipNextRecalcRef.current &&
+    (typingState || forceDebounceRef.current)
 
   useDebouncedEffect(
     () => {
@@ -371,26 +415,30 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
         return formatAmount(amount, isApproximate)
       }
 
+      const approxFrom = inputValues.fromInput.amount.currency !== primaryCurrency
+      const approxTo = inputValues.toInput.amount.currency !== primaryCurrency
+      const approxCurrency = inputValues.currencyInput.amount.currency !== primaryCurrency
+
       const payload: IInputValues = {
         formattedAmount: digitsEmpty ? "" : formattedForParent,
         fromInput: {
           id: ConvertInputType.FROM,
           currency: inputValues.fromInput.amount.currency,
-          formattedAmount: getFormattedAmount(fromAmount, false),
+          formattedAmount: getFormattedAmount(fromAmount, approxFrom),
           isFocused: focusedIdRef.current === ConvertInputType.FROM,
           amount: fromAmount,
         },
         toInput: {
           id: ConvertInputType.TO,
           currency: inputValues.toInput.amount.currency,
-          formattedAmount: getFormattedAmount(toAmount, true),
+          formattedAmount: getFormattedAmount(toAmount, approxTo),
           isFocused: focusedIdRef.current === ConvertInputType.TO,
           amount: toAmount,
         },
         currencyInput: {
           id: ConvertInputType.CURRENCY,
           currency: inputValues.currencyInput.amount.currency,
-          formattedAmount: getFormattedAmount(currencyAmount, false),
+          formattedAmount: getFormattedAmount(currencyAmount, approxCurrency),
           isFocused: focusedIdRef.current === ConvertInputType.CURRENCY,
           amount: currencyAmount,
         },
@@ -405,6 +453,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
 
       onAmountChange(primaryAmount)
       notifyTyping(false)
+      forceDebounceRef.current = false
       onAfterRecalc?.()
     },
     debounceMs,

@@ -319,9 +319,6 @@ export const ConversionDetailsScreen = () => {
 
   if (!data?.me?.defaultAccount || !fromWallet) return <></>
 
-  const stripApprox = (s?: string) => (s ? s.replace(/^\s*~\s*/, "") : s)
-  const ensureApprox = (s?: string) => (s ? (s.trim().startsWith("~") ? s : `~ ${s}`) : s)
-
   const toggleInputs = () => {
     if (uiLocked) return
 
@@ -384,19 +381,11 @@ export const ConversionDetailsScreen = () => {
         id: ConvertInputType.TO,
         isFocused: newFocusedId === ConvertInputType.TO,
       }
-      const normalizedFrom: InputField = {
-        ...swappedFrom,
-        formattedAmount: stripApprox(swappedFrom.formattedAmount) ?? "",
-      }
-      const normalizedTo: InputField = {
-        ...swappedTo,
-        formattedAmount: ensureApprox(swappedTo.formattedAmount) ?? "",
-      }
 
       return {
         ...prev,
-        fromInput: normalizedFrom,
-        toInput: normalizedTo,
+        fromInput: swappedFrom,
+        toInput: swappedTo,
         currencyInput: {
           ...prev.currencyInput,
           isFocused: currentFocusedId === ConvertInputType.CURRENCY,
