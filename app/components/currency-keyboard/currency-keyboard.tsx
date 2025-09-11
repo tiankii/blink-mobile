@@ -7,16 +7,11 @@ import { makeStyles, useTheme, Text } from "@rneui/themed"
 import { Key as KeyType } from "../amount-input-screen/number-pad-reducer"
 
 const useStyles = makeStyles(({ colors }, compact: boolean) => ({
-  container: { ...(compact ? { flex: 1 } : {}) },
   keyRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    ...(compact
-      ? { alignItems: "center", marginBottom: 15 }
-      : {
-          alignItems: "center",
-          marginBottom: 30,
-        }),
+    alignItems: "center",
+    marginBottom: compact ? 15 : 30,
   },
   lastKeyRow: {
     flexDirection: "row",
@@ -51,7 +46,7 @@ export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({
 }) => {
   const styles = useStyles(compact)
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.keyRow}>
         <Key
           numberPadKey={KeyType[1]}

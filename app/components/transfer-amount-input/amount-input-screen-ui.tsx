@@ -36,17 +36,15 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
 }
 
 const useStyles = makeStyles((_, compact: boolean) => ({
-  amountInputScreenContainer: { flex: 1 },
-
+  amountInputScreenContainer: { alignSelf: "stretch" },
   infoContainer: {
     justifyContent: "flex-start",
     ...(compact ? {} : { flex: 1 }),
   },
   bodyContainer: {
-    flex: 1,
     ...(compact ? {} : { padding: 24 }),
   },
   keyboardContainer: {
-    ...(compact ? { flex: 1 } : { paddingHorizontal: 16, marginBottom: 30 }),
+    ...(compact ? { alignSelf: "stretch" } : { paddingHorizontal: 16, marginBottom: 30 }),
   },
 }))

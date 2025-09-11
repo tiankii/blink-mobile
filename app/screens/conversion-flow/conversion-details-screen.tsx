@@ -559,7 +559,7 @@ export const ConversionDetailsScreen = () => {
         <ErrorBanner message={amountFieldError} />
       </View>
 
-      <View style={styles.flexArea}>
+      <View style={styles.bottomStack}>
         <PercentageSelector
           isLocked={uiLocked}
           loadingPercent={loadingPercent}
@@ -590,12 +590,10 @@ export const ConversionDetailsScreen = () => {
             onAfterRecalc={() => {
               setUiLocked(false)
               setLoadingPercent(null)
-
               if (toggleInitiated.current) {
                 toggleInitiated.current = false
                 if (toggleWallet) toggleWallet()
                 if (moneyAmount) handleSetMoneyAmount(moneyAmount)
-
                 const id = pendingFocusId.current
                 if (id) {
                   focusPhysically(id)
@@ -605,14 +603,14 @@ export const ConversionDetailsScreen = () => {
             }}
           />
         </View>
-      </View>
 
-      <GaloyPrimaryButton
-        title={LL.ConversionDetailsScreen.reviewTransfer()}
-        containerStyle={styles.buttonContainer}
-        disabled={!isValidAmount || uiLocked}
-        onPress={moveToNextScreen}
-      />
+        <GaloyPrimaryButton
+          title={LL.ConversionDetailsScreen.reviewTransfer()}
+          containerStyle={styles.buttonContainer}
+          disabled={!isValidAmount || uiLocked}
+          onPress={moveToNextScreen}
+        />
+      </View>
     </Screen>
   )
 }
@@ -672,10 +670,9 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
   currencyInputContainer: {
     marginTop: 10,
   },
-  flexArea: {
+  bottomStack: {
     flex: 1,
-    minHeight: 0,
-    marginBottom: 20,
+    justifyContent: "flex-end",
   },
   percentageContainer: {
     flexDirection: "row",
@@ -686,12 +683,10 @@ const useStyles = makeStyles(({ colors }, currencyInput: boolean) => ({
     gap: 12,
   },
   keyboardContainer: {
-    flex: 1,
-    maxHeight: 350,
     maxWidth: 450,
     paddingHorizontal: 45,
-    paddingVertical: 15,
-    justifyContent: "flex-end",
+    paddingTop: 15,
+    paddingBottom: 32,
   },
   disabledOpacity: { opacity: 0.5 },
   buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
