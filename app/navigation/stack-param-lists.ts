@@ -62,7 +62,8 @@ export type RootStackParamList = {
     preimage?: string
     currencyAmount?: string
     satAmount?: string
-    feeDisplayText?: string
+    currencyFeeAmount?: string
+    satFeeAmount?: string
     destination?: string
     paymentType?: string
     createdAt?: number

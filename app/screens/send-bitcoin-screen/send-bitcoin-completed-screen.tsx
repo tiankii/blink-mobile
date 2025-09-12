@@ -220,7 +220,8 @@ const SuccessIconComponent: React.FC<{
 const PaymentDetailsSection: React.FC<{
   currencyAmount?: string
   satAmount?: string
-  feeDisplayText?: string
+  satFeeAmount?: string
+  currencyFeeAmount?: string
   usernameTitle: string
   destination?: string
   createdAt?: number
@@ -229,7 +230,8 @@ const PaymentDetailsSection: React.FC<{
 }> = ({
   currencyAmount,
   satAmount,
-  feeDisplayText,
+  satFeeAmount,
+  currencyFeeAmount,
   usernameTitle,
   destination,
   createdAt,
@@ -250,9 +252,10 @@ const PaymentDetailsSection: React.FC<{
         />
         <SuccessActionComponent
           title={LL.SendBitcoinScreen.feeLabel()}
-          text={feeDisplayText}
+          text={currencyFeeAmount}
+          subText={satFeeAmount}
           key="fee"
-          visible={Boolean(feeDisplayText)}
+          visible={Boolean(currencyFeeAmount)}
         />
         <SuccessActionComponent
           title={LL.SendBitcoinScreen.sender()}
@@ -332,7 +335,8 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
     preimage,
     currencyAmount,
     satAmount,
-    feeDisplayText,
+    currencyFeeAmount,
+    satFeeAmount,
     destination,
     paymentType,
     createdAt,
@@ -402,7 +406,8 @@ const SendBitcoinCompletedScreen: React.FC<Props> = ({ route }) => {
               <PaymentDetailsSection
                 currencyAmount={currencyAmount}
                 satAmount={satAmount}
-                feeDisplayText={feeDisplayText}
+                satFeeAmount={satFeeAmount}
+                currencyFeeAmount={currencyFeeAmount}
                 usernameTitle={usernameTitle}
                 destination={destination}
                 createdAt={createdAt}
@@ -439,6 +444,7 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "flex-end",
     alignItems: "center",
     padding: 16,
+    paddingBottom: 6,
   },
   screenContainer: {
     flexGrow: 1,
@@ -456,7 +462,7 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
   },
   shareButton: {
     marginTop: 10,

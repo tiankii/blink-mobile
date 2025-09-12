@@ -90,7 +90,8 @@ describe("SendBitcoinCompletedScreen", () => {
         },
         currencyAmount: "$0.03",
         satAmount: "25 SAT",
-        feeDisplayText: "$0.00 (0 SAT)",
+        currencyFeeAmount: "$0.00",
+        satFeeAmount: "0 SAT",
         destination: "moises",
         paymentType: "lightning",
         createdAt: 1747691078,
@@ -109,7 +110,7 @@ describe("SendBitcoinCompletedScreen", () => {
 
     expect(screen.getByText(lud09MessageRoute.params.successAction.message)).toBeTruthy()
     expect(screen.getByText(lud09MessageRoute.params.currencyAmount)).toBeTruthy()
-    expect(screen.getByText(lud09MessageRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09MessageRoute.params.currencyFeeAmount)).toBeTruthy()
     expect(screen.getByText(lud09MessageRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09MessageRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
@@ -132,7 +133,8 @@ describe("SendBitcoinCompletedScreen", () => {
         },
         currencyAmount: "$0.03",
         satAmount: "25 SAT",
-        feeDisplayText: "$0.00 (0 SAT)",
+        currencyFeeAmount: "$0.00",
+        satFeeAmount: "0 SAT",
         destination: "moises",
         paymentType: "lightning",
         createdAt: 1747691078,
@@ -158,7 +160,7 @@ describe("SendBitcoinCompletedScreen", () => {
 
     expect(screen.getByText(lud09URLRoute.params.successAction.url)).toBeTruthy()
     expect(screen.getByText(lud09URLRoute.params.currencyAmount)).toBeTruthy()
-    expect(screen.getByText(lud09URLRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09URLRoute.params.currencyFeeAmount)).toBeTruthy()
     expect(screen.getByText(lud09URLRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09URLRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
@@ -181,7 +183,8 @@ describe("SendBitcoinCompletedScreen", () => {
         },
         currencyAmount: "$0.03",
         satAmount: "25 SAT",
-        feeDisplayText: "$0.00 (0 SAT)",
+        currencyFeeAmount: "$0.00",
+        satFeeAmount: "0 SAT",
         destination: "moises",
         paymentType: "lightning",
         createdAt: 1747691078,
@@ -212,7 +215,7 @@ describe("SendBitcoinCompletedScreen", () => {
     ).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.successAction.url)).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.currencyAmount)).toBeTruthy()
-    expect(screen.getByText(lud09URLWithDescRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud09URLWithDescRoute.params.currencyFeeAmount)).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud09URLWithDescRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()
@@ -237,7 +240,8 @@ describe("SendBitcoinCompletedScreen", () => {
         preimage: "25004cd52960a3bac983e3f95c432341a7052cef37b9253b0b0b1256d754559b",
         currencyAmount: "$0.03",
         satAmount: "25 SAT",
-        feeDisplayText: "$0.00 (0 SAT)",
+        currencyFeeAmount: "$0.00",
+        satFeeAmount: "0 SAT",
         destination: "moises",
         paymentType: "lightning",
         createdAt: 1747691078,
@@ -259,7 +263,7 @@ describe("SendBitcoinCompletedScreen", () => {
       ),
     ).toBeTruthy()
     expect(screen.getByText(lud10AESRoute.params.currencyAmount)).toBeTruthy()
-    expect(screen.getByText(lud10AESRoute.params.feeDisplayText)).toBeTruthy()
+    expect(screen.getByText(lud10AESRoute.params.currencyFeeAmount)).toBeTruthy()
     expect(screen.getByText(lud10AESRoute.params.paymentType)).toBeTruthy()
     expect(screen.getByText(lud10AESRoute.params.destination)).toBeTruthy()
     expect(screen.getByText(LL.common.share())).toBeTruthy()

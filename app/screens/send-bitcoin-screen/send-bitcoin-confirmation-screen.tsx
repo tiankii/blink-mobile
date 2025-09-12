@@ -120,6 +120,9 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
   let currencyAmount = ""
   let satAmount = ""
 
+  let currencyFeeAmount = ""
+  let satFeeAmount = ""
+
   const {
     loading: sendPaymentLoading,
     sendPayment,
@@ -133,8 +136,23 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
       displayAmount: feeDisplayAmount,
       walletAmount: fee.amount,
     })
+
+    currencyFeeAmount = formatMoneyAmount({
+      moneyAmount: feeDisplayAmount,
+    })
+
+    const secondaryFeeAmount = getSecondaryAmountIfCurrencyIsDifferent({
+      primaryAmount: feeDisplayAmount,
+      walletAmount: convertMoneyAmount(feeDisplayAmount, WalletCurrency.Btc),
+      displayAmount: convertMoneyAmount(feeDisplayAmount, DisplayCurrency),
+    })
+    satFeeAmount = formatMoneyAmount({
+      moneyAmount: secondaryFeeAmount ?? ZeroUsdMoneyAmount,
+    })
   } else {
     feeDisplayText = LL.SendBitcoinConfirmationScreen.feeError()
+    currencyFeeAmount = LL.SendBitcoinConfirmationScreen.feeError()
+    satFeeAmount = LL.SendBitcoinConfirmationScreen.feeError()
   }
 
   const handleSendPayment = React.useCallback(async () => {
@@ -171,7 +189,8 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
                 preimage: extraInfo?.preimage,
                 currencyAmount,
                 satAmount,
-                feeDisplayText,
+                currencyFeeAmount,
+                satFeeAmount,
                 destination:
                   paymentDetail?.paymentType === "intraledger"
                     ? destination
@@ -237,7 +256,8 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
     saveLnAddressContact,
     currencyAmount,
     satAmount,
-    feeDisplayText,
+    currencyFeeAmount,
+    satFeeAmount,
   ])
 
   let validAmount = true
