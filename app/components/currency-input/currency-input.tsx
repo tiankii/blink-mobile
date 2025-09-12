@@ -156,13 +156,13 @@ const useStyles = makeStyles(({ colors }) => ({
     height: 30,
   },
   currencyBadge: {
-    borderColor: colors._white,
+    borderColor: colors.grey2,
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 10,
   },
   currencyText: {
-    color: colors._white,
+    color: colors.grey2,
   },
 }))
