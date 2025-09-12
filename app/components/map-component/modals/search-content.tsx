@@ -6,6 +6,7 @@ import debounce from "lodash.debounce"
 import axios from "axios"
 
 import { BTCMAP_V4_API_BASE } from "@app/config"
+import { useI18nContext } from "@app/i18n/i18n-react.tsx"
 
 const screenHeight = Dimensions.get("window").height
 
@@ -47,6 +48,8 @@ export const SearchContent: FC<SearchContentProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null)
   const [error, setError] = useState<Error | null>(null)
+
+  const { LL } = useI18nContext()
 
   const debouncedSearch = useMemo(
     () =>
@@ -141,7 +144,7 @@ export const SearchContent: FC<SearchContentProps> = ({
         onChangeText={updateSearch}
         value={search}
         lightTheme
-        placeholder="Search for cities, Locations..."
+        placeholder={LL.MapScreen.search.placeholder()}
         placeholderTextColor="#888"
         searchIcon={<Icon color="grey" name="search" size={18} style={styles.icon} />}
         clearIcon={
@@ -156,16 +159,18 @@ export const SearchContent: FC<SearchContentProps> = ({
       />
 
       <ScrollView>
-        {isLoading && <Text style={styles.statusInfo}>Loading...</Text>}
+        {isLoading && (
+          <Text style={styles.statusInfo}>{LL.MapScreen.search.loading()}</Text>
+        )}
 
         {error && <Text style={styles.error}>{error.message}</Text>}
 
         {!isLoading && search && searchResponse?.results?.length === 0 && (
-          <Text style={styles.statusInfo}>No results found.</Text>
+          <Text style={styles.statusInfo}>{LL.MapScreen.search.noResults()}</Text>
         )}
 
         {search.length > 0 && search.length < 3 && !isLoading && (
-          <Text style={styles.statusInfo}>Enter at least 3 characters to search.</Text>
+          <Text style={styles.statusInfo}>{LL.MapScreen.search.minChars()}</Text>
         )}
 
         {elements}

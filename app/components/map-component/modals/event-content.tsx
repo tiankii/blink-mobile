@@ -3,15 +3,16 @@ import { View, TouchableOpacity, Platform, Linking } from "react-native"
 import { makeStyles, Skeleton, Text, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
 
+import { useI18nContext } from "@app/i18n/i18n-react.tsx"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { IMarker } from "@app/screens/map-screen/btc-map-interface.ts"
-
 import {
-  categoryNames,
+  categoryI18NNames,
   categories,
   Category,
 } from "@app/components/map-component/categories.ts"
 import { usePlace } from "@app/components/map-component/map-hooks/use-place.ts"
+
 type EventContentProps = {
   closeModal: () => void
   selectedMarker: IMarker | null
@@ -23,6 +24,8 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
   const {
     theme: { colors },
   } = useTheme()
+
+  const { LL } = useI18nContext()
 
   // todo handle error
   const { placeData, error, isLoading } = usePlace(selectedMarker?.id)
@@ -45,6 +48,7 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
     <View>
       <View style={styles.titleContent}>
         <Text style={styles.titleModal} ellipsizeMode="tail" numberOfLines={1}>
+          {/* todo handle missing name field better. maybe skeleton?*/}
           {placeData?.name ?? selectedMarker?.name ?? "An unnamed place"}
         </Text>
         <View style={styles.iconContainer}>
@@ -60,7 +64,7 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
       </View>
       <View style={styles.buttonContainer}>
         <GaloyPrimaryButton
-          title="Pay this bussines"
+          title={LL.MapScreen.payBusiness()}
           containerStyle={styles.payButton}
           disabled
         />
@@ -83,9 +87,12 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
       </View>
 
       <Text style={styles.locationTitle}>
-        {selectedMarker?.icon
-          ? categoryNames[(categories[selectedMarker.icon] as Category) ?? Category.Other]
-          : "Unknown"}
+        {selectedMarker?.icon &&
+          LL.MapScreen.categories[
+            categoryI18NNames[
+              (categories[selectedMarker.icon] as Category) ?? Category.Other
+            ] as keyof typeof LL.MapScreen.categories
+          ]()}
       </Text>
       {isLoading ? (
         <View style={styles.eventDetails}>
@@ -93,7 +100,7 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
         </View>
       ) : placeData?.address ? (
         <View style={styles.eventDetails}>
-          <Text style={styles.detailsTitle}>Address: </Text>
+          <Text style={styles.detailsTitle}>{LL.MapScreen.address()}: </Text>
           <Text style={styles.detailsTitle}>{placeData.address}</Text>
         </View>
       ) : null}
@@ -103,7 +110,7 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
         </View>
       ) : placeData?.phone ? (
         <View style={styles.eventDetails}>
-          <Text style={styles.detailsTitle}>Phone: </Text>
+          <Text style={styles.detailsTitle}>{LL.MapScreen.phone()}: </Text>
           <Text style={styles.detailsTitle}>{placeData.phone}</Text>
         </View>
       ) : null}
@@ -113,7 +120,7 @@ export const EventContent: FC<EventContentProps> = ({ closeModal, selectedMarker
         </View>
       ) : placeData?.website ? (
         <View style={styles.eventDetails}>
-          <Text style={styles.detailsTitle}>Website: </Text>
+          <Text style={styles.detailsTitle}>{LL.MapScreen.website()}: </Text>
           <Text style={styles.detailsTitle}>{placeData.website}</Text>
         </View>
       ) : null}

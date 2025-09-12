@@ -1,3 +1,5 @@
+
+
 export enum Category {
   Groceries = 1,
   Bakery,
@@ -15,20 +17,20 @@ export enum Category {
   Other,
 }
 
-export const categoryNames: Record<Category, string> = {
+export const categoryI18NNames: Record<Category, string> = {
   [Category.Groceries]: "Groceries",
   [Category.Bakery]: "Bakery",
   [Category.Restaurant]: "Restaurant",
   [Category.Bar]: "Bar",
   [Category.Cafe]: "Cafe",
   [Category.Hotel]: "Hotel",
-  [Category.ATM]: "ATM / Money Changer",
-  [Category.ShoppingFashion]: "Shopping / Fashion",
+  [Category.ATM]: "ATM",
+  [Category.ShoppingFashion]: "ShoppingFashion",
   [Category.Electronics]: "Electronics",
-  [Category.BeautyWellness]: "Beauty & Wellness",
-  [Category.SportFitness]: "Sport & Fitness",
+  [Category.BeautyWellness]: "BeautyWellness",
+  [Category.SportFitness]: "SportFitness",
   [Category.Entertainment]: "Entertainment",
-  [Category.ServicesMedical]: "Services / Medical",
+  [Category.ServicesMedical]: "ServicesMedical",
   [Category.Other]: "Other",
 }
 

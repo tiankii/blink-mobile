@@ -5,10 +5,11 @@ import Icon from "react-native-vector-icons/Ionicons"
 
 import {
   Category,
-  categoryNames,
+  categoryI18NNames,
   categoryIcons,
 } from "@app/components/map-component/categories.ts"
 import MaterialIcon from "react-native-vector-icons/MaterialIcons"
+import { useI18nContext } from "@app/i18n/i18n-react.tsx"
 
 const { height: screenHeight } = Dimensions.get("window")
 
@@ -27,11 +28,11 @@ export const FiltersContent: FC<FiltersContentProps> = ({
   const {
     theme: { colors },
   } = useTheme()
-
+  const { LL } = useI18nContext()
   const [tempFilters, setTempFilters] = useState(() => new Set(filters))
 
   const availableCategories = useMemo(() => {
-    return Object.keys(categoryNames).map((key) => {
+    return Object.keys(categoryI18NNames).map((key) => {
       const category = parseInt(key, 10) as Category
       return {
         category,
@@ -67,7 +68,7 @@ export const FiltersContent: FC<FiltersContentProps> = ({
   return (
     <View style={styles.componentWrapper}>
       <View style={styles.titleContent}>
-        <Text style={styles.titleModal}>Categories filters</Text>
+        <Text style={styles.titleModal}>{LL.MapScreen.categoriesFilters()}</Text>
         <Icon
           color="grey"
           name="close"
@@ -77,7 +78,7 @@ export const FiltersContent: FC<FiltersContentProps> = ({
         />
       </View>
 
-      <Text color="grey">Choose which categories you would like to show</Text>
+      <Text color="grey">{LL.MapScreen.chooseCategories()}</Text>
 
       <ScrollView style={styles.contentBox}>
         {availableCategories.map((category) => (
@@ -88,7 +89,13 @@ export const FiltersContent: FC<FiltersContentProps> = ({
                 size={22}
                 style={styles.listIcon}
               />
-              <Text style={styles.titleFilter}>{categoryNames[category.category]}</Text>
+              <Text style={styles.titleFilter}>
+                {LL.MapScreen.categories[
+                  categoryI18NNames[
+                    category.category
+                  ] as keyof typeof LL.MapScreen.categories
+                ]()}
+              </Text>
             </View>
             <CheckBox
               checked={category.checked}
@@ -103,10 +110,10 @@ export const FiltersContent: FC<FiltersContentProps> = ({
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={selectAll}>
-          <Text color={colors.primary}>Select All</Text>
+          <Text color={colors.primary}>{LL.MapScreen.selectAll()}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={applyAndClose}>
-          <Text color={colors.primary}>Apply</Text>
+          <Text color={colors.primary}>{LL.MapScreen.apply()}</Text>
         </TouchableOpacity>
       </View>
     </View>
