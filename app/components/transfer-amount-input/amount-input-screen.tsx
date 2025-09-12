@@ -237,6 +237,7 @@ export const AmountInputScreen: React.FC<AmountInputScreenProps> = ({
   useEffect(() => {
     if (initialAmount) {
       setNumberPadAmount(initialAmount)
+      forceDebounceRef.current = true
     }
   }, [initialAmount, setNumberPadAmount])
 
