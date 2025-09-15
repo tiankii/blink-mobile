@@ -2049,7 +2049,13 @@
             "loading": "Cargando...",
             "noResults": "No se encontraron resultados.",
             "minChars": "Introduce al menos 3 caracteres para buscar."
+        },
+        "btcmapErrors": {
+            "communityData": "No se pudieron obtener los datos de la comunidad, por favor inténtalo de nuevo más tarde",
+            "placeData": "No se pudieron obtener los datos del lugar, por favor inténtalo de nuevo más tarde",
+            "sync": "No se pudo sincronizar los datos de BTC Map, por favor inténtalo de nuevo o contacta con BTC Map."
         }
+
     },
     "HomeScreen": {
         "receive": "Recibir",

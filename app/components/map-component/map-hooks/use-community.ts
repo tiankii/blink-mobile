@@ -3,11 +3,14 @@ import axios, { AxiosHeaders } from "axios"
 
 import type { Area, AreaDataRpc } from "../map-types"
 import { BTCMAP_RPC_URL } from "@app/config"
+import { useI18nContext } from "@app/i18n/i18n-react.tsx"
 
 export const useArea = (id: number | null) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
   const [community, setCommunity] = useState<Area | null>(null)
+
+  const { LL } = useI18nContext()
 
   useEffect(() => {
     let cancelled = false
@@ -25,7 +28,7 @@ export const useArea = (id: number | null) => {
         }
       } catch (e) {
         if (!cancelled) {
-          setError("Could not fetch community data, please try again later")
+          setError(LL.MapScreen.btcmapErrors.communityData())
         }
       } finally {
         if (!cancelled) {
@@ -47,6 +50,8 @@ export const useCommunityRpc = (id: string | null) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
   const [community, setCommunity] = useState<AreaDataRpc | null>(null)
+
+  const { LL } = useI18nContext()
 
   useEffect(() => {
     try {
@@ -75,7 +80,7 @@ export const useCommunityRpc = (id: string | null) => {
         setCommunity(data)
       })()
     } catch (e) {
-      setError("Could not fetch community data, please try again later")
+      setError(LL.MapScreen.btcmapErrors.communityData())
     } finally {
       setLoading(false)
     }

@@ -2058,6 +2058,11 @@
             "loading": "Loading...",
             "noResults": "No results found.",
             "minChars": "Enter at least 3 characters to search."
+        },
+        "btcmapErrors": {
+            "communityData": "Could not fetch community data, please try again later",
+            "placeData": "Could not fetch place data, please try again later",
+            "sync": "Could not sync BTC Map data, please try again or contact BTC Map."
         }
     },
     "HomeScreen": {

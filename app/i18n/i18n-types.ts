@@ -6497,6 +6497,20 @@ type RootTranslation = {
 			 */
 			minChars: string
 		}
+		btcmapErrors: {
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​f​e​t​c​h​ ​c​o​m​m​u​n​i​t​y​ ​d​a​t​a​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r
+			 */
+			communityData: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​f​e​t​c​h​ ​p​l​a​c​e​ ​d​a​t​a​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r
+			 */
+			placeData: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​y​n​c​ ​B​T​C​ ​M​a​p​ ​d​a​t​a​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​o​r​ ​c​o​n​t​a​c​t​ ​B​T​C​ ​M​a​p​.
+			 */
+			sync: string
+		}
 	}
 	HomeScreen: {
 		/**
@@ -15646,6 +15660,20 @@ export type TranslationFunctions = {
 			 * Enter at least 3 characters to search.
 			 */
 			minChars: () => LocalizedString
+		}
+		btcmapErrors: {
+			/**
+			 * Could not fetch community data, please try again later
+			 */
+			communityData: () => LocalizedString
+			/**
+			 * Could not fetch place data, please try again later
+			 */
+			placeData: () => LocalizedString
+			/**
+			 * Could not sync BTC Map data, please try again or contact BTC Map.
+			 */
+			sync: () => LocalizedString
 		}
 	}
 	HomeScreen: {

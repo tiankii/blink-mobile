@@ -9,6 +9,7 @@ import {
   BTCMAP_V4_API_BASE,
   BTCMAP_V4_PLACES_CDN,
 } from "@app/config"
+import { useI18nContext } from "@app/i18n/i18n-react.tsx"
 
 const LIMIT = 5000
 
@@ -17,6 +18,7 @@ export const usePlacesData = () => {
   const [places, setPlaces] = useState<BasePlacesData | null>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
 
+  const { LL } = useI18nContext()
   useEffect(() => {
     const fetchAndUpdate = async () => {
       try {
@@ -70,7 +72,7 @@ export const usePlacesData = () => {
         await AsyncStorage.setItem("btcmap_places_v4", JSON.stringify(updatedData))
         setPlaces(updatedData)
       } catch (error) {
-        setError("Could not sync BTC Map data, please try again or contact BTC Map.")
+        setError(LL.MapScreen.btcmapErrors.sync())
       } finally {
         setLoading(false)
       }
