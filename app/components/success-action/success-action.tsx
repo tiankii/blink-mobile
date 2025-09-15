@@ -2,7 +2,7 @@ import React from "react"
 import { View } from "react-native"
 import { SuccessActionComponentProps } from "./success-action.props"
 import { FieldWithEvent } from "./field-with-icon"
-import { makeStyles } from "@rneui/themed"
+import { makeStyles } from "@rn-vui/themed"
 
 export const SuccessActionComponent: React.FC<SuccessActionComponentProps> = ({
   visible,

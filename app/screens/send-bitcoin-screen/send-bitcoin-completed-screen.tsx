@@ -23,7 +23,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { logAppFeedback } from "@app/utils/analytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { makeStyles, useTheme, Text } from "@rneui/themed"
+import { makeStyles, Text, useTheme } from "@rn-vui/themed"
 
 import { testProps } from "../../utils/testProps"
 import { SuggestionModal } from "./suggestion-modal"
