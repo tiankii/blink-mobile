@@ -1,5 +1,5 @@
-import React from 'react'
-import Svg, { Path } from 'react-native-svg'
+import React from "react"
+import Svg, { Path } from "react-native-svg"
 
 const PinIcon = ({ size = 50, color = "#4f378c" }) => (
   <Svg width={size} height={(size * 43) / 32} viewBox="0 0 32 43">

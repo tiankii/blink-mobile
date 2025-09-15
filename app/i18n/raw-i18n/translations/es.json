@@ -2020,7 +2020,42 @@
         "payBusiness": "Pagar aquí",
         "openSettings": "Abrir configuración",
         "title": "Mapa",
-        "error": "Ups. Algo salió mal al obtener tu ubicación"
+        "error": "Ups. Algo salió mal al obtener tu ubicación",
+        "categories": {
+            "Groceries": "Comestibles",
+            "Bakery": "Panadería",
+            "Restaurant": "Restaurante",
+            "Bar": "Bar",
+            "Cafe": "Cafetería",
+            "Hotel": "Hotel",
+            "ATM": "Cajero automático / Casa de cambio",
+            "ShoppingFashion": "Compras / Moda",
+            "Electronics": "Electrónica",
+            "BeautyWellness": "Belleza & Bienestar",
+            "SportFitness": "Deporte & Fitness",
+            "Entertainment": "Entretenimiento",
+            "ServicesMedical": "Servicios / Medicina",
+            "Other": "Otros"
+        },
+        "address": "Dirección",
+        "phone": "Teléfono",
+        "website": "Sitio web",
+        "categoriesFilters": "Filtros de categorías",
+        "chooseCategories": "Elige qué categorías quieres mostrar",
+        "selectAll": "Seleccionar todo",
+        "apply": "Aplicar",
+        "search": {
+            "placeholder": "Busca ciudades, ubicaciones...",
+            "loading": "Cargando...",
+            "noResults": "No se encontraron resultados.",
+            "minChars": "Introduce al menos 3 caracteres para buscar."
+        },
+        "btcmapErrors": {
+            "communityData": "No se pudieron obtener los datos de la comunidad, por favor inténtalo de nuevo más tarde",
+            "placeData": "No se pudieron obtener los datos del lugar, por favor inténtalo de nuevo más tarde",
+            "sync": "No se pudo sincronizar los datos de BTC Map, por favor inténtalo de nuevo o contacta con BTC Map."
+        }
+
     },
     "HomeScreen": {
         "receive": "Recibir",

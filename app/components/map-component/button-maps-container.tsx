@@ -36,12 +36,7 @@ export default function ButtonMapsContainer({
     <View style={{ ...styles.container, ...getPositionStyle(position) }}>
       <TouchableOpacity onPress={event}>
         {iconName ? (
-          <Icon
-            color={colors.primary}
-            name={iconName}
-            size={22}
-            style={{ paddingHorizontal: 1 }}
-          />
+          <Icon color={colors.primary} name={iconName} size={22} style={styles.icon} />
         ) : (
           children
         )}
@@ -72,4 +67,5 @@ const useStyles = makeStyles(({ colors }) => ({
     left: 8,
     zIndex: 99,
   },
+  icon: { paddingHorizontal: 1 },
 }))
