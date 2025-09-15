@@ -1,6 +1,6 @@
 import React from "react"
 import { View, Linking } from "react-native"
-import { makeStyles, Text } from "@rneui/themed"
+import { makeStyles, Text } from "@rn-vui/themed"
 import { FieldWithEventProps } from "./field-with-icon.props"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
