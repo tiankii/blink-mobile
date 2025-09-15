@@ -62,10 +62,11 @@ export const usePlacesData = () => {
         const oldFiltered = currentData.baseData.filter(
           (p) => !newPlacesIds.includes(p.id),
         )
+        const newFiltered = newPlaces.filter((place) => !place.deleted_at)
 
         const updatedData: BasePlacesData = {
           lastUpdated: new Date().toISOString(),
-          baseData: [...oldFiltered, ...newPlaces],
+          baseData: [...oldFiltered, ...newFiltered],
         }
 
         normalize(updatedData)
@@ -97,11 +98,11 @@ const fetchPlacesFromApi = async (
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const fields = includeAllFields
-      ? "id,lat,lon,name,updated_at,icon"
-      : "id,name,updated_at,icon"
+      ? "id,lat,lon,name,updated_at,icon,deleted_at"
+      : "id,name,updated_at,icon,deleted_at"
 
     const { data } = await axios.get<Place[] | Omit<Place, "lat" | "lon" | "icon">[]>(
-      `${BTCMAP_V4_API_BASE}/places?updated_since=${currentUpdatedSince}&limit=${LIMIT}&fields=${fields}`,
+      `${BTCMAP_V4_API_BASE}/places?updated_since=${currentUpdatedSince}&limit=${LIMIT}&fields=${fields}&include_deleted=true`,
     )
 
     if (!data.length) break
@@ -136,10 +137,10 @@ const initializeBasePlaces = async (): Promise<{
     }
   } catch (error) {
     const places = (await fetchPlacesFromApi("1970-01-01T00:00:00Z", true)) as Place[]
-
+    const placesFiltered = places.filter((place) => !place.deleted_at)
     return {
       data: {
-        baseData: places,
+        baseData: placesFiltered,
         lastUpdated: new Date().toISOString(),
       },
       needsNameEnrichment: false,

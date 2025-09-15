@@ -16,6 +16,7 @@ type Place = CdnPlace & {
   tags?: {
     [key: string]: string
   }
+  deleted_at?: string | null
 }
 
 type BasePlacesData = {
