@@ -2220,7 +2220,7 @@
         "amountIsRequired": "Se requiere cantidad",
         "cost": "Costo",
         "destination": "Destino",
-        "destinationIsRequired": "El destino es obligatorio",
+        "destinationRequired": "Destino requerido",
         "fee": "tarifa de red",
         "feeCalculationUnsuccessful": "Error al calcular, inténtelo de nuevo ⚠️",
         "placeholder": "Nombre de usuario o factura",
@@ -2247,7 +2247,10 @@
         "copySecretMessage": "Copy secret message to clipboard",
         "copiedSuccessMessage": "Message copied successfully",
         "copiedSecretMessage": "Secret message copied successfully",
-        "pendingDecryptionMessage": "Encrypted message. Waiting for payment confirmation."
+        "pendingDecryptionMessage": "Encrypted message. Waiting for payment confirmation.",
+        "destinationScreenTitle": "Enviar a",
+        "orNumber": "O número",
+        "orSaved": "o guardado"
     },
     "SettingsScreen": {
         "staticQr": "Código QR estático imprimible",
@@ -2700,7 +2703,8 @@
         },
         "dollar": "Dólar",
         "all": "TODAS",
-        "allAccounts": "Todas las cuentas"
+        "allAccounts": "Todas las cuentas",
+        "paste": "Pegar"
     },
     "errors": {
         "generic": "Hubo un error inesperado.\nPor favor intente más tarde",

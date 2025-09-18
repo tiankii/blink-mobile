@@ -2284,7 +2284,7 @@ const en: BaseTranslation = {
     amountIsRequired: "Amount is required",
     cost: "Cost",
     destination: "Destination",
-    destinationIsRequired: "Destination is required",
+    destinationRequired: "Destination required",
     fee: "network fee",
     feeCalculationUnsuccessful: "Calculation unsuccessful ⚠️",
     placeholder: "Username, invoice, or address",
@@ -2317,6 +2317,9 @@ const en: BaseTranslation = {
     copiedSuccessMessage: "Message copied successfully",
     copiedSecretMessage: "Secret message copied successfully",
     pendingDecryptionMessage: "Encrypted message. Waiting for payment confirmation.",
+    destinationScreenTitle: "Send to",
+    orNumber: "Or number",
+    orSaved: "or saved",
   },
   SettingsScreen: {
     staticQr: "Printable Static QR Code",
@@ -2803,6 +2806,7 @@ const en: BaseTranslation = {
     dollar: "Dollar",
     all: "ALL",
     allAccounts: "All accounts",
+    paste: "Paste",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",

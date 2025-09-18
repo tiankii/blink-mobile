@@ -7125,9 +7125,9 @@ type RootTranslation = {
 		 */
 		destination: string
 		/**
-		 * D​e​s​t​i​n​a​t​i​o​n​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 * D​e​s​t​i​n​a​t​i​o​n​ ​r​e​q​u​i​r​e​d
 		 */
-		destinationIsRequired: string
+		destinationRequired: string
 		/**
 		 * n​e​t​w​o​r​k​ ​f​e​e
 		 */
@@ -7238,6 +7238,18 @@ type RootTranslation = {
 		 * E​n​c​r​y​p​t​e​d​ ​m​e​s​s​a​g​e​.​ ​W​a​i​t​i​n​g​ ​f​o​r​ ​p​a​y​m​e​n​t​ ​c​o​n​f​i​r​m​a​t​i​o​n​.
 		 */
 		pendingDecryptionMessage: string
+		/**
+		 * S​e​n​d​ ​t​o
+		 */
+		destinationScreenTitle: string
+		/**
+		 * O​r​ ​n​u​m​b​e​r
+		 */
+		orNumber: string
+		/**
+		 * o​r​ ​s​a​v​e​d
+		 */
+		orSaved: string
 	}
 	SettingsScreen: {
 		/**
@@ -8835,6 +8847,10 @@ type RootTranslation = {
 		 * A​l​l​ ​a​c​c​o​u​n​t​s
 		 */
 		allAccounts: string
+		/**
+		 * P​a​s​t​e
+		 */
+		paste: string
 	}
 	errors: {
 		/**
@@ -16444,9 +16460,9 @@ export type TranslationFunctions = {
 		 */
 		destination: () => LocalizedString
 		/**
-		 * Destination is required
+		 * Destination required
 		 */
-		destinationIsRequired: () => LocalizedString
+		destinationRequired: () => LocalizedString
 		/**
 		 * network fee
 		 */
@@ -16557,6 +16573,18 @@ export type TranslationFunctions = {
 		 * Encrypted message. Waiting for payment confirmation.
 		 */
 		pendingDecryptionMessage: () => LocalizedString
+		/**
+		 * Send to
+		 */
+		destinationScreenTitle: () => LocalizedString
+		/**
+		 * Or number
+		 */
+		orNumber: () => LocalizedString
+		/**
+		 * or saved
+		 */
+		orSaved: () => LocalizedString
 	}
 	SettingsScreen: {
 		/**
@@ -18127,6 +18155,10 @@ export type TranslationFunctions = {
 		 * All accounts
 		 */
 		allAccounts: () => LocalizedString
+		/**
+		 * Paste
+		 */
+		paste: () => LocalizedString
 	}
 	errors: {
 		/**

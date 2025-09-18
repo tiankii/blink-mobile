@@ -42,6 +42,7 @@ import {
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
+import { PhoneInput } from "@app/components/phone-input"
 
 gql`
   query sendBitcoinDestination {
@@ -413,6 +414,12 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     }
   }, [route.params?.username, handleChangeText])
 
+  useEffect(() => {
+    if (route.params?.scanPressed) {
+      handleScanPress()
+    }
+  }, [route.params?.scanPressed])
+
   const handlePaste = async () => {
     setSelectedId("")
     try {
@@ -451,6 +458,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const handleScanPress = () => {
     setSelectedId("")
+    navigation.setParams({ scanPressed: undefined })
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
       payload: { unparsedDestination: "" },
@@ -487,13 +495,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         dispatchDestinationStateAction={dispatchDestinationStateAction}
       />
       <View style={styles.sendBitcoinDestinationContainer}>
-        <Text
-          {...testProps(LL.SendBitcoinScreen.destination())}
-          style={styles.fieldTitleText}
-        >
-          {LL.SendBitcoinScreen.destination()}
-        </Text>
-
         <View style={[styles.fieldBackground, inputContainerStyle]}>
           <SearchBar
             {...testProps(LL.SendBitcoinScreen.placeholder())}
@@ -519,16 +520,35 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               <Icon name="close" size={24} onPress={reset} color={styles.icon.color} />
             }
           />
-          <TouchableOpacity onPress={handleScanPress}>
-            <View style={styles.iconContainer}>
-              <ScanIcon fill={colors.primary} />
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity onPress={handlePaste}>
             <View style={styles.iconContainer}>
-              <Icon name="clipboard-outline" color={colors.primary} size={22} />
+              <Text color={colors.primary} type="p2">
+                {LL.common.paste()}
+              </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        <View style={styles.textSeparator}>
+          <View style={styles.line}></View>
+          <Text style={styles.textInformation} type="p2">
+            {LL.SendBitcoinScreen.orNumber()}
+          </Text>
+        </View>
+        <PhoneInput
+          rightIcon={
+            <Text color={colors.primary} type="p2">
+              {LL.common.paste()}
+            </Text>
+          }
+          onChange={(e) => {
+            console.log(e)
+          }}
+        />
+        <View style={styles.textSeparator}>
+          <View style={styles.line}></View>
+          <Text style={styles.textInformation} type="p2">
+            {LL.SendBitcoinScreen.orSaved()}
+          </Text>
         </View>
         <DestinationInformation destinationState={destinationState} />
         <FlatList
@@ -565,7 +585,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             title={
               destinationState.unparsedDestination
                 ? LL.common.next()
-                : LL.SendBitcoinScreen.destinationIsRequired()
+                : LL.SendBitcoinScreen.destinationRequired()
             }
             loading={destinationState.destinationState === DestinationState.Validating}
             disabled={
@@ -627,9 +647,9 @@ const usestyles = makeStyles(({ colors }) => ({
     marginBottom: 5,
   },
   iconContainer: {
-    width: 50,
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 12,
   },
   searchBarContainer: {
     flex: 1,
@@ -693,4 +713,23 @@ const usestyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey3,
   },
   itemText: { color: colors.black },
+  textSeparator: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 40,
+  },
+  line: {
+    backgroundColor: colors.grey4,
+    height: 2,
+    borderRadius: 10,
+    flex: 1,
+    position: "relative",
+  },
+  textInformation: {
+    position: "absolute",
+    backgroundColor: colors.white,
+    paddingHorizontal: 20,
+    color: colors.grey1,
+  },
 }))
