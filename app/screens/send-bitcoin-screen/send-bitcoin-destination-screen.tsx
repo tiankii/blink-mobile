@@ -129,6 +129,8 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     sendBitcoinDestinationReducer,
     defaultDestinationState,
   )
+  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>("")
+
   const [goToNextScreenWhenValid, setGoToNextScreenWhenValid] = React.useState(false)
 
   const { loading, data } = useSendBitcoinDestinationQuery({
@@ -447,6 +449,34 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     }
   }
 
+  const handlePastePhone = async () => {
+    setRawPhoneNumber("")
+    try {
+      const clipboard = await Clipboard.getString()
+      updateMatchingContacts(clipboard)
+      dispatchDestinationStateAction({
+        type: SendBitcoinActions.SetUnparsedPastedDestination,
+        payload: {
+          unparsedDestination: clipboard,
+        },
+      })
+      if (willInitiateValidation()) {
+        waitAndValidateDestination(clipboard)
+        setRawPhoneNumber(clipboard)
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        crashlytics().recordError(err)
+      }
+      toastShow({
+        type: "error",
+        message: (translations) =>
+          translations.SendBitcoinDestinationScreen.clipboardError(),
+        LL,
+      })
+    }
+  }
+
   const handleContactPress = (item: UserContact) => {
     handleSelection(item.id)
     dispatchDestinationStateAction({
@@ -536,13 +566,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         </View>
         <PhoneInput
           rightIcon={
-            <Text color={colors.primary} type="p2">
-              {LL.common.paste()}
-            </Text>
+            <TouchableOpacity onPress={handlePastePhone}>
+              <Text color={colors.primary} type="p2">
+                {LL.common.paste()}
+              </Text>
+            </TouchableOpacity>
           }
           onChange={(e) => {
             console.log(e)
           }}
+          defaultRawPhoneNumber={rawPhoneNumber}
         />
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>

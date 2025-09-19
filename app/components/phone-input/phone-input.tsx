@@ -30,9 +30,14 @@ export type PhoneInputInfo = {
 export type PhoneInputProps = {
   rightIcon?: IconNode
   onChange?: (info: PhoneInputInfo | null) => void
+  defaultRawPhoneNumber?: string
 }
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({ rightIcon, onChange }) => {
+export const PhoneInput: React.FC<PhoneInputProps> = ({
+  rightIcon,
+  onChange,
+  defaultRawPhoneNumber,
+}) => {
   const {
     theme: { mode: themeMode },
   } = useTheme()
@@ -100,6 +105,16 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ rightIcon, onChange }) =
       onChange(phoneInputInfo)
     }
   }, [phoneInputInfo, onChange])
+
+  useEffect(() => {
+    if (defaultRawPhoneNumber) {
+      const parsedPhoneNumber = parsePhoneNumber(defaultRawPhoneNumber, countryCode)
+      if (parsedPhoneNumber?.country) {
+        setCountryCode(parsedPhoneNumber.country)
+        setRawPhoneNumber(defaultRawPhoneNumber)
+      }
+    }
+  }, [defaultRawPhoneNumber])
 
   return (
     <View style={styles.inputContainer}>
