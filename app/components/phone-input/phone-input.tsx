@@ -16,6 +16,7 @@ import { testProps } from "@app/utils/testProps"
 import useDeviceLocation from "@app/hooks/use-device-location"
 import { useSupportedCountriesQuery } from "@app/graphql/generated"
 import { IconNode } from "@rn-vui/base"
+import Icon from "react-native-vector-icons/Ionicons"
 
 const DEFAULT_COUNTRY_CODE = "SV"
 const PLACEHOLDER_PHONE_NUMBER = "123-456-7890"
@@ -31,21 +32,31 @@ export type PhoneInputProps = {
   rightIcon?: IconNode
   onChange?: (info: PhoneInputInfo | null) => void
   defaultRawPhoneNumber?: string
+  isDisabled?: boolean
+  onFocus?: () => void
+  onBlur?: () => void
+  onResetInput?: () => void
 }
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({
   rightIcon,
   onChange,
   defaultRawPhoneNumber,
+  isDisabled,
+  onFocus,
+  onBlur,
+  onResetInput,
 }) => {
   const {
-    theme: { mode: themeMode },
+    theme: { mode: themeMode, colors },
   } = useTheme()
   const styles = useStyles()
 
   const { data } = useSupportedCountriesQuery()
 
-  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>("")
+  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>(
+    defaultRawPhoneNumber || "",
+  )
   const [countryCode, setCountryCode] = useState<PhoneNumberCountryCode | undefined>()
   const phoneInputRef = useRef<TextInput>(null)
   const { countryCode: detectedCountryCode } = useDeviceLocation()
@@ -116,6 +127,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   }, [defaultRawPhoneNumber])
 
+  const resetPhoneInput = () => {
+    if (isDisabled) return
+    setRawPhoneNumber("")
+    phoneInputRef.current?.focus()
+    if (onResetInput) onResetInput()
+  }
+
   return (
     <View style={styles.inputContainer}>
       <CountryPicker
@@ -127,7 +145,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         renderFlagButton={({ countryCode, onOpen }) => {
           return (
             countryCode && (
-              <TouchableOpacity style={styles.countryPickerButtonStyle} onPress={onOpen}>
+              <TouchableOpacity
+                style={[
+                  styles.countryPickerButtonStyle,
+                  isDisabled && styles.disabledInput,
+                ]}
+                onPress={onOpen}
+              >
                 <Flag countryCode={countryCode} flagSize={24} />
                 <Text type="p1">
                   +{getCountryCallingCode(countryCode as PhoneNumberCountryCode)}
@@ -148,14 +172,31 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         ref={phoneInputRef}
         placeholder={PLACEHOLDER_PHONE_NUMBER}
         containerStyle={styles.inputComponentContainerStyle}
-        inputContainerStyle={styles.inputContainerStyle}
+        inputContainerStyle={[
+          styles.inputContainerStyle,
+          isDisabled && styles.disabledInput,
+          phoneInputRef.current?.isFocused() && styles.borderFocusedInput,
+        ]}
         renderErrorMessage={false}
         textContentType="telephoneNumber"
         keyboardType="phone-pad"
         value={phoneInputInfo?.formattedPhoneNumber}
         onChangeText={setPhoneNumber}
         autoFocus={false}
-        rightIcon={rightIcon}
+        rightIcon={
+          phoneInputInfo?.formattedPhoneNumber ? (
+            <Icon
+              name="close"
+              size={24}
+              onPress={resetPhoneInput}
+              color={colors.primary}
+            />
+          ) : (
+            rightIcon
+          )
+        }
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </View>
   )
@@ -183,10 +224,15 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   inputContainerStyle: {
     flex: 1,
-    borderWidth: 0,
     borderBottomWidth: 0,
     paddingHorizontal: 10,
     backgroundColor: colors.grey5,
     borderRadius: 8,
+  },
+  disabledInput: { opacity: 0.6 },
+  borderFocusedInput: {
+    borderColor: colors._green,
+    borderWidth: 1,
+    borderBottomWidth: 1,
   },
 }))

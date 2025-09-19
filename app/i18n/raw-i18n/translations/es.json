@@ -2223,7 +2223,7 @@
         "destinationRequired": "Destino requerido",
         "fee": "tarifa de red",
         "feeCalculationUnsuccessful": "Error al calcular, inténtelo de nuevo ⚠️",
-        "placeholder": "Nombre de usuario o factura",
+        "placeholder": "Factura o Dirección",
         "invalidUsername": "Nombre de usuario no válido",
         "noAmount": "Esta factura no tiene un monto, por lo que debe especificar manualmente cuánto dinero desea enviar",
         "notConfirmed": "El pago ha sido enviado.\npero aún no está confirmado\n\nPuedes comprobar el estado\ndel pago en Transacciones",
@@ -2249,8 +2249,8 @@
         "copiedSecretMessage": "Secret message copied successfully",
         "pendingDecryptionMessage": "Encrypted message. Waiting for payment confirmation.",
         "destinationScreenTitle": "Enviar a",
-        "orNumber": "O número",
-        "orSaved": "o guardado"
+        "orNumber": "O Número",
+        "orSaved": "O Guardado"
     },
     "SettingsScreen": {
         "staticQr": "Código QR estático imprimible",

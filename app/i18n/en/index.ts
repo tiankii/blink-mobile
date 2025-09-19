@@ -2287,7 +2287,7 @@ const en: BaseTranslation = {
     destinationRequired: "Destination required",
     fee: "network fee",
     feeCalculationUnsuccessful: "Calculation unsuccessful ⚠️",
-    placeholder: "Username, invoice, or address",
+    placeholder: "Invoice or Address",
     invalidUsername: "Invalid username",
     noAmount:
       "This invoice doesn't have an amount, so you need to manually specify how much money you want to send",
@@ -2318,8 +2318,8 @@ const en: BaseTranslation = {
     copiedSecretMessage: "Secret message copied successfully",
     pendingDecryptionMessage: "Encrypted message. Waiting for payment confirmation.",
     destinationScreenTitle: "Send to",
-    orNumber: "Or number",
-    orSaved: "or saved",
+    orNumber: "Or Number",
+    orSaved: "Or Saved",
   },
   SettingsScreen: {
     staticQr: "Printable Static QR Code",

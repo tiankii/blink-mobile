@@ -4,7 +4,6 @@ import { FlatList } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
 
 import { gql } from "@apollo/client"
-import ScanIcon from "@app/assets/icons/scan.svg"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import { LNURL_DOMAINS } from "@app/config"
@@ -42,7 +41,7 @@ import {
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import { PhoneInput } from "@app/components/phone-input"
+import { PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
 
 gql`
   query sendBitcoinDestination {
@@ -129,7 +128,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     sendBitcoinDestinationReducer,
     defaultDestinationState,
   )
-  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>("")
+
+  const [activeInput, setActiveInput] = useState<"search" | "phone" | null>(null)
+  const [defaultRawPhoneNumber, setDefaultRawPhoneNumber] = useState<string>("")
+  const [defaultPhoneInputInfo, setDefaultPhoneInputInfo] = useState<PhoneInputInfo>()
 
   const [goToNextScreenWhenValid, setGoToNextScreenWhenValid] = React.useState(false)
 
@@ -181,6 +183,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const reset = useCallback(() => {
+    dispatchDestinationStateAction({
+      type: "set-unparsed-destination",
+      payload: { unparsedDestination: "" },
+    })
+    setGoToNextScreenWhenValid(false)
+    setSelectedId("")
+    setMatchingContacts(allContacts)
+  }, [allContacts])
+
+  const resetPhoneInput = useCallback(() => {
     dispatchDestinationStateAction({
       type: "set-unparsed-destination",
       payload: { unparsedDestination: "" },
@@ -450,20 +462,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const handlePastePhone = async () => {
-    setRawPhoneNumber("")
+    setDefaultRawPhoneNumber("")
     try {
       const clipboard = await Clipboard.getString()
       updateMatchingContacts(clipboard)
-      dispatchDestinationStateAction({
-        type: SendBitcoinActions.SetUnparsedPastedDestination,
-        payload: {
-          unparsedDestination: clipboard,
-        },
-      })
-      if (willInitiateValidation()) {
-        waitAndValidateDestination(clipboard)
-        setRawPhoneNumber(clipboard)
-      }
+      // dispatchDestinationStateAction({
+      //   type: SendBitcoinActions.SetUnparsedPastedDestination,
+      //   payload: {
+      //     unparsedDestination: clipboard,
+      //   },
+      // })
+      // if (willInitiateValidation()) {
+      //   waitAndValidateDestination(clipboard)
+      setDefaultRawPhoneNumber(clipboard)
+      //}
     } catch (err) {
       if (err instanceof Error) {
         crashlytics().recordError(err)
@@ -525,11 +537,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         dispatchDestinationStateAction={dispatchDestinationStateAction}
       />
       <View style={styles.sendBitcoinDestinationContainer}>
-        <View style={[styles.fieldBackground, inputContainerStyle]}>
+        <View
+          style={[
+            styles.fieldBackground,
+            inputContainerStyle,
+            activeInput === "phone" && styles.disabledInput,
+            activeInput === "search" && styles.borderFocusedInput,
+          ]}
+        >
           <SearchBar
             {...testProps(LL.SendBitcoinScreen.placeholder())}
             placeholder={LL.SendBitcoinScreen.placeholder()}
             value={destinationState.unparsedDestination}
+            onFocus={() => setActiveInput("search")}
+            onBlur={() => setActiveInput(null)}
             onChangeText={(text) => {
               handleChangeText(text)
               updateMatchingContacts(text)
@@ -540,33 +561,49 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             }
             platform="default"
             showLoading={false}
-            containerStyle={styles.searchBarContainer}
-            inputContainerStyle={styles.searchBarInputContainerStyle}
+            containerStyle={[styles.searchBarContainer]}
+            inputContainerStyle={[styles.searchBarInputContainerStyle]}
             inputStyle={styles.searchBarText}
             searchIcon={<></>}
             autoCapitalize="none"
             autoCorrect={false}
             clearIcon={
-              <Icon name="close" size={24} onPress={reset} color={styles.icon.color} />
+              destinationState.unparsedDestination ? (
+                <Icon name="close" size={24} onPress={reset} color={styles.icon.color} />
+              ) : (
+                <></>
+              )
             }
           />
-          <TouchableOpacity onPress={handlePaste}>
-            <View style={styles.iconContainer}>
-              <Text color={colors.primary} type="p2">
-                {LL.common.paste()}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          {!destinationState.unparsedDestination ? (
+            <TouchableOpacity onPress={handlePaste} disabled={activeInput === "phone"}>
+              <View style={styles.iconContainer}>
+                <Text color={colors.primary} type="p2">
+                  {LL.common.paste()}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
         </View>
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>
-          <Text style={styles.textInformation} type="p2">
+          <Text
+            style={styles.textInformation}
+            type="p2"
+            ellipsizeMode="middle"
+            numberOfLines={1}
+          >
             {LL.SendBitcoinScreen.orNumber()}
           </Text>
         </View>
         <PhoneInput
           rightIcon={
-            <TouchableOpacity onPress={handlePastePhone}>
+            <TouchableOpacity
+              onPress={handlePastePhone}
+              disabled={activeInput === "search"}
+            >
               <Text color={colors.primary} type="p2">
                 {LL.common.paste()}
               </Text>
@@ -574,8 +611,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           }
           onChange={(e) => {
             console.log(e)
+
+            if (!e?.rawPhoneNumber) return
+
+            if (e.rawPhoneNumber !== defaultPhoneInputInfo?.rawPhoneNumber) {
+              updateMatchingContacts(e.rawPhoneNumber)
+            }
+
+            setDefaultPhoneInputInfo(e as PhoneInputInfo)
           }}
-          defaultRawPhoneNumber={rawPhoneNumber}
+          defaultRawPhoneNumber={defaultRawPhoneNumber}
+          isDisabled={activeInput === "search"}
+          onFocus={() => setActiveInput("phone")}
+          onBlur={() => setActiveInput(null)}
+          onResetInput={resetPhoneInput}
         />
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>
@@ -642,15 +691,12 @@ const usestyles = makeStyles(({ colors }) => ({
   },
   fieldBackground: {
     flexDirection: "row",
-    borderStyle: "solid",
     overflow: "hidden",
     backgroundColor: colors.grey5,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     height: 60,
-    borderWidth: 1,
-    borderColor: "transparent",
   },
   enteringInputContainer: {},
   errorInputContainer: {
@@ -686,13 +732,13 @@ const usestyles = makeStyles(({ colors }) => ({
   },
   searchBarContainer: {
     flex: 1,
-    backgroundColor: colors.grey5,
-    borderBottomColor: colors.grey5,
-    borderTopColor: colors.grey5,
+    backgroundColor: colors.transparent,
+    borderBottomColor: colors.transparent,
+    borderTopColor: colors.transparent,
     padding: 0,
   },
   searchBarInputContainerStyle: {
-    backgroundColor: colors.grey5,
+    backgroundColor: colors.transparent,
   },
   searchBarText: {
     color: colors.black,
@@ -729,6 +775,7 @@ const usestyles = makeStyles(({ colors }) => ({
   flatList: {
     flex: 1,
     marginTop: 20,
+    marginHorizontal: -30,
   },
   flatListContainer: {
     margin: 0,
@@ -738,8 +785,9 @@ const usestyles = makeStyles(({ colors }) => ({
     marginBottom: 16,
   },
   itemContainer: {
-    borderRadius: 8,
-    backgroundColor: colors.grey5,
+    borderColor: colors.grey4,
+    backgroundColor: colors.white,
+    borderBottomWidth: 2,
   },
   selectedContainer: {
     borderRadius: 8,
@@ -764,5 +812,14 @@ const usestyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.white,
     paddingHorizontal: 20,
     color: colors.grey1,
+    display: "flex",
+    minWidth: 120,
+    textAlign: "center",
+  },
+  disabledInput: { opacity: 0.6 },
+  borderFocusedInput: {
+    borderColor: colors._green,
+    borderWidth: 1,
+    borderBottomWidth: 1,
   },
 }))

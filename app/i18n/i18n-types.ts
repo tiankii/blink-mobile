@@ -7137,7 +7137,7 @@ type RootTranslation = {
 		 */
 		feeCalculationUnsuccessful: string
 		/**
-		 * U​s​e​r​n​a​m​e​,​ ​i​n​v​o​i​c​e​,​ ​o​r​ ​a​d​d​r​e​s​s
+		 * I​n​v​o​i​c​e​ ​o​r​ ​A​d​d​r​e​s​s
 		 */
 		placeholder: string
 		/**
@@ -7243,11 +7243,11 @@ type RootTranslation = {
 		 */
 		destinationScreenTitle: string
 		/**
-		 * O​r​ ​n​u​m​b​e​r
+		 * O​r​ ​N​u​m​b​e​r
 		 */
 		orNumber: string
 		/**
-		 * o​r​ ​s​a​v​e​d
+		 * O​r​ ​S​a​v​e​d
 		 */
 		orSaved: string
 	}
@@ -16472,7 +16472,7 @@ export type TranslationFunctions = {
 		 */
 		feeCalculationUnsuccessful: () => LocalizedString
 		/**
-		 * Username, invoice, or address
+		 * Invoice or Address
 		 */
 		placeholder: () => LocalizedString
 		/**
@@ -16578,11 +16578,11 @@ export type TranslationFunctions = {
 		 */
 		destinationScreenTitle: () => LocalizedString
 		/**
-		 * Or number
+		 * Or Number
 		 */
 		orNumber: () => LocalizedString
 		/**
-		 * or saved
+		 * Or Saved
 		 */
 		orSaved: () => LocalizedString
 	}
