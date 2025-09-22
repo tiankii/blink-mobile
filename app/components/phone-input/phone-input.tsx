@@ -29,40 +29,35 @@ export type PhoneInputInfo = {
 }
 
 export type PhoneInputProps = {
+  value: string
+  onChangeText: (info: string) => void
+  onChangeInfo?: (info: PhoneInputInfo | null) => void
   rightIcon?: IconNode
-  onChange?: (info: PhoneInputInfo | null) => void
-  defaultRawPhoneNumber?: string
   isDisabled?: boolean
   onFocus?: () => void
   onBlur?: () => void
-  onResetInput?: () => void
   onSubmitEditing?: () => void
-  registerReset?: (resetFn: () => void) => void
   inputContainerStyle?: StyleProp<ViewStyle>
 }
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({
+  value,
+  onChangeText,
+  onChangeInfo,
   rightIcon,
-  onChange,
-  defaultRawPhoneNumber,
   isDisabled,
   onFocus,
   onBlur,
-  onResetInput,
   onSubmitEditing,
-  registerReset,
   inputContainerStyle,
 }) => {
   const {
-    theme: { mode: themeMode, colors },
+    theme: { mode: themeMode },
   } = useTheme()
   const styles = useStyles()
 
   const { data } = useSupportedCountriesQuery()
 
-  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>(
-    defaultRawPhoneNumber || "",
-  )
   const [countryCode, setCountryCode] = useState<PhoneNumberCountryCode | undefined>()
   const phoneInputRef = useRef<TextInput>(null)
   const { countryCode: detectedCountryCode } = useDeviceLocation()
@@ -102,7 +97,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     if (parsedPhoneNumber?.country) {
       setCountryCode(parsedPhoneNumber.country)
     }
-    setRawPhoneNumber(number)
+    onChangeText(number)
   }
 
   const phoneInputInfo = useMemo(() => {
@@ -110,39 +105,18 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
     const info = {
       countryCode: countryCode as CountryCode,
-      formattedPhoneNumber: new AsYouType(countryCode).input(rawPhoneNumber),
+      formattedPhoneNumber: new AsYouType(countryCode).input(value),
       countryCallingCode: getCountryCallingCode(countryCode),
-      rawPhoneNumber,
+      rawPhoneNumber: value,
     }
     return info
-  }, [countryCode, rawPhoneNumber])
+  }, [countryCode, value])
 
   useEffect(() => {
-    if (onChange) {
-      onChange(phoneInputInfo)
+    if (onChangeInfo) {
+      onChangeInfo(phoneInputInfo)
     }
-  }, [phoneInputInfo, onChange])
-
-  useEffect(() => {
-    if (defaultRawPhoneNumber) {
-      const parsedPhoneNumber = parsePhoneNumber(defaultRawPhoneNumber, countryCode)
-      if (parsedPhoneNumber?.country) {
-        setCountryCode(parsedPhoneNumber.country)
-        setRawPhoneNumber(defaultRawPhoneNumber)
-      }
-    }
-  }, [defaultRawPhoneNumber])
-
-  const resetPhoneInput = (keepFocus?: boolean) => {
-    if (isDisabled) return
-    setRawPhoneNumber("")
-    if (keepFocus) phoneInputRef.current?.focus()
-    if (onResetInput) onResetInput()
-  }
-
-  useEffect(() => {
-    if (registerReset) registerReset(resetPhoneInput)
-  }, [registerReset, resetPhoneInput])
+  }, [phoneInputInfo, onChangeInfo])
 
   return (
     <View style={styles.inputContainer}>
@@ -190,21 +164,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         renderErrorMessage={false}
         textContentType="telephoneNumber"
         keyboardType="phone-pad"
-        value={phoneInputInfo?.rawPhoneNumber}
+        value={value}
         onChangeText={setPhoneNumber}
         autoFocus={false}
-        rightIcon={
-          phoneInputInfo?.rawPhoneNumber ? (
-            <Icon
-              name="close"
-              size={24}
-              onPress={() => resetPhoneInput(true)}
-              color={colors.primary}
-            />
-          ) : (
-            rightIcon
-          )
-        }
+        rightIcon={rightIcon}
         onFocus={onFocus}
         onBlur={onBlur}
         onSubmitEditing={onSubmitEditing}
