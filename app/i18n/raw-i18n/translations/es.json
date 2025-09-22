@@ -2249,7 +2249,7 @@
         "copiedSecretMessage": "Secret message copied successfully",
         "pendingDecryptionMessage": "Encrypted message. Waiting for payment confirmation.",
         "destinationScreenTitle": "Enviar a",
-        "orNumber": "O Número",
+        "orBySMS": "O por SMS",
         "orSaved": "O Guardado"
     },
     "SettingsScreen": {

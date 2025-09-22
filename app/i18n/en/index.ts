@@ -2318,7 +2318,7 @@ const en: BaseTranslation = {
     copiedSecretMessage: "Secret message copied successfully",
     pendingDecryptionMessage: "Encrypted message. Waiting for payment confirmation.",
     destinationScreenTitle: "Send to",
-    orNumber: "Or Number",
+    orBySMS: "Or by SMS",
     orSaved: "Or Saved",
   },
   SettingsScreen: {

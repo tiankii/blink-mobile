@@ -7243,9 +7243,9 @@ type RootTranslation = {
 		 */
 		destinationScreenTitle: string
 		/**
-		 * O​r​ ​N​u​m​b​e​r
+		 * O​r​ ​b​y​ ​S​M​S
 		 */
-		orNumber: string
+		orBySMS: string
 		/**
 		 * O​r​ ​S​a​v​e​d
 		 */
@@ -16578,9 +16578,9 @@ export type TranslationFunctions = {
 		 */
 		destinationScreenTitle: () => LocalizedString
 		/**
-		 * Or Number
+		 * Or by SMS
 		 */
-		orNumber: () => LocalizedString
+		orBySMS: () => LocalizedString
 		/**
 		 * Or Saved
 		 */

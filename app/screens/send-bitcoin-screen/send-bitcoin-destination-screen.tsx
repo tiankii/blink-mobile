@@ -42,6 +42,7 @@ import {
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
 import { PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
   query sendBitcoinDestination {
@@ -232,11 +233,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   ) {
     ListEmptyContent = <></>
   } else if (allContacts.length > 0) {
-    ListEmptyContent = (
-      <View style={styles.emptyListNoMatching}>
-        <Text style={styles.emptyListTitle}>{LL.PeopleScreen.noMatchingContacts()}</Text>
-      </View>
-    )
+    ListEmptyContent = <></>
   } else {
     ListEmptyContent = (
       <View style={styles.emptyListNoContacts}>
@@ -595,7 +592,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             ellipsizeMode="middle"
             numberOfLines={1}
           >
-            {LL.SendBitcoinScreen.orNumber()}
+            {LL.SendBitcoinScreen.orBySMS()}
           </Text>
         </View>
         <PhoneInput
@@ -626,12 +623,14 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           onBlur={() => setActiveInput(null)}
           onResetInput={resetPhoneInput}
         />
-        <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
-          <View style={styles.line}></View>
-          <Text style={styles.textInformation} type="p2">
-            {LL.SendBitcoinScreen.orSaved()}
-          </Text>
-        </View>
+        {matchingContacts.length > 0 && (
+          <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
+            <View style={styles.line}></View>
+            <Text style={styles.textInformation} type="p2">
+              {LL.SendBitcoinScreen.orSaved()}
+            </Text>
+          </View>
+        )}
         <DestinationInformation destinationState={destinationState} />
         <FlatList
           style={styles.flatList}
@@ -656,7 +655,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
                 ]}
                 onPress={() => handleContactPress(item)}
               >
-                <Icon name="person-outline" size={24} color={colors.primary} />
+                <GaloyIcon name={"user"} size={24} />
                 <ListItem.Content>
                   <ListItem.Title style={styles.itemText}>{displayHandle}</ListItem.Title>
                 </ListItem.Content>
@@ -758,10 +757,6 @@ const usestyles = makeStyles(({ colors }) => ({
   emptyListNoContacts: {
     marginHorizontal: 12,
     marginTop: 32,
-  },
-  emptyListNoMatching: {
-    marginHorizontal: 26,
-    marginTop: 8,
   },
   emptyListText: {
     fontSize: 18,
