@@ -479,12 +479,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const handleContactPress = (item: UserContact) => {
+    const handle = item?.handle?.trim() ?? ""
+    const displayHandle =
+      handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
+
     handleSelection(item.id)
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
-      payload: { unparsedDestination: item.handle },
+      payload: { unparsedDestination: displayHandle },
     })
-    initiateGoToNextScreen(item.handle)
+    initiateGoToNextScreen(displayHandle)
   }
 
   const handleScanPress = () => {
@@ -753,6 +757,7 @@ const usestyles = makeStyles(({ colors }) => ({
   },
   searchBarInputContainerStyle: {
     backgroundColor: colors.transparent,
+    marginLeft: -10,
   },
   searchBarText: {
     color: colors.black,
