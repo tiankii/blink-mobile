@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react"
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react"
 import { ActivityIndicator, TouchableOpacity, View } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
@@ -82,6 +89,7 @@ export const defaultDestinationState: SendBitcoinDestinationState = {
 type Props = {
   route: RouteProp<RootStackParamList, "sendBitcoinDestination">
 }
+type TInputType = "search" | "phone" | null
 
 const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
   let contactPrettyNameMatchesSearchWord: boolean
@@ -130,9 +138,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     defaultDestinationState,
   )
 
-  const [activeInput, setActiveInput] = useState<"search" | "phone" | null>(null)
+  const [activeInput, setActiveInput] = useState<TInputType>(null)
   const [defaultRawPhoneNumber, setDefaultRawPhoneNumber] = useState<string>("")
   const [defaultPhoneInputInfo, setDefaultPhoneInputInfo] = useState<PhoneInputInfo>()
+  const resetPhoneNumberRef = useRef<() => void>(() => {})
 
   const [goToNextScreenWhenValid, setGoToNextScreenWhenValid] = React.useState(false)
 
@@ -184,16 +193,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const reset = useCallback(() => {
-    dispatchDestinationStateAction({
-      type: "set-unparsed-destination",
-      payload: { unparsedDestination: "" },
-    })
-    setGoToNextScreenWhenValid(false)
-    setSelectedId("")
-    setMatchingContacts(allContacts)
-  }, [allContacts])
-
-  const resetPhoneInput = useCallback(() => {
     dispatchDestinationStateAction({
       type: "set-unparsed-destination",
       payload: { unparsedDestination: "" },
@@ -432,7 +431,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }, [route.params?.scanPressed])
 
   const handlePaste = async () => {
-    setSelectedId("")
+    onFocusedInput("search")
     try {
       const clipboard = await Clipboard.getString()
       updateMatchingContacts(clipboard)
@@ -459,20 +458,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const handlePastePhone = async () => {
-    setDefaultRawPhoneNumber("")
+    onFocusedInput("phone")
     try {
       const clipboard = await Clipboard.getString()
       updateMatchingContacts(clipboard)
-      // dispatchDestinationStateAction({
-      //   type: SendBitcoinActions.SetUnparsedPastedDestination,
-      //   payload: {
-      //     unparsedDestination: clipboard,
-      //   },
-      // })
-      // if (willInitiateValidation()) {
-      //   waitAndValidateDestination(clipboard)
-      setDefaultRawPhoneNumber(clipboard)
-      //}
+      dispatchDestinationStateAction({
+        type: SendBitcoinActions.SetUnparsedPastedDestination,
+        payload: {
+          unparsedDestination: clipboard,
+        },
+      })
+      if (willInitiateValidation()) {
+        waitAndValidateDestination(clipboard)
+        setDefaultRawPhoneNumber(clipboard)
+      }
     } catch (err) {
       if (err instanceof Error) {
         crashlytics().recordError(err)
@@ -503,6 +502,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       payload: { unparsedDestination: "" },
     })
     navigation.navigate("scanningQRCode")
+  }
+
+  const onFocusedInput = (inputType: TInputType) => {
+    if (activeInput === inputType) return
+    setActiveInput(inputType)
+    reset()
+    resetPhoneNumberRef.current()
   }
 
   const inputContainerStyle = React.useMemo(() => {
@@ -537,17 +543,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <View
           style={[
             styles.fieldBackground,
-            inputContainerStyle,
+            activeInput === "search" && inputContainerStyle,
             activeInput === "phone" && styles.disabledInput,
-            activeInput === "search" && styles.borderFocusedInput,
           ]}
         >
           <SearchBar
             {...testProps(LL.SendBitcoinScreen.placeholder())}
             placeholder={LL.SendBitcoinScreen.placeholder()}
-            value={destinationState.unparsedDestination}
-            onFocus={() => setActiveInput("search")}
-            onBlur={() => setActiveInput(null)}
+            value={activeInput === "search" ? destinationState.unparsedDestination : ""}
+            onFocus={() => onFocusedInput("search")}
+            // onBlur={() => setActiveInput(null)}
             onChangeText={(text) => {
               handleChangeText(text)
               updateMatchingContacts(text)
@@ -596,6 +601,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           </Text>
         </View>
         <PhoneInput
+          key={1}
           rightIcon={
             <TouchableOpacity
               onPress={handlePastePhone}
@@ -608,20 +614,27 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           }
           onChange={(e) => {
             console.log(e)
+            console.log(!e?.rawPhoneNumber)
 
-            if (!e?.rawPhoneNumber) return
-
+            if (!e?.rawPhoneNumber || e?.rawPhoneNumber === defaultRawPhoneNumber) return
             if (e.rawPhoneNumber !== defaultPhoneInputInfo?.rawPhoneNumber) {
+              handleChangeText(e.rawPhoneNumber)
               updateMatchingContacts(e.rawPhoneNumber)
             }
-
             setDefaultPhoneInputInfo(e as PhoneInputInfo)
           }}
           defaultRawPhoneNumber={defaultRawPhoneNumber}
           isDisabled={activeInput === "search"}
-          onFocus={() => setActiveInput("phone")}
-          onBlur={() => setActiveInput(null)}
-          onResetInput={resetPhoneInput}
+          onFocus={() => onFocusedInput("phone")}
+          onResetInput={reset}
+          onSubmitEditing={() =>
+            willInitiateValidation() &&
+            waitAndValidateDestination(destinationState.unparsedDestination)
+          }
+          registerReset={(fn) => {
+            resetPhoneNumberRef.current = fn
+          }}
+          inputContainerStyle={activeInput === "phone" && inputContainerStyle}
         />
         {matchingContacts.length > 0 && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
@@ -696,6 +709,8 @@ const usestyles = makeStyles(({ colors }) => ({
     overflow: "hidden",
     backgroundColor: colors.grey5,
     borderRadius: 10,
+    borderColor: colors.transparent,
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     height: 60,

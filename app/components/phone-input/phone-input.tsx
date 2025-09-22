@@ -4,7 +4,7 @@ import parsePhoneNumber, {
   getCountryCallingCode,
 } from "libphonenumber-js/mobile"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { View, TouchableOpacity, TextInput } from "react-native"
+import { View, TouchableOpacity, TextInput, StyleProp, ViewStyle } from "react-native"
 import CountryPicker, {
   CountryCode,
   DARK_THEME,
@@ -36,6 +36,9 @@ export type PhoneInputProps = {
   onFocus?: () => void
   onBlur?: () => void
   onResetInput?: () => void
+  onSubmitEditing?: () => void
+  registerReset?: (resetFn: () => void) => void
+  inputContainerStyle?: StyleProp<ViewStyle>
 }
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({
@@ -46,6 +49,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onFocus,
   onBlur,
   onResetInput,
+  onSubmitEditing,
+  registerReset,
+  inputContainerStyle,
 }) => {
   const {
     theme: { mode: themeMode, colors },
@@ -127,12 +133,16 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   }, [defaultRawPhoneNumber])
 
-  const resetPhoneInput = () => {
+  const resetPhoneInput = (keepFocus?: boolean) => {
     if (isDisabled) return
     setRawPhoneNumber("")
-    phoneInputRef.current?.focus()
+    if (keepFocus) phoneInputRef.current?.focus()
     if (onResetInput) onResetInput()
   }
+
+  useEffect(() => {
+    if (registerReset) registerReset(resetPhoneInput)
+  }, [registerReset, resetPhoneInput])
 
   return (
     <View style={styles.inputContainer}>
@@ -175,20 +185,20 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         inputContainerStyle={[
           styles.inputContainerStyle,
           isDisabled && styles.disabledInput,
-          phoneInputRef.current?.isFocused() && styles.borderFocusedInput,
+          inputContainerStyle && inputContainerStyle,
         ]}
         renderErrorMessage={false}
         textContentType="telephoneNumber"
         keyboardType="phone-pad"
-        value={phoneInputInfo?.formattedPhoneNumber}
+        value={phoneInputInfo?.rawPhoneNumber}
         onChangeText={setPhoneNumber}
         autoFocus={false}
         rightIcon={
-          phoneInputInfo?.formattedPhoneNumber ? (
+          phoneInputInfo?.rawPhoneNumber ? (
             <Icon
               name="close"
               size={24}
-              onPress={resetPhoneInput}
+              onPress={() => resetPhoneInput(true)}
               color={colors.primary}
             />
           ) : (
@@ -197,6 +207,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
         }
         onFocus={onFocus}
         onBlur={onBlur}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   )
@@ -224,15 +235,11 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   inputContainerStyle: {
     flex: 1,
-    borderBottomWidth: 0,
+    borderWidth: 1,
+    borderColor: colors.transparent,
     paddingHorizontal: 10,
     backgroundColor: colors.grey5,
     borderRadius: 8,
   },
   disabledInput: { opacity: 0.6 },
-  borderFocusedInput: {
-    borderColor: colors._green,
-    borderWidth: 1,
-    borderBottomWidth: 1,
-  },
 }))
