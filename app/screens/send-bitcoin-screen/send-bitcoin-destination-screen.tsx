@@ -626,7 +626,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           onBlur={() => setActiveInput(null)}
           onResetInput={resetPhoneInput}
         />
-        <View style={styles.textSeparator}>
+        <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
           <View style={styles.line}></View>
           <Text style={styles.textInformation} type="p2">
             {LL.SendBitcoinScreen.orSaved()}
@@ -648,9 +648,12 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               <ListItem
                 key={item.handle}
                 style={styles.item}
-                containerStyle={
-                  item.id === selectedId ? styles.selectedContainer : styles.itemContainer
-                }
+                containerStyle={[
+                  matchingContacts.length > 1 ? styles.itemStyleContainer : {},
+                  item.id === selectedId
+                    ? styles.selectedContainer
+                    : styles.itemContainer,
+                ]}
                 onPress={() => handleContactPress(item)}
               >
                 <Icon name="person-outline" size={24} color={colors.primary} />
@@ -774,7 +777,6 @@ const usestyles = makeStyles(({ colors }) => ({
   },
   flatList: {
     flex: 1,
-    marginTop: 20,
     marginHorizontal: -30,
   },
   flatListContainer: {
@@ -785,13 +787,17 @@ const usestyles = makeStyles(({ colors }) => ({
     marginBottom: 16,
   },
   itemContainer: {
-    borderColor: colors.grey4,
     backgroundColor: colors.white,
+  },
+  itemStyleContainer: {
+    borderColor: colors.grey4,
     borderBottomWidth: 2,
   },
   selectedContainer: {
     borderRadius: 8,
-    backgroundColor: colors.grey3,
+    backgroundColor: colors.grey6,
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   itemText: { color: colors.black },
   textSeparator: {
@@ -799,6 +805,9 @@ const usestyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 40,
+  },
+  lastInfoTextStyle: {
+    marginBottom: 30,
   },
   line: {
     backgroundColor: colors.grey4,
