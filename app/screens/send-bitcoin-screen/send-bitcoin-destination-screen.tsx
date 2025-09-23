@@ -41,7 +41,7 @@ import {
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import { PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
+import { getPhoneNumberWithoutCode, PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
@@ -452,18 +452,23 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const handlePastePhone = async () => {
     onFocusedInput("phone")
+    const code = defaultPhoneInputInfo?.countryCallingCode
+      ? `+${defaultPhoneInputInfo?.countryCallingCode}`
+      : ""
     try {
       const clipboard = await Clipboard.getString()
-      updateMatchingContacts(clipboard)
+      const phone = getPhoneNumberWithoutCode(clipboard)
+
+      setRawPhoneNumber(phone)
+
       dispatchDestinationStateAction({
         type: SendBitcoinActions.SetUnparsedPastedDestination,
         payload: {
-          unparsedDestination: clipboard,
+          unparsedDestination: `${code}${phone}`,
         },
       })
       if (willInitiateValidation()) {
-        waitAndValidateDestination(clipboard)
-        setRawPhoneNumber(clipboard)
+        waitAndValidateDestination(`${code}${phone}`)
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -624,10 +629,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           }
           onChangeText={(phoneNumber) => {
             handleChangeText(phoneNumber)
-            updateMatchingContacts(phoneNumber)
             setRawPhoneNumber(phoneNumber)
           }}
-          onChangeInfo={setDefaultPhoneInputInfo}
+          onChangeInfo={(e) => {
+            setDefaultPhoneInputInfo(e)
+          }}
           value={rawPhoneNumber}
           isDisabled={activeInput === "search"}
           onFocus={() => onFocusedInput("phone")}
@@ -636,8 +642,9 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             waitAndValidateDestination(destinationState.unparsedDestination)
           }
           inputContainerStyle={activeInput === "phone" && inputContainerStyle}
+          bgColor={colors.grey6}
         />
-        {matchingContacts.length > 0 && (
+        {matchingContacts.length > 0 && activeInput != "phone" && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
             <View style={styles.line}></View>
             <Text style={styles.textInformation} type="p2">
@@ -649,7 +656,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <FlatList
           style={styles.flatList}
           contentContainerStyle={styles.flatListContainer}
-          data={matchingContacts}
+          data={activeInput != "phone" ? matchingContacts : []}
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
           renderItem={({ item }) => {
@@ -708,7 +715,7 @@ const usestyles = makeStyles(({ colors }) => ({
   fieldBackground: {
     flexDirection: "row",
     overflow: "hidden",
-    backgroundColor: colors.grey5,
+    backgroundColor: colors.grey6,
     borderRadius: 10,
     borderColor: colors.transparent,
     borderWidth: 1,

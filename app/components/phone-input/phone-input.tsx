@@ -16,7 +16,6 @@ import { testProps } from "@app/utils/testProps"
 import useDeviceLocation from "@app/hooks/use-device-location"
 import { useSupportedCountriesQuery } from "@app/graphql/generated"
 import { IconNode } from "@rn-vui/base"
-import Icon from "react-native-vector-icons/Ionicons"
 
 const DEFAULT_COUNTRY_CODE = "SV"
 const PLACEHOLDER_PHONE_NUMBER = "123-456-7890"
@@ -26,6 +25,8 @@ export type PhoneInputInfo = {
   countryCallingCode: string
   formattedPhoneNumber: string
   rawPhoneNumber: string
+  phoneNumberWithCode: string
+  phoneNumberWithoutCode: string
 }
 
 export type PhoneInputProps = {
@@ -38,6 +39,18 @@ export type PhoneInputProps = {
   onBlur?: () => void
   onSubmitEditing?: () => void
   inputContainerStyle?: StyleProp<ViewStyle>
+  bgColor?: string
+}
+
+export const getPhoneNumberWithoutCode = (
+  number: string,
+  countryCallingCode?: string,
+) => {
+  const code = countryCallingCode ? `+${countryCallingCode}` : ""
+  const phoneNumber = number.startsWith(code && "+")
+    ? `${number.slice(code.length)}`
+    : number
+  return phoneNumber
 }
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({
@@ -50,11 +63,12 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onBlur,
   onSubmitEditing,
   inputContainerStyle,
+  bgColor,
 }) => {
   const {
     theme: { mode: themeMode },
   } = useTheme()
-  const styles = useStyles()
+  const styles = useStyles({ bgColor })
 
   const { data } = useSupportedCountriesQuery()
 
@@ -100,7 +114,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     onChangeText(number)
   }
 
-  const phoneInputInfo = useMemo(() => {
+  const phoneInputInfo = useMemo((): PhoneInputInfo | null => {
     if (!countryCode) return null
 
     const info = {
@@ -108,14 +122,14 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       formattedPhoneNumber: new AsYouType(countryCode).input(value),
       countryCallingCode: getCountryCallingCode(countryCode),
       rawPhoneNumber: value,
+      phoneNumberWithoutCode: getPhoneNumberWithoutCode(value, countryCode),
+      phoneNumberWithCode: `+${countryCode}${getPhoneNumberWithoutCode(value, countryCode)}`,
     }
     return info
   }, [countryCode, value])
 
   useEffect(() => {
-    if (onChangeInfo) {
-      onChangeInfo(phoneInputInfo)
-    }
+    if (onChangeInfo) onChangeInfo(phoneInputInfo)
   }, [phoneInputInfo, onChangeInfo])
 
   return (
@@ -176,14 +190,14 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors }, props: { bgColor?: string }) => ({
   inputContainer: {
     flexDirection: "row",
     alignItems: "stretch",
     minHeight: 60,
   },
   countryPickerButtonStyle: {
-    backgroundColor: colors.grey5,
+    backgroundColor: props.bgColor ? props.bgColor : colors.grey5,
     borderRadius: 8,
     paddingHorizontal: 15,
     flexDirection: "row",
@@ -201,7 +215,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderWidth: 1,
     borderColor: colors.transparent,
     paddingHorizontal: 10,
-    backgroundColor: colors.grey5,
+    backgroundColor: props.bgColor ? props.bgColor : colors.grey5,
     borderRadius: 8,
   },
   disabledInput: { opacity: 0.6 },
