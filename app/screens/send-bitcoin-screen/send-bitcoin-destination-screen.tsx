@@ -41,7 +41,11 @@ import {
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import { getPhoneNumberWithoutCode, PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
+import {
+  getPhoneNumberWithoutCode,
+  PhoneInput,
+  PhoneInputInfo,
+} from "@app/components/phone-input"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
@@ -423,6 +427,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     }
   }, [route.params?.scanPressed])
 
+  useEffect(() => {
+    if (!defaultPhoneInputInfo) return
+
+    const { rawPhoneNumber } = defaultPhoneInputInfo
+    console.log(defaultPhoneInputInfo)
+
+    handleChangeText(rawPhoneNumber)
+    setRawPhoneNumber(rawPhoneNumber)
+  }, [defaultPhoneInputInfo])
+
   const handlePaste = async () => {
     onFocusedInput("search")
     try {
@@ -452,23 +466,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const handlePastePhone = async () => {
     onFocusedInput("phone")
-    const code = defaultPhoneInputInfo?.countryCallingCode
-      ? `+${defaultPhoneInputInfo?.countryCallingCode}`
-      : ""
     try {
       const clipboard = await Clipboard.getString()
-      const phone = getPhoneNumberWithoutCode(clipboard)
+      //const phone = getPhoneNumberWithoutCode(clipboard)
 
-      setRawPhoneNumber(phone)
+      setRawPhoneNumber(clipboard)
 
       dispatchDestinationStateAction({
         type: SendBitcoinActions.SetUnparsedPastedDestination,
         payload: {
-          unparsedDestination: `${code}${phone}`,
+          unparsedDestination: clipboard,
         },
       })
       if (willInitiateValidation()) {
-        waitAndValidateDestination(`${code}${phone}`)
+        waitAndValidateDestination(clipboard)
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -628,7 +639,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             )
           }
           onChangeText={(phoneNumber) => {
-            handleChangeText(phoneNumber)
             setRawPhoneNumber(phoneNumber)
           }}
           onChangeInfo={(e) => {

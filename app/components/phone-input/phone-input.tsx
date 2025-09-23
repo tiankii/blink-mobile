@@ -46,10 +46,11 @@ export const getPhoneNumberWithoutCode = (
   number: string,
   countryCallingCode?: string,
 ) => {
-  const code = countryCallingCode ? `+${countryCallingCode}` : ""
-  const phoneNumber = number.startsWith(code && "+")
-    ? `${number.slice(code.length)}`
-    : number
+  const code = `+${countryCallingCode}`
+  const phoneNumber =
+    number.startsWith(code && "+") && number.length > code.length * 2
+      ? `${number.slice(code.length)}`
+      : number
   return phoneNumber
 }
 
@@ -116,14 +117,17 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const phoneInputInfo = useMemo((): PhoneInputInfo | null => {
     if (!countryCode) return null
+    const countryCallingCode = getCountryCallingCode(countryCode)
 
     const info = {
       countryCode: countryCode as CountryCode,
       formattedPhoneNumber: new AsYouType(countryCode).input(value),
-      countryCallingCode: getCountryCallingCode(countryCode),
+      countryCallingCode,
       rawPhoneNumber: value,
       phoneNumberWithoutCode: getPhoneNumberWithoutCode(value, countryCode),
-      phoneNumberWithCode: `+${countryCode}${getPhoneNumberWithoutCode(value, countryCode)}`,
+      phoneNumberWithCode: value
+        ? `+${countryCallingCode}${getPhoneNumberWithoutCode(value, countryCallingCode)}`
+        : "",
     }
     return info
   }, [countryCode, value])
