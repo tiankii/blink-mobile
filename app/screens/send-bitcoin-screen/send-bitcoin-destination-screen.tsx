@@ -106,17 +106,50 @@ const wordMatchesContact = (searchWord: string, contact: UserContact): boolean =
   return contactNameMatchesSearchWord || contactPrettyNameMatchesSearchWord
 }
 
-const matchCheck = (newSearchText: string, allContacts: UserContact[]): UserContact[] => {
+const isPhoneNumber = (handle: string): boolean => {
+  if (handle.startsWith("+")) {
+    return true
+  }
+  const first4Chars = handle.substring(0, 4)
+  const areFirst4Digits = /^\d{4}$/.test(first4Chars)
+  return areFirst4Digits
+}
+
+const matchCheck = (
+  newSearchText: string,
+  allContacts: UserContact[],
+  activeInput: TInputType,
+): UserContact[] => {
   if (newSearchText.length > 0) {
     const searchWordArray = newSearchText
       .split(" ")
       .filter((text) => text.trim().length > 0)
-    const matchingContacts = allContacts.filter((contact) =>
+
+    let filteredContacts = allContacts
+
+    // Filtrar contactos según el input activo
+    if (activeInput === "search") {
+      // Solo contactos que NO sean números de teléfono
+      filteredContacts = allContacts.filter((contact) => !isPhoneNumber(contact.handle))
+    } else if (activeInput === "phone") {
+      // Solo contactos que SÍ sean números de teléfono
+      filteredContacts = allContacts.filter((contact) => isPhoneNumber(contact.handle))
+    }
+
+    const matchingContacts = filteredContacts.filter((contact) =>
       searchWordArray.some((word) => wordMatchesContact(word, contact)),
     )
+
     return matchingContacts
   }
-  // no match found
+
+  // Sin búsqueda, aplicar filtros según el input activo
+  if (activeInput === "search") {
+    return allContacts.filter((contact) => !isPhoneNumber(contact.handle))
+  } else if (activeInput === "phone") {
+    return allContacts.filter((contact) => isPhoneNumber(contact.handle))
+  }
+
   return allContacts
 }
 
@@ -246,10 +279,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const updateMatchingContacts = useCallback(
     (newSearchText: string) => {
-      const matching = matchCheck(newSearchText, allContacts)
+      const matching = matchCheck(newSearchText, allContacts, activeInput)
       setMatchingContacts(matching)
     },
-    [allContacts],
+    [allContacts, activeInput], // Agregar activeInput como dependencia
   )
 
   const willInitiateValidation = React.useCallback(() => {
@@ -355,8 +388,9 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   )
 
   useEffect(() => {
-    setMatchingContacts(allContacts)
-  }, [allContacts])
+    const filteredContacts = matchCheck("", allContacts, activeInput)
+    setMatchingContacts(filteredContacts)
+  }, [allContacts, activeInput])
 
   useEffect(() => {
     if (
@@ -429,11 +463,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     if (!defaultPhoneInputInfo) return
-
     const { rawPhoneNumber } = defaultPhoneInputInfo
     console.log(defaultPhoneInputInfo)
 
     handleChangeText(rawPhoneNumber)
+    updateMatchingContacts(rawPhoneNumber)
     setRawPhoneNumber(rawPhoneNumber)
   }, [defaultPhoneInputInfo])
 
@@ -500,6 +534,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
 
     handleSelection(item.id)
+
+    if (activeInput == "phone") {
+      setRawPhoneNumber(displayHandle)
+      return
+    }
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
       payload: { unparsedDestination: displayHandle },
@@ -654,7 +693,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           inputContainerStyle={activeInput === "phone" && inputContainerStyle}
           bgColor={colors.grey6}
         />
-        {matchingContacts.length > 0 && activeInput != "phone" && (
+        {matchingContacts.length > 0 && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
             <View style={styles.line}></View>
             <Text style={styles.textInformation} type="p2">
@@ -666,7 +705,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <FlatList
           style={styles.flatList}
           contentContainerStyle={styles.flatListContainer}
-          data={activeInput != "phone" ? matchingContacts : []}
+          data={matchingContacts}
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
           renderItem={({ item }) => {
