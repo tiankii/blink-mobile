@@ -94,6 +94,15 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   }, [detectedCountryCode])
 
+  useEffect(() => {
+    if (value && countryCode) {
+      const parsedPhoneNumber = parsePhoneNumber(value, countryCode)
+      if (parsedPhoneNumber?.country && parsedPhoneNumber.country !== countryCode) {
+        setCountryCode(parsedPhoneNumber.country)
+      }
+    }
+  }, [value, countryCode])
+
   const handleCountrySelect = (country: { cca2: string }) => {
     setCountryCode(country.cca2 as PhoneNumberCountryCode)
     setTimeout(() => {

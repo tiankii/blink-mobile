@@ -169,7 +169,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   )
 
   const [activeInput, setActiveInput] = useState<TInputType>(null)
-  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>("")
   const [defaultPhoneInputInfo, setDefaultPhoneInputInfo] =
     useState<PhoneInputInfo | null>(null)
 
@@ -463,15 +462,21 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     if (!defaultPhoneInputInfo) return
+    if (
+      destinationState.destinationState == DestinationState.Validating ||
+      destinationState.destinationState == DestinationState.Pasting
+    )
+      return
+
     const { rawPhoneNumber } = defaultPhoneInputInfo
     console.log(defaultPhoneInputInfo)
 
     handleChangeText(rawPhoneNumber)
     updateMatchingContacts(rawPhoneNumber)
-    setRawPhoneNumber(rawPhoneNumber)
   }, [defaultPhoneInputInfo])
 
   const handlePaste = async () => {
+    if (destinationState.destinationState == DestinationState.Validating) return
     onFocusedInput("search")
     try {
       const clipboard = await Clipboard.getString()
@@ -499,12 +504,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const handlePastePhone = async () => {
+    if (destinationState.destinationState == DestinationState.Validating) return
     onFocusedInput("phone")
     try {
       const clipboard = await Clipboard.getString()
-      //const phone = getPhoneNumberWithoutCode(clipboard)
-
-      setRawPhoneNumber(clipboard)
 
       dispatchDestinationStateAction({
         type: SendBitcoinActions.SetUnparsedPastedDestination,
@@ -529,16 +532,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   }
 
   const handleContactPress = (item: UserContact) => {
+    if (destinationState.destinationState == DestinationState.Validating) return
     const handle = item?.handle?.trim() ?? ""
     const displayHandle =
       handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
 
     handleSelection(item.id)
 
-    if (activeInput == "phone") {
-      setRawPhoneNumber(displayHandle)
-      return
-    }
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
       payload: { unparsedDestination: displayHandle },
@@ -558,7 +558,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const resetInput = () => {
     reset()
-    setRawPhoneNumber("")
     setDefaultPhoneInputInfo(null)
   }
 
@@ -638,7 +637,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               )
             }
           />
-          {!destinationState.unparsedDestination || rawPhoneNumber ? (
+          {!destinationState.unparsedDestination || activeInput === "phone" ? (
             <TouchableOpacity onPress={handlePaste} disabled={activeInput === "phone"}>
               <View style={styles.iconContainer}>
                 <Text color={colors.primary} type="p2">
@@ -664,7 +663,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <PhoneInput
           key={1}
           rightIcon={
-            rawPhoneNumber ? (
+            destinationState.unparsedDestination && activeInput == "phone" ? (
               <Icon name="close" size={24} onPress={resetInput} color={colors.primary} />
             ) : (
               <TouchableOpacity
@@ -677,13 +676,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               </TouchableOpacity>
             )
           }
-          onChangeText={(phoneNumber) => {
-            setRawPhoneNumber(phoneNumber)
+          onChangeText={(text) => {
+            handleChangeText(text)
           }}
           onChangeInfo={(e) => {
             setDefaultPhoneInputInfo(e)
           }}
-          value={rawPhoneNumber}
+          value={activeInput === "phone" ? destinationState.unparsedDestination : ""}
           isDisabled={activeInput === "search"}
           onFocus={() => onFocusedInput("phone")}
           onSubmitEditing={() =>
