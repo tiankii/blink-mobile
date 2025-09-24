@@ -42,7 +42,6 @@ import {
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
 import {
-  getPhoneNumberWithoutCode,
   PhoneInput,
   PhoneInputInfo,
 } from "@app/components/phone-input"

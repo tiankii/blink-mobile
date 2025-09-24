@@ -42,18 +42,6 @@ export type PhoneInputProps = {
   bgColor?: string
 }
 
-export const getPhoneNumberWithoutCode = (
-  number: string,
-  countryCallingCode?: string,
-) => {
-  const code = `+${countryCallingCode}`
-  const phoneNumber =
-    number.startsWith(code && "+") && number.length > code.length * 2
-      ? `${number.slice(code.length)}`
-      : number
-  return phoneNumber
-}
-
 export const PhoneInput: React.FC<PhoneInputProps> = ({
   value,
   onChangeText,
@@ -133,10 +121,8 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       formattedPhoneNumber: new AsYouType(countryCode).input(value),
       countryCallingCode,
       rawPhoneNumber: value,
-      phoneNumberWithoutCode: getPhoneNumberWithoutCode(value, countryCode),
-      phoneNumberWithCode: value
-        ? `+${countryCallingCode}${getPhoneNumberWithoutCode(value, countryCallingCode)}`
-        : "",
+      phoneNumberWithoutCode: parsePhoneNumber(value, countryCode)?.format("NATIONAL", {nationalPrefix: false})?.replace(/[^\d]/g, "") ?? "",
+      phoneNumberWithCode: parsePhoneNumber(value, countryCode)?.format("INTERNATIONAL", {nationalPrefix: false})?.replace(/[^\d]/g, "") ?? "",
     }
     return info
   }, [countryCode, value])
