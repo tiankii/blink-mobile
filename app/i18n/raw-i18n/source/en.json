@@ -2208,7 +2208,8 @@
             "confirmButton": "I'm 100% sure"
         },
         "clipboardError": "Error getting value from clipboard",
-        "pastedClipboardSuccess": "Pasted from clipboard"
+        "pastedClipboardSuccess": "Pasted from clipboard",
+        "invalidPhoneNumber": "Invalid phone number"
     },
     "SendBitcoinScreen": {
         "willBeSentToMempoolBy": "Transaction should be submitted to mempool",

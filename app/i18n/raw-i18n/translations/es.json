@@ -2209,7 +2209,8 @@
             "confirmButton": "Estoy 100% seguro"
         },
         "clipboardError": "Error al obtener el valor del portapapeles",
-        "pastedClipboardSuccess": "Pegado desde el portapapeles"
+        "pastedClipboardSuccess": "Pegado desde el portapapeles",
+        "invalidPhoneNumber": "Número de teléfono inválido"
     },
     "SendBitcoinScreen": {
         "willBeSentToMempoolBy": "La transacción debe enviarse a la Mempool.",

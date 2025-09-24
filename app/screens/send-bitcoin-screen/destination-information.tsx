@@ -36,6 +36,12 @@ const destinationStateToInformation = (
     return {}
   }
 
+  if (sendBitcoinReducerState.destinationState === DestinationState.PhoneInvalid) {
+    return {
+      error: translate.SendBitcoinDestinationScreen.invalidPhoneNumber(),
+    }
+  }
+
   if (sendBitcoinReducerState.destinationState === DestinationState.Invalid) {
     switch (sendBitcoinReducerState?.invalidDestination?.invalidReason) {
       case InvalidDestinationReason.InvoiceExpired:

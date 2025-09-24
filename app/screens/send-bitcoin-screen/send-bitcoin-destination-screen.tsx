@@ -41,10 +41,7 @@ import {
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import {
-  PhoneInput,
-  PhoneInputInfo,
-} from "@app/components/phone-input"
+import { PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 gql`
@@ -579,6 +576,8 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           return styles.validInputContainer
         }
         return styles.warningInputContainer
+      case DestinationState.PhoneInvalid:
+        return styles.errorInputContainer
       default:
         return {}
     }

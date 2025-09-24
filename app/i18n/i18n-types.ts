@@ -7088,6 +7088,10 @@ type RootTranslation = {
 		 * P​a​s​t​e​d​ ​f​r​o​m​ ​c​l​i​p​b​o​a​r​d
 		 */
 		pastedClipboardSuccess: string
+		/**
+		 * I​n​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+		 */
+		invalidPhoneNumber: string
 	}
 	SendBitcoinScreen: {
 		/**
@@ -16425,6 +16429,10 @@ export type TranslationFunctions = {
 		 * Pasted from clipboard
 		 */
 		pastedClipboardSuccess: () => LocalizedString
+		/**
+		 * Invalid phone number
+		 */
+		invalidPhoneNumber: () => LocalizedString
 	}
 	SendBitcoinScreen: {
 		/**
