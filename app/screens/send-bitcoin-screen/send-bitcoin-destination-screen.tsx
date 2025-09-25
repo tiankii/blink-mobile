@@ -886,6 +886,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           bgColor={colors.grey6}
           keepCountryCode={keepCountryCode}
         />
+        {activeInputRef.current === "phone" ? (
+          <DestinationInformation destinationState={destinationState} />
+        ) : (
+          <View style={styles.spacerStyle}></View>
+        )}
         {matchingContacts.length > 0 && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
             <View style={styles.line}></View>
@@ -893,11 +898,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               {LL.SendBitcoinScreen.orSaved()}
             </Text>
           </View>
-        )}
-        {activeInputRef.current === "phone" ? (
-          <DestinationInformation destinationState={destinationState} />
-        ) : (
-          <View style={styles.spacerStyle}></View>
         )}
         <FlatList
           style={styles.flatList}
@@ -911,22 +911,33 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
 
             return (
-              <ListItem
-                key={item.handle}
-                style={styles.item}
-                containerStyle={[
-                  matchingContacts.length > 1 ? styles.itemStyleContainer : {},
-                  item.id === selectedId
-                    ? styles.selectedContainer
-                    : styles.itemContainer,
+              <View
+                style={[
+                  styles.listContainer,
+                  item.id === selectedId && styles.listContainerSelected,
                 ]}
-                onPress={() => handleContactPress(item)}
               >
-                <GaloyIcon name={"user"} size={24} />
-                <ListItem.Content>
-                  <ListItem.Title style={styles.itemText}>{displayHandle}</ListItem.Title>
-                </ListItem.Content>
-              </ListItem>
+                <ListItem
+                  key={item.handle}
+                  style={styles.listItemStyle}
+                  containerStyle={[
+                    matchingContacts.length > 1 && styles.listItemContainer,
+                    styles.listItemContainerBase,
+                  ]}
+                  onPress={() => handleContactPress(item)}
+                >
+                  <GaloyIcon name={"user"} size={20} />
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={styles.itemText}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {displayHandle}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                </ListItem>
+              </View>
             )
           }}
           keyExtractor={(item) => item.handle}
@@ -942,7 +953,8 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             disabled={
               destinationState.destinationState === DestinationState.Invalid ||
               destinationState.destinationState === DestinationState.PhoneInvalid ||
-              !destinationState.unparsedDestination
+              !destinationState.unparsedDestination ||
+              (activeInputRef.current == "phone" && rawPhoneNumber == "")
             }
             onPress={() => initiateGoToNextScreen(destinationState.unparsedDestination)}
           />
@@ -1048,22 +1060,8 @@ const usestyles = makeStyles(({ colors }) => ({
   flatListContainer: {
     margin: 0,
   },
-  item: {
-    marginHorizontal: 32,
-    marginBottom: 16,
-  },
   itemContainer: {
     backgroundColor: colors.white,
-  },
-  itemStyleContainer: {
-    borderColor: colors.grey4,
-    borderBottomWidth: 2,
-  },
-  selectedContainer: {
-    borderRadius: 8,
-    backgroundColor: colors.grey6,
-    borderWidth: 2,
-    borderColor: colors.primary,
   },
   itemText: { color: colors.black },
   textSeparator: {
@@ -1071,14 +1069,14 @@ const usestyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 35,
-    marginBottom: 40
+    marginBottom: 40,
   },
   lastInfoTextStyle: {
     marginBottom: 30,
   },
   line: {
     backgroundColor: colors.grey4,
-    height: 2,
+    height: 1,
     borderRadius: 10,
     flex: 1,
     position: "relative",
@@ -1100,5 +1098,30 @@ const usestyles = makeStyles(({ colors }) => ({
   },
   spacerStyle: {
     marginTop: 5,
+  },
+  listContainer: {
+    borderColor: colors.transparent,
+    borderWidth: 1,
+    marginHorizontal: 32,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  listContainerSelected: {
+    borderColor: colors.primary,
+    backgroundColor: colors.grey6,
+  },
+  listItemStyle: {
+    marginHorizontal: 5,
+    height: 55,
+  },
+  listItemContainer: {
+    borderColor: colors.grey4,
+    borderBottomWidth: 2,
+  },
+  listItemContainerBase: {
+    marginVertical: 2,
+    marginHorizontal: -10,
+    backgroundColor: colors.transparent,
+    height: 55,
   },
 }))
