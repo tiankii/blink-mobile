@@ -25,8 +25,6 @@ export type PhoneInputInfo = {
   countryCallingCode: string
   formattedPhoneNumber: string
   rawPhoneNumber: string
-  phoneNumberWithCode: string
-  phoneNumberWithoutCode: string
 }
 
 export type PhoneInputProps = {
@@ -39,6 +37,7 @@ export type PhoneInputProps = {
   onBlur?: () => void
   onSubmitEditing?: () => void
   inputContainerStyle?: StyleProp<ViewStyle>
+  countryPickerButtonStyle?: StyleProp<ViewStyle>
   bgColor?: string
 }
 
@@ -52,6 +51,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onBlur,
   onSubmitEditing,
   inputContainerStyle,
+  countryPickerButtonStyle,
   bgColor,
 }) => {
   const {
@@ -121,8 +121,6 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       formattedPhoneNumber: new AsYouType(countryCode).input(value),
       countryCallingCode,
       rawPhoneNumber: value,
-      phoneNumberWithoutCode: parsePhoneNumber(value, countryCode)?.format("NATIONAL", {nationalPrefix: false})?.replace(/[^\d]/g, "") ?? "",
-      phoneNumberWithCode: parsePhoneNumber(value, countryCode)?.format("INTERNATIONAL", {nationalPrefix: false})?.replace(/[^\d]/g, "") ?? "",
     }
     return info
   }, [countryCode, value])
@@ -146,6 +144,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
                 style={[
                   styles.countryPickerButtonStyle,
                   isDisabled && styles.disabledInput,
+                  countryPickerButtonStyle && countryPickerButtonStyle,
                 ]}
                 onPress={onOpen}
               >
