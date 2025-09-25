@@ -204,58 +204,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const [matchingContacts, setMatchingContacts] = useState<UserContact[]>([])
 
-  const allContacts: UserContact[] = useMemo(() => {
-    const sortedContacts = (contacts.slice() ?? []).sort((a, b) => {
-      return b.transactionsCount - a.transactionsCount
-    })
-
-    // Agregar números de teléfono quemados para testing
-    const hardcodedPhoneContacts: UserContact[] = [
-      {
-        id: "phone-test-1",
-        handle: "+50375245460",
-        username: "+50378901234",
-        alias: "Contact Phone 1",
-        transactionsCount: 5,
-        __typename: "UserContact",
-      },
-      {
-        id: "phone-test-5",
-        handle: "+93752454616",
-        username: "+93752454616",
-        alias: "Contact Phone 1",
-        transactionsCount: 5,
-        __typename: "UserContact",
-      },
-      {
-        id: "phone-test-3",
-        handle: "+503752454616",
-        username: "+50378901234",
-        alias: "Contact Phone 1",
-        transactionsCount: 5,
-        __typename: "UserContact",
-      },
-      {
-        id: "phone-test-2",
-        handle: "12345678",
-        username: "12345678",
-        alias: "Contact Phone 2",
-        transactionsCount: 3,
-        __typename: "UserContact",
-      },
-      {
-        id: "phone-test-7",
-        handle: "50375245460",
-        username: "12345678",
-        alias: "Contact Phone 2",
-        transactionsCount: 3,
-        __typename: "UserContact",
-      },
-    ]
-
-    // Combinar contactos reales con los quemados
-    return [...sortedContacts, ...hardcodedPhoneContacts]
-  }, [contacts])
+  const allContacts: UserContact[] = useMemo(
+    () =>
+      (contacts.slice() ?? []).sort((a, b) => {
+        return b.transactionsCount - a.transactionsCount
+      }),
+    [contacts],
+  )
 
   const {
     appConfig: {
