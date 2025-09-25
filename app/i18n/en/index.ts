@@ -2275,6 +2275,7 @@ const en: BaseTranslation = {
     clipboardError: "Error getting value from clipboard",
     pastedClipboardSuccess: "Pasted from clipboard",
     invalidPhoneNumber: "Invalid phone number",
+    phoneNotAllowed: "This field does not accept phone numbers",
   },
   SendBitcoinScreen: {
     willBeSentToMempoolBy: "Transaction should be submitted to mempool",

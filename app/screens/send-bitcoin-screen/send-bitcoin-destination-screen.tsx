@@ -357,7 +357,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       if (activeInputRef.current === "search") {
         if (isValidPhone?.isValid() || isInt(rawInput)) {
           dispatchDestinationStateAction({
-            type: SendBitcoinActions.SetPhoneInvalid,
+            type: SendBitcoinActions.SetPhoneNotAllowed,
             payload: {},
           })
           return
@@ -836,6 +836,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             <></>
           )}
         </View>
+        {activeInputRef.current === "search" ? (
+          <DestinationInformation destinationState={destinationState} />
+        ) : (
+          <View style={styles.spacerStyle}></View>
+        )}
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>
           <Text
@@ -889,7 +894,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             </Text>
           </View>
         )}
-        <DestinationInformation destinationState={destinationState} />
+        {activeInputRef.current === "phone" ? (
+          <DestinationInformation destinationState={destinationState} />
+        ) : (
+          <View style={styles.spacerStyle}></View>
+        )}
         <FlatList
           style={styles.flatList}
           contentContainerStyle={styles.flatListContainer}
@@ -1061,7 +1070,8 @@ const usestyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 40,
+    marginTop: 35,
+    marginBottom: 40
   },
   lastInfoTextStyle: {
     marginBottom: 30,
@@ -1087,5 +1097,8 @@ const usestyles = makeStyles(({ colors }) => ({
     borderColor: colors._green,
     borderWidth: 1,
     borderBottomWidth: 1,
+  },
+  spacerStyle: {
+    marginTop: 5,
   },
 }))

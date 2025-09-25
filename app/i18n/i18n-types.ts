@@ -7092,6 +7092,10 @@ type RootTranslation = {
 		 * I​n​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
 		 */
 		invalidPhoneNumber: string
+		/**
+		 * T​h​i​s​ ​f​i​e​l​d​ ​d​o​e​s​ ​n​o​t​ ​a​c​c​e​p​t​ ​p​h​o​n​e​ ​n​u​m​b​e​r​s
+		 */
+		phoneNotAllowed: string
 	}
 	SendBitcoinScreen: {
 		/**
@@ -16433,6 +16437,10 @@ export type TranslationFunctions = {
 		 * Invalid phone number
 		 */
 		invalidPhoneNumber: () => LocalizedString
+		/**
+		 * This field does not accept phone numbers
+		 */
+		phoneNotAllowed: () => LocalizedString
 	}
 	SendBitcoinScreen: {
 		/**

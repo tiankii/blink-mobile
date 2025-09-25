@@ -41,6 +41,11 @@ const destinationStateToInformation = (
       error: translate.SendBitcoinDestinationScreen.invalidPhoneNumber(),
     }
   }
+  if (sendBitcoinReducerState.destinationState === DestinationState.PhoneNotAllowed) {
+    return {
+      error: translate.SendBitcoinDestinationScreen.phoneNotAllowed(),
+    }
+  }
 
   if (sendBitcoinReducerState.destinationState === DestinationState.Invalid) {
     switch (sendBitcoinReducerState?.invalidDestination?.invalidReason) {

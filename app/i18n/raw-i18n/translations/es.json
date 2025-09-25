@@ -2210,7 +2210,8 @@
         },
         "clipboardError": "Error al obtener el valor del portapapeles",
         "pastedClipboardSuccess": "Pegado desde el portapapeles",
-        "invalidPhoneNumber": "Número de teléfono inválido"
+        "invalidPhoneNumber": "Número de teléfono inválido",
+        "phoneNotAllowed": "Este campo no acepta números de teléfono"
     },
     "SendBitcoinScreen": {
         "willBeSentToMempoolBy": "La transacción debe enviarse a la Mempool.",
