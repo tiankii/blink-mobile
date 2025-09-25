@@ -33,6 +33,7 @@ export type PhoneInputProps = {
   onChangeInfo?: (info: PhoneInputInfo | null) => void
   rightIcon?: IconNode
   isDisabled?: boolean
+  keepCountryCode?: boolean
   onFocus?: () => void
   onBlur?: () => void
   onSubmitEditing?: () => void
@@ -47,6 +48,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onChangeInfo,
   rightIcon,
   isDisabled,
+  keepCountryCode,
   onFocus,
   onBlur,
   onSubmitEditing,
@@ -84,6 +86,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
   useEffect(() => {
     if (value && countryCode) {
+      if (keepCountryCode) return
       const parsedPhoneNumber = parsePhoneNumber(value, countryCode)
       if (parsedPhoneNumber?.country && parsedPhoneNumber.country !== countryCode) {
         setCountryCode(parsedPhoneNumber.country)
@@ -105,9 +108,11 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   }
 
   const setPhoneNumber = (number: string) => {
-    const parsedPhoneNumber = parsePhoneNumber(number, countryCode)
-    if (parsedPhoneNumber?.country) {
-      setCountryCode(parsedPhoneNumber.country)
+    if (!keepCountryCode) {
+      const parsedPhoneNumber = parsePhoneNumber(number, countryCode)
+      if (parsedPhoneNumber?.country) {
+        setCountryCode(parsedPhoneNumber.country)
+      }
     }
     onChangeText(number)
   }

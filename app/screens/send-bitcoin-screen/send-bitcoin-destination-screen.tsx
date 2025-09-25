@@ -51,6 +51,7 @@ import {
 } from "./send-bitcoin-reducer"
 import { PhoneInput, PhoneInputInfo } from "@app/components/phone-input"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { isInt } from "validator"
 
 gql`
   query sendBitcoinDestination {
@@ -131,12 +132,9 @@ const matchCheck = (
 
     let filteredContacts = allContacts
 
-    // Filtrar contactos según el input activo
     if (activeInput === "search") {
-      // Solo contactos que NO sean números de teléfono
       filteredContacts = allContacts.filter((contact) => !isPhoneNumber(contact.handle))
     } else if (activeInput === "phone") {
-      // Solo contactos que SÍ sean números de teléfono
       filteredContacts = allContacts.filter((contact) => isPhoneNumber(contact.handle))
     }
 
@@ -147,7 +145,6 @@ const matchCheck = (
     return matchingContacts
   }
 
-  // Sin búsqueda, aplicar filtros según el input activo
   if (activeInput === "search") {
     return allContacts.filter((contact) => !isPhoneNumber(contact.handle))
   } else if (activeInput === "phone") {
@@ -172,8 +169,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     defaultDestinationState,
   )
 
-  const activeInputRef = useRef<TInputType>(null)
+  const activeInputRef = useRef<TInputType>("search")
 
+  const [rawPhoneNumber, setRawPhoneNumber] = useState<string>("null")
+  const [keepCountryCode, setKeepCountryCode] = useState<boolean>(true) // to no update de country code just while we tiping
   const [defaultPhoneInputInfo, setDefaultPhoneInputInfo] =
     useState<PhoneInputInfo | null>(null)
 
@@ -205,13 +204,58 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   const [matchingContacts, setMatchingContacts] = useState<UserContact[]>([])
 
-  const allContacts: UserContact[] = useMemo(
-    () =>
-      (contacts.slice() ?? []).sort((a, b) => {
-        return b.transactionsCount - a.transactionsCount
-      }),
-    [contacts],
-  )
+  const allContacts: UserContact[] = useMemo(() => {
+    const sortedContacts = (contacts.slice() ?? []).sort((a, b) => {
+      return b.transactionsCount - a.transactionsCount
+    })
+
+    // Agregar números de teléfono quemados para testing
+    const hardcodedPhoneContacts: UserContact[] = [
+      {
+        id: "phone-test-1",
+        handle: "+50375245460",
+        username: "+50378901234",
+        alias: "Contact Phone 1",
+        transactionsCount: 5,
+        __typename: "UserContact",
+      },
+      {
+        id: "phone-test-5",
+        handle: "+93752454616",
+        username: "+93752454616",
+        alias: "Contact Phone 1",
+        transactionsCount: 5,
+        __typename: "UserContact",
+      },
+      {
+        id: "phone-test-3",
+        handle: "+503752454616",
+        username: "+50378901234",
+        alias: "Contact Phone 1",
+        transactionsCount: 5,
+        __typename: "UserContact",
+      },
+      {
+        id: "phone-test-2",
+        handle: "12345678",
+        username: "12345678",
+        alias: "Contact Phone 2",
+        transactionsCount: 3,
+        __typename: "UserContact",
+      },
+      {
+        id: "phone-test-7",
+        handle: "50375245460",
+        username: "12345678",
+        alias: "Contact Phone 2",
+        transactionsCount: 3,
+        __typename: "UserContact",
+      },
+    ]
+
+    // Combinar contactos reales con los quemados
+    return [...sortedContacts, ...hardcodedPhoneContacts]
+  }, [contacts])
 
   const {
     appConfig: {
@@ -268,17 +312,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   } else if (allContacts.length > 0) {
     ListEmptyContent = <></>
   } else {
-    ListEmptyContent = (
-      <View style={styles.emptyListNoContacts}>
-        <Text
-          {...testProps(LL.PeopleScreen.noContactsTitle())}
-          style={styles.emptyListTitle}
-        >
-          {LL.PeopleScreen.noContactsTitle()}
-        </Text>
-        <Text style={styles.emptyListText}>{LL.PeopleScreen.noContactsYet()}</Text>
-      </View>
-    )
+    ListEmptyContent = <></>
   }
 
   const updateMatchingContacts = useCallback(
@@ -308,26 +342,27 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         return
       }
 
-      // if (activeInputRef.current === "phone") {
-      //   rawInput = `+${defaultPhoneInputInfo?.countryCallingCode}${rawInput}`
-      //   const isValidPhone = useParseValidPhone(rawInput)
+      const isValidPhone = useParseValidPhone(rawInput)
 
-      //   if (!isValidPhone) {
-      //     dispatchDestinationStateAction({
-      //       type: SendBitcoinActions.SetPhoneInvalid,
-      //       payload: {},
-      //     })
-      //     return
-      //   }
-      // update the ste with the formate number
-      //  dispatchDestinationStateAction({
-      //   type: SendBitcoinActions.SetUnparsedDestination,
-      //   payload: { unparsedDestination: rawInput },
-      // })
-      // }
-      // console.log(rawInput)
+      if (activeInputRef.current === "phone") {
+        if (!isValidPhone?.isValid()) {
+          dispatchDestinationStateAction({
+            type: SendBitcoinActions.SetPhoneInvalid,
+            payload: {},
+          })
+          return
+        }
+      }
 
-      //activeInputRef.current === "search"  buscar en el texto si hay un numero de celular valido, si lo hay entonces no dejarlo pasar y mostrar el error de address invalid
+      if (activeInputRef.current === "search") {
+        if (isValidPhone?.isValid() || isInt(rawInput)) {
+          dispatchDestinationStateAction({
+            type: SendBitcoinActions.SetPhoneInvalid,
+            payload: {},
+          })
+          return
+        }
+      }
 
       const destination = await parseDestination({
         rawInput,
@@ -436,9 +471,12 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   useEffect(() => {
     const filteredContacts = matchCheck("", allContacts, activeInputRef.current)
     setMatchingContacts(filteredContacts)
-  }, [allContacts])
+  }, [allContacts, activeInputRef.current])
 
   useEffect(() => {
+    if (destinationState.destinationState == DestinationState.Entering) {
+      setSelectedId("")
+    }
     if (
       !goToNextScreenWhenValid ||
       destinationState.destinationState !== DestinationState.Valid
@@ -488,6 +526,14 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     if (route.params?.payment) {
+      const text = route.params?.payment
+      const isPhoneNumberValid = useParseValidPhone(text)
+      if (isPhoneNumberValid && isPhoneNumberValid?.isValid()) {
+        onFocusedInput("phone")
+        setRawPhoneNumber(isPhoneNumberValid.number)
+        return
+      }
+      onFocusedInput("search")
       handleChangeText(route.params?.payment)
       initiateGoToNextScreen(route.params?.payment)
     }
@@ -497,6 +543,14 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     // If we scan a QR code encoded with a payment url for a specific user e.g. https://{domain}/{username}
     // then we want to detect the username as the destination
     if (route.params?.username) {
+      const text = route.params?.username
+      const isPhoneNumberValid = useParseValidPhone(text)
+      if (isPhoneNumberValid && isPhoneNumberValid?.isValid()) {
+        onFocusedInput("phone")
+        setRawPhoneNumber(isPhoneNumberValid.number)
+        return
+      }
+      onFocusedInput("search")
       handleChangeText(route.params?.username)
     }
   }, [route.params?.username, handleChangeText])
@@ -509,6 +563,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     if (!defaultPhoneInputInfo) return
+    if (activeInputRef.current === "search") return
     if (
       destinationState.destinationState == DestinationState.Validating ||
       destinationState.destinationState == DestinationState.Pasting
@@ -516,10 +571,36 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       return
 
     const { rawPhoneNumber } = defaultPhoneInputInfo
+    const rawInput = `+${defaultPhoneInputInfo?.countryCallingCode}${rawPhoneNumber}`
+    console.warn(rawInput)
 
-    handleChangeText(rawPhoneNumber)
+    handleChangeText(rawInput)
     updateMatchingContacts(rawPhoneNumber)
   }, [defaultPhoneInputInfo])
+
+  // Clear countryCallingCode from input value after pasting or selecting one
+  useEffect(() => {
+    if (!rawPhoneNumber) return
+    if (activeInputRef.current === "search") return
+    if (
+      destinationState.destinationState == DestinationState.Validating ||
+      destinationState.destinationState == DestinationState.Pasting ||
+      destinationState.destinationState == DestinationState.Entering
+    ) {
+      const parse = useParseValidPhone(rawPhoneNumber)
+      if (
+        parse &&
+        parse?.isValid() &&
+        rawPhoneNumber.includes(`+${defaultPhoneInputInfo?.countryCallingCode}`)
+      ) {
+        const phoneNumberWithoutArea = rawPhoneNumber.replace(
+          `+${defaultPhoneInputInfo?.countryCallingCode}`,
+          "",
+        )
+        setRawPhoneNumber(phoneNumberWithoutArea)
+      }
+    }
+  }, [rawPhoneNumber, defaultPhoneInputInfo])
 
   const handlePaste = async () => {
     if (destinationState.destinationState == DestinationState.Validating) return
@@ -552,6 +633,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   const handlePastePhone = async () => {
     if (destinationState.destinationState == DestinationState.Validating) return
     onFocusedInput("phone")
+    setKeepCountryCode(false)
 
     try {
       const clipboard = await Clipboard.getString()
@@ -569,7 +651,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         if (matches.length > 0) {
           const firstMatch = matches[0]
           parsed = firstMatch.number
-          phoneNumber = parsed.nationalNumber
+          phoneNumber = parsed.number
         }
       } catch {}
 
@@ -587,7 +669,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
       if (willInitiateValidation()) {
         waitAndValidateDestination(parseNumber)
+        setRawPhoneNumber(parseNumber)
       }
+      setTimeout(() => {
+        setKeepCountryCode(true)
+      }, 100)
     } catch (err) {
       if (err instanceof Error) {
         crashlytics().recordError(err)
@@ -606,8 +692,27 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     const handle = item?.handle?.trim() ?? ""
     const displayHandle =
       handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
+    updateMatchingContacts(handle)
 
     handleSelection(item.id)
+
+    if (activeInputRef.current == "phone") {
+      setKeepCountryCode(false)
+      const parsePhone = useParseValidPhone(displayHandle)
+      const international = parsePhone?.number
+      dispatchDestinationStateAction({
+        type: SendBitcoinActions.SetUnparsedDestination,
+        payload: { unparsedDestination: international || displayHandle },
+      })
+      initiateGoToNextScreen(international || displayHandle)
+
+      setRawPhoneNumber(international || displayHandle)
+
+      setTimeout(() => {
+        setKeepCountryCode(true)
+      }, 100)
+      return
+    }
 
     dispatchDestinationStateAction({
       type: SendBitcoinActions.SetUnparsedDestination,
@@ -629,6 +734,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   const resetInput = () => {
     reset()
     setDefaultPhoneInputInfo(null)
+    setRawPhoneNumber("")
   }
 
   const onFocusedInput = (inputType: TInputType) => {
@@ -744,7 +850,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <PhoneInput
           key={1}
           rightIcon={
-            destinationState.unparsedDestination && activeInputRef.current == "phone" ? (
+            rawPhoneNumber && activeInputRef.current == "phone" ? (
               <Icon name="close" size={24} onPress={resetInput} color={colors.primary} />
             ) : (
               <TouchableOpacity
@@ -759,14 +865,12 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           }
           onChangeText={(text) => {
             onFocusedInput("phone")
-            handleChangeText(text)
+            setRawPhoneNumber(text)
           }}
           onChangeInfo={(e) => {
             setDefaultPhoneInputInfo(e)
           }}
-          value={
-            activeInputRef.current === "phone" ? destinationState.unparsedDestination : ""
-          }
+          value={activeInputRef.current === "phone" ? rawPhoneNumber : ""}
           isDisabled={activeInputRef.current === "search"}
           onFocus={() => onFocusedInput("phone")}
           onSubmitEditing={() =>
@@ -775,6 +879,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           }
           inputContainerStyle={activeInputRef.current === "phone" && inputContainerStyle}
           bgColor={colors.grey6}
+          keepCountryCode={keepCountryCode}
         />
         {matchingContacts.length > 0 && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
