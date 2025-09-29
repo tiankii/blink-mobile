@@ -94,8 +94,8 @@ export default function MapComponent({ data, userLocation }: Props) {
     let toRegion = cluster.properties.getExpansionRegion()
     toRegion = {
       ...toRegion,
-      latitudeDelta: toRegion.latitudeDelta * 0.7,
-      longitudeDelta: toRegion.longitudeDelta * 0.7,
+      latitudeDelta: toRegion.latitudeDelta * 0.5,
+      longitudeDelta: toRegion.longitudeDelta * 0.5,
     }
     mapViewRef.current?.animateToRegion(toRegion, 500)
   },
