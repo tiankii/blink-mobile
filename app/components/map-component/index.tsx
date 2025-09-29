@@ -90,12 +90,17 @@ export default function MapComponent({ data, userLocation }: Props) {
   }, [community, focusedMarker])
 
   const handleClusterClick = useCallback(
-    (cluster: supercluster.ClusterFeature<IMarker>) => {
-      const toRegion = cluster.properties.getExpansionRegion()
-      mapViewRef.current?.animateToRegion(toRegion, 500)
-    },
-    [],
-  )
+  (cluster: supercluster.ClusterFeature<IMarker>) => {
+    let toRegion = cluster.properties.getExpansionRegion()
+    toRegion = {
+      ...toRegion,
+      latitudeDelta: toRegion.latitudeDelta * 0.7,
+      longitudeDelta: toRegion.longitudeDelta * 0.7,
+    }
+    mapViewRef.current?.animateToRegion(toRegion, 500)
+  },
+  [],
+)
 
   const handleMarkerSelect = useCallback((pin: IMarker) => {
     setFocusedMarker(pin)
