@@ -4,7 +4,7 @@
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#242f3e"
+          "color": "#000000"
         }
       ]
     },
@@ -65,7 +65,7 @@
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#38414e"
+          "color": "#616161"
         }
       ]
     },
@@ -92,7 +92,7 @@
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#746855"
+          "color": "#837969"
         }
       ]
     },
@@ -156,6 +156,15 @@
       "stylers": [
         {
           "color": "#17263c"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.natural",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#262626"
         }
       ]
     }
