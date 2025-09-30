@@ -233,7 +233,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     })
     setGoToNextScreenWhenValid(false)
     setSelectedId("")
-    setMatchingContacts(allContacts)
+    updateMatchingContacts("")
   }, [allContacts])
 
   let ListEmptyContent: React.ReactNode
@@ -276,7 +276,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       const matching = matchCheck(newSearchText, allContacts, activeInputRef.current)
       setMatchingContacts(matching)
     },
-    [allContacts],
+    [allContacts, activeInputRef.current],
   )
 
   const willInitiateValidation = React.useCallback(() => {
