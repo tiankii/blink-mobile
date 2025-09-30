@@ -777,14 +777,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>
           <View style={styles.textInformationWrapper}>
-            <Text
-              style={styles.textInformation}
-              type="p2"
-              numberOfLines={1}
-              adjustsFontSizeToFit
-            >
-              {LL.SendBitcoinScreen.orBySMS()}
-            </Text>
+            <Text style={styles.textInformation}>{LL.SendBitcoinScreen.orBySMS()}</Text>
           </View>
         </View>
         <PhoneInput
@@ -830,14 +823,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
             <View style={styles.line}></View>
             <View style={styles.textInformationWrapper}>
-              <Text
-                style={styles.textInformation}
-                type="p2"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-              >
-                {LL.SendBitcoinScreen.orSaved()}
-              </Text>
+              <Text style={styles.textInformation}>{LL.SendBitcoinScreen.orSaved()}</Text>
             </View>
           </View>
         )}
@@ -1037,6 +1023,7 @@ const usestyles = makeStyles(({ colors }) => ({
   textInformation: {
     color: colors.grey1,
     textAlign: "center",
+    fontSize: 16,
   },
   disabledInput: { opacity: 0.6 },
   borderFocusedInput: {
