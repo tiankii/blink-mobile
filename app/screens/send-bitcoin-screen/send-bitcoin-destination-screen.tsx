@@ -746,21 +746,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             searchIcon={<></>}
             autoCapitalize="none"
             autoCorrect={false}
-            clearIcon={
-              destinationState.unparsedDestination &&
-              activeInputRef.current === "search" ? (
-                <Icon
-                  name="close"
-                  size={24}
-                  onPress={resetInput}
-                  color={styles.icon.color}
-                />
-              ) : (
-                <></>
-              )
-            }
+            clearIcon={<></>}
           />
-          {!destinationState.unparsedDestination || activeInputRef.current === "phone" ? (
+          {destinationState.unparsedDestination && activeInputRef.current === "search" ? (
+            <Icon name="close" size={24} onPress={resetInput} color={styles.icon.color} style={styles.iconContainer}/>
+          ) : (
             <TouchableOpacity
               onPress={handlePaste}
               disabled={activeInputRef.current === "phone"}
@@ -771,8 +761,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-          ) : (
-            <></>
           )}
         </View>
         {activeInputRef.current === "search" ? (
@@ -844,7 +832,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           data={matchingContacts}
           extraData={selectedId}
           ListEmptyComponent={ListEmptyContent}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             const handle = item?.handle?.trim() ?? ""
             const displayHandle =
               handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
@@ -858,9 +846,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               >
                 <ListItem
                   key={item.handle}
-                  style={styles.listItemStyle}
+                  style={[]}
                   containerStyle={[
-                    matchingContacts.length > 1 && styles.listItemContainer,
+                    matchingContacts.length > 1 &&
+                      matchingContacts.length > index + 1 &&
+                      styles.listItemContainer,
                     styles.listItemContainerBase,
                   ]}
                   onPress={() => handleContactPress(item)}
@@ -1049,18 +1039,12 @@ const usestyles = makeStyles(({ colors }) => ({
     borderColor: colors.primary,
     backgroundColor: colors.grey6,
   },
-  listItemStyle: {
-    marginHorizontal: 5,
-    height: 55,
-  },
   listItemContainer: {
     borderColor: colors.grey4,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   listItemContainerBase: {
-    marginVertical: 2,
-    marginHorizontal: -10,
+    marginHorizontal: -5,
     backgroundColor: colors.transparent,
-    height: 55,
   },
 }))
