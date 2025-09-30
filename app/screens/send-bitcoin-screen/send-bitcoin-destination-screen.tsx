@@ -749,7 +749,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             clearIcon={<></>}
           />
           {destinationState.unparsedDestination && activeInputRef.current === "search" ? (
-            <Icon name="close" size={24} onPress={resetInput} color={styles.icon.color} style={styles.iconContainer}/>
+            <Icon
+              name="close"
+              size={24}
+              onPress={resetInput}
+              color={styles.icon.color}
+              style={styles.iconContainer}
+            />
           ) : (
             <TouchableOpacity
               onPress={handlePaste}
@@ -770,14 +776,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         )}
         <View style={styles.textSeparator}>
           <View style={styles.line}></View>
-          <Text
-            style={styles.textInformation}
-            type="p2"
-            ellipsizeMode="middle"
-            numberOfLines={1}
-          >
-            {LL.SendBitcoinScreen.orBySMS()}
-          </Text>
+          <View style={styles.textInformationWrapper}>
+            <Text
+              style={styles.textInformation}
+              type="p2"
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {LL.SendBitcoinScreen.orBySMS()}
+            </Text>
+          </View>
         </View>
         <PhoneInput
           key={1}
@@ -821,9 +829,16 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         {matchingContacts.length > 0 && (
           <View style={[styles.textSeparator, styles.lastInfoTextStyle]}>
             <View style={styles.line}></View>
-            <Text style={styles.textInformation} type="p2">
-              {LL.SendBitcoinScreen.orSaved()}
-            </Text>
+            <View style={styles.textInformationWrapper}>
+              <Text
+                style={styles.textInformation}
+                type="p2"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                {LL.SendBitcoinScreen.orSaved()}
+              </Text>
+            </View>
           </View>
         )}
         <FlatList
@@ -1010,13 +1025,17 @@ const usestyles = makeStyles(({ colors }) => ({
     flex: 1,
     position: "relative",
   },
-  textInformation: {
-    position: "absolute",
+  textInformationWrapper: {
     backgroundColor: colors.white,
     paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    position: "absolute",
+    zIndex: 1,
+  },
+  textInformation: {
     color: colors.grey1,
-    display: "flex",
-    minWidth: 120,
     textAlign: "center",
   },
   disabledInput: { opacity: 0.6 },
