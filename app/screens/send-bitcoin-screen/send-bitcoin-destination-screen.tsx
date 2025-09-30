@@ -28,12 +28,7 @@ import { logParseDestinationResult } from "@app/utils/analytics"
 import { toastShow } from "@app/utils/toast"
 import { PaymentType } from "@blinkbitcoin/blink-client"
 import Clipboard from "@react-native-clipboard/clipboard"
-import {
-  findPhoneNumbersInText,
-  CountryCode,
-  parsePhoneNumber,
-  isValidPhoneNumber,
-} from "libphonenumber-js"
+import { CountryCode, parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -599,28 +594,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     try {
       const clipboard = await Clipboard.getString()
 
-      let phoneNumber: string | null = null
       let parsed = null
-
-      try {
-        const matches = Array.from(
-          findPhoneNumbersInText(
-            clipboard,
-            defaultPhoneInputInfo?.countryCode as CountryCode,
-          ),
-        )
-        if (matches.length > 0) {
-          const firstMatch = matches[0]
-          parsed = firstMatch.number
-          phoneNumber = parsed.number
-        }
-      } catch {}
-
-      const parseNumber =
-        parsed && parsed?.isValid() && phoneNumber ? phoneNumber : clipboard
+      parsed = useParseValidPhone(clipboard)
+      const parseNumber = parsed && parsed?.isValid() ? parsed.number : clipboard
 
       updateMatchingContacts(parseNumber)
-
       dispatchDestinationStateAction({
         type: SendBitcoinActions.SetUnparsedPastedDestination,
         payload: {
