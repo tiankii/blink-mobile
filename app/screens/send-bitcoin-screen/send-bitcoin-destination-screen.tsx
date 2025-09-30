@@ -983,13 +983,6 @@ const usestyles = makeStyles(({ colors }) => ({
     fontWeight: "bold",
     textAlign: "center",
   },
-  flatList: {
-    flex: 1,
-    marginHorizontal: -30,
-  },
-  flatListContainer: {
-    margin: 0,
-  },
   itemContainer: {
     backgroundColor: colors.white,
   },
@@ -1034,6 +1027,11 @@ const usestyles = makeStyles(({ colors }) => ({
   spacerStyle: {
     marginTop: 5,
   },
+  flatList: {
+    flex: 1,
+    marginHorizontal: -30,
+  },
+  flatListContainer: {},
   listContainer: {
     borderColor: colors.transparent,
     borderWidth: 1,
