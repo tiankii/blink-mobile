@@ -6981,7 +6981,7 @@ type RootTranslation = {
 		 */
 		usernameNowAddressInfo: RequiredParams<'bankName' | 'bankName' | 'bankName' | 'lnDomain' | 'lnDomain'>
 		/**
-		 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​d​e​s​t​i​n​a​t​i​o​n
+		 * E​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​d​e​s​t​i​n​a​t​i​o​n
 		 */
 		enterValidDestination: string
 		/**
@@ -7089,7 +7089,7 @@ type RootTranslation = {
 		 */
 		pastedClipboardSuccess: string
 		/**
-		 * I​n​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+		 * E​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r
 		 */
 		invalidPhoneNumber: string
 		/**
@@ -7251,7 +7251,7 @@ type RootTranslation = {
 		 */
 		destinationScreenTitle: string
 		/**
-		 * O​r​ ​b​y​ ​S​M​S
+		 * O​r​ ​b​y​ ​M​o​b​i​l​e​ ​N​u​m​b​e​r
 		 */
 		orBySMS: string
 		/**
@@ -16338,7 +16338,7 @@ export type TranslationFunctions = {
 		 */
 		usernameNowAddressInfo: (arg: { bankName: string, lnDomain: string }) => LocalizedString
 		/**
-		 * Please enter a valid destination
+		 * Enter a valid destination
 		 */
 		enterValidDestination: () => LocalizedString
 		/**
@@ -16434,7 +16434,7 @@ export type TranslationFunctions = {
 		 */
 		pastedClipboardSuccess: () => LocalizedString
 		/**
-		 * Invalid phone number
+		 * Enter a valid mobile number
 		 */
 		invalidPhoneNumber: () => LocalizedString
 		/**
@@ -16594,7 +16594,7 @@ export type TranslationFunctions = {
 		 */
 		destinationScreenTitle: () => LocalizedString
 		/**
-		 * Or by SMS
+		 * Or by Mobile Number
 		 */
 		orBySMS: () => LocalizedString
 		/**

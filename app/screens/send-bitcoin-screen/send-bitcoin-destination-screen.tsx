@@ -28,7 +28,12 @@ import { logParseDestinationResult } from "@app/utils/analytics"
 import { toastShow } from "@app/utils/toast"
 import { PaymentType } from "@blinkbitcoin/blink-client"
 import Clipboard from "@react-native-clipboard/clipboard"
-import { findPhoneNumbersInText, CountryCode, parsePhoneNumber } from "libphonenumber-js"
+import {
+  findPhoneNumbersInText,
+  CountryCode,
+  parsePhoneNumber,
+  isValidPhoneNumber,
+} from "libphonenumber-js"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -112,12 +117,13 @@ const wordMatchesContact = (searchWord: string, contact: UserContact): boolean =
 }
 
 const isPhoneNumber = (handle: string): boolean => {
-  if (handle.startsWith("+")) {
-    return true
+  try {
+    if (isValidPhoneNumber(handle)) return true
+    const parsed = parsePhoneNumber(handle)
+    return parsed?.isValid() ?? false
+  } catch {
+    return false
   }
-  const first4Chars = handle.substring(0, 4)
-  const areFirst4Digits = /^\d{4}$/.test(first4Chars)
-  return areFirst4Digits
 }
 
 const matchCheck = (
