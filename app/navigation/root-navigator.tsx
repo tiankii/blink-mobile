@@ -719,6 +719,7 @@ export const PrimaryNavigator = () => {
 const useStyles = makeStyles(({ colors }) => ({
   bottomNavigatorStyle: {
     height: "10%",
+    minHeight: 90,
     paddingTop: 4,
     backgroundColor: colors.white,
     borderTopColor: colors.grey4,
