@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ActivityIndicator, TouchableOpacity, View } from "react-native"
 
-import { ListItem, makeStyles, Overlay, useTheme, Text } from "@rneui/themed"
+import { ListItem, makeStyles, Overlay, useTheme, Text } from "@rn-vui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
