@@ -8187,7 +8187,7 @@ type RootTranslation = {
 		}
 		supportScreen: {
 			/**
-			 * B​l​i​n​k​ ​f​e​e​d​b​a​c​k
+			 * W​e​ ​l​o​v​e​ ​f​e​e​d​b​a​c​k
 			 */
 			mainTitle: string
 			/**
@@ -17520,7 +17520,7 @@ export type TranslationFunctions = {
 		}
 		supportScreen: {
 			/**
-			 * Blink feedback
+			 * We love feedback
 			 */
 			mainTitle: () => LocalizedString
 			/**

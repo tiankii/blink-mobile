@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { View, TextInput, StyleSheet, Keyboard } from "react-native"
+import { View, TextInput, Keyboard, Modal } from "react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rn-vui/themed"
 import { gql } from "@apollo/client"
 
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
@@ -174,16 +174,22 @@ export const SetLightningAddressScreen: React.FC<{
 
   return (
     <Screen>
-      {showSuccess && (
-        <View style={styles.successOverlay}>
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSuccess(false)}
+      >
+        <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
-            <GaloyIcon name="lightning-address" size={128} />
+            <GaloyIcon name="lightning-address" size={110} />
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
           </SuccessIconAnimation>
         </View>
-      )}
+      </Modal>
+
       <View style={styles.content}>
         <Text type={"h2"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
         <Text type={"h2"} color={colors.warning} bold>
@@ -231,12 +237,11 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     alignSelf: "center",
   },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  successAnimationContainer: {
+    flex: 1,
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
   },
   content: {
     flex: 1,

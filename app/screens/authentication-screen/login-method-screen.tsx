@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from "react"
 import { View } from "react-native"
-import { useSafeAreaInsets, EdgeInsets } from "react-native-safe-area-context"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { makeStyles, Text, useTheme } from "@rn-vui/themed"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
@@ -148,7 +148,7 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   )
 }
 
-const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
+const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
     flex: 1,
   },
@@ -178,6 +178,6 @@ const useStyles = makeStyles(({ colors }, insets: EdgeInsets) => ({
   bottom: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingBottom: (insets?.bottom ?? 0) + 10,
+    paddingBottom: 10,
   },
 }))

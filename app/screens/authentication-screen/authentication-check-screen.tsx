@@ -4,7 +4,7 @@ import { View } from "react-native"
 
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { makeStyles, useTheme } from "@rn-vui/themed"
 
 import { useApolloClient } from "@apollo/client"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
@@ -12,7 +12,7 @@ import { updateDeviceSessionCount } from "@app/graphql/client-only-query"
 import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper"
 
 import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
-import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
+import AppLogoLightMode from "../../assets/logo/blink-logo-light.svg"
 import { Screen } from "../../components/screen"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import BiometricWrapper from "../../utils/biometricAuthentication"

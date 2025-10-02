@@ -7,7 +7,7 @@ import { LocalizedString } from "typesafe-i18n"
 import Icon from "react-native-vector-icons/Ionicons"
 import { useNavigation, useIsFocused, useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rn-vui/themed"
 import {
   ScrollView,
   TouchableOpacity,
@@ -481,7 +481,7 @@ export const HomeScreen: React.FC = () => {
   }
 
   return (
-    <Screen>
+    <Screen headerShown={false}>
       {AccountCreationNeededModal}
       <StableSatsModal
         isVisible={isStablesatModalVisible}
@@ -606,8 +606,8 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey5,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   noTransaction: {
     alignItems: "center",
@@ -652,10 +652,8 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingVertical: 14,
   },
   button: {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    maxWidth: 74,
+    maxWidth: "25%",
+    flexGrow: 1,
   },
   balanceContainer: {
     marginBottom: 30,

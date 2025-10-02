@@ -2,7 +2,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import { AccountLevel, useLevel } from "@app/graphql/level-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { Icon, Text, makeStyles } from "@rneui/themed"
+import { Icon, Text, makeStyles } from "@rn-vui/themed"
 
 import { Delete } from "./delete"
 import { useState } from "react"
