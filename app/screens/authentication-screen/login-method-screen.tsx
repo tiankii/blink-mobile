@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react"
 import { View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { makeStyles, Text, useTheme } from "@rn-vui/themed"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
@@ -28,7 +29,8 @@ type LoginMethodScreenProps = {
 }
 
 export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) => {
-  const styles = useStyles()
+  const insets = useSafeAreaInsets()
+  const styles = useStyles(insets)
   const { LL } = useI18nContext()
   const {
     theme: { mode },
@@ -116,39 +118,48 @@ export const LoginMethodScreen: React.FC<LoginMethodScreenProps> = ({ route }) =
   )
 
   return (
-    <Screen>
-      <View style={styles.header}>
-        <AppLogo style={styles.logo} />
-        <Text type="h1" style={styles.title}>
-          {LL.LoginMethodScreen.title()}
-        </Text>
-        <OptionSelector
-          selected={selected}
-          onSelect={handleSelect}
-          options={options}
-          loading={loadingSupportedCountries}
-        />
-      </View>
-
-      <View style={styles.bottom}>
-        {selected && (
-          <GaloyPrimaryButton
-            title={loginChanneltitles[selected]}
-            onPress={handleSubmit}
-            disabled={!selected}
-            containerStyle={styles.buttonContainer}
+    <Screen style={styles.screenStyle}>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <AppLogo style={styles.logo} />
+          <Text type="h2" style={styles.title}>
+            {LL.LoginMethodScreen.title()}
+          </Text>
+          <OptionSelector
+            selected={selected}
+            onSelect={handleSelect}
+            options={options}
+            loading={loadingSupportedCountries}
           />
-        )}
-        <View style={styles.buttonSpacer} />
+        </View>
+
+        <View style={styles.bottom}>
+          {selected && (
+            <GaloyPrimaryButton
+              title={loginChanneltitles[selected]}
+              onPress={handleSubmit}
+              disabled={!selected}
+              containerStyle={styles.buttonContainer}
+            />
+          )}
+        </View>
       </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors }) => ({
+  screenStyle: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   header: {
-    paddingTop: 40,
-    paddingHorizontal: 24,
+    paddingTop: 20,
   },
   logo: {
     alignSelf: "center",
@@ -160,18 +171,13 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     marginBottom: 24,
     color: colors.grey0,
-    fontSize: 18,
   },
   buttonContainer: {
     marginVertical: 6,
   },
   bottom: {
     flex: 1,
-    paddingHorizontal: 24,
     justifyContent: "flex-end",
-    marginBottom: 36,
-  },
-  buttonSpacer: {
-    height: 40,
+    paddingBottom: 10,
   },
 }))

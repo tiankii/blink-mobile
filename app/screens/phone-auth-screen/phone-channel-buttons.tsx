@@ -1,6 +1,6 @@
 import React from "react"
-import { View } from "react-native"
-import { makeStyles } from "@rneui/themed"
+import { StyleProp, View, ViewStyle } from "react-native"
+import { makeStyles } from "@rn-vui/themed"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { PhoneCodeChannelType } from "@app/graphql/generated"
@@ -11,6 +11,7 @@ type Props = {
   captchaLoading: boolean
   isDisabled?: boolean
   submit: (channel: PhoneCodeChannelType) => void
+  customStyle?: StyleProp<ViewStyle>
 }
 
 export const PhoneChannelButton: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const PhoneChannelButton: React.FC<Props> = ({
   captchaLoading,
   isDisabled,
   submit,
+  customStyle,
 }) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
@@ -29,7 +31,7 @@ export const PhoneChannelButton: React.FC<Props> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, customStyle]}>
       <GaloyPrimaryButton
         title={channelLabels[phoneCodeChannel]}
         loading={captchaLoading}

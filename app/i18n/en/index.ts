@@ -2585,7 +2585,7 @@ const en: BaseTranslation = {
     telegram: "Send via Telegram",
   },
   LoginMethodScreen: {
-    title: "Select how you want to login to your account.",
+    title: "Select preferred login method.",
     useTelegram: "Use Telegram",
     useSms: "Use SMS",
     useWhatsapp: "Use WhatsApp",
@@ -2612,20 +2612,18 @@ const en: BaseTranslation = {
       primaryButton: "Set up email login",
     },
     lightningBenefits: {
-      mainTitle: "Set up Lightning Address",
+      mainTitle: "Set up Custom Lightning Address",
       title: "Lightning Address benefits:",
       staticAddressDescription: "A static address to receive payments",
       easyToShareDescription: "Easy to memorize and share publicly or privately",
       blinkToolsDescription: "Unlocks various Blink tools useful for commerce",
-      primaryButton: "Set up Lightning Address",
+      primaryButton: "Set up Custom Address",
     },
     supportScreen: {
-      mainTitle: "Blink feedback",
-      title: "One more thing:",
-      description: "We are on a mission to make bitcoin accessible to all, and we would love to hear from you.",
-      contactInfo: "Don't hesitate to contact us at {email} and share how we can make Blink better for you and others.",
+      mainTitle: "We love feedback",
+      title: "All set!",
+      description: "Any feedback is most welcome, feel free to ping us at {email}",
       primaryButton: "Done",
-      secondaryButton: "Give feedback now",
     }
   },
   PhoneLoginValidationScreen: {
@@ -2808,6 +2806,9 @@ const en: BaseTranslation = {
       one: "Day",
       other: "Days"
     },
+    dollar: "Dollar",
+    all: "ALL",
+    allAccounts: "All accounts",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",

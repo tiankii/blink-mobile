@@ -1,5 +1,5 @@
 import * as React from "react"
-import { RouteProp, useNavigation } from "@react-navigation/native"
+import { RouteProp, useFocusEffect, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -20,7 +20,7 @@ export const LightningBenefitsScreen: React.FC<LightningBenefitsScreenProps> = (
   const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
-  const { onboarding } = route.params
+  const { onboarding, canGoBack = true } = route.params
 
   const handlePrimaryAction = () => {
     navigation.navigate("setLightningAddress", {
@@ -33,6 +33,20 @@ export const LightningBenefitsScreen: React.FC<LightningBenefitsScreenProps> = (
       screen: "supportScreen",
     })
   }
+
+  // Prevent back navigation
+  useFocusEffect(
+    React.useCallback(() => {
+      if (canGoBack) return
+
+      const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+        if (e.data.action.type === "POP" || e.data.action.type === "GO_BACK") {
+          e.preventDefault()
+        }
+      })
+      return unsubscribe
+    }, [navigation, canGoBack]),
+  )
 
   return (
     <OnboardingLayout

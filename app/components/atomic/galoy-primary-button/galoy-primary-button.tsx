@@ -1,8 +1,8 @@
 import React, { FC, PropsWithChildren } from "react"
-import { TouchableHighlight } from "react-native"
 
 import { testProps } from "@app/utils/testProps"
-import { Button, ButtonProps, makeStyles } from "@rneui/themed"
+import { TouchableHighlight } from "@app/utils/touchable-wrapper"
+import { Button, ButtonProps, makeStyles } from "@rn-vui/themed"
 
 export const GaloyPrimaryButton: FC<PropsWithChildren<ButtonProps>> = (props) => {
   const styles = useStyles()
@@ -33,10 +33,10 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   buttonStyle: {
     minHeight: 50,
-    backgroundColor: colors.primary3,
+    backgroundColor: colors.primary,
   },
   disabledStyle: {
     opacity: 0.5,
-    backgroundColor: colors.primary3,
+    backgroundColor: colors.primary,
   },
 }))

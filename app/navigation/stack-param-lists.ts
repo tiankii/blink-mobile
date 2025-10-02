@@ -1,4 +1,4 @@
-import { LNURLPaySuccessAction } from "lnurl-pay/dist/types/types"
+import { LNURLPaySuccessAction } from "lnurl-pay"
 import { PhoneCodeChannelType, UserContact, WalletCurrency } from "@app/graphql/generated"
 import { EarnSectionType } from "@app/screens/earns-screen/sections"
 import { PhoneLoginInitiateType } from "@app/screens/phone-auth-screen"
@@ -91,7 +91,12 @@ export type RootStackParamList = {
   phoneRegistrationInitiate: undefined
   phoneRegistrationValidate: { phone: string; channel: PhoneCodeChannelType }
   transactionDetail: { txid: string }
-  transactionHistory?: undefined
+  transactionHistory?: {
+    wallets?: ReadonlyArray<{
+      readonly id: string
+      readonly walletCurrency: WalletCurrency
+    }>
+  }
   Earn: undefined
   accountScreen: undefined
   notificationSettingsScreen: undefined
@@ -119,8 +124,8 @@ export type RootStackParamList = {
 export type OnboardingStackParamList = {
   welcomeLevel1: { onboarding?: boolean }
   emailBenefits: { onboarding?: boolean; hasUsername?: boolean }
-  lightningBenefits: { onboarding?: boolean }
-  supportScreen: undefined
+  lightningBenefits: { onboarding?: boolean; canGoBack?: boolean }
+  supportScreen?: { canGoBack?: boolean }
 }
 
 export type PeopleStackParamList = {

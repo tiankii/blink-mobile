@@ -23,8 +23,10 @@ import {
   IntroducingCirclesModalShownQuery,
   RegionDocument,
   RegionQuery,
-  UpgradeModalShownDocument,
-  UpgradeModalShownQuery,
+  UpgradeModalLastShownAtDocument,
+  UpgradeModalLastShownAtQuery,
+  DeviceSessionCountDocument,
+  DeviceSessionCountQuery,
 } from "./generated"
 
 export default gql`
@@ -73,8 +75,12 @@ export default gql`
     innerCircleValue @client
   }
 
-  query upgradeModalShown {
-    upgradeModalShown @client
+  query upgradeModalLastShownAt {
+    upgradeModalLastShownAt @client
+  }
+
+  query deviceSessionCount {
+    deviceSessionCount @client
   }
 `
 
@@ -235,21 +241,49 @@ export const setInnerCircleCachedValue = (
   }
 }
 
-export const setUpgradeModalShown = (
+export const setUpgradeModalLastShownAt = (
   client: ApolloClient<unknown>,
-  shown: boolean,
-): boolean => {
+  isoDatetime: string | null,
+): string | null => {
   try {
-    client.writeQuery<UpgradeModalShownQuery>({
-      query: UpgradeModalShownDocument,
+    client.writeQuery<UpgradeModalLastShownAtQuery>({
+      query: UpgradeModalLastShownAtDocument,
       data: {
         __typename: "Query",
-        upgradeModalShown: shown,
+        upgradeModalLastShownAt: isoDatetime,
       },
     })
-    return shown
+    return isoDatetime
   } catch {
-    console.warn("unable to update upgradeModalShown")
-    return false
+    return null
   }
+}
+
+export const setDeviceSessionCount = (
+  client: ApolloClient<unknown>,
+  count: number,
+): number | null => {
+  try {
+    client.writeQuery<DeviceSessionCountQuery>({
+      query: DeviceSessionCountDocument,
+      data: { __typename: "Query", deviceSessionCount: count },
+    })
+    return count
+  } catch {
+    return null
+  }
+}
+
+export const updateDeviceSessionCount = (
+  client: ApolloClient<unknown>,
+  { reset = false }: { reset?: boolean } = {},
+): number | null => {
+  if (reset) return setDeviceSessionCount(client, 0)
+
+  const prev =
+    client.readQuery<DeviceSessionCountQuery>({
+      query: DeviceSessionCountDocument,
+    })?.deviceSessionCount ?? 0
+
+  return setDeviceSessionCount(client, prev + 1)
 }

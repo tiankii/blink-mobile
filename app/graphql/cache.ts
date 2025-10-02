@@ -97,9 +97,11 @@ export const createCache = () =>
           innerCircleValue: {
             read: (value) => value ?? -1,
           },
-          upgradeModalShown: {
-            keyArgs: ["accountId"],
-            read: (value) => value ?? false,
+          upgradeModalLastShownAt: {
+            read: (value) => value ?? null,
+          },
+          deviceSessionCount: {
+            read: (value) => value ?? 0,
           },
         },
       },
@@ -110,7 +112,7 @@ export const createCache = () =>
       },
       Account: {
         fields: {
-          transactions: relayStylePagination(),
+          transactions: relayStylePagination(["walletIds"]),
         },
       },
     },

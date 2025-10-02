@@ -2492,7 +2492,7 @@
         "telegram": "Enviar a través de Telegram"
     },
     "LoginMethodScreen": {
-        "title": "Seleccione cómo desea iniciar sesión en su cuenta.",
+        "title": "Seleccione su método de inicio preferido.",
         "useTelegram": "Usar Telegram",
         "useSms": "Usar SMS",
         "useWhatsapp": "Usar WhatsApp",
@@ -2519,20 +2519,18 @@
             "primaryButton": "Configurar inicio de sesión con email"
         },
         "lightningBenefits": {
-            "mainTitle": "Configura la dirección Lightning",
+            "mainTitle": "Configurar dirección Lightning personalizada",
             "title": "Beneficios de la dirección Lightning:",
             "staticAddressDescription": "Una dirección estática para recibir pagos",
             "easyToShareDescription": "Fácil de memorizar y compartir pública o privadamente",
             "blinkToolsDescription": "Desbloquea varias herramientas de Blink útiles para el comercio",
-            "primaryButton": "Configurar dirección Lightning"
+            "primaryButton": "Configurar dirección personalizada"
         },
         "supportScreen": {
-          "mainTitle": "Comentarios sobre Blink",
-          "title": "Una cosa más:",
-          "description": "Estamos en una misión para hacer que bitcoin sea accesible para todos, y nos encantaría saber de ti.",
-          "contactInfo": "No dudes en contactarnos en {email} y cuéntanos cómo podemos mejorar Blink para ti y para los demás.",
-          "primaryButton": "Hecho",
-          "secondaryButton": "Dar comentarios ahora"
+            "mainTitle": "Apreciamos sus comentarios",
+            "title": "¡Todo listo!",
+            "description": "Cualquier comentario es bienvenido, no dude en escribirnos a {email}",
+            "primaryButton": "Hecho"
         }
     },
     "PhoneLoginValidationScreen": {
@@ -2705,7 +2703,10 @@
         "day": {
             "one": "Día",
             "other": "Días"
-        }
+        },
+        "dollar": "Dólar",
+        "all": "TODAS",
+        "allAccounts": "Todas las cuentas"
     },
     "errors": {
         "generic": "Hubo un error inesperado.\nPor favor intente más tarde",

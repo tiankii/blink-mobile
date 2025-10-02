@@ -1,13 +1,13 @@
 import * as React from "react"
 import { useMemo } from "react"
 import { RefreshControl, View, Alert } from "react-native"
-import { gql, useApolloClient } from "@apollo/client"
+import { gql } from "@apollo/client"
 import Modal from "react-native-modal"
 import { LocalizedString } from "typesafe-i18n"
 import Icon from "react-native-vector-icons/Ionicons"
-import { useNavigation, useIsFocused } from "@react-navigation/native"
+import { useNavigation, useIsFocused, useFocusEffect } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rn-vui/themed"
 import {
   ScrollView,
   TouchableOpacity,
@@ -29,13 +29,13 @@ import { MemoizedTransactionItem } from "@app/components/transaction-item"
 import { Screen } from "@app/components/screen"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { setUpgradeModalShown } from "@app/graphql/client-only-query"
+import { useRemoteConfig } from "@app/config/feature-flags-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getErrorMessages } from "@app/graphql/utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 import { isIos } from "@app/utils/helper"
-import { useAppConfig } from "@app/hooks"
+import { useAppConfig, useAutoShowUpgradeModal } from "@app/hooks"
 import {
   AccountLevel,
   TransactionFragment,
@@ -47,13 +47,10 @@ import {
   useHomeUnauthedQuery,
   useRealtimePriceQuery,
   useSettingsScreenQuery,
-  useUpgradeModalShownQuery,
 } from "@app/graphql/generated"
 
-// import { triggerUpgradeModal } from "./trigger-upgrade-modal"
-import { useRemoteConfig } from "@app/config/feature-flags-context"
-
 const TransactionCountToTriggerSetDefaultAccountModal = 1
+const UPGRADE_MODAL_INITIAL_DELAY_MS = 1500
 
 gql`
   query homeAuthed {
@@ -143,14 +140,15 @@ export const HomeScreen: React.FC = () => {
   const {
     theme: { colors },
   } = useTheme()
-  const client = useApolloClient()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { balanceLimitToTriggerUpgradeModal } = useRemoteConfig()
+  const { balanceLimitToTriggerUpgradeModal, upgradeModalCooldownDays } =
+    useRemoteConfig()
 
   const { data: { hasPromptedSetDefaultAccount } = {} } =
     useHasPromptedSetDefaultAccountQuery()
   const [setDefaultAccountModalVisible, setSetDefaultAccountModalVisible] =
     React.useState(false)
+  const reopenUpgradeModal = React.useRef(false)
   const toggleSetDefaultAccountModal = () =>
     setSetDefaultAccountModalVisible(!setDefaultAccountModalVisible)
 
@@ -220,7 +218,7 @@ export const HomeScreen: React.FC = () => {
   const loading = loadingAuthed || loadingPrice || loadingUnauthed || loadingSettings
 
   const wallets = dataAuthed?.me?.defaultAccount?.wallets
-  const { formattedBalance, satsBalance, numericBalance } = useTotalBalance(wallets)
+  const { formattedBalance, satsBalance } = useTotalBalance(wallets)
 
   const accountId = dataAuthed?.me?.defaultAccount?.id
   const levelAccount = dataAuthed?.me?.defaultAccount.level
@@ -243,10 +241,10 @@ export const HomeScreen: React.FC = () => {
     return transactions
   }, [pendingIncomingTransactions, transactionsEdges])
 
-  const { data: dataModal } = useUpgradeModalShownQuery({
-    fetchPolicy: "cache-only",
+  const { canShowUpgradeModal, markShownUpgradeModal } = useAutoShowUpgradeModal({
+    cooldownDays: upgradeModalCooldownDays,
+    enabled: isAuthed && levelAccount === AccountLevel.Zero,
   })
-  const upgradeModalShown = dataModal?.upgradeModalShown ?? false
 
   const [modalVisible, setModalVisible] = React.useState(false)
   const [isStablesatModalVisible, setIsStablesatModalVisible] = React.useState(false)
@@ -259,18 +257,18 @@ export const HomeScreen: React.FC = () => {
 
   const triggerUpgradeModal = React.useCallback(() => {
     if (!accountId || levelAccount !== AccountLevel.Zero) return
-    if (!upgradeModalShown && satsBalance > balanceLimitToTriggerUpgradeModal) {
-      openUpgradeModal()
-      setUpgradeModalShown(client, true)
-    }
+    if (!canShowUpgradeModal || satsBalance <= balanceLimitToTriggerUpgradeModal) return
+
+    openUpgradeModal()
+    markShownUpgradeModal()
   }, [
     accountId,
     levelAccount,
-    upgradeModalShown,
+    canShowUpgradeModal,
     satsBalance,
     balanceLimitToTriggerUpgradeModal,
+    markShownUpgradeModal,
     openUpgradeModal,
-    client,
   ])
 
   const refetch = React.useCallback(() => {
@@ -308,6 +306,11 @@ export const HomeScreen: React.FC = () => {
         return
       }
 
+      if (target === "transactionHistory" && wallets) {
+        navigation.navigate("transactionHistory", { wallets })
+        return
+      }
+
       // we are using any because Typescript complain on the fact we are not passing any params
       // but there is no need for a params and the types should not necessitate it
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -330,10 +333,22 @@ export const HomeScreen: React.FC = () => {
     }
   }, [wallets, LL])
 
-  // Triggers the upgrade trial account modal to load screen
-  React.useEffect(() => {
-    triggerUpgradeModal()
-  }, [triggerUpgradeModal])
+  // Trigger the upgrade trial account modal
+  useFocusEffect(
+    React.useCallback(() => {
+      if (reopenUpgradeModal.current) {
+        openUpgradeModal()
+        reopenUpgradeModal.current = false
+        return
+      }
+
+      const id = setTimeout(() => {
+        triggerUpgradeModal()
+      }, UPGRADE_MODAL_INITIAL_DELAY_MS)
+
+      return () => clearTimeout(id)
+    }, [openUpgradeModal, triggerUpgradeModal]),
+  )
 
   let recentTransactionsData:
     | {
@@ -394,7 +409,7 @@ export const HomeScreen: React.FC = () => {
     },
   ]
 
-  const isIosWithBalance = isIos && numericBalance > 0
+  const isIosWithBalance = isIos && satsBalance > 0
 
   if (
     !isIos ||
@@ -439,7 +454,7 @@ export const HomeScreen: React.FC = () => {
   )
 
   return (
-    <Screen>
+    <Screen headerShown={false}>
       {AccountCreationNeededModal}
       <StableSatsModal
         isVisible={isStablesatModalVisible}
@@ -448,6 +463,9 @@ export const HomeScreen: React.FC = () => {
       <TrialAccountLimitsModal
         isVisible={isUpgradeModalVisible}
         closeModal={closeUpgradeModal}
+        beforeSubmit={() => {
+          reopenUpgradeModal.current = true
+        }}
       />
       <View style={[styles.header, styles.container]}>
         <GaloyIconButton
@@ -542,8 +560,8 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey5,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   noTransaction: {
     alignItems: "center",
@@ -588,10 +606,8 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingVertical: 14,
   },
   button: {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    maxWidth: 74,
+    maxWidth: "25%",
+    flexGrow: 1,
   },
   header: {
     flexDirection: "row",

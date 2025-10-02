@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { View, TextInput, StyleSheet } from "react-native"
+import { View, TextInput, Keyboard, Modal } from "react-native"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rn-vui/themed"
 import { gql } from "@apollo/client"
 
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
@@ -14,10 +14,7 @@ import {
   validateUsername,
   SetUsernameError,
 } from "@app/components/set-lightning-address-modal"
-import {
-  SuccessIconAnimation,
-  CompletedTextAnimation,
-} from "@app/components/success-animation"
+import { SuccessIconAnimation } from "@app/components/success-animation"
 
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -104,9 +101,16 @@ export const SetLightningAddressScreen: React.FC<{
     setError(undefined)
   }
 
-  const onboardingNavigate = useCallback(() => {
+  const navigateSupportAllowBack = useCallback(() => {
+    navigation.navigate("onboarding", {
+      screen: "supportScreen",
+    })
+  }, [navigation])
+
+  const navigateSupportNoBackAllow = useCallback(() => {
     navigation.replace("onboarding", {
       screen: "supportScreen",
+      params: { canGoBack: false },
     })
   }, [navigation])
 
@@ -131,6 +135,7 @@ export const SetLightningAddressScreen: React.FC<{
       return
     }
 
+    Keyboard.dismiss()
     setShowSuccess(true)
   }
 
@@ -139,14 +144,14 @@ export const SetLightningAddressScreen: React.FC<{
 
     const time = setTimeout(() => {
       if (onboarding) {
-        onboardingNavigate()
+        navigateSupportNoBackAllow()
         return
       }
       navigation.navigate("settings")
     }, SUCCESS_DELAY)
 
     return () => clearTimeout(time)
-  }, [showSuccess, onboarding, navigation, onboardingNavigate])
+  }, [showSuccess, onboarding, navigation, navigateSupportNoBackAllow])
 
   let errorMessage = ""
   switch (error) {
@@ -169,21 +174,25 @@ export const SetLightningAddressScreen: React.FC<{
 
   return (
     <Screen>
-      {showSuccess && (
-        <View style={styles.successOverlay}>
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSuccess(false)}
+      >
+        <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
-            <GaloyIcon name="lightning-address" size={128} />
-          </SuccessIconAnimation>
-          <CompletedTextAnimation>
+            <GaloyIcon name="lightning-address" size={110} />
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
-          </CompletedTextAnimation>
+          </SuccessIconAnimation>
         </View>
-      )}
+      </Modal>
+
       <View style={styles.content}>
-        <Text type={"p1"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
-        <Text type={"p1"} color={colors.warning} bold>
+        <Text type={"h2"}>{LL.SetAddressModal.receiveMoney({ bankName })}</Text>
+        <Text type={"h2"} color={colors.warning} bold>
           {LL.SetAddressModal.itCannotBeChanged()}
         </Text>
 
@@ -209,15 +218,13 @@ export const SetLightningAddressScreen: React.FC<{
           loading={loading}
           disabled={!username}
           onPress={onSetLightningAddress}
-          containerStyle={styles.buttonContainer}
         />
-        {onboarding ? (
+        {onboarding && (
           <GaloySecondaryButton
             title={LL.UpgradeAccountModal.notNow()}
-            onPress={onboardingNavigate}
+            onPress={navigateSupportAllowBack}
+            containerStyle={styles.secondaryButtonContainer}
           />
-        ) : (
-          <View style={styles.buttonSpacer} />
         )}
       </View>
     </Screen>
@@ -227,28 +234,30 @@ export const SetLightningAddressScreen: React.FC<{
 const useStyles = makeStyles(({ colors }) => ({
   successText: {
     marginTop: 20,
+    textAlign: "center",
+    alignSelf: "center",
   },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  successAnimationContainer: {
+    flex: 1,
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 36,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     rowGap: 20,
   },
   bottom: {
     flex: 1,
     justifyContent: "flex-end",
-    marginBottom: 36,
+    marginBottom: 30,
     paddingHorizontal: 24,
   },
-  buttonContainer: {
-    marginVertical: 6,
+  secondaryButtonContainer: {
+    marginTop: 15,
+    marginBottom: -15,
   },
   textInputContainerStyle: {
     flexDirection: "row",
@@ -266,8 +275,5 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
     fontSize: 18,
     color: colors.black,
-  },
-  buttonSpacer: {
-    height: 40,
   },
 }))

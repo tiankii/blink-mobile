@@ -1,11 +1,11 @@
 import React from "react"
 import { render, fireEvent } from "@testing-library/react-native"
-import { useNavigation } from "@react-navigation/native"
-import { Linking } from "react-native"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 
 import { loadLocale } from "@app/i18n/i18n-util.sync"
 import { i18nObject } from "@app/i18n/i18n-util"
 import { SupportOnboardingScreen } from "@app/screens/onboarding-screen"
+import { OnboardingStackParamList } from "@app/navigation/stack-param-lists"
 
 import { ContextForScreen } from "../helper"
 
@@ -22,12 +22,26 @@ jest.mock("react-native/Libraries/Linking/Linking", () => ({
   canOpenURL: jest.fn(),
 }))
 
+const route: RouteProp<OnboardingStackParamList, "supportScreen"> = {
+  key: "test-key",
+  name: "supportScreen",
+  params: {
+    canGoBack: true,
+  },
+}
+
 const FEEDBACK_EMAIL_ADDRESS = "feedback@blink.sv"
 
 describe("SupportOnboardingScreen", () => {
   let LL: ReturnType<typeof i18nObject>
+  const mockAddListener = jest.fn(() => jest.fn())
 
   beforeEach(() => {
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      addListener: mockAddListener,
+    })
+    mockAddListener.mockClear()
+
     loadLocale("en")
     LL = i18nObject("en")
   })
@@ -35,19 +49,22 @@ describe("SupportOnboardingScreen", () => {
   it("renders title and description", () => {
     const { getByText } = render(
       <ContextForScreen>
-        <SupportOnboardingScreen />
+        <SupportOnboardingScreen route={route} />
       </ContextForScreen>,
     )
 
-    expect(getByText(LL.OnboardingScreen.supportScreen.title())).toBeTruthy()
-    expect(getByText(LL.OnboardingScreen.supportScreen.description())).toBeTruthy()
+    expect(
+      getByText(
+        LL.OnboardingScreen.supportScreen.description({ email: FEEDBACK_EMAIL_ADDRESS }),
+      ),
+    ).toBeTruthy()
     expect(getByText(FEEDBACK_EMAIL_ADDRESS)).toBeTruthy()
   })
 
   it("renders icon with correct testID", () => {
     const { getByTestId } = render(
       <ContextForScreen>
-        <SupportOnboardingScreen />
+        <SupportOnboardingScreen route={route} />
       </ContextForScreen>,
     )
 
@@ -56,37 +73,19 @@ describe("SupportOnboardingScreen", () => {
 
   it("calls navigation.replace when primary action is pressed", () => {
     const mockReplace = jest.fn()
-    ;(useNavigation as jest.Mock).mockReturnValue({ replace: mockReplace })
+    ;(useNavigation as jest.Mock).mockReturnValue({
+      replace: mockReplace,
+      addListener: mockAddListener,
+      navigate: mockReplace,
+    })
 
     const { getByText } = render(
       <ContextForScreen>
-        <SupportOnboardingScreen />
+        <SupportOnboardingScreen route={route} />
       </ContextForScreen>,
     )
 
     fireEvent.press(getByText(LL.OnboardingScreen.supportScreen.primaryButton()))
     expect(mockReplace).toHaveBeenCalledWith("Primary")
-  })
-
-  it("calls Linking.openURL when secondary action is pressed", () => {
-    const { getByText } = render(
-      <ContextForScreen>
-        <SupportOnboardingScreen />
-      </ContextForScreen>,
-    )
-
-    fireEvent.press(getByText(LL.OnboardingScreen.supportScreen.secondaryButton()))
-    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
-  })
-
-  it("calls Linking.openURL when email link is pressed", () => {
-    const { getByText } = render(
-      <ContextForScreen>
-        <SupportOnboardingScreen />
-      </ContextForScreen>,
-    )
-
-    fireEvent.press(getByText(FEEDBACK_EMAIL_ADDRESS))
-    expect(Linking.openURL).toHaveBeenCalledWith(`mailto:${FEEDBACK_EMAIL_ADDRESS}`)
   })
 })

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useCallback, useState, useEffect } from "react"
-import { View, StyleSheet } from "react-native"
-import { Text, makeStyles } from "@rneui/themed"
+import { View, Keyboard, Modal } from "react-native"
+import { Text, makeStyles } from "@rn-vui/themed"
 
 import { gql } from "@apollo/client"
 import { CodeInput } from "@app/components/code-input"
@@ -11,10 +11,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import {
-  SuccessIconAnimation,
-  CompletedTextAnimation,
-} from "@app/components/success-animation"
+import { SuccessIconAnimation } from "@app/components/success-animation"
 
 gql`
   mutation userEmailRegistrationValidate($input: UserEmailRegistrationValidateInput!) {
@@ -57,13 +54,14 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
     if (hasUsername) {
       navigation.replace("onboarding", {
         screen: "supportScreen",
+        params: { canGoBack: false },
       })
       return
     }
 
     navigation.replace("onboarding", {
       screen: "lightningBenefits",
-      params: { onboarding },
+      params: { onboarding, canGoBack: false },
     })
   }, [navigation, onboarding, hasUsername])
 
@@ -83,6 +81,7 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
         }
 
         if (res.data?.userEmailRegistrationValidate.me?.email?.verified) {
+          Keyboard.dismiss()
           setShowSuccess(true)
         } else {
           throw new Error(LL.common.errorAuthToken())
@@ -122,18 +121,22 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <>
-      {showSuccess && (
-        <View style={styles.successOverlay}>
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSuccess(false)}
+      >
+        <View style={styles.successAnimationContainer}>
           <SuccessIconAnimation>
-            <GaloyIcon name="email-add" size={128} />
-          </SuccessIconAnimation>
-          <CompletedTextAnimation>
+            <GaloyIcon name="email-add" size={110} />
             <Text type="h2" style={styles.successText}>
               {LL.common.success()}
             </Text>
-          </CompletedTextAnimation>
+          </SuccessIconAnimation>
         </View>
-      )}
+      </Modal>
+
       <CodeInput
         send={send}
         header={header}
@@ -148,12 +151,13 @@ export const EmailRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
 const useStyles = makeStyles(({ colors }) => ({
   successText: {
     marginTop: 20,
+    textAlign: "center",
+    alignSelf: "center",
   },
-  successOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  successAnimationContainer: {
+    flex: 1,
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
   },
 }))
