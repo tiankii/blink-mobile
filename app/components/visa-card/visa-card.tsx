@@ -19,6 +19,7 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   expiredDate,
 }) => {
   const styles = useStyles()
+  const { LL } = useI18nContext()
 
   return (
     <View style={styles.cardContainer}>
@@ -35,7 +36,7 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
         <Text style={styles.cardholderName}>{name}</Text>
         <View style={styles.expiryContainer}>
           <Text type="p4" style={styles.expiryLabel}>
-            Expires
+            {LL.common.expires()}
           </Text>
           <Text type="p3" style={styles.expiryDate}>
             {expiredDate}
