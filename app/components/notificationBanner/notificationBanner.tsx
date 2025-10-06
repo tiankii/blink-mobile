@@ -1,6 +1,7 @@
 import * as React from "react"
 import { makeStyles, useTheme, Text, Icon } from "@rn-vui/themed"
-import { View, TouchableOpacity, Animated } from "react-native"
+import { View, TouchableOpacity, Animated, GestureResponderEvent } from "react-native"
+
 import { GaloyIcon } from "../atomic/galoy-icon"
 
 interface NotificationBannerProps {
@@ -36,7 +37,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
     }).start()
   }, [visible, fadeAnim])
 
-  const handleDismiss = (event: any) => {
+  const handleDismiss = (event: GestureResponderEvent) => {
     event.stopPropagation()
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -70,7 +71,7 @@ export const NotificationBanner: React.FC<NotificationBannerProps> = ({
               <Icon
                 name="notifications-outline"
                 type="ionicon"
-                color={colors._white}
+                color={colors.black}
                 size={24}
               />
             </View>
@@ -129,11 +130,11 @@ const useStyles = makeStyles(({ colors }) => ({
     gap: 4,
   },
   title: {
-    color: colors._white,
+    color: colors.black,
     lineHeight: 20,
   },
   subtitle: {
-    color: colors._white,
+    color: colors.black,
     lineHeight: 18,
     opacity: 0.8,
   },
