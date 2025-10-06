@@ -8,7 +8,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { circleDiameterThatContainsSquare } from "@app/components/atomic/galoy-icon"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { Screen } from "../../components/screen"
+import { Screen } from "@app/components/screen"
 
 interface Step {
   title: string
