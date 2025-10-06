@@ -119,6 +119,10 @@ export type RootStackParamList = {
   supportChat: undefined
   notificationHistory: undefined
   onboarding: NavigatorScreenParams<OnboardingStackParamList>
+  BitcoinCard: undefined
+  CardDetails: undefined
+  CardThankYou: undefined
+  CardNextStep: undefined
 }
 
 export type OnboardingStackParamList = {

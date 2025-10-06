@@ -8835,6 +8835,10 @@ type RootTranslation = {
 		 * A​l​l​ ​a​c​c​o​u​n​t​s
 		 */
 		allAccounts: string
+		/**
+		 * E​x​p​i​r​e​s
+		 */
+		expires: string
 	}
 	errors: {
 		/**
@@ -9394,6 +9398,160 @@ type RootTranslation = {
 		 * A​n​ ​e​r​r​o​r​ ​o​c​c​u​r​r​e​d​ ​w​h​i​l​e​ ​r​e​s​e​t​t​i​n​g​ ​t​h​e​ ​c​h​a​t
 		 */
 		errorResettingChat: string
+	}
+	BitcoinCardScreen: {
+		/**
+		 * B​l​i​n​k​ ​V​i​s​a​ ​C​a​r​d
+		 */
+		title: string
+		/**
+		 * T​h​e​ ​B​i​t​c​o​i​n​ ​C​a​r​d​ ​f​o​r​ ​M​a​x​i​s
+		 */
+		subtitle: string
+	}
+	CardDetailsScreen: {
+		/**
+		 * A​n​d​ ​M​o​r​e
+		 */
+		title: string
+		/**
+		 * T​h​e​ ​B​i​t​c​o​i​n​ ​C​a​r​d​ ​f​o​r​ ​M​a​x​i​s
+		 */
+		subtitle: string
+		features: {
+			/**
+			 * P​e​r​s​o​n​a​l​ ​A​c​c​o​u​n​t​ ​M​a​n​a​g​e​r
+			 */
+			accountManager: string
+			/**
+			 * F​r​e​e​ ​L​i​g​h​t​n​i​n​g​ ​T​r​a​n​s​a​c​t​i​o​n​s
+			 */
+			lightningTransactions: string
+			/**
+			 * F​r​e​e​ ​O​n​c​h​a​i​n​ ​D​e​p​o​s​i​t​s​ ​a​n​d​ ​W​i​t​h​d​r​a​w​a​l​s
+			 */
+			onchainDeposits: string
+			/**
+			 * $​1​0​0​ ​t​o​ ​C​i​r​c​u​l​a​r​ ​E​c​o​n​o​m​i​e​s
+			 */
+			circularEconomies: string
+		}
+		incommingFeatures: {
+			/**
+			 * C​o​l​d​-​s​t​o​r​a​g​e​ ​S​a​v​i​n​g​s​ ​a​c​c​o​u​n​t
+			 */
+			coldStorage: string
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e​ ​R​e​v​e​n​u​e​ ​S​h​a​r​i​n​g
+			 */
+			lightningNode: string
+			/**
+			 * B​i​t​c​o​i​n​-​b​a​c​k​e​d​ ​L​o​a​n​s
+			 */
+			bitcoinbacked: string
+		}
+		/**
+		 * C​o​m​i​n​g​ ​i​n​ ​2​0​2​6
+		 */
+		commingIn: string
+		/**
+		 * .​.​.​a​n​d​ ​m​o​r​e
+		 */
+		andMore: string
+	}
+	CardThankYouScreen: {
+		/**
+		 * T​h​a​n​k​ ​Y​o​u
+		 */
+		title: string
+		welcomeMessage: {
+			/**
+			 * D​e​a​r​ ​f​e​l​l​o​w​ ​B​i​t​c​o​i​n​e​r​,
+			 */
+			greeting: string
+			paragraphs: {
+				/**
+				 * T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​b​e​i​n​g​ ​o​u​r​ ​f​r​i​e​n​d​,​ ​p​a​r​e​n​t​,​ ​s​u​p​p​o​r​t​e​r​,​ ​s​u​p​e​r​u​s​e​r​,​ ​c​i​r​c​u​l​a​r​ ​e​c​o​n​o​m​y​ ​b​u​i​l​d​e​r​,​ ​c​o​m​m​u​n​i​t​y​ ​m​e​m​b​e​r​,​ ​h​i​l​a​r​i​o​u​s​l​y​ ​t​o​x​i​c​ ​m​a​x​i​ ​o​r​ ​s​o​m​e​t​h​i​n​g​ ​e​l​s​e​.
+				 */
+				body1: string
+				/**
+				 * S​o​m​e​o​n​e​ ​o​n​ ​o​u​r​ ​t​e​a​m​ ​o​r​ ​s​o​m​e​o​n​e​ ​c​l​o​s​e​ ​t​o​ ​s​o​m​e​o​n​e​ ​o​n​ ​o​u​r​ ​t​e​a​m​ ​t​h​o​u​g​h​t​ ​o​f​ ​y​o​u​ ​a​s​ ​s​o​m​e​o​n​e​ ​w​e​ ​w​o​u​l​d​ ​l​i​k​e​ ​t​o​ ​i​n​v​i​t​e​ ​t​o​ ​b​e​ ​p​a​r​t​ ​o​f​ ​t​h​e​ ​B​l​i​n​k​ ​j​o​u​r​n​e​y​.​ ​P​r​o​b​a​b​l​y​ ​b​e​c​a​u​s​e​ ​y​o​u​ ​a​r​e​ ​a​n​ ​a​w​e​s​o​m​e​ ​h​u​m​a​n​ ​a​n​d​ ​B​i​t​c​o​i​n​e​r​.
+				 */
+				body2: string
+				/**
+				 * Y​o​u​ ​a​r​e​ ​1​ ​o​f​ ​o​n​l​y​ ​1​,​0​0​0​ ​t​h​a​t​ ​w​e​r​e​ ​i​n​v​i​t​e​d​ ​t​o​ ​b​e​ ​p​a​r​t​ ​o​f​ ​t​h​i​s​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​p​i​l​o​t​.​ ​W​e​ ​c​h​o​s​e​ ​t​o​ ​d​o​ ​i​t​ ​t​h​i​s​ ​w​a​y​,​ ​b​e​c​a​u​s​e​ ​w​e​ ​w​a​n​t​ ​t​o​ ​b​u​i​l​d​ ​w​i​t​h​ ​l​o​w​ ​t​i​m​e​ ​p​r​e​f​e​r​e​n​c​e​,​ ​t​h​e​ ​B​i​t​c​o​i​n​ ​w​a​y​.​ ​A​n​d​ ​t​o​ ​b​e​ ​a​b​l​e​ ​t​o​ ​d​o​ ​t​h​a​t​,​ ​w​e​ ​n​e​e​d​ ​p​e​o​p​l​e​ ​a​r​o​u​n​d​ ​u​s​ ​w​i​t​h​ ​a​ ​s​i​m​i​l​a​r​ ​m​i​n​d​s​e​t​.
+				 */
+				body3: string
+				/**
+				 * Y​o​u​ ​a​r​e​ ​p​a​r​t​ ​o​f​ ​t​h​e​ ​f​a​m​i​l​y​ ​n​o​w​ ​a​n​d​ ​w​e​ ​p​r​o​m​i​s​e​ ​w​e​ ​w​i​l​l​ ​d​o​ ​o​u​r​ ​b​e​s​t​ ​t​o​ ​m​a​k​e​ ​i​t​ ​f​e​e​l​ ​t​h​a​t​ ​w​a​y​ ​w​h​e​n​e​v​e​r​ ​y​o​u​ ​r​e​a​c​h​ ​o​u​t​ ​f​o​r​ ​h​e​l​p​,​ ​t​o​ ​m​a​k​e​ ​a​ ​s​u​g​g​e​s​t​i​o​n​ ​o​r​ ​j​u​s​t​ ​t​o​ ​c​h​a​t​.
+				 */
+				body4: string
+				/**
+				 * O​u​r​ ​g​o​a​l​ ​f​o​r​ ​2​0​2​6​ ​i​s​ ​t​o​ ​s​t​u​f​f​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​w​i​t​h​ ​s​o​ ​m​u​c​h​ ​g​o​o​d​i​e​s​ ​a​n​d​ ​g​o​o​d​ ​v​i​b​e​s​ ​t​h​a​t​ ​t​h​e​r​e​ ​i​s​ ​n​o​ ​w​a​y​ ​y​o​u​ ​w​i​l​l​ ​n​o​t​ ​w​a​n​t​ ​t​o​ ​r​e​n​e​w​ ​y​o​u​r​ ​s​u​b​s​c​r​i​p​t​i​o​n​ ​n​e​x​t​ ​y​e​a​r​.
+				 */
+				body5: string
+			}
+			/**
+			 * W​i​t​h​ ​w​a​r​m​ ​r​e​g​a​r​d​s​,
+			 */
+			closing: string
+			/**
+			 * T​h​e​ ​B​l​i​n​k​ ​T​e​a​m
+			 */
+			signature: string
+		}
+	}
+	CardNextStepScreen: {
+		/**
+		 * N​e​x​t​ ​s​t​e​p​s
+		 */
+		title: string
+		/**
+		 * G​e​t​ ​S​t​a​r​t​e​d
+		 */
+		getStarted: string
+		steps: {
+			one: {
+				/**
+				 * A​p​p​l​y​ ​f​o​r​ ​c​a​r​d
+				 */
+				title: string
+				/**
+				 * K​Y​C​ ​v​e​r​i​f​i​c​a​t​i​o​n​ ​a​n​d​ ​a​p​p​l​i​c​a​t​i​o​n​ ​s​u​b​m​i​s​s​i​o​n
+				 */
+				description: string
+			}
+			two: {
+				/**
+				 * S​u​b​s​c​r​i​b​e​ ​a​n​d​ ​p​a​y
+				 */
+				title: string
+				/**
+				 * O​n​c​e​ ​a​p​p​r​o​v​e​d​,​ ​y​o​u​ ​p​a​y​ ​$​1​,​0​0​0​ ​b​y​ ​l​i​g​h​t​n​i​n​g
+				 */
+				description: string
+			}
+			three: {
+				/**
+				 * W​a​i​t
+				 */
+				title: string
+				/**
+				 * W​e​ ​e​x​p​e​c​t​ ​t​o​ ​b​e​ ​r​e​a​d​y​ ​b​y​ ​e​n​d​ ​o​f​ ​Q​4​ ​2​0​2​5
+				 */
+				description: string
+			}
+			four: {
+				/**
+				 * A​c​t​i​v​a​t​e​ ​c​a​r​d
+				 */
+				title: string
+				/**
+				 * W​e​ ​w​i​l​l​ ​n​o​t​i​f​y​ ​y​o​u​ ​i​n​ ​t​h​e​ ​B​l​i​n​k​ ​a​p​p​ ​w​h​e​n​ ​t​h​e​ ​c​a​r​d​ ​i​s​ ​r​e​a​d​y
+				 */
+				description: string
+			}
+		}
 	}
 }
 
@@ -18127,6 +18285,10 @@ export type TranslationFunctions = {
 		 * All accounts
 		 */
 		allAccounts: () => LocalizedString
+		/**
+		 * Expires
+		 */
+		expires: () => LocalizedString
 	}
 	errors: {
 		/**
@@ -18666,6 +18828,160 @@ export type TranslationFunctions = {
 		 * An error occurred while resetting the chat
 		 */
 		errorResettingChat: () => LocalizedString
+	}
+	BitcoinCardScreen: {
+		/**
+		 * Blink Visa Card
+		 */
+		title: () => LocalizedString
+		/**
+		 * The Bitcoin Card for Maxis
+		 */
+		subtitle: () => LocalizedString
+	}
+	CardDetailsScreen: {
+		/**
+		 * And More
+		 */
+		title: () => LocalizedString
+		/**
+		 * The Bitcoin Card for Maxis
+		 */
+		subtitle: () => LocalizedString
+		features: {
+			/**
+			 * Personal Account Manager
+			 */
+			accountManager: () => LocalizedString
+			/**
+			 * Free Lightning Transactions
+			 */
+			lightningTransactions: () => LocalizedString
+			/**
+			 * Free Onchain Deposits and Withdrawals
+			 */
+			onchainDeposits: () => LocalizedString
+			/**
+			 * $100 to Circular Economies
+			 */
+			circularEconomies: () => LocalizedString
+		}
+		incommingFeatures: {
+			/**
+			 * Cold-storage Savings account
+			 */
+			coldStorage: () => LocalizedString
+			/**
+			 * Lightning Node Revenue Sharing
+			 */
+			lightningNode: () => LocalizedString
+			/**
+			 * Bitcoin-backed Loans
+			 */
+			bitcoinbacked: () => LocalizedString
+		}
+		/**
+		 * Coming in 2026
+		 */
+		commingIn: () => LocalizedString
+		/**
+		 * ...and more
+		 */
+		andMore: () => LocalizedString
+	}
+	CardThankYouScreen: {
+		/**
+		 * Thank You
+		 */
+		title: () => LocalizedString
+		welcomeMessage: {
+			/**
+			 * Dear fellow Bitcoiner,
+			 */
+			greeting: () => LocalizedString
+			paragraphs: {
+				/**
+				 * Thank you for being our friend, parent, supporter, superuser, circular economy builder, community member, hilariously toxic maxi or something else.
+				 */
+				body1: () => LocalizedString
+				/**
+				 * Someone on our team or someone close to someone on our team thought of you as someone we would like to invite to be part of the Blink journey. Probably because you are an awesome human and Bitcoiner.
+				 */
+				body2: () => LocalizedString
+				/**
+				 * You are 1 of only 1,000 that were invited to be part of this Blink Private pilot. We chose to do it this way, because we want to build with low time preference, the Bitcoin way. And to be able to do that, we need people around us with a similar mindset.
+				 */
+				body3: () => LocalizedString
+				/**
+				 * You are part of the family now and we promise we will do our best to make it feel that way whenever you reach out for help, to make a suggestion or just to chat.
+				 */
+				body4: () => LocalizedString
+				/**
+				 * Our goal for 2026 is to stuff Blink Private with so much goodies and good vibes that there is no way you will not want to renew your subscription next year.
+				 */
+				body5: () => LocalizedString
+			}
+			/**
+			 * With warm regards,
+			 */
+			closing: () => LocalizedString
+			/**
+			 * The Blink Team
+			 */
+			signature: () => LocalizedString
+		}
+	}
+	CardNextStepScreen: {
+		/**
+		 * Next steps
+		 */
+		title: () => LocalizedString
+		/**
+		 * Get Started
+		 */
+		getStarted: () => LocalizedString
+		steps: {
+			one: {
+				/**
+				 * Apply for card
+				 */
+				title: () => LocalizedString
+				/**
+				 * KYC verification and application submission
+				 */
+				description: () => LocalizedString
+			}
+			two: {
+				/**
+				 * Subscribe and pay
+				 */
+				title: () => LocalizedString
+				/**
+				 * Once approved, you pay $1,000 by lightning
+				 */
+				description: () => LocalizedString
+			}
+			three: {
+				/**
+				 * Wait
+				 */
+				title: () => LocalizedString
+				/**
+				 * We expect to be ready by end of Q4 2025
+				 */
+				description: () => LocalizedString
+			}
+			four: {
+				/**
+				 * Activate card
+				 */
+				title: () => LocalizedString
+				/**
+				 * We will notify you in the Blink app when the card is ready
+				 */
+				description: () => LocalizedString
+			}
+		}
 	}
 }
 

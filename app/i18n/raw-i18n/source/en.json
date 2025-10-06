@@ -2699,7 +2699,8 @@
         },
         "dollar": "Dollar",
         "all": "ALL",
-        "allAccounts": "All accounts"
+        "allAccounts": "All accounts",
+        "expires": "Expires"
     },
     "errors": {
         "generic": "There was an error.\nPlease try again later.",
@@ -2854,5 +2855,63 @@
         "errorSendingMessage": "An error occurred while sending the message",
         "confirmChatReset": "Are you sure you want to reset the chat?",
         "errorResettingChat": "An error occurred while resetting the chat"
+    },
+    "BitcoinCardScreen": {
+        "title": "Blink Visa Card",
+        "subtitle": "The Bitcoin Card for Maxis"
+    },
+    "CardDetailsScreen": {
+        "title": "And More",
+        "subtitle": "The Bitcoin Card for Maxis",
+        "features": {
+            "accountManager": "Personal Account Manager",
+            "lightningTransactions": "Free Lightning Transactions",
+            "onchainDeposits": "Free Onchain Deposits and Withdrawals",
+            "circularEconomies": "$100 to Circular Economies"
+        },
+        "incommingFeatures": {
+            "coldStorage": "Cold-storage Savings account",
+            "lightningNode": "Lightning Node Revenue Sharing",
+            "bitcoinbacked": "Bitcoin-backed Loans"
+        },
+        "commingIn": "Coming in 2026",
+        "andMore": "...and more"
+    },
+    "CardThankYouScreen": {
+        "title": "Thank You",
+        "welcomeMessage": {
+            "greeting": "Dear fellow Bitcoiner,",
+            "paragraphs": {
+                "body1": "Thank you for being our friend, parent, supporter, superuser, circular economy builder, community member, hilariously toxic maxi or something else.",
+                "body2": "Someone on our team or someone close to someone on our team thought of you as someone we would like to invite to be part of the Blink journey. Probably because you are an awesome human and Bitcoiner.",
+                "body3": "You are 1 of only 1,000 that were invited to be part of this Blink Private pilot. We chose to do it this way, because we want to build with low time preference, the Bitcoin way. And to be able to do that, we need people around us with a similar mindset.",
+                "body4": "You are part of the family now and we promise we will do our best to make it feel that way whenever you reach out for help, to make a suggestion or just to chat.",
+                "body5": "Our goal for 2026 is to stuff Blink Private with so much goodies and good vibes that there is no way you will not want to renew your subscription next year."
+            },
+            "closing": "With warm regards,",
+            "signature": "The Blink Team"
+        }
+    },
+    "CardNextStepScreen": {
+        "title": "Next steps",
+        "getStarted": "Get Started",
+        "steps": {
+            "one": {
+                "title": "Apply for card",
+                "description": "KYC verification and application submission"
+            },
+            "two": {
+                "title": "Subscribe and pay",
+                "description": "Once approved, you pay $1,000 by lightning"
+            },
+            "three": {
+                "title": "Wait",
+                "description": "We expect to be ready by end of Q4 2025"
+            },
+            "four": {
+                "title": "Activate card",
+                "description": "We will notify you in the Blink app when the card is ready"
+            }
+        }
     }
 }

@@ -95,6 +95,12 @@ import {
   RootStackParamList,
 } from "./stack-param-lists"
 import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
+import {
+  BitcoinCard,
+  CardDetails,
+  CardThankYou,
+  CardNextStep,
+} from "../screens/bitcoin-card"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -469,6 +475,34 @@ export const RootStack = () => {
         name="onboarding"
         component={OnboardingNavigator}
         options={{ headerShown: false }}
+      />
+      <RootNavigator.Screen
+        name="BitcoinCard"
+        component={BitcoinCard}
+        options={{
+          title: LL.BitcoinCardScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="CardDetails"
+        component={CardDetails}
+        options={{
+          title: LL.CardDetailsScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="CardThankYou"
+        component={CardThankYou}
+        options={{
+          title: LL.CardThankYouScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="CardNextStep"
+        component={CardNextStep}
+        options={{
+          title: LL.CardNextStepScreen.title(),
+        }}
       />
     </RootNavigator.Navigator>
   )

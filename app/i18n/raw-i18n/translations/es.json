@@ -2700,7 +2700,8 @@
         },
         "dollar": "Dólar",
         "all": "TODAS",
-        "allAccounts": "Todas las cuentas"
+        "allAccounts": "Todas las cuentas",
+        "expires": "Caduca"
     },
     "errors": {
         "generic": "Hubo un error inesperado.\nPor favor intente más tarde",
@@ -2855,5 +2856,63 @@
         "errorSendingMessage": "Se ha producido un error al enviar el mensaje",
         "confirmChatReset": "¿Seguro que quieres reiniciar el chat?",
         "errorResettingChat": "Se ha producido un error al restablecer el chat"
+    },
+    "BitcoinCardScreen": {
+        "title": "Tarjeta Visa Blink",
+        "subtitle": "La tarjeta Bitcoin para Maxis"
+    },
+    "CardDetailsScreen": {
+        "title": "Y más",
+        "subtitle": "La tarjeta Bitcoin para Maxis",
+        "features":{
+            "accountManager": "Administrador de cuenta personal",
+            "lightningTransactions": "Transacciones Lightning gratis",
+            "onchainDeposits": "Depósitos y retiros Onchain gratuitos",
+            "circularEconomies": "$100 para economías circulares"
+        },
+        "incommingFeatures": {
+            "coldStorage": "Cuenta de ahorros en almacenamiento en frío",
+            "lightningNode": "Participación en ingresos del nodo Lightning",
+            "bitcoinbacked": "Préstamos respaldados por Bitcoin"
+        },
+        "commingIn": "Disponible en 2026",
+        "andMore": "...y más"
+    },
+    "CardThankYouScreen": {
+        "title": "Gracias",
+        "welcomeMessage": {
+        "greeting": "Estimado compañero bitcoiner,",
+        "paragraphs":{
+            "body1": "Gracias por ser nuestro amigo, padre, seguidor, superusuario, constructor de economías circulares, miembro de la comunidad, maxi hilarantemente tóxico o algo más.",
+            "body2": "Alguien de nuestro equipo o alguien cercano a nuestro equipo pensó en ti como alguien a quien nos gustaría invitar a ser parte del viaje de Blink. Probablemente porque eres una persona increíble y bitcoiner.",
+            "body3": "Eres 1 de solo 1,000 que fueron invitados a ser parte de este piloto privado de Blink. Elegimos hacerlo así porque queremos construir con baja preferencia temporal, al estilo Bitcoin. Y para lograrlo, necesitamos personas con una mentalidad similar.",
+            "body4": "Ahora eres parte de la familia y prometemos hacer todo lo posible para que lo sientas así cada vez que necesites ayuda, quieras hacer una sugerencia o simplemente conversar.",
+            "body5": "Nuestro objetivo para 2026 es llenar Blink Private de tantas cosas buenas y buenas vibras que no haya forma de que no quieras renovar tu suscripción el próximo año."
+        },
+        "closing": "Con un cordial saludo,",
+        "signature": "El equipo de Blink"
+        }
+    },
+    "CardNextStepScreen": {
+        "title": "Próximos pasos",
+        "getStarted": "Comenzar",
+        "steps": {
+            "one": {
+                "title": "Solicita la tarjeta",
+                "description": "Verificación KYC y envío de la solicitud"
+            },
+            "two": {
+                "title": "Suscríbete y paga",
+                "description": "Una vez aprobado, pagas $1,000 por Lightning"
+            },
+            "three": {
+                "title": "Espera",
+                "description": "Esperamos estar listos para finales del cuarto trimestre de 2025"
+            },
+            "four": {
+                "title": "Activa la tarjeta",
+                "description": "Te notificaremos en la app Blink cuando la tarjeta esté lista"
+            }
+        }
     }
 }
