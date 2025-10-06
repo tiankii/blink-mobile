@@ -1,10 +1,14 @@
 import * as React from "react"
 import { makeStyles, Text } from "@rn-vui/themed"
-import { Screen } from "../../components/screen"
 import { ScrollView, View } from "react-native"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
 import { useI18nContext } from "@app/i18n/i18n-react"
+
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { circleDiameterThatContainsSquare } from "@app/components/atomic/galoy-icon"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { Screen } from "../../components/screen"
 
 interface Step {
   title: string
@@ -47,6 +51,7 @@ const StepItem: React.FC<StepItemProps> = ({ step, isCurrentStep, stepNumber }) 
 export const CardNextStep: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Primary">>()
 
   const STEPS: Step[] = [
     {
@@ -67,7 +72,13 @@ export const CardNextStep: React.FC = () => {
     },
   ]
 
-  const handleNext = () => {}
+  const handleWebview = () => {
+    const sumsubUrl = ""
+    navigation.navigate("webView", {
+      url: sumsubUrl,
+      initialTitle: LL.CardNextStepScreen.getStarted(),
+    })
+  }
 
   return (
     <Screen>
@@ -82,11 +93,10 @@ export const CardNextStep: React.FC = () => {
           />
         ))}
       </ScrollView>
-
       <View style={styles.buttonContainer}>
         <GaloyPrimaryButton
           title={LL.CardNextStepScreen.getStarted()}
-          onPress={handleNext}
+          onPress={handleWebview}
         />
       </View>
     </Screen>
