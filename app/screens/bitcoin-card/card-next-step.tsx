@@ -73,10 +73,10 @@ export const CardNextStep: React.FC = () => {
   ]
 
   const handleWebview = () => {
-    const sumsubUrl = ""
+    const url = ""
     navigation.navigate("webView", {
-      url: sumsubUrl,
-      initialTitle: LL.CardNextStepScreen.getStarted(),
+      url,
+      hideHeader: true,
     })
   }
 

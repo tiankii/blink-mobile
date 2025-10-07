@@ -114,7 +114,7 @@ export type RootStackParamList = {
   totpRegistrationInitiate: undefined
   totpRegistrationValidate: { totpRegistrationId: string }
   totpLoginValidate: { authToken: string }
-  webView: { url: string; initialTitle?: string }
+  webView: { url: string; initialTitle?: string; hideHeader?: boolean }
   fullOnboardingFlow: undefined
   supportChat: undefined
   notificationHistory: undefined
