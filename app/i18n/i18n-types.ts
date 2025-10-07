@@ -9411,24 +9411,20 @@ type RootTranslation = {
 	}
 	CardDetailsScreen: {
 		/**
-		 * A​n​d​ ​M​o​r​e
+		 * A​d​d​i​t​i​o​n​a​l​ ​P​e​r​k​s
 		 */
 		title: string
-		/**
-		 * T​h​e​ ​B​i​t​c​o​i​n​ ​C​a​r​d​ ​f​o​r​ ​M​a​x​i​s
-		 */
-		subtitle: string
 		features: {
 			/**
 			 * P​e​r​s​o​n​a​l​ ​A​c​c​o​u​n​t​ ​M​a​n​a​g​e​r
 			 */
 			accountManager: string
 			/**
-			 * F​r​e​e​ ​L​i​g​h​t​n​i​n​g​ ​T​r​a​n​s​a​c​t​i​o​n​s
+			 * 5​0​%​ ​B​a​c​k​ ​O​n​ ​L​i​g​h​t​n​i​n​g​ ​F​e​e​s
 			 */
 			lightningTransactions: string
 			/**
-			 * F​r​e​e​ ​O​n​c​h​a​i​n​ ​D​e​p​o​s​i​t​s​ ​a​n​d​ ​W​i​t​h​d​r​a​w​a​l​s
+			 * 5​0​%​ ​B​a​c​k​ ​O​n​ ​O​n​c​h​a​i​n​ ​F​e​e​s
 			 */
 			onchainDeposits: string
 			/**
@@ -9436,26 +9432,8 @@ type RootTranslation = {
 			 */
 			circularEconomies: string
 		}
-		incommingFeatures: {
-			/**
-			 * C​o​l​d​-​s​t​o​r​a​g​e​ ​S​a​v​i​n​g​s​ ​a​c​c​o​u​n​t
-			 */
-			coldStorage: string
-			/**
-			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e​ ​R​e​v​e​n​u​e​ ​S​h​a​r​i​n​g
-			 */
-			lightningNode: string
-			/**
-			 * B​i​t​c​o​i​n​-​b​a​c​k​e​d​ ​L​o​a​n​s
-			 */
-			bitcoinbacked: string
-		}
 		/**
-		 * C​o​m​i​n​g​ ​i​n​ ​2​0​2​6
-		 */
-		commingIn: string
-		/**
-		 * .​.​.​a​n​d​ ​m​o​r​e
+		 * .​.​.​ ​a​n​d​ ​m​o​r​e​ ​c​o​m​i​n​g​ ​i​n​ ​2​0​2​6
 		 */
 		andMore: string
 	}
@@ -18841,24 +18819,20 @@ export type TranslationFunctions = {
 	}
 	CardDetailsScreen: {
 		/**
-		 * And More
+		 * Additional Perks
 		 */
 		title: () => LocalizedString
-		/**
-		 * The Bitcoin Card for Maxis
-		 */
-		subtitle: () => LocalizedString
 		features: {
 			/**
 			 * Personal Account Manager
 			 */
 			accountManager: () => LocalizedString
 			/**
-			 * Free Lightning Transactions
+			 * 50% Back On Lightning Fees
 			 */
 			lightningTransactions: () => LocalizedString
 			/**
-			 * Free Onchain Deposits and Withdrawals
+			 * 50% Back On Onchain Fees
 			 */
 			onchainDeposits: () => LocalizedString
 			/**
@@ -18866,26 +18840,8 @@ export type TranslationFunctions = {
 			 */
 			circularEconomies: () => LocalizedString
 		}
-		incommingFeatures: {
-			/**
-			 * Cold-storage Savings account
-			 */
-			coldStorage: () => LocalizedString
-			/**
-			 * Lightning Node Revenue Sharing
-			 */
-			lightningNode: () => LocalizedString
-			/**
-			 * Bitcoin-backed Loans
-			 */
-			bitcoinbacked: () => LocalizedString
-		}
 		/**
-		 * Coming in 2026
-		 */
-		commingIn: () => LocalizedString
-		/**
-		 * ...and more
+		 * ... and more coming in 2026
 		 */
 		andMore: () => LocalizedString
 	}

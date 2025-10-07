@@ -2862,22 +2862,15 @@
         "subtitle": "La tarjeta Bitcoin para Maxis"
     },
     "CardDetailsScreen": {
-        "title": "Y más",
-        "subtitle": "La tarjeta Bitcoin para Maxis",
+        "title": "Beneficios Adicionales",
         "features":{
-            "accountManager": "Administrador de cuenta personal",
-            "lightningTransactions": "Transacciones Lightning gratis",
-            "onchainDeposits": "Depósitos y retiros Onchain gratuitos",
-            "circularEconomies": "$100 para economías circulares"
+            "accountManager": "Gerente de Cuenta Personal",
+            "lightningTransactions": "50% de Reembolso en Tarifas Lightning",
+            "onchainDeposits": "50% de Reembolso en Tarifas Onchain",
+            "circularEconomies": "$100 para Economías Circulares"
         },
-        "incommingFeatures": {
-            "coldStorage": "Cuenta de ahorros en almacenamiento en frío",
-            "lightningNode": "Participación en ingresos del nodo Lightning",
-            "bitcoinbacked": "Préstamos respaldados por Bitcoin"
-        },
-        "commingIn": "Disponible en 2026",
-        "andMore": "...y más"
-    },
+        "andMore": "... y más próximamente en 2026"
+  },
     "CardThankYouScreen": {
         "title": "Gracias",
         "welcomeMessage": {
