@@ -2803,7 +2803,7 @@ const en: BaseTranslation = {
     dollar: "Dollar",
     all: "ALL",
     allAccounts: "All accounts",
-    expires: "Expires"
+    validThru: "Valid thru"
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",

@@ -17,7 +17,13 @@ export const BitcoinCard: React.FC = () => {
   return (
     <Screen>
       <View style={styles.cardStyle}>
-        <VisaCard expiredDate={"../.."} name={".... .... .... ...."} />
+        <VisaCard
+          expiredDate={"01/28"}
+          name={"satoshi nakamoto"}
+          cardNumber="2121 2121 2121 2121"
+          useGradient
+          gradientDegrees={-60}
+        />
         <Text type="h2">{LL.BitcoinCardScreen.subtitle()}</Text>
       </View>
       <View style={styles.buttonsContainer}>

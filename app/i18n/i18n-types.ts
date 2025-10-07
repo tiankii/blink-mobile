@@ -8836,9 +8836,9 @@ type RootTranslation = {
 		 */
 		allAccounts: string
 		/**
-		 * E​x​p​i​r​e​s
+		 * V​a​l​i​d​ ​t​h​r​u
 		 */
-		expires: string
+		validThru: string
 	}
 	errors: {
 		/**
@@ -18264,9 +18264,9 @@ export type TranslationFunctions = {
 		 */
 		allAccounts: () => LocalizedString
 		/**
-		 * Expires
+		 * Valid thru
 		 */
-		expires: () => LocalizedString
+		validThru: () => LocalizedString
 	}
 	errors: {
 		/**
