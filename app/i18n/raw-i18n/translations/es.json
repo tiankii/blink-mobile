@@ -2701,7 +2701,7 @@
         "dollar": "Dólar",
         "all": "TODAS",
         "allAccounts": "Todas las cuentas",
-        "expires": "Caduca"
+        "validThru": "Válido hasta"
     },
     "errors": {
         "generic": "Hubo un error inesperado.\nPor favor intente más tarde",
