@@ -16,10 +16,9 @@ interface Feature {
 
 interface FeatureItemProps {
   feature: Feature
-  isAvailable: boolean
 }
 
-const FeatureItem: React.FC<FeatureItemProps> = ({ feature, isAvailable }) => {
+const FeatureItem: React.FC<FeatureItemProps> = ({ feature }) => {
   const {
     theme: { colors },
   } = useTheme()
@@ -30,10 +29,10 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature, isAvailable }) => {
       <Icon
         name={feature.icon}
         type="ionicon"
-        color={isAvailable ? colors._black : colors._white}
-        backgroundColor={isAvailable ? colors.primary : colors.grey4}
+        color={colors._black}
+        backgroundColor={colors.primary}
         style={styles.iconStyle}
-        size={20}
+        size={19}
       />
       <Text type="p2">{feature.title}</Text>
     </View>
@@ -61,22 +60,7 @@ export const CardDetails: React.FC = () => {
     {
       icon: "shield-outline",
       title: LL.CardDetailsScreen.features.circularEconomies(),
-    },
-  ]
-
-  const UPCOMING_FEATURES: Feature[] = [
-    {
-      icon: "shield-outline",
-      title: LL.CardDetailsScreen.incommingFeatures.coldStorage(),
-    },
-    {
-      icon: "shield-outline",
-      title: LL.CardDetailsScreen.incommingFeatures.lightningNode(),
-    },
-    {
-      icon: "shield-outline",
-      title: LL.CardDetailsScreen.incommingFeatures.bitcoinbacked(),
-    },
+    }, 
   ]
 
   const handleNext = () => {
@@ -85,40 +69,49 @@ export const CardDetails: React.FC = () => {
 
   return (
     <Screen>
-      <ScrollView style={styles.scrollContainer}>
+      <View style={styles.container}>
         <View style={styles.topSpacer} />
-        {FEATURES.map((feature, index) => (
-          <FeatureItem key={`feature-${index}`} feature={feature} isAvailable={true} />
-        ))}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.cardContainer}>
+            {FEATURES.map((feature, index) => (
+              <FeatureItem key={`feature-${index}`} feature={feature} />
+            ))}
+            <Text type="p2">{LL.CardDetailsScreen.andMore()}</Text>
+          </View>
+        </ScrollView>
 
-        <Text type="p2" style={styles.sectionTitle}>
-          {LL.CardDetailsScreen.commingIn()}
-        </Text>
-
-        {UPCOMING_FEATURES.map((feature, index) => (
-          <FeatureItem key={`upcoming-${index}`} feature={feature} isAvailable={false} />
-        ))}
-
-        <Text type="p2">{LL.CardDetailsScreen.andMore()}</Text>
-      </ScrollView>
-
-      <View style={styles.buttonsContainer}>
-        <GaloyPrimaryButton title={LL.common.next()} onPress={handleNext} />
+        <View style={styles.buttonsContainer}>
+          <GaloyPrimaryButton title={"Cool"} onPress={handleNext} />
+        </View>
       </View>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles(({ colors }) => {
   const containerSize = circleDiameterThatContainsSquare(22)
 
   return {
-    scrollContainer: {
-      marginHorizontal: 40,
-      marginBottom: 20,
+    container: {
+      flex: 1,
     },
     topSpacer: {
       marginTop: 30,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: 20,
+      paddingBottom: 20,
+    },
+    cardContainer: {
+      backgroundColor: colors.grey5,
+      borderRadius: 12,
+      padding: 30,
     },
     featureContainer: {
       flexDirection: "row",
@@ -133,11 +126,7 @@ const useStyles = makeStyles(() => {
       alignItems: "center",
       justifyContent: "center",
     },
-    sectionTitle: {
-      marginBottom: 30,
-    },
     buttonsContainer: {
-      flex: 1,
       justifyContent: "flex-end",
       marginBottom: 14,
       paddingHorizontal: 20,

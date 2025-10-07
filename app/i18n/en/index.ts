@@ -2987,21 +2987,14 @@ const en: BaseTranslation = {
     subtitle: "The Bitcoin Card for Maxis",
   },
   CardDetailsScreen: {
-    title: "And More",
-    subtitle: "The Bitcoin Card for Maxis",
+    title: "Additional Perks",
     features:{
       accountManager: "Personal Account Manager",
-      lightningTransactions: "Free Lightning Transactions",
-      onchainDeposits: "Free Onchain Deposits and Withdrawals",
+      lightningTransactions: "50% Back On Lightning Fees",
+      onchainDeposits: "50% Back On Onchain Fees",
       circularEconomies: "$100 to Circular Economies",
     },
-    incommingFeatures: {
-      coldStorage: "Cold-storage Savings account",
-      lightningNode: "Lightning Node Revenue Sharing",
-      bitcoinbacked: "Bitcoin-backed Loans",
-    },
-    commingIn: "Coming in 2026",
-    andMore: "...and more",
+    andMore: "... and more coming in 2026",
   },
   CardThankYouScreen: {
     title: "Thank You",
