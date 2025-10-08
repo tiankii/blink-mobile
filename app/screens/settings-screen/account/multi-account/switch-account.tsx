@@ -10,7 +10,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
 import { ProfileScreen } from "./profile"
 import { fetchProfiles } from "@app/utils/multi-account"
-import { ScrollView } from "react-native"
+import { ScrollView, View } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 
 export const SwitchAccount: React.FC = () => {
@@ -46,7 +46,7 @@ export const SwitchAccount: React.FC = () => {
   }
 
   return (
-    <Screen keyboardShouldPersistTaps="handled" style={styles.containerScreen}>
+    <Screen keyboardShouldPersistTaps="handled">
       <ScrollView contentContainerStyle={styles.outer}>
         {profiles.map((profile, index) => (
           <ProfileScreen
@@ -57,19 +57,17 @@ export const SwitchAccount: React.FC = () => {
           />
         ))}
       </ScrollView>
-      <GaloyPrimaryButton
-        style={styles.addAccountButton}
-        onPress={handleAddNew}
-        title={LL.ProfileScreen.addAccount()}
-      />
+      <View style={styles.buttonsContainer}>
+        <GaloyPrimaryButton
+          onPress={handleAddNew}
+          title={LL.ProfileScreen.addAccount()}
+        />
+      </View>
     </Screen>
   )
 }
 
 export const useStyles = makeStyles(() => ({
-  containerScreen: {
-    paddingBottom: 40,
-  },
   outer: {
     marginTop: 4,
     paddingBottom: 20,
@@ -77,7 +75,9 @@ export const useStyles = makeStyles(() => ({
     flexDirection: "column",
     // rowGap: 2,
   },
-  addAccountButton: {
-    paddingHorizontal: 20,
+  buttonsContainer: {
+    justifyContent: "flex-end",
+    marginBottom: 14,
+    marginHorizontal: 20,
   },
 }))
