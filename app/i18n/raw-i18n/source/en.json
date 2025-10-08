@@ -2887,26 +2887,24 @@
         },
         "buttonText": "Let's Go!"
     },
-    "CardNextStepScreen": {
-        "title": "Next steps",
-        "getStarted": "Get Started",
-        "steps": {
-            "one": {
-                "title": "Apply for card",
-                "description": "KYC verification and application submission"
-            },
-            "two": {
-                "title": "Subscribe and pay",
-                "description": "Once approved, you pay $1,000 by lightning"
-            },
-            "three": {
-                "title": "Wait",
-                "description": "We expect to be ready by end of Q4 2025"
-            },
-            "four": {
-                "title": "Activate card",
-                "description": "We will notify you in the Blink app when the card is ready"
-            }
-        }
+    "CardSubscribeScreen": {
+        "title": "Subscribe",
+        "cardTitle": "Blink Private",
+        "perYear": "per year",
+        "status": {
+            "label": "Status",
+            "paymentPending": "Payment Pending"
+        },
+        "renewalDate": {
+            "label": "Renewal Date"
+        },
+        "agreement": {
+            "text": "I agree to the",
+            "termsOfService": "Terms of Service",
+            "privacyPolicy": "Privacy Policy",
+            "cardholderAgreement": "Cardholder Agreement",
+            "and": "and"
+        },
+        "acceptButton": "Accept & Continue"
     }
 }

@@ -60,18 +60,24 @@ export const CardDetails: React.FC = () => {
     {
       icon: "shield-outline",
       title: LL.CardDetailsScreen.features.circularEconomies(),
-    }, 
+    },
   ]
 
   const handleNext = () => {
-    navigation.navigate("CardThankYou")
+    //navigation.navigate("CardSubscribe")
+    
+    const url = ""
+    navigation.navigate("webView", {
+      url,
+      hideHeader: true,
+    })
   }
 
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.topSpacer} />
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
@@ -84,7 +90,10 @@ export const CardDetails: React.FC = () => {
         </ScrollView>
 
         <View style={styles.buttonsContainer}>
-          <GaloyPrimaryButton title={"Cool"} onPress={handleNext} />
+          <GaloyPrimaryButton
+            title={LL.CardDetailsScreen.buttonText()}
+            onPress={handleNext}
+          />
         </View>
       </View>
     </Screen>
