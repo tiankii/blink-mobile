@@ -98,13 +98,23 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
       </View>
 
       <View style={styles.cardNumberContainer}>
-        <Text type="h1" style={styles.cardNumberText}>
+        <Text
+          type="h1"
+          style={styles.cardNumberText}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
           {formatCardNumber(cardNumber)}
         </Text>
       </View>
 
       <View style={styles.cardFooter}>
-        <Text type="p3" style={styles.cardholderName}>
+        <Text
+          type="p3"
+          style={styles.cardholderName}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
           {name}
         </Text>
         <View style={styles.expiryContainer}>

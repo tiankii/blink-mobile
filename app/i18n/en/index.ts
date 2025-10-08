@@ -2984,7 +2984,11 @@ const en: BaseTranslation = {
   },
   BitcoinCardScreen: {
     title: "Blink Visa Card",
-    subtitle: "The Bitcoin Card for Maxis",
+    cardInfo: {
+      bitcoinCard: "The Bitcoin Credit Card",
+      for: "for",
+      maximalist: "Bitcoin Maximalist",
+    },
   },
   CardDetailsScreen: {
     title: "Additional Perks",

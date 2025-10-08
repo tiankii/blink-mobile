@@ -2859,7 +2859,11 @@
     },
     "BitcoinCardScreen": {
         "title": "Tarjeta Visa Blink",
-        "subtitle": "La tarjeta Bitcoin para Maxis"
+        "cardInfo": {
+            "bitcoinCard": "La tarjeta de crédito Bitcoin",
+            "for": "para",
+            "maximalist": "Bitcoin Maximalista"
+        }
     },
     "CardDetailsScreen": {
         "title": "Beneficios Adicionales",
