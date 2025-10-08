@@ -31,18 +31,18 @@ export const BitcoinCard: React.FC = () => {
           <View style={styles.forContainer}>
             <View style={styles.lineStyle} />
             <Text type="p1" style={styles.italicText}>
-               {LL.BitcoinCardScreen.cardInfo.for()}
+              {LL.BitcoinCardScreen.cardInfo.for()}
             </Text>
             <View style={styles.lineStyle} />
           </View>
           <Text type="h2" style={styles.boldText}>
-             {LL.BitcoinCardScreen.cardInfo.maximalist()}
+            {LL.BitcoinCardScreen.cardInfo.maximalist()}
           </Text>
         </View>
       </View>
       <View style={styles.buttonsContainer}>
         <GaloyPrimaryButton
-          title={LL.common.next()}
+          title={LL.BitcoinCardScreen.buttonText()}
           onPress={() => navigation.navigate("CardDetails")}
           disabled={false}
         />
@@ -76,6 +76,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   textContainer: {
     gap: 5,
+    alignItems: "center",
   },
   boldText: {
     fontWeight: "bold",

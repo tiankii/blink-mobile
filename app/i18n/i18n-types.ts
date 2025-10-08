@@ -9418,6 +9418,10 @@ type RootTranslation = {
 			 */
 			maximalist: string
 		}
+		/**
+		 * N​i​c​e
+		 */
+		buttonText: string
 	}
 	CardDetailsScreen: {
 		/**
@@ -9446,48 +9450,36 @@ type RootTranslation = {
 		 * .​.​.​ ​a​n​d​ ​m​o​r​e​ ​c​o​m​i​n​g​ ​i​n​ ​2​0​2​6
 		 */
 		andMore: string
-	}
-	CardThankYouScreen: {
 		/**
-		 * T​h​a​n​k​ ​Y​o​u
+		 * C​o​o​l
 		 */
-		title: string
+		buttonText: string
+	}
+	CardWelcomeScreen: {
 		welcomeMessage: {
 			/**
-			 * D​e​a​r​ ​f​e​l​l​o​w​ ​B​i​t​c​o​i​n​e​r​,
+			 * W​e​l​c​o​m​e​ ​O​n​b​o​a​r​d​!
 			 */
-			greeting: string
+			title: string
+			/**
+			 * T​o​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e
+			 */
+			subtitle: string
 			paragraphs: {
 				/**
-				 * T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​b​e​i​n​g​ ​o​u​r​ ​f​r​i​e​n​d​,​ ​p​a​r​e​n​t​,​ ​s​u​p​p​o​r​t​e​r​,​ ​s​u​p​e​r​u​s​e​r​,​ ​c​i​r​c​u​l​a​r​ ​e​c​o​n​o​m​y​ ​b​u​i​l​d​e​r​,​ ​c​o​m​m​u​n​i​t​y​ ​m​e​m​b​e​r​,​ ​h​i​l​a​r​i​o​u​s​l​y​ ​t​o​x​i​c​ ​m​a​x​i​ ​o​r​ ​s​o​m​e​t​h​i​n​g​ ​e​l​s​e​.
+				 * S​o​m​e​o​n​e​ ​t​h​o​u​g​h​t​ ​o​f​ ​y​o​u​ ​a​n​d​ ​s​u​g​g​e​s​t​e​d​ ​t​h​a​t​ ​w​e​ ​s​h​o​u​l​d​ ​i​n​v​i​t​e​ ​y​o​u​ ​t​o​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​.​ ​P​r​o​b​a​b​l​y​ ​b​e​c​a​u​s​e​ ​y​o​u​ ​a​r​e​ ​a​n​ ​a​w​e​s​o​m​e​ ​h​u​m​a​n​ ​a​n​d​ ​B​i​t​c​o​i​n​e​r​.
 				 */
 				body1: string
 				/**
-				 * S​o​m​e​o​n​e​ ​o​n​ ​o​u​r​ ​t​e​a​m​ ​o​r​ ​s​o​m​e​o​n​e​ ​c​l​o​s​e​ ​t​o​ ​s​o​m​e​o​n​e​ ​o​n​ ​o​u​r​ ​t​e​a​m​ ​t​h​o​u​g​h​t​ ​o​f​ ​y​o​u​ ​a​s​ ​s​o​m​e​o​n​e​ ​w​e​ ​w​o​u​l​d​ ​l​i​k​e​ ​t​o​ ​i​n​v​i​t​e​ ​t​o​ ​b​e​ ​p​a​r​t​ ​o​f​ ​t​h​e​ ​B​l​i​n​k​ ​j​o​u​r​n​e​y​.​ ​P​r​o​b​a​b​l​y​ ​b​e​c​a​u​s​e​ ​y​o​u​ ​a​r​e​ ​a​n​ ​a​w​e​s​o​m​e​ ​h​u​m​a​n​ ​a​n​d​ ​B​i​t​c​o​i​n​e​r​.
+				 * O​u​r​ ​g​o​a​l​ ​f​o​r​ ​2​0​2​6​ ​i​s​ ​t​o​ ​s​t​u​f​f​ ​t​h​e​ ​p​r​o​g​r​a​m​ ​w​i​t​h​ ​s​o​ ​m​u​c​h​ ​g​o​o​d​i​e​s​ ​a​n​d​ ​g​o​o​d​ ​v​i​b​e​s​ ​t​h​a​t​ ​i​t​ ​w​i​l​l​ ​b​e​ ​o​b​v​i​o​u​s​ ​t​o​ ​r​e​n​e​w​ ​n​e​x​t​ ​y​e​a​r​.
 				 */
 				body2: string
-				/**
-				 * Y​o​u​ ​a​r​e​ ​1​ ​o​f​ ​o​n​l​y​ ​1​,​0​0​0​ ​t​h​a​t​ ​w​e​r​e​ ​i​n​v​i​t​e​d​ ​t​o​ ​b​e​ ​p​a​r​t​ ​o​f​ ​t​h​i​s​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​p​i​l​o​t​.​ ​W​e​ ​c​h​o​s​e​ ​t​o​ ​d​o​ ​i​t​ ​t​h​i​s​ ​w​a​y​,​ ​b​e​c​a​u​s​e​ ​w​e​ ​w​a​n​t​ ​t​o​ ​b​u​i​l​d​ ​w​i​t​h​ ​l​o​w​ ​t​i​m​e​ ​p​r​e​f​e​r​e​n​c​e​,​ ​t​h​e​ ​B​i​t​c​o​i​n​ ​w​a​y​.​ ​A​n​d​ ​t​o​ ​b​e​ ​a​b​l​e​ ​t​o​ ​d​o​ ​t​h​a​t​,​ ​w​e​ ​n​e​e​d​ ​p​e​o​p​l​e​ ​a​r​o​u​n​d​ ​u​s​ ​w​i​t​h​ ​a​ ​s​i​m​i​l​a​r​ ​m​i​n​d​s​e​t​.
-				 */
-				body3: string
-				/**
-				 * Y​o​u​ ​a​r​e​ ​p​a​r​t​ ​o​f​ ​t​h​e​ ​f​a​m​i​l​y​ ​n​o​w​ ​a​n​d​ ​w​e​ ​p​r​o​m​i​s​e​ ​w​e​ ​w​i​l​l​ ​d​o​ ​o​u​r​ ​b​e​s​t​ ​t​o​ ​m​a​k​e​ ​i​t​ ​f​e​e​l​ ​t​h​a​t​ ​w​a​y​ ​w​h​e​n​e​v​e​r​ ​y​o​u​ ​r​e​a​c​h​ ​o​u​t​ ​f​o​r​ ​h​e​l​p​,​ ​t​o​ ​m​a​k​e​ ​a​ ​s​u​g​g​e​s​t​i​o​n​ ​o​r​ ​j​u​s​t​ ​t​o​ ​c​h​a​t​.
-				 */
-				body4: string
-				/**
-				 * O​u​r​ ​g​o​a​l​ ​f​o​r​ ​2​0​2​6​ ​i​s​ ​t​o​ ​s​t​u​f​f​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​w​i​t​h​ ​s​o​ ​m​u​c​h​ ​g​o​o​d​i​e​s​ ​a​n​d​ ​g​o​o​d​ ​v​i​b​e​s​ ​t​h​a​t​ ​t​h​e​r​e​ ​i​s​ ​n​o​ ​w​a​y​ ​y​o​u​ ​w​i​l​l​ ​n​o​t​ ​w​a​n​t​ ​t​o​ ​r​e​n​e​w​ ​y​o​u​r​ ​s​u​b​s​c​r​i​p​t​i​o​n​ ​n​e​x​t​ ​y​e​a​r​.
-				 */
-				body5: string
 			}
-			/**
-			 * W​i​t​h​ ​w​a​r​m​ ​r​e​g​a​r​d​s​,
-			 */
-			closing: string
-			/**
-			 * T​h​e​ ​B​l​i​n​k​ ​T​e​a​m
-			 */
-			signature: string
 		}
+		/**
+		 * L​e​t​'​s​ ​G​o​!
+		 */
+		buttonText: string
 	}
 	CardNextStepScreen: {
 		/**
@@ -18836,6 +18828,10 @@ export type TranslationFunctions = {
 			 */
 			maximalist: () => LocalizedString
 		}
+		/**
+		 * Nice
+		 */
+		buttonText: () => LocalizedString
 	}
 	CardDetailsScreen: {
 		/**
@@ -18864,48 +18860,36 @@ export type TranslationFunctions = {
 		 * ... and more coming in 2026
 		 */
 		andMore: () => LocalizedString
-	}
-	CardThankYouScreen: {
 		/**
-		 * Thank You
+		 * Cool
 		 */
-		title: () => LocalizedString
+		buttonText: () => LocalizedString
+	}
+	CardWelcomeScreen: {
 		welcomeMessage: {
 			/**
-			 * Dear fellow Bitcoiner,
+			 * Welcome Onboard!
 			 */
-			greeting: () => LocalizedString
+			title: () => LocalizedString
+			/**
+			 * To Blink Private
+			 */
+			subtitle: () => LocalizedString
 			paragraphs: {
 				/**
-				 * Thank you for being our friend, parent, supporter, superuser, circular economy builder, community member, hilariously toxic maxi or something else.
+				 * Someone thought of you and suggested that we should invite you to Blink Private. Probably because you are an awesome human and Bitcoiner.
 				 */
 				body1: () => LocalizedString
 				/**
-				 * Someone on our team or someone close to someone on our team thought of you as someone we would like to invite to be part of the Blink journey. Probably because you are an awesome human and Bitcoiner.
+				 * Our goal for 2026 is to stuff the program with so much goodies and good vibes that it will be obvious to renew next year.
 				 */
 				body2: () => LocalizedString
-				/**
-				 * You are 1 of only 1,000 that were invited to be part of this Blink Private pilot. We chose to do it this way, because we want to build with low time preference, the Bitcoin way. And to be able to do that, we need people around us with a similar mindset.
-				 */
-				body3: () => LocalizedString
-				/**
-				 * You are part of the family now and we promise we will do our best to make it feel that way whenever you reach out for help, to make a suggestion or just to chat.
-				 */
-				body4: () => LocalizedString
-				/**
-				 * Our goal for 2026 is to stuff Blink Private with so much goodies and good vibes that there is no way you will not want to renew your subscription next year.
-				 */
-				body5: () => LocalizedString
 			}
-			/**
-			 * With warm regards,
-			 */
-			closing: () => LocalizedString
-			/**
-			 * The Blink Team
-			 */
-			signature: () => LocalizedString
 		}
+		/**
+		 * Let's Go!
+		 */
+		buttonText: () => LocalizedString
 	}
 	CardNextStepScreen: {
 		/**

@@ -2989,6 +2989,7 @@ const en: BaseTranslation = {
       for: "for",
       maximalist: "Bitcoin Maximalist",
     },
+    buttonText: "Nice",
   },
   CardDetailsScreen: {
     title: "Additional Perks",
@@ -2999,21 +3000,18 @@ const en: BaseTranslation = {
       circularEconomies: "$100 to Circular Economies",
     },
     andMore: "... and more coming in 2026",
+    buttonText: "Cool",
   },
-  CardThankYouScreen: {
-    title: "Thank You",
+  CardWelcomeScreen: {
     welcomeMessage: {
-      greeting: "Dear fellow Bitcoiner,",
-      paragraphs:{
-        body1: "Thank you for being our friend, parent, supporter, superuser, circular economy builder, community member, hilariously toxic maxi or something else.",
-        body2: "Someone on our team or someone close to someone on our team thought of you as someone we would like to invite to be part of the Blink journey. Probably because you are an awesome human and Bitcoiner.",
-        body3: "You are 1 of only 1,000 that were invited to be part of this Blink Private pilot. We chose to do it this way, because we want to build with low time preference, the Bitcoin way. And to be able to do that, we need people around us with a similar mindset.",
-        body4: "You are part of the family now and we promise we will do our best to make it feel that way whenever you reach out for help, to make a suggestion or just to chat.",
-        body5: "Our goal for 2026 is to stuff Blink Private with so much goodies and good vibes that there is no way you will not want to renew your subscription next year.",
-      },
-      closing: "With warm regards,",
-      signature: "The Blink Team",
+        title: "Welcome Onboard!",
+        subtitle: "To Blink Private",
+        paragraphs: {
+            body1: "Someone thought of you and suggested that we should invite you to Blink Private. Probably because you are an awesome human and Bitcoiner.",
+            body2: "Our goal for 2026 is to stuff the program with so much goodies and good vibes that it will be obvious to renew next year.",
+        },
     },
+    buttonText: "Let's Go!",
   },
   CardNextStepScreen: {
     title: "Next steps",

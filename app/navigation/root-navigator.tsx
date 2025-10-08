@@ -99,7 +99,7 @@ import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
 import {
   BitcoinCard,
   CardDetails,
-  CardThankYou,
+  CardWelcome,
   CardNextStep,
 } from "../screens/bitcoin-card"
 
@@ -492,10 +492,10 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="CardThankYou"
-        component={CardThankYou}
+        name="CardWelcome"
+        component={CardWelcome}
         options={{
-          title: LL.CardThankYouScreen.title(),
+          title: "",
         }}
       />
       <RootNavigator.Screen

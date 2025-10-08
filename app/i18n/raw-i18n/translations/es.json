@@ -2863,7 +2863,8 @@
             "bitcoinCard": "La tarjeta de crédito Bitcoin",
             "for": "para",
             "maximalist": "Bitcoin Maximalista"
-        }
+        },
+        "buttonText": "Bien"
     },
     "CardDetailsScreen": {
         "title": "Beneficios Adicionales",
@@ -2873,22 +2874,19 @@
             "onchainDeposits": "50% de Reembolso en Tarifas Onchain",
             "circularEconomies": "$100 para Economías Circulares"
         },
-        "andMore": "... y más próximamente en 2026"
-  },
-    "CardThankYouScreen": {
-        "title": "Gracias",
+        "andMore": "... y más próximamente en 2026",
+        "buttonText": "Genial"
+    },
+    "CardWelcomeScreen": {
         "welcomeMessage": {
-        "greeting": "Estimado compañero bitcoiner,",
-        "paragraphs":{
-            "body1": "Gracias por ser nuestro amigo, padre, seguidor, superusuario, constructor de economías circulares, miembro de la comunidad, maxi hilarantemente tóxico o algo más.",
-            "body2": "Alguien de nuestro equipo o alguien cercano a nuestro equipo pensó en ti como alguien a quien nos gustaría invitar a ser parte del viaje de Blink. Probablemente porque eres una persona increíble y bitcoiner.",
-            "body3": "Eres 1 de solo 1,000 que fueron invitados a ser parte de este piloto privado de Blink. Elegimos hacerlo así porque queremos construir con baja preferencia temporal, al estilo Bitcoin. Y para lograrlo, necesitamos personas con una mentalidad similar.",
-            "body4": "Ahora eres parte de la familia y prometemos hacer todo lo posible para que lo sientas así cada vez que necesites ayuda, quieras hacer una sugerencia o simplemente conversar.",
-            "body5": "Nuestro objetivo para 2026 es llenar Blink Private de tantas cosas buenas y buenas vibras que no haya forma de que no quieras renovar tu suscripción el próximo año."
+            "title": "¡Bienvenido a Bordo!",
+            "subtitle": "A Blink Private",
+            "paragraphs": {
+                "body1": "Alguien pensó en ti y sugirió que deberíamos invitarte a Blink Private. Probablemente porque eres un humano increíble y Bitcoiner.",
+                "body2": "Nuestra meta para 2026 es llenar el programa con tantas cosas buenas y buenas vibras que será obvio renovar el próximo año."
+            }
         },
-        "closing": "Con un cordial saludo,",
-        "signature": "El equipo de Blink"
-        }
+        "buttonText": "¡Vamos!"
     },
     "CardNextStepScreen": {
         "title": "Próximos pasos",
