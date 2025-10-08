@@ -99,7 +99,7 @@ import {
   BitcoinCard,
   CardDetails,
   CardWelcome,
-  CardNextStep,
+  CardSubscribe,
 } from "../screens/bitcoin-card"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
@@ -498,10 +498,10 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="CardNextStep"
-        component={CardNextStep}
+        name="CardSubscribe"
+        component={CardSubscribe}
         options={{
-          title: LL.CardNextStepScreen.title(),
+          title: LL.CardSubscribeScreen.title(),
         }}
       />
     </RootNavigator.Navigator>

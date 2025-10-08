@@ -9481,57 +9481,61 @@ type RootTranslation = {
 		 */
 		buttonText: string
 	}
-	CardNextStepScreen: {
+	CardSubscribeScreen: {
 		/**
-		 * N​e​x​t​ ​s​t​e​p​s
+		 * S​u​b​s​c​r​i​b​e
 		 */
 		title: string
 		/**
-		 * G​e​t​ ​S​t​a​r​t​e​d
+		 * B​l​i​n​k​ ​P​r​i​v​a​t​e
 		 */
-		getStarted: string
-		steps: {
-			one: {
-				/**
-				 * A​p​p​l​y​ ​f​o​r​ ​c​a​r​d
-				 */
-				title: string
-				/**
-				 * K​Y​C​ ​v​e​r​i​f​i​c​a​t​i​o​n​ ​a​n​d​ ​a​p​p​l​i​c​a​t​i​o​n​ ​s​u​b​m​i​s​s​i​o​n
-				 */
-				description: string
-			}
-			two: {
-				/**
-				 * S​u​b​s​c​r​i​b​e​ ​a​n​d​ ​p​a​y
-				 */
-				title: string
-				/**
-				 * O​n​c​e​ ​a​p​p​r​o​v​e​d​,​ ​y​o​u​ ​p​a​y​ ​$​1​,​0​0​0​ ​b​y​ ​l​i​g​h​t​n​i​n​g
-				 */
-				description: string
-			}
-			three: {
-				/**
-				 * W​a​i​t
-				 */
-				title: string
-				/**
-				 * W​e​ ​e​x​p​e​c​t​ ​t​o​ ​b​e​ ​r​e​a​d​y​ ​b​y​ ​e​n​d​ ​o​f​ ​Q​4​ ​2​0​2​5
-				 */
-				description: string
-			}
-			four: {
-				/**
-				 * A​c​t​i​v​a​t​e​ ​c​a​r​d
-				 */
-				title: string
-				/**
-				 * W​e​ ​w​i​l​l​ ​n​o​t​i​f​y​ ​y​o​u​ ​i​n​ ​t​h​e​ ​B​l​i​n​k​ ​a​p​p​ ​w​h​e​n​ ​t​h​e​ ​c​a​r​d​ ​i​s​ ​r​e​a​d​y
-				 */
-				description: string
-			}
+		cardTitle: string
+		/**
+		 * p​e​r​ ​y​e​a​r
+		 */
+		perYear: string
+		status: {
+			/**
+			 * S​t​a​t​u​s
+			 */
+			label: string
+			/**
+			 * P​a​y​m​e​n​t​ ​P​e​n​d​i​n​g
+			 */
+			paymentPending: string
 		}
+		renewalDate: {
+			/**
+			 * R​e​n​e​w​a​l​ ​D​a​t​e
+			 */
+			label: string
+		}
+		agreement: {
+			/**
+			 * I​ ​a​g​r​e​e​ ​t​o​ ​t​h​e
+			 */
+			text: string
+			/**
+			 * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
+			 */
+			termsOfService: string
+			/**
+			 * P​r​i​v​a​c​y​ ​P​o​l​i​c​y
+			 */
+			privacyPolicy: string
+			/**
+			 * C​a​r​d​h​o​l​d​e​r​ ​A​g​r​e​e​m​e​n​t
+			 */
+			cardholderAgreement: string
+			/**
+			 * a​n​d
+			 */
+			and: string
+		}
+		/**
+		 * A​c​c​e​p​t​ ​&​ ​C​o​n​t​i​n​u​e
+		 */
+		acceptButton: string
 	}
 }
 
@@ -18891,57 +18895,61 @@ export type TranslationFunctions = {
 		 */
 		buttonText: () => LocalizedString
 	}
-	CardNextStepScreen: {
+	CardSubscribeScreen: {
 		/**
-		 * Next steps
+		 * Subscribe
 		 */
 		title: () => LocalizedString
 		/**
-		 * Get Started
+		 * Blink Private
 		 */
-		getStarted: () => LocalizedString
-		steps: {
-			one: {
-				/**
-				 * Apply for card
-				 */
-				title: () => LocalizedString
-				/**
-				 * KYC verification and application submission
-				 */
-				description: () => LocalizedString
-			}
-			two: {
-				/**
-				 * Subscribe and pay
-				 */
-				title: () => LocalizedString
-				/**
-				 * Once approved, you pay $1,000 by lightning
-				 */
-				description: () => LocalizedString
-			}
-			three: {
-				/**
-				 * Wait
-				 */
-				title: () => LocalizedString
-				/**
-				 * We expect to be ready by end of Q4 2025
-				 */
-				description: () => LocalizedString
-			}
-			four: {
-				/**
-				 * Activate card
-				 */
-				title: () => LocalizedString
-				/**
-				 * We will notify you in the Blink app when the card is ready
-				 */
-				description: () => LocalizedString
-			}
+		cardTitle: () => LocalizedString
+		/**
+		 * per year
+		 */
+		perYear: () => LocalizedString
+		status: {
+			/**
+			 * Status
+			 */
+			label: () => LocalizedString
+			/**
+			 * Payment Pending
+			 */
+			paymentPending: () => LocalizedString
 		}
+		renewalDate: {
+			/**
+			 * Renewal Date
+			 */
+			label: () => LocalizedString
+		}
+		agreement: {
+			/**
+			 * I agree to the
+			 */
+			text: () => LocalizedString
+			/**
+			 * Terms of Service
+			 */
+			termsOfService: () => LocalizedString
+			/**
+			 * Privacy Policy
+			 */
+			privacyPolicy: () => LocalizedString
+			/**
+			 * Cardholder Agreement
+			 */
+			cardholderAgreement: () => LocalizedString
+			/**
+			 * and
+			 */
+			and: () => LocalizedString
+		}
+		/**
+		 * Accept & Continue
+		 */
+		acceptButton: () => LocalizedString
 	}
 }
 

@@ -2888,26 +2888,24 @@
         },
         "buttonText": "¡Vamos!"
     },
-    "CardNextStepScreen": {
-        "title": "Próximos pasos",
-        "getStarted": "Comenzar",
-        "steps": {
-            "one": {
-                "title": "Solicita la tarjeta",
-                "description": "Verificación KYC y envío de la solicitud"
-            },
-            "two": {
-                "title": "Suscríbete y paga",
-                "description": "Una vez aprobado, pagas $1,000 por Lightning"
-            },
-            "three": {
-                "title": "Espera",
-                "description": "Esperamos estar listos para finales del cuarto trimestre de 2025"
-            },
-            "four": {
-                "title": "Activa la tarjeta",
-                "description": "Te notificaremos en la app Blink cuando la tarjeta esté lista"
-            }
-        }
+    "CardSubscribeScreen": {
+        "title": "Suscribirse",
+        "cardTitle": "Blink Privado",
+        "perYear": "por año",
+        "status": {
+            "label": "Estado",
+            "paymentPending": "Pago Pendiente"
+        },
+        "renewalDate": {
+            "label": "Fecha de Renovación"
+        },
+        "agreement": {
+            "text": "Acepto los",
+            "termsOfService": "Términos de Servicio",
+            "privacyPolicy": "Política de Privacidad",
+            "cardholderAgreement": "Acuerdo del Titular de la Tarjeta",
+            "and": "y"
+        },
+        "acceptButton": "Aceptar y Continuar"
     }
 }

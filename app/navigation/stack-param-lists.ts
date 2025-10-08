@@ -122,7 +122,7 @@ export type RootStackParamList = {
   BitcoinCard: undefined
   CardDetails: undefined
   CardWelcome: undefined
-  CardNextStep: undefined
+  CardSubscribe: undefined
 }
 
 export type OnboardingStackParamList = {
