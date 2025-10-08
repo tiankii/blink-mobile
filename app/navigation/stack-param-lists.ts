@@ -121,7 +121,7 @@ export type RootStackParamList = {
   onboarding: NavigatorScreenParams<OnboardingStackParamList>
   BitcoinCard: undefined
   CardDetails: undefined
-  CardThankYou: undefined
+  CardWelcome: undefined
   CardNextStep: undefined
 }
 
