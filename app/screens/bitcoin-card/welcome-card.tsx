@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Icon, makeStyles, Text, useTheme } from "@rn-vui/themed"
 import { Screen } from "../../components/screen"
-import { View } from "react-native"
+import { ScrollView, View } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
@@ -23,30 +23,36 @@ export const WelcomeCard: React.FC = () => {
 
   return (
     <Screen>
-      <View style={styles.contentContainer}>
-        <View style={styles.iconContainer}>
-          <View style={styles.iconCircle}>
-            <Icon name={"heart-outline"} type="ionicon" color={colors._green} size={45} />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.contentContainer}>
+          <View style={styles.iconContainer}>
+            <View style={styles.iconCircle}>
+              <Icon
+                name={"heart-outline"}
+                type="ionicon"
+                color={colors._green}
+                size={45}
+              />
+            </View>
           </View>
+
+          <Text type="h1" style={styles.welcomeTitle}>
+            {LL.CardWelcomeScreen.welcomeMessage.title()}
+          </Text>
+
+          <Text type="h2" style={styles.subtitle}>
+            — {LL.CardWelcomeScreen.welcomeMessage.subtitle()} —
+          </Text>
+
+          <Text type="p1" style={styles.bodyText}>
+            {LL.CardWelcomeScreen.welcomeMessage.paragraphs.body1()}
+          </Text>
+
+          <Text type="p1" style={styles.bodyText}>
+            {LL.CardWelcomeScreen.welcomeMessage.paragraphs.body2()}
+          </Text>
         </View>
-
-        <Text type="h1" style={styles.welcomeTitle}>
-          {LL.CardWelcomeScreen.welcomeMessage.title()}
-        </Text>
-
-        <Text type="h2" style={styles.subtitle}>
-          — {LL.CardWelcomeScreen.welcomeMessage.subtitle()} —
-        </Text>
-
-        <Text type="p1" style={styles.bodyText}>
-          {LL.CardWelcomeScreen.welcomeMessage.paragraphs.body1()}
-        </Text>
-
-        <Text type="p1" style={styles.bodyText}>
-          {LL.CardWelcomeScreen.welcomeMessage.paragraphs.body2()}
-        </Text>
-      </View>
-
+      </ScrollView>
       <View style={styles.buttonsContainer}>
         <GaloyPrimaryButton
           title={LL.CardWelcomeScreen.buttonText()}
@@ -58,10 +64,15 @@ export const WelcomeCard: React.FC = () => {
 }
 
 const useStyles = makeStyles(({ colors }) => ({
-  contentContainer: {
+  scrollView: {
     flex: 1,
-    paddingHorizontal: 40,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
     paddingTop: 60,
+  },
+  contentContainer: {
     alignItems: "center",
   },
   iconContainer: {
