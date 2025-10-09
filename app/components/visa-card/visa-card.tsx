@@ -86,8 +86,15 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
 
   const formatCardNumber = (number: string) => {
     const cleaned = number.replace(/\s/g, "")
-    const groups = cleaned.match(/.{1,4}/g)
+    const normalized = cleaned.replaceAll(".", "•")
+    const groups = normalized.match(/.{1,4}/g)
     return groups ? groups.join("  ") : number
+  }
+
+  const formatCardExpiredDate = (number: string) => {
+    const normalized = number.replaceAll(".", "•")
+    const format = normalized.replace("/", " / ")
+    return format
   }
 
   const CardContent = () => (
@@ -122,7 +129,7 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
             {LL.common.validThru()}
           </Text>
           <Text type="p3" style={styles.expiryDate}>
-            {expiredDate}
+            {formatCardExpiredDate(expiredDate)}
           </Text>
         </View>
       </View>
@@ -191,7 +198,7 @@ const useStyles = makeStyles(
       ...(props.cardNumberFontSize ? { fontSize: props.cardNumberFontSize } : {}),
       color: props.textColor ?? colors._white,
       letterSpacing: 2,
-      textShadowColor: "rgba(0, 0, 0, 0.3)",
+      textShadowColor: "rgba(0, 0, 0, 0.49)",
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
     },
@@ -205,7 +212,7 @@ const useStyles = makeStyles(
       textTransform: "uppercase",
       fontWeight: "600",
       color: props.textColor ?? colors._white,
-      textShadowColor: "rgba(0, 0, 0, 0.3)",
+      textShadowColor: "rgba(0, 0, 0, 0.49)",
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
     },
@@ -217,11 +224,14 @@ const useStyles = makeStyles(
       textTransform: "uppercase",
       color: props.textColor ?? colors._white,
       fontSize: 10,
+      textShadowColor: "rgba(0, 0, 0, 0.49)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
     },
     expiryDate: {
       ...(props.expiryDateFontSize ? { fontSize: props.expiryDateFontSize } : {}),
       color: props.textColor ?? colors._white,
-      textShadowColor: "rgba(0, 0, 0, 0.3)",
+      textShadowColor: "rgba(0, 0, 0, 0.49)",
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
     },
