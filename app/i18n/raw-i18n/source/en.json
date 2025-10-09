@@ -2889,6 +2889,10 @@
     },
     "CardSubscribeScreen": {
         "title": "Subscribe",
+        "acceptButton": "Accept & Continue"
+    },
+    "CardPaymentScreen": {
+        "title": "Payment",
         "cardTitle": "Blink Private",
         "perYear": "per year",
         "status": {
@@ -2905,6 +2909,6 @@
             "cardholderAgreement": "Cardholder Agreement",
             "and": "and"
         },
-        "acceptButton": "Accept & Continue"
+        "acceptButton": "Continue & Pay"
     }
 }

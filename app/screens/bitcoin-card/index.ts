@@ -1,4 +1,4 @@
 export * from "./bitcoin-card"
 export * from "./card-details"
 export * from "./card-welcome"
-export * from "./card-subscribe"
+export * from "./card-payment"

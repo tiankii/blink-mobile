@@ -3015,6 +3015,10 @@ const en: BaseTranslation = {
   },
   CardSubscribeScreen: {
     title: "Subscribe",
+    acceptButton: "Accept & Continue",
+  },
+  CardPaymentScreen: {
+    title: "Payment",
     cardTitle: "Blink Private",
     perYear: "per year",
     status: {
@@ -3031,7 +3035,7 @@ const en: BaseTranslation = {
       cardholderAgreement: "Cardholder Agreement",
       and: "and"
     },
-    acceptButton: "Accept & Continue",
+    acceptButton: "Continue & Pay",
   },
 }
 

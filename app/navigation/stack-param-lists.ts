@@ -123,6 +123,7 @@ export type RootStackParamList = {
   CardDetails: undefined
   CardWelcome: undefined
   CardSubscribe: undefined
+  CardPayment: undefined
 }
 
 export type OnboardingStackParamList = {
