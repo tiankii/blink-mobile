@@ -11,7 +11,10 @@ import { makeStyles, useTheme } from "@rn-vui/themed"
 
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
-import { WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes"
+import {
+  WebViewProgressEvent,
+  ShouldStartLoadRequest,
+} from "react-native-webview/lib/WebViewTypes"
 
 type WebViewDebugScreenRouteProp = RouteProp<RootStackParamList, "webView">
 
@@ -23,7 +26,12 @@ export const WebViewScreen: React.FC<Props> = ({ route }) => {
   const styles = useStyles()
 
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList, "Primary">>()
-  const { url, initialTitle, hideHeader } = route.params
+  const { url, initialTitle, hideHeader, onShouldStartLoad } = route.params as {
+    url: string
+    initialTitle?: string
+    hideHeader?: boolean
+    onShouldStartLoad?: (req: ShouldStartLoadRequest) => boolean
+  }
   const { LL } = useI18nContext()
 
   const webview = React.useRef<WebView | null>(null)
@@ -96,6 +104,7 @@ export const WebViewScreen: React.FC<Props> = ({ route }) => {
           }
         }}
         onNavigationStateChange={handleWebViewNavigationStateChange}
+        onShouldStartLoadWithRequest={onShouldStartLoad}
         onMessage={onMessageHandler(webview as React.MutableRefObject<WebView>, {
           enable: async () => {
             /* Your implementation goes here */
