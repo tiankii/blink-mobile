@@ -110,7 +110,7 @@ const useStyles = makeStyles(({ colors }) => ({
   typingMonkeyImage: {
     width: "100%",
     height: undefined,
-    aspectRatio: 1, // ajusta este valor según la proporción de tu imagen
+    aspectRatio: 1,
     resizeMode: "contain",
   },
   buttonsContainer: {
