@@ -2916,5 +2916,12 @@
         "title": "Estamos trabajando diligentemente en tu tarjeta",
         "subtitle": "Te notificaremos cuando esté lista",
         "buttonText": "Genial"
+    },
+    "VisaCardScreen": {
+        "title": "Tarjeta Visa",
+        "cardTitle": "¡Felicidades!",
+        "cardSubTitle": "Tu tarjeta Blink Visa ha sido activada.",
+        "VisaButtonText": "Agregar a",
+        "buttonText": "Solicitar tarjeta física"
     }
 }

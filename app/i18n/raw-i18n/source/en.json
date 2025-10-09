@@ -2915,5 +2915,12 @@
         "title": "We are diligently working on your card",
         "subtitle": "We will notify you once its here",
         "buttonText": "Nice"
+    },
+    "VisaCardScreen": {
+        "title": "Visa Card",
+        "cardTitle": "Congratulations!",
+        "cardSubTitle": "Your Blink Visa Card has been activated.",
+        "VisaButtonText": "Add to",
+        "buttonText": "Order physical card"
     }
 }

@@ -9561,6 +9561,28 @@ type RootTranslation = {
 		 */
 		buttonText: string
 	}
+	VisaCardScreen: {
+		/**
+		 * V​i​s​a​ ​C​a​r​d
+		 */
+		title: string
+		/**
+		 * C​o​n​g​r​a​t​u​l​a​t​i​o​n​s​!
+		 */
+		cardTitle: string
+		/**
+		 * Y​o​u​r​ ​B​l​i​n​k​ ​V​i​s​a​ ​C​a​r​d​ ​h​a​s​ ​b​e​e​n​ ​a​c​t​i​v​a​t​e​d​.
+		 */
+		cardSubTitle: string
+		/**
+		 * A​d​d​ ​t​o
+		 */
+		VisaButtonText: string
+		/**
+		 * O​r​d​e​r​ ​p​h​y​s​i​c​a​l​ ​c​a​r​d
+		 */
+		buttonText: string
+	}
 }
 
 export type TranslationFunctions = {
@@ -18996,6 +19018,28 @@ export type TranslationFunctions = {
 		subtitle: () => LocalizedString
 		/**
 		 * Nice
+		 */
+		buttonText: () => LocalizedString
+	}
+	VisaCardScreen: {
+		/**
+		 * Visa Card
+		 */
+		title: () => LocalizedString
+		/**
+		 * Congratulations!
+		 */
+		cardTitle: () => LocalizedString
+		/**
+		 * Your Blink Visa Card has been activated.
+		 */
+		cardSubTitle: () => LocalizedString
+		/**
+		 * Add to
+		 */
+		VisaButtonText: () => LocalizedString
+		/**
+		 * Order physical card
 		 */
 		buttonText: () => LocalizedString
 	}
