@@ -2911,5 +2911,10 @@
             "and": "y"
         },
         "acceptButton": "Continuar y Pagar"
+    },
+    "LoadinCardScreen": {
+        "title": "Estamos trabajando diligentemente en tu tarjeta",
+        "subtitle": "Te notificaremos cuando esté lista",
+        "buttonText": "Genial"
     }
 }

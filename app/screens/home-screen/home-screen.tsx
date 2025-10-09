@@ -538,7 +538,7 @@ export const HomeScreen: React.FC = () => {
         <NotificationBanner
           title="Your Card is now live!"
           subtitle="You can start using it instantly"
-          onPress={() => navigation.navigate("CardWelcome")}
+          onPress={() => navigation.navigate("LoadinCard")}
         />
         <AppUpdate />
         <SetDefaultAccountModal
