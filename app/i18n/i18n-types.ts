@@ -9487,6 +9487,16 @@ type RootTranslation = {
 		 */
 		title: string
 		/**
+		 * A​c​c​e​p​t​ ​&​ ​C​o​n​t​i​n​u​e
+		 */
+		acceptButton: string
+	}
+	CardPaymentScreen: {
+		/**
+		 * P​a​y​m​e​n​t
+		 */
+		title: string
+		/**
 		 * B​l​i​n​k​ ​P​r​i​v​a​t​e
 		 */
 		cardTitle: string
@@ -9533,7 +9543,7 @@ type RootTranslation = {
 			and: string
 		}
 		/**
-		 * A​c​c​e​p​t​ ​&​ ​C​o​n​t​i​n​u​e
+		 * C​o​n​t​i​n​u​e​ ​&​ ​P​a​y
 		 */
 		acceptButton: string
 	}
@@ -18901,6 +18911,16 @@ export type TranslationFunctions = {
 		 */
 		title: () => LocalizedString
 		/**
+		 * Accept & Continue
+		 */
+		acceptButton: () => LocalizedString
+	}
+	CardPaymentScreen: {
+		/**
+		 * Payment
+		 */
+		title: () => LocalizedString
+		/**
 		 * Blink Private
 		 */
 		cardTitle: () => LocalizedString
@@ -18947,7 +18967,7 @@ export type TranslationFunctions = {
 			and: () => LocalizedString
 		}
 		/**
-		 * Accept & Continue
+		 * Continue & Pay
 		 */
 		acceptButton: () => LocalizedString
 	}

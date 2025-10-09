@@ -64,13 +64,7 @@ export const CardDetails: React.FC = () => {
   ]
 
   const handleNext = () => {
-    //navigation.navigate("CardSubscribe")
-    
-    const url = ""
-    navigation.navigate("webView", {
-      url,
-      hideHeader: true,
-    })
+    navigation.navigate("CardSubscribe")
   }
 
   return (

@@ -2888,8 +2888,12 @@
         },
         "buttonText": "¡Vamos!"
     },
-    "CardSubscribeScreen": {
-        "title": "Suscribirse",
+     "CardSubscribeScreen": {
+        "title": "Suscribir",
+        "acceptButton": "Aceptar y Continuar"
+    },
+    "CardPaymentScreen": {
+        "title": "Pago",
         "cardTitle": "Blink Privado",
         "perYear": "por año",
         "status": {
@@ -2906,6 +2910,6 @@
             "cardholderAgreement": "Acuerdo del Titular de la Tarjeta",
             "and": "y"
         },
-        "acceptButton": "Aceptar y Continuar"
+        "acceptButton": "Continuar y Pagar"
     }
 }
