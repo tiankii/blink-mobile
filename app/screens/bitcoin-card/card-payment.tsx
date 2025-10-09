@@ -17,7 +17,7 @@ export const CardPayment: React.FC = () => {
 
   const handleAccept = () => {
     if (isAgreed) {
-      if (route.name === "CardSubscribe") {
+      if (route.name === "cardSubscribe") {
         const url = ""
         navigation.navigate("webView", {
           url,
@@ -95,7 +95,7 @@ export const CardPayment: React.FC = () => {
       <View style={styles.buttonsContainer}>
         <GaloyPrimaryButton
           title={
-            route.name === "CardPayment"
+            route.name === "cardPayment"
               ? LL.CardPaymentScreen.acceptButton()
               : LL.CardSubscribeScreen.acceptButton()
           }

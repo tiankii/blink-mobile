@@ -119,13 +119,13 @@ export type RootStackParamList = {
   supportChat: undefined
   notificationHistory: undefined
   onboarding: NavigatorScreenParams<OnboardingStackParamList>
-  BitcoinCard: undefined
-  CardDetails: undefined
-  WelcomeCard: undefined
-  CardSubscribe: undefined
-  CardPayment: undefined
-  LoadinCard: undefined
-  VisaCard: undefined
+  bitcoinCard: undefined
+  cardDetails: undefined
+  welcomeCard: undefined
+  cardSubscribe: undefined
+  cardPayment: undefined
+  loadingCard: undefined
+  visaCard: undefined
 }
 
 export type OnboardingStackParamList = {

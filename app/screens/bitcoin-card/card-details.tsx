@@ -64,7 +64,7 @@ export const CardDetails: React.FC = () => {
   ]
 
   const handleNext = () => {
-    navigation.navigate("CardSubscribe")
+    navigation.navigate("cardSubscribe")
   }
 
   return (
