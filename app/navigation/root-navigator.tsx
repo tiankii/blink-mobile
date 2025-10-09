@@ -98,7 +98,7 @@ import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
 import {
   BitcoinCard,
   CardDetails,
-  CardWelcome,
+  WelcomeCard,
   CardPayment,
   LoadinCard,
   VisaCard
@@ -493,8 +493,8 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="CardWelcome"
-        component={CardWelcome}
+        name="WelcomeCard"
+        component={WelcomeCard}
         options={{
           title: "",
         }}

@@ -1,6 +1,6 @@
 export * from "./bitcoin-card"
 export * from "./card-details"
-export * from "./card-welcome"
+export * from "./welcome-card"
 export * from "./card-payment"
 export * from "./loading-card"
 export * from "./visa-card"
