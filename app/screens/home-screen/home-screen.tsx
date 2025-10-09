@@ -48,7 +48,6 @@ import {
   useRealtimePriceQuery,
   useSettingsScreenQuery,
 } from "@app/graphql/generated"
-import { NotificationBanner } from "@app/components/notificationBanner"
 
 const TransactionCountToTriggerSetDefaultAccountModal = 1
 const UPGRADE_MODAL_INITIAL_DELAY_MS = 1500
@@ -534,12 +533,6 @@ export const HomeScreen: React.FC = () => {
             </>
           )}
         </View>
-        {/* mock text*/}
-        <NotificationBanner
-          title="Your Card is now live!"
-          subtitle="You can start using it instantly"
-          onPress={() => navigation.navigate("visaCard")}
-        />
         <AppUpdate />
         <SetDefaultAccountModal
           isVisible={setDefaultAccountModalVisible}
