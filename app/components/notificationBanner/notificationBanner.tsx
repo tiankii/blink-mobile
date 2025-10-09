@@ -103,14 +103,6 @@ const useStyles = makeStyles(({ colors }) => ({
   container: {
     backgroundColor: colors.grey5,
     borderRadius: 12,
-    shadowColor: colors._black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   touchableWrapper: {
     paddingVertical: 16,
