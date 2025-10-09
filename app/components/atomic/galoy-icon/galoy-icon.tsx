@@ -59,6 +59,8 @@ import Rank from "@app/assets/icons/rank.svg"
 import Refresh from "@app/assets/icons/refresh.svg"
 import Upgrade from "@app/assets/icons-redesign/upgrade.svg"
 import Welcome from "@app/assets/icons-redesign/welcome.svg"
+import verifiedBadge from "@app/assets/icons-redesign/verified-badge.svg"
+import applePay from "@app/assets/icons-redesign/apple-pay.svg"
 import { makeStyles, useTheme } from "@rn-vui/themed"
 
 export const icons = {
@@ -120,6 +122,8 @@ export const icons = {
   "telegram-simple": TelegramSimple,
   "upgrade": Upgrade,
   "welcome": Welcome,
+  "verified-badge": verifiedBadge,
+  "apple-pay": applePay
 } as const
 
 export type IconNamesType = keyof typeof icons
