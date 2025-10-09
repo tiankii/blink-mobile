@@ -1,29 +1,63 @@
 import * as React from "react"
-import { CheckBox, makeStyles, Text } from "@rn-vui/themed"
-import { Screen } from "../../components/screen"
 import { View } from "react-native"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native"
+import { CheckBox, makeStyles, Text } from "@rn-vui/themed"
 import { StackNavigationProp } from "@react-navigation/stack"
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native"
+import { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes"
+
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { useRemoteConfig } from "@app/config/feature-flags-context"
+import { useI18nContext } from "@app/i18n/i18n-react"
+
+import { Screen } from "../../components/screen"
 
 export const CardPayment: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const { sumsubSuccessUrl, sumsubRejectUrl } = useRemoteConfig()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   const route = useRoute<RouteProp<RootStackParamList>>()
+
   const [isAgreed, setIsAgreed] = React.useState(false)
+
+  const onShouldStartLoad = React.useCallback(
+    (request: ShouldStartLoadRequest) => {
+      const requestUrl = request?.url ?? ""
+      if (!requestUrl) return true
+
+      const parsed = new URL(requestUrl)
+      const urlWithoutQuery = `${parsed.origin}${parsed.pathname}`
+
+      if (urlWithoutQuery === sumsubSuccessUrl) {
+        // TODO: navigate to Sumsub success screen
+        navigation.navigate("cardPayment")
+        return false
+      }
+
+      if (urlWithoutQuery === sumsubRejectUrl) {
+        // TODO: navigate to Sumsub reject screen
+        navigation.navigate("cardPayment")
+        return false
+      }
+
+      return true
+    },
+    [navigation, sumsubSuccessUrl, sumsubRejectUrl],
+  )
 
   const handleAccept = () => {
     if (isAgreed) {
       if (route.name === "cardSubscribe") {
+        /**
+         * TODO: temporary until backend provides the url
+         */
         const url = ""
-        navigation.navigate("webView", {
+        return navigation.navigate("webView", {
           url,
           hideHeader: true,
+          onShouldStartLoad,
         })
-        return
       }
       // Do something with CardPayment
     }

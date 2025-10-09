@@ -102,7 +102,7 @@ import {
   WelcomeCard,
   CardPayment,
   LoadingCard,
-  VisaCard
+  VisaCard,
 } from "../screens/bitcoin-card"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
