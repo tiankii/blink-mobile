@@ -3037,6 +3037,11 @@ const en: BaseTranslation = {
     },
     acceptButton: "Continue & Pay",
   },
+  LoadinCardScreen: {
+    title: "We are diligently working on your card",
+    subtitle: "We will notify you once its here",
+    buttonText: "Nice",
+  },
 }
 
 export default en

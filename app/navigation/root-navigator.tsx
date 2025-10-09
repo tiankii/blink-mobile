@@ -100,6 +100,7 @@ import {
   CardDetails,
   CardWelcome,
   CardPayment,
+  LoadinCard
 } from "../screens/bitcoin-card"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
@@ -509,6 +510,13 @@ export const RootStack = () => {
         component={CardPayment}
         options={{
           title: LL.CardPaymentScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="LoadinCard"
+        component={LoadinCard}
+        options={{
+          headerShown: false,
         }}
       />
     </RootNavigator.Navigator>

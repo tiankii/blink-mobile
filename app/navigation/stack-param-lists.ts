@@ -124,6 +124,7 @@ export type RootStackParamList = {
   CardWelcome: undefined
   CardSubscribe: undefined
   CardPayment: undefined
+  LoadinCard: undefined
 }
 
 export type OnboardingStackParamList = {

@@ -9547,6 +9547,20 @@ type RootTranslation = {
 		 */
 		acceptButton: string
 	}
+	LoadinCardScreen: {
+		/**
+		 * W​e​ ​a​r​e​ ​d​i​l​i​g​e​n​t​l​y​ ​w​o​r​k​i​n​g​ ​o​n​ ​y​o​u​r​ ​c​a​r​d
+		 */
+		title: string
+		/**
+		 * W​e​ ​w​i​l​l​ ​n​o​t​i​f​y​ ​y​o​u​ ​o​n​c​e​ ​i​t​s​ ​h​e​r​e
+		 */
+		subtitle: string
+		/**
+		 * N​i​c​e
+		 */
+		buttonText: string
+	}
 }
 
 export type TranslationFunctions = {
@@ -18970,6 +18984,20 @@ export type TranslationFunctions = {
 		 * Continue & Pay
 		 */
 		acceptButton: () => LocalizedString
+	}
+	LoadinCardScreen: {
+		/**
+		 * We are diligently working on your card
+		 */
+		title: () => LocalizedString
+		/**
+		 * We will notify you once its here
+		 */
+		subtitle: () => LocalizedString
+		/**
+		 * Nice
+		 */
+		buttonText: () => LocalizedString
 	}
 }
 
