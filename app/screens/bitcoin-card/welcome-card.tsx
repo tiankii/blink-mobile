@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
-export const CardWelcome: React.FC = () => {
+export const WelcomeCard: React.FC = () => {
   const styles = useStyles()
   const {
     theme: { colors },
