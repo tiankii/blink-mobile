@@ -144,6 +144,9 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
           path: "transaction/:txid",
         },
         sendBitcoinDestination: ":payment",
+        CardWelcome: "CardWelcome",
+        LoadinCard: "LoadinCard",
+        VisaCard: "VisaCard",
       },
     },
     getInitialURL: async () => {

@@ -3042,6 +3042,13 @@ const en: BaseTranslation = {
     subtitle: "We will notify you once its here",
     buttonText: "Nice",
   },
+  VisaCardScreen: {
+    title: "Visa Card",
+    cardTitle: "Congratulations!",
+    cardSubTitle: "Your Blink Visa Card has been activated.",
+    VisaButtonText: "Add to",
+    buttonText: "Order physical card",
+  },
 }
 
 export default en
