@@ -18,7 +18,7 @@ export const WelcomeCard: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const handleNext = () => {
-    navigation.navigate("BitcoinCard")
+    navigation.navigate("bitcoinCard")
   }
 
   return (

@@ -9,7 +9,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import TypingMonkeyImage from "../../assets/images/typing-monkey.png"
 
-export const LoadinCard: React.FC = () => {
+export const LoadingCard: React.FC = () => {
   const styles = useStyles()
   const {
     theme: { colors },

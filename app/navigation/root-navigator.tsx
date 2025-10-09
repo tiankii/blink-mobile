@@ -100,7 +100,7 @@ import {
   CardDetails,
   WelcomeCard,
   CardPayment,
-  LoadinCard,
+  LoadingCard,
   VisaCard
 } from "../screens/bitcoin-card"
 
@@ -479,49 +479,49 @@ export const RootStack = () => {
         options={{ headerShown: false }}
       />
       <RootNavigator.Screen
-        name="BitcoinCard"
+        name="bitcoinCard"
         component={BitcoinCard}
         options={{
           title: LL.BitcoinCardScreen.title(),
         }}
       />
       <RootNavigator.Screen
-        name="CardDetails"
+        name="cardDetails"
         component={CardDetails}
         options={{
           title: LL.CardDetailsScreen.title(),
         }}
       />
       <RootNavigator.Screen
-        name="WelcomeCard"
+        name="welcomeCard"
         component={WelcomeCard}
         options={{
           title: "",
         }}
       />
       <RootNavigator.Screen
-        name="CardSubscribe"
+        name="cardSubscribe"
         component={CardPayment}
         options={{
           title: LL.CardSubscribeScreen.title(),
         }}
       />
       <RootNavigator.Screen
-        name="CardPayment"
+        name="cardPayment"
         component={CardPayment}
         options={{
           title: LL.CardPaymentScreen.title(),
         }}
       />
       <RootNavigator.Screen
-        name="LoadinCard"
-        component={LoadinCard}
+        name="loadingCard"
+        component={LoadingCard}
         options={{
           headerShown: false,
         }}
       />
       <RootNavigator.Screen
-        name="VisaCard"
+        name="visaCard"
         component={VisaCard}
         options={{
           title: LL.VisaCardScreen.title(),

@@ -43,7 +43,7 @@ export const BitcoinCard: React.FC = () => {
       <View style={styles.buttonsContainer}>
         <GaloyPrimaryButton
           title={LL.BitcoinCardScreen.buttonText()}
-          onPress={() => navigation.navigate("CardDetails")}
+          onPress={() => navigation.navigate("cardDetails")}
           disabled={false}
         />
       </View>
