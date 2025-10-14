@@ -3040,6 +3040,7 @@ const en: BaseTranslation = {
   LoadinCardScreen: {
     title: "We are diligently working on your card",
     subtitle: "We will notify you once its here",
+    codingBackend: "...coding the backend",
     buttonText: "Nice",
   },
   VisaCardScreen: {

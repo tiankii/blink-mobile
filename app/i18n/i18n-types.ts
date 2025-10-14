@@ -9557,6 +9557,10 @@ type RootTranslation = {
 		 */
 		subtitle: string
 		/**
+		 * .​.​.​c​o​d​i​n​g​ ​t​h​e​ ​b​a​c​k​e​n​d
+		 */
+		codingBackend: string
+		/**
 		 * N​i​c​e
 		 */
 		buttonText: string
@@ -19016,6 +19020,10 @@ export type TranslationFunctions = {
 		 * We will notify you once its here
 		 */
 		subtitle: () => LocalizedString
+		/**
+		 * ...coding the backend
+		 */
+		codingBackend: () => LocalizedString
 		/**
 		 * Nice
 		 */
