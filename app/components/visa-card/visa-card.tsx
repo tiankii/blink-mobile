@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from "react"
-import { View, ViewStyle, DimensionValue } from "react-native"
+import React, { FunctionComponent, useState } from "react"
+import { View, ViewStyle, DimensionValue, LayoutChangeEvent } from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -14,6 +14,7 @@ interface VisaCardProps {
   expiredDate: string
   backgroundColor?: string
   gradientColors?: string[]
+  gradientLocations?: number[]
   useGradient?: boolean
   gradientStart?: { x: number; y: number }
   gradientEnd?: { x: number; y: number }
@@ -35,6 +36,7 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   expiredDate,
   backgroundColor,
   gradientColors,
+  gradientLocations,
   useGradient = false,
   gradientStart,
   gradientEnd,
@@ -43,8 +45,8 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   cardHeight = 197,
   cardWidth = "100%",
   borderRadius = 14,
-  logoWidth = 130,
-  visaLogoHeight = 70,
+  logoWidth = 120,
+  visaLogoHeight = 83,
   cardNumberFontSize,
   expiryDateFontSize,
   style,
@@ -64,9 +66,45 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   })
   const { LL } = useI18nContext()
 
+  const [cardWidthPx, setCardWidthPx] = useState<number>(0)
+  const designReferenceWidth = 360
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout
+    setCardWidthPx(Math.round(width))
+  }
+
+  const scaleFactor = cardWidthPx > 0 ? cardWidthPx / designReferenceWidth : 1
+
+  const scale = (value: number, min = 8, max?: number) => {
+    const s = Math.round(value * scaleFactor)
+    if (max !== undefined) return Math.min(Math.max(s, min), max)
+    return Math.max(s, min)
+  }
+
+  const scaledLogoWidth = cardWidthPx > 0 ? scale(logoWidth, 24) : logoWidth
+  const scaledVisaSize = cardWidthPx > 0 ? scale(visaLogoHeight, 20) : visaLogoHeight
+  const scaledVisaMarginTop = cardWidthPx > 0 ? Math.round(-15 * scaleFactor) : -15
+
+  const dynamicTextStyles = {
+    cardNumberText: {
+      fontSize: cardWidthPx > 0 ? scale(24) : 24,
+    },
+    cardholderName: {
+      fontSize: cardWidthPx > 0 ? scale(14) : 14,
+    },
+    expiryLabel: {
+      fontSize: cardWidthPx > 0 ? scale(11) : 11,
+    },
+    expiryDate: {
+      fontSize: cardWidthPx > 0 ? scale(14) : 14,
+    },
+  }
+
   const degreesToGradientCoords = (degrees: number) => {
-    const normalizedDegrees = ((degrees % 360) + 360) % 360
-    const radians = (normalizedDegrees * Math.PI) / 180
+    const adjustedDegrees = degrees - 90
+    const radians = (adjustedDegrees * Math.PI) / 180
+
     const x = Math.cos(radians)
     const y = Math.sin(radians)
 
@@ -93,44 +131,61 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
 
   const formatCardExpiredDate = (number: string) => {
     const normalized = number.replaceAll(".", "•")
-    const format = normalized.replace("/", " / ")
+    const format = normalized.replace("/", "/ ")
     return format
   }
 
   const CardContent = () => (
     <>
       <View style={styles.cardHeader}>
-        <LogoLightMode width={logoWidth} style={styles.logo} />
-        <VisaPlatinumLightMode height={visaLogoHeight} style={styles.visaLogo} />
+        <LogoLightMode
+          width={scaledLogoWidth}
+          height={Math.round(scaledLogoWidth * 0.3)}
+          style={{ marginLeft: -6 }}
+        />
+
+        <VisaPlatinumLightMode
+          height={scaledVisaSize}
+          width={scaledVisaSize}
+          style={[{ marginTop: scaledVisaMarginTop }]}
+        />
       </View>
 
-      <View style={styles.cardNumberContainer}>
-        <Text
-          type="h1"
-          style={styles.cardNumberText}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-        >
-          {formatCardNumber(cardNumber)}
-        </Text>
-      </View>
+      <View style={styles.cardContent}>
+        <View style={styles.cardNumberContainer}>
+          <Text
+            style={[styles.cardNumberText, dynamicTextStyles.cardNumberText]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            allowFontScaling
+          >
+            {formatCardNumber(cardNumber)}
+          </Text>
+        </View>
 
-      <View style={styles.cardFooter}>
-        <Text
-          type="p3"
-          style={styles.cardholderName}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-        >
-          {name}
-        </Text>
-        <View style={styles.expiryContainer}>
-          <Text type="p4" style={styles.expiryLabel}>
-            {LL.common.validThru()}
+        <View style={styles.cardFooter}>
+          <Text
+            style={[styles.cardholderName, dynamicTextStyles.cardholderName]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            allowFontScaling
+          >
+            {name}
           </Text>
-          <Text type="p3" style={styles.expiryDate}>
-            {formatCardExpiredDate(expiredDate)}
-          </Text>
+          <View style={styles.expiryContainer}>
+            <Text
+              style={[styles.expiryLabel, dynamicTextStyles.expiryLabel]}
+              allowFontScaling
+            >
+              {LL.common.validThru()}
+            </Text>
+            <Text
+              style={[styles.expiryDate, dynamicTextStyles.expiryDate]}
+              allowFontScaling
+            >
+              {formatCardExpiredDate(expiredDate)}
+            </Text>
+          </View>
         </View>
       </View>
     </>
@@ -139,10 +194,12 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   if (useGradient) {
     return (
       <LinearGradient
-        colors={gradientColors ?? ["#FFBE0B", colors.orange]}
+        colors={gradientColors ?? ["#feac0a", colors.orange]}
+        locations={gradientLocations}
         start={gradientCoords.start}
         end={gradientCoords.end}
         style={[styles.cardContainer, style]}
+        onLayout={handleLayout}
       >
         <CardContent />
       </LinearGradient>
@@ -150,7 +207,7 @@ export const VisaCard: FunctionComponent<VisaCardProps> = ({
   }
 
   return (
-    <View style={[styles.cardContainer, style]}>
+    <View style={[styles.cardContainer, style]} onLayout={handleLayout}>
       <CardContent />
     </View>
   )
@@ -172,10 +229,11 @@ const useStyles = makeStyles(
     cardContainer: {
       backgroundColor: props.backgroundColor || colors.orange,
       borderRadius: props.borderRadius,
-      height: props.cardHeight,
       width: props.cardWidth,
-      paddingHorizontal: 12,
+      aspectRatio: 1.585,
+      paddingHorizontal: 15,
       paddingVertical: 10,
+      paddingTop: 9,
       justifyContent: "space-between",
     },
     cardHeader: {
@@ -183,11 +241,8 @@ const useStyles = makeStyles(
       alignItems: "flex-start",
       justifyContent: "space-between",
     },
-    logo: {
-      marginLeft: -15,
-    },
-    visaLogo: {
-      marginTop: -15,
+    cardContent: {
+      gap: 19,
     },
     cardNumberContainer: {
       width: "100%",
@@ -195,44 +250,43 @@ const useStyles = makeStyles(
     },
     cardNumberText: {
       fontWeight: "bold",
-      ...(props.cardNumberFontSize ? { fontSize: props.cardNumberFontSize } : {}),
+      fontFamily: "Courier New",
       color: props.textColor ?? colors._white,
-      letterSpacing: 2,
-      textShadowColor: "rgba(0, 0, 0, 0.49)",
-      textShadowOffset: { width: 0, height: 1 },
+      letterSpacing: 1,
+      textShadowColor: "rgba(0, 0, 0, 0.39)",
+      textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
     },
     cardFooter: {
       flexDirection: "row",
       alignItems: "flex-end",
       justifyContent: "space-between",
-      paddingBottom: 10,
+      paddingBottom: 12,
     },
     cardholderName: {
       textTransform: "uppercase",
       fontWeight: "600",
       color: props.textColor ?? colors._white,
-      textShadowColor: "rgba(0, 0, 0, 0.49)",
-      textShadowOffset: { width: 0, height: 1 },
+      textShadowColor: "rgba(0, 0, 0, 0.39)",
+      textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
+      paddingLeft: 2,
     },
     expiryContainer: {
       alignItems: "flex-end",
-      gap: 1,
     },
     expiryLabel: {
       textTransform: "uppercase",
       color: props.textColor ?? colors._white,
-      fontSize: 10,
-      textShadowColor: "rgba(0, 0, 0, 0.49)",
-      textShadowOffset: { width: 0, height: 1 },
+      textShadowColor: "rgba(0, 0, 0, 0.39)",
+      textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
+      marginBottom: -1,
     },
     expiryDate: {
-      ...(props.expiryDateFontSize ? { fontSize: props.expiryDateFontSize } : {}),
       color: props.textColor ?? colors._white,
-      textShadowColor: "rgba(0, 0, 0, 0.49)",
-      textShadowOffset: { width: 0, height: 1 },
+      textShadowColor: "rgba(0, 0, 0, 0.39)",
+      textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
     },
   }),
