@@ -7,7 +7,6 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import TypingMonkeyImage from "../../assets/images/typing-monkey.png"
 
 export const LoadingCard: React.FC = () => {
   const styles = useStyles()
@@ -44,13 +43,14 @@ export const LoadingCard: React.FC = () => {
           <Text type="p1" style={styles.bodyText} color={colors.grey3}>
             {LL.LoadinCardScreen.subtitle()}
           </Text>
-          <View style={styles.imageContainer}>
-            <Image
-              source={TypingMonkeyImage}
-              style={styles.typingMonkeyImage}
-              resizeMode="contain"
-            />
+          <View style={styles.loadingContainer}>
+            <View style={[styles.loading, styles.firstLoading]}></View>
+            <View style={styles.loading}></View>
+            <View style={styles.loading}></View>
           </View>
+          <Text type="h2" style={styles.bodySubText}>
+            {LL.LoadinCardScreen.codingBackend()}
+          </Text>
         </View>
       </ScrollView>
 
@@ -71,12 +71,10 @@ const useStyles = makeStyles(({ colors }) => ({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   contentContainer: {
     alignItems: "center",
+    marginTop: 90
   },
   iconContainer: {
     marginBottom: 15,
@@ -90,23 +88,36 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
   },
   welcomeTitle: {
-    marginBottom: 16,
+    marginBottom: 5,
     paddingHorizontal: 20,
     textAlign: "center",
-    fontWeight: "bold",
   },
   bodyText: {
-    paddingHorizontal: 20,
-    marginBottom: 5,
     lineHeight: 26,
     textAlign: "center",
-    width: "100%",
   },
-  imageContainer: {
+  bodySubText: {
+    lineHeight: 26,
+    textAlign: "center",
+    marginTop: 25,
+  },
+  loadingContainer: {
     width: "100%",
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    gap: 12,
+    marginTop: 70,
   },
-
+  loading: {
+    flex: 1,
+    height: 4,
+    backgroundColor: colors.grey4,
+  },
+  firstLoading: {
+    backgroundColor: colors.primary,
+  },
   typingMonkeyImage: {
     width: "100%",
     height: undefined,
