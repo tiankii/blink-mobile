@@ -22,7 +22,7 @@ export const BitcoinCard: React.FC = () => {
           name={"satoshi nakamoto"}
           cardNumber="2121 2121 2121 2121"
           useGradient
-          gradientDegrees={-60}
+          gradientDegrees={45}
         />
         <View style={styles.textContainer}>
           <Text type="h2" style={styles.boldText}>
