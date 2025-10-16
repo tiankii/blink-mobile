@@ -2998,6 +2998,7 @@ const en: BaseTranslation = {
       lightningTransactions: "50% Back On Lightning Fees",
       onchainDeposits: "50% Back On Onchain Fees",
       circularEconomies: "$100 to Circular Economies",
+      creditLimit: "$100 credit limit",
     },
     andMore: "... and more coming in 2026",
     buttonText: "Cool",
@@ -3035,6 +3036,7 @@ const en: BaseTranslation = {
       cardholderAgreement: "Cardholder Agreement",
       and: "and"
     },
+    renew: "I understand that my subscription will automatically renew in 1 year",
     acceptButton: "Continue & Pay",
   },
   LoadinCardScreen: {

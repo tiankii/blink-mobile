@@ -20,6 +20,7 @@ export const CardPayment: React.FC = () => {
   const route = useRoute<RouteProp<RootStackParamList>>()
 
   const [isAgreed, setIsAgreed] = React.useState(false)
+  const [isRenew, setIsRenew] = React.useState(false)
 
   const onShouldStartLoad = React.useCallback(
     (request: ShouldStartLoadRequest) => {
@@ -47,7 +48,7 @@ export const CardPayment: React.FC = () => {
   )
 
   const handleAccept = () => {
-    if (isAgreed) {
+    if (isAgreed && isRenew) {
       if (route.name === "cardSubscribe") {
         /**
          * TODO: temporary until backend provides the url
@@ -124,6 +125,23 @@ export const CardPayment: React.FC = () => {
             </Text>
           </View>
         </View>
+        {route.name === "cardSubscribe" && (
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              checked={isRenew}
+              iconType="ionicon"
+              checkedIcon={"checkbox"}
+              uncheckedIcon={"square-outline"}
+              onPress={() => setIsRenew(!isRenew)}
+              containerStyle={styles.checkboxStyle}
+            />
+            <View style={styles.agreementTextContainer}>
+              <Text type="p3" style={styles.agreementText}>
+                {LL.CardPaymentScreen.renew()}
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
 
       <View style={styles.buttonsContainer}>
@@ -134,7 +152,7 @@ export const CardPayment: React.FC = () => {
               : LL.CardSubscribeScreen.acceptButton()
           }
           onPress={handleAccept}
-          disabled={!isAgreed}
+          disabled={!isAgreed || (route.name === "cardSubscribe" && !isRenew)}
         />
       </View>
     </Screen>
@@ -152,7 +170,6 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 16,
     padding: 10,
     paddingBottom: 5,
-    marginBottom: 17,
   },
   cardTitle: {
     color: colors.black,
@@ -188,6 +205,7 @@ const useStyles = makeStyles(({ colors }) => ({
     fontWeight: "500",
   },
   checkboxContainer: {
+    marginTop: 17,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 8,

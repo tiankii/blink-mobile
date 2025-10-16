@@ -61,6 +61,10 @@ import Upgrade from "@app/assets/icons-redesign/upgrade.svg"
 import Welcome from "@app/assets/icons-redesign/welcome.svg"
 import verifiedBadge from "@app/assets/icons-redesign/verified-badge.svg"
 import applePay from "@app/assets/icons-redesign/apple-pay.svg"
+import headset from "@app/assets/icons-redesign/headset.svg"
+import flashOutline from "@app/assets/icons-redesign/flash-outline.svg"
+import linkOutline from "@app/assets/icons-redesign/link-outline.svg"
+import btcHand from "@app/assets/icons-redesign/btc-hand.svg"
 import { makeStyles, useTheme } from "@rn-vui/themed"
 
 export const icons = {
@@ -123,7 +127,11 @@ export const icons = {
   "upgrade": Upgrade,
   "welcome": Welcome,
   "verified-badge": verifiedBadge,
-  "apple-pay": applePay
+  "apple-pay": applePay,
+  "headset": headset,
+  "flash-outline": flashOutline,
+  "link-outline": linkOutline,
+  "btc-hand": btcHand
 } as const
 
 export type IconNamesType = keyof typeof icons
