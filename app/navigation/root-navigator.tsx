@@ -102,6 +102,8 @@ import {
   CardPayment,
   LoadingCard,
   VisaCard,
+  CardCreditLimit,
+  SelectCreditLimit,
 } from "../screens/bitcoin-card"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
@@ -532,6 +534,20 @@ export const RootStack = () => {
         component={VisaCard}
         options={{
           title: LL.VisaCardScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="cardCreditLimit"
+        component={CardCreditLimit}
+        options={{
+          title: "",
+        }}
+      />
+      <RootNavigator.Screen
+        name="selectCreditLimit"
+        component={SelectCreditLimit}
+        options={{
+          title: "",
         }}
       />
     </RootNavigator.Navigator>

@@ -3052,6 +3052,17 @@ const en: BaseTranslation = {
     VisaButtonText: "Add to",
     buttonText: "Order physical card",
   },
+  CardCreditLimit: {
+    welcomeMessage: {
+        title: "Increase your card credit limit",
+        paragraphs: {
+            body1: "You have paid $1,000 for your Blink Private subscription which comes with a $1,000 card credit limit. If you wish to increase the credit limit above $1,000 you can participate in the Blink crowdfunding round.",
+            body2: "Your credit limit will increase with the amount you invest and will carry forward for as long as you continue your Blink Private subscription.",
+        },
+    },
+    desiredCreditLimit: "Select Desired Credit Limit",
+    buttonText: "Increase",
+  },
 }
 
 export default en

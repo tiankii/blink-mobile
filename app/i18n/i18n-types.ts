@@ -9595,6 +9595,32 @@ type RootTranslation = {
 		 */
 		buttonText: string
 	}
+	CardCreditLimit: {
+		welcomeMessage: {
+			/**
+			 * I​n​c​r​e​a​s​e​ ​y​o​u​r​ ​c​a​r​d​ ​c​r​e​d​i​t​ ​l​i​m​i​t
+			 */
+			title: string
+			paragraphs: {
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​p​a​i​d​ ​$​1​,​0​0​0​ ​f​o​r​ ​y​o​u​r​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​s​u​b​s​c​r​i​p​t​i​o​n​ ​w​h​i​c​h​ ​c​o​m​e​s​ ​w​i​t​h​ ​a​ ​$​1​,​0​0​0​ ​c​a​r​d​ ​c​r​e​d​i​t​ ​l​i​m​i​t​.​ ​I​f​ ​y​o​u​ ​w​i​s​h​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​t​h​e​ ​c​r​e​d​i​t​ ​l​i​m​i​t​ ​a​b​o​v​e​ ​$​1​,​0​0​0​ ​y​o​u​ ​c​a​n​ ​p​a​r​t​i​c​i​p​a​t​e​ ​i​n​ ​t​h​e​ ​B​l​i​n​k​ ​c​r​o​w​d​f​u​n​d​i​n​g​ ​r​o​u​n​d​.
+				 */
+				body1: string
+				/**
+				 * Y​o​u​r​ ​c​r​e​d​i​t​ ​l​i​m​i​t​ ​w​i​l​l​ ​i​n​c​r​e​a​s​e​ ​w​i​t​h​ ​t​h​e​ ​a​m​o​u​n​t​ ​y​o​u​ ​i​n​v​e​s​t​ ​a​n​d​ ​w​i​l​l​ ​c​a​r​r​y​ ​f​o​r​w​a​r​d​ ​f​o​r​ ​a​s​ ​l​o​n​g​ ​a​s​ ​y​o​u​ ​c​o​n​t​i​n​u​e​ ​y​o​u​r​ ​B​l​i​n​k​ ​P​r​i​v​a​t​e​ ​s​u​b​s​c​r​i​p​t​i​o​n​.
+				 */
+				body2: string
+			}
+		}
+		/**
+		 * S​e​l​e​c​t​ ​D​e​s​i​r​e​d​ ​C​r​e​d​i​t​ ​L​i​m​i​t
+		 */
+		desiredCreditLimit: string
+		/**
+		 * I​n​c​r​e​a​s​e
+		 */
+		buttonText: string
+	}
 }
 
 export type TranslationFunctions = {
@@ -19064,6 +19090,32 @@ export type TranslationFunctions = {
 		VisaButtonText: () => LocalizedString
 		/**
 		 * Order physical card
+		 */
+		buttonText: () => LocalizedString
+	}
+	CardCreditLimit: {
+		welcomeMessage: {
+			/**
+			 * Increase your card credit limit
+			 */
+			title: () => LocalizedString
+			paragraphs: {
+				/**
+				 * You have paid $1,000 for your Blink Private subscription which comes with a $1,000 card credit limit. If you wish to increase the credit limit above $1,000 you can participate in the Blink crowdfunding round.
+				 */
+				body1: () => LocalizedString
+				/**
+				 * Your credit limit will increase with the amount you invest and will carry forward for as long as you continue your Blink Private subscription.
+				 */
+				body2: () => LocalizedString
+			}
+		}
+		/**
+		 * Select Desired Credit Limit
+		 */
+		desiredCreditLimit: () => LocalizedString
+		/**
+		 * Increase
 		 */
 		buttonText: () => LocalizedString
 	}
