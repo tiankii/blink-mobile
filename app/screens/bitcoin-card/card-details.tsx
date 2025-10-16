@@ -1,5 +1,5 @@
 import * as React from "react"
-import { makeStyles, useTheme, Text, Icon } from "@rn-vui/themed"
+import { makeStyles, useTheme, Text } from "@rn-vui/themed"
 import { Screen } from "../../components/screen"
 import { ScrollView, View } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"

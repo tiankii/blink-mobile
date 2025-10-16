@@ -4,9 +4,10 @@ import { Screen } from "../../components/screen"
 import { View, Image, ScrollView } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { useNavigation } from "@react-navigation/native"
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import TypingMonkeyImage from "../../assets/images/typing-monkey.png"
 
 export const LoadingCard: React.FC = () => {
   const styles = useStyles()
@@ -16,8 +17,13 @@ export const LoadingCard: React.FC = () => {
 
   const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const route = useRoute<RouteProp<RootStackParamList>>()
 
   const handleNext = () => {
+    if (route.name === "loadingCard") {
+      navigation.navigate("loadingCardMonkey")
+      return
+    }
     navigation.navigate("Primary")
   }
 
@@ -43,7 +49,21 @@ export const LoadingCard: React.FC = () => {
           <Text type="p1" style={styles.bodyText} color={colors.grey3}>
             {LL.LoadinCardScreen.subtitle()}
           </Text>
-          <View style={styles.loadingContainer}>
+          {route.name === "loadingCardMonkey" && (
+            <View style={styles.imageContainer}>
+              <Image
+                source={TypingMonkeyImage}
+                style={styles.typingMonkeyImage}
+                resizeMode="contain"
+              />
+            </View>
+          )}
+          <View
+            style={[
+              styles.loadingContainer,
+              route.name === "loadingCard" && styles.marginTop,
+            ]}
+          >
             <View style={[styles.loading, styles.firstLoading]}></View>
             <View style={styles.loading}></View>
             <View style={styles.loading}></View>
@@ -74,7 +94,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   contentContainer: {
     alignItems: "center",
-    marginTop: 90
   },
   iconContainer: {
     marginBottom: 15,
@@ -101,6 +120,13 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
     marginTop: 25,
   },
+  imageContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  marginTop: {
+    marginTop: 130,
+  },
   loadingContainer: {
     width: "100%",
     flexDirection: "row",
@@ -108,7 +134,7 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignContent: "center",
     gap: 12,
-    marginTop: 70,
+    marginTop: 5,
   },
   loading: {
     flex: 1,

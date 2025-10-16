@@ -131,6 +131,7 @@ export type RootStackParamList = {
   cardSubscribe: undefined
   cardPayment: undefined
   loadingCard: undefined
+  loadingCardMonkey: undefined
   visaCard: undefined
 }
 

@@ -517,7 +517,14 @@ export const RootStack = () => {
         name="loadingCard"
         component={LoadingCard}
         options={{
-          headerShown: false,
+          title: "",
+        }}
+      />
+      <RootNavigator.Screen
+        name="loadingCardMonkey"
+        component={LoadingCard}
+        options={{
+          title: "",
         }}
       />
       <RootNavigator.Screen

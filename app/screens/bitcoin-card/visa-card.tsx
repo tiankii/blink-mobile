@@ -7,7 +7,6 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import TypingMonkeyImage from "../../assets/images/typing-monkey.png"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { VisaCard as VisaCardComponent } from "@app/components/visa-card"
 
