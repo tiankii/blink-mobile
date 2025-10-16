@@ -2872,7 +2872,8 @@
             "accountManager": "Gerente de Cuenta Personal",
             "lightningTransactions": "50% de Reembolso en Tarifas Lightning",
             "onchainDeposits": "50% de Reembolso en Tarifas Onchain",
-            "circularEconomies": "$100 para Economías Circulares"
+            "circularEconomies": "$100 para Economías Circulares",
+            "creditLimit": "$100 límite de crédito"
         },
         "andMore": "... y más próximamente en 2026",
         "buttonText": "Genial"
@@ -2910,6 +2911,7 @@
             "cardholderAgreement": "Acuerdo del Titular de la Tarjeta",
             "and": "y"
         },
+        "renew": "Entiendo que mi suscripción se renovará automáticamente en 1 año",
         "acceptButton": "Continuar y Pagar"
     },
     "LoadinCardScreen": {

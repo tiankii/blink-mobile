@@ -7,10 +7,14 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { circleDiameterThatContainsSquare } from "@app/components/atomic/galoy-icon"
+import {
+  circleDiameterThatContainsSquare,
+  GaloyIcon,
+  IconNamesType,
+} from "@app/components/atomic/galoy-icon"
 
 interface Feature {
-  icon: string
+  icon: IconNamesType
   title: string
 }
 
@@ -26,9 +30,8 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature }) => {
 
   return (
     <View style={styles.featureContainer}>
-      <Icon
+      <GaloyIcon
         name={feature.icon}
-        type="ionicon"
         color={colors._black}
         backgroundColor={colors.primary}
         style={styles.iconStyle}
@@ -46,7 +49,7 @@ export const CardDetails: React.FC = () => {
 
   const FEATURES: Feature[] = [
     {
-      icon: "globe-outline",
+      icon: "headset",
       title: LL.CardDetailsScreen.features.accountManager(),
     },
     {
@@ -54,12 +57,16 @@ export const CardDetails: React.FC = () => {
       title: LL.CardDetailsScreen.features.lightningTransactions(),
     },
     {
-      icon: "flash-outline",
+      icon: "link-outline",
       title: LL.CardDetailsScreen.features.onchainDeposits(),
     },
     {
-      icon: "shield-outline",
+      icon: "btc-hand",
       title: LL.CardDetailsScreen.features.circularEconomies(),
+    },
+    {
+      icon: "bank",
+      title: LL.CardDetailsScreen.features.creditLimit(),
     },
   ]
 

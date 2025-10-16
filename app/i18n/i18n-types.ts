@@ -9445,6 +9445,10 @@ type RootTranslation = {
 			 * $​1​0​0​ ​t​o​ ​C​i​r​c​u​l​a​r​ ​E​c​o​n​o​m​i​e​s
 			 */
 			circularEconomies: string
+			/**
+			 * $​1​0​0​ ​c​r​e​d​i​t​ ​l​i​m​i​t
+			 */
+			creditLimit: string
 		}
 		/**
 		 * .​.​.​ ​a​n​d​ ​m​o​r​e​ ​c​o​m​i​n​g​ ​i​n​ ​2​0​2​6
@@ -9542,6 +9546,10 @@ type RootTranslation = {
 			 */
 			and: string
 		}
+		/**
+		 * I​ ​u​n​d​e​r​s​t​a​n​d​ ​t​h​a​t​ ​m​y​ ​s​u​b​s​c​r​i​p​t​i​o​n​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​r​e​n​e​w​ ​i​n​ ​1​ ​y​e​a​r
+		 */
+		renew: string
 		/**
 		 * C​o​n​t​i​n​u​e​ ​&​ ​P​a​y
 		 */
@@ -18909,6 +18917,10 @@ export type TranslationFunctions = {
 			 * $100 to Circular Economies
 			 */
 			circularEconomies: () => LocalizedString
+			/**
+			 * $100 credit limit
+			 */
+			creditLimit: () => LocalizedString
 		}
 		/**
 		 * ... and more coming in 2026
@@ -19006,6 +19018,10 @@ export type TranslationFunctions = {
 			 */
 			and: () => LocalizedString
 		}
+		/**
+		 * I understand that my subscription will automatically renew in 1 year
+		 */
+		renew: () => LocalizedString
 		/**
 		 * Continue & Pay
 		 */
