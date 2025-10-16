@@ -133,7 +133,7 @@ export type RootStackParamList = {
   loadingCard: undefined
   loadingCardMonkey: undefined
   visaCard: undefined
-  cardCreditLimit: undefined
+  creditCardLimit: undefined
   selectCreditLimit: undefined
 }
 
