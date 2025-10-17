@@ -6299,8 +6299,9 @@ type RootTranslation = {
 		 */
 		oneSectionADay: string
 		/**
-		 * C​o​m​e​ ​b​a​c​k​ ​t​o​m​o​r​r​o​w​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​e​a​r​n​i​n​g​ ​r​e​w​a​r​d​s​.​
-	​O​R​,​ ​c​l​i​c​k​ ​o​n​ ​c​o​n​t​i​n​u​e​,​ ​t​o​ ​k​e​e​p​ ​l​e​a​r​n​i​n​g​ ​w​i​t​h​o​u​t​ ​r​e​w​a​r​d​s
+		 * C​o​m​e​ ​b​a​c​k​ ​t​o​m​o​r​r​o​w​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​e​a​r​n​i​n​g​ ​s​a​t​s​ ​w​h​i​l​e​ ​l​e​a​r​n​i​n​g​.​
+	​
+	​O​r​,​ ​c​l​i​c​k​ ​c​o​n​t​i​n​u​e​ ​t​o​ ​k​e​e​p​ ​l​e​a​r​n​i​n​g​ ​w​i​t​h​o​u​t​ ​r​e​w​a​r​d​s​.
 		 */
 		availableTomorrow: string
 		/**
@@ -15679,8 +15680,9 @@ export type TranslationFunctions = {
 		 */
 		oneSectionADay: () => LocalizedString
 		/**
-		 * Come back tomorrow to continue earning rewards.
-	OR, click on continue, to keep learning without rewards
+		 * Come back tomorrow to continue earning sats while learning.
+
+	Or, click continue to keep learning without rewards.
 		 */
 		availableTomorrow: () => LocalizedString
 		/**

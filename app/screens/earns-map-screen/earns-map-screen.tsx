@@ -325,13 +325,11 @@ export const EarnMapScreen: React.FC = () => {
       <CustomModal
         isVisible={showModal}
         toggleModal={() => setShowModal(false)}
-        title={LL.EarnScreen.somethingNotRight()}
+        title={LL.EarnScreen.oneSectionADay()}
         backgroundModalColor={colors.white}
         body={
           <View style={styles.modalBody}>
-            <Text
-              style={styles.modalBodyText}
-            >{`${LL.EarnScreen.oneSectionADay()} ${LL.EarnScreen.availableTomorrow()}`}</Text>
+            <Text style={styles.modalBodyText}>{LL.EarnScreen.availableTomorrow()}</Text>
           </View>
         }
         primaryButtonOnPress={continueNotRewards}
@@ -398,10 +396,9 @@ const useStyles = makeStyles(({ colors }) => ({
   modalBodyText: {
     fontSize: 17,
     color: colors.grey3,
-    textAlign: "center",
+    textAlign: "left",
   },
   modalBody: {
-    textAlign: "center",
     marginTop: 20,
   },
 }))
