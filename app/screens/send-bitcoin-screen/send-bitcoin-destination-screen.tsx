@@ -133,9 +133,7 @@ const matchCheck = (
 
     let filteredContacts = allContacts
 
-    if (activeInput === "search") {
-      filteredContacts = allContacts.filter((contact) => !isPhoneNumber(contact.handle))
-    } else if (activeInput === "phone") {
+    if (activeInput === "phone") {
       filteredContacts = allContacts.filter((contact) => isPhoneNumber(contact.handle))
     }
 
@@ -146,9 +144,7 @@ const matchCheck = (
     return matchingContacts
   }
 
-  if (activeInput === "search") {
-    return allContacts.filter((contact) => !isPhoneNumber(contact.handle))
-  } else if (activeInput === "phone") {
+  if (activeInput === "phone") {
     return allContacts.filter((contact) => isPhoneNumber(contact.handle))
   }
 
@@ -528,7 +524,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 
     const { rawPhoneNumber } = defaultPhoneInputInfo
     const rawInput = `+${defaultPhoneInputInfo?.countryCallingCode}${rawPhoneNumber}`
-    console.warn(rawInput)
 
     handleChangeText(rawInput)
     updateMatchingContacts(rawPhoneNumber)
