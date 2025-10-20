@@ -621,18 +621,21 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     }
   }
 
-  const handleContactPress = (item: UserContact) => {
+  const handleContactPress = async (item: UserContact) => {
     if (destinationState.destinationState == DestinationState.Validating) return
     const handle = item?.handle?.trim() ?? ""
     const displayHandle =
       handle && !handle.includes("@") ? `${handle}@${lnAddressHostname}` : handle
-    updateMatchingContacts(handle)
+    const parsePhone = useParseValidPhone(displayHandle)
 
+    if (parsePhone?.isValid() && activeInputRef.current == "search") {
+      onFocusedInput("phone")
+    }
+    updateMatchingContacts(handle)
     handleSelection(item.id)
 
     if (activeInputRef.current == "phone") {
       setKeepCountryCode(false)
-      const parsePhone = useParseValidPhone(displayHandle)
       const international = parsePhone?.number
       dispatchDestinationStateAction({
         type: SendBitcoinActions.SetUnparsedDestination,
