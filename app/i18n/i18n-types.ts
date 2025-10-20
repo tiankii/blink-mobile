@@ -9446,7 +9446,7 @@ type RootTranslation = {
 			 */
 			circularEconomies: string
 			/**
-			 * $​1​0​0​ ​c​r​e​d​i​t​ ​l​i​m​i​t
+			 * $​1​,​0​0​0​ ​C​r​e​d​i​t​ ​L​i​m​i​t
 			 */
 			creditLimit: string
 		}
@@ -18944,7 +18944,7 @@ export type TranslationFunctions = {
 			 */
 			circularEconomies: () => LocalizedString
 			/**
-			 * $100 credit limit
+			 * $1,000 Credit Limit
 			 */
 			creditLimit: () => LocalizedString
 		}

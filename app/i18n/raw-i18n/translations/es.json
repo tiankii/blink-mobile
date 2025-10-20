@@ -2873,7 +2873,7 @@
             "lightningTransactions": "50% de Reembolso en Tarifas Lightning",
             "onchainDeposits": "50% de Reembolso en Tarifas Onchain",
             "circularEconomies": "$100 para Economías Circulares",
-            "creditLimit": "$100 límite de crédito"
+            "creditLimit": "$1,000 Límite de Crédito"
         },
         "andMore": "... y más próximamente en 2026",
         "buttonText": "Genial"

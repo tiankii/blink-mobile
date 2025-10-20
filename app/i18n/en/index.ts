@@ -2998,7 +2998,7 @@ const en: BaseTranslation = {
       lightningTransactions: "50% Back On Lightning Fees",
       onchainDeposits: "50% Back On Onchain Fees",
       circularEconomies: "$100 to Circular Economies",
-      creditLimit: "$100 credit limit",
+      creditLimit: "$1,000 Credit Limit",
     },
     andMore: "... and more coming in 2026",
     buttonText: "Cool",

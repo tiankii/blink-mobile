@@ -53,6 +53,10 @@ export const CardDetails: React.FC = () => {
       title: LL.CardDetailsScreen.features.accountManager(),
     },
     {
+      icon: "bank",
+      title: LL.CardDetailsScreen.features.creditLimit(),
+    },
+    {
       icon: "flash-outline",
       title: LL.CardDetailsScreen.features.lightningTransactions(),
     },
@@ -63,10 +67,6 @@ export const CardDetails: React.FC = () => {
     {
       icon: "btc-hand",
       title: LL.CardDetailsScreen.features.circularEconomies(),
-    },
-    {
-      icon: "bank",
-      title: LL.CardDetailsScreen.features.creditLimit(),
     },
   ]
 
