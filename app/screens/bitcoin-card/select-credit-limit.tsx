@@ -56,15 +56,10 @@ export const SelectCreditLimit: React.FC = () => {
                 ]}
                 onPress={() => setSelectedLimit(limit)}
               >
-                <Text
-                  type="p1"
-                  style={[
-                    styles.limitText,
-                    selectedLimit === limit && styles.limitTextSelected,
-                  ]}
-                >
+                <Text type="p2" style={[styles.limitText]}>
                   ${limit.toLocaleString()}
                 </Text>
+                <View style={styles.limitBgOptionSelected}></View>
               </TouchableOpacity>
             ))}
           </View>
@@ -113,20 +108,30 @@ const useStyles = makeStyles(({ colors }) => ({
     width: "100%",
   },
   limitOption: {
+    position: "relative",
     width: "100%",
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
+    height: 50,
+    borderWidth: 1,
+    borderColor: colors.transparent,
+    overflow: "hidden",
+    justifyContent: "center",
   },
   limitOptionSelected: {
-    borderBottomColor: colors.primary,
+    borderColor: colors.primary,
+    backgroundColor: colors.grey6,
+    borderRadius: 8,
+  },
+  limitBgOptionSelected: {
+    width: "97%",
+    height: 1,
+    backgroundColor: colors.grey4,
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "center",
   },
   limitText: {
-    fontSize: 18,
     color: colors.grey0,
-  },
-  limitTextSelected: {
-    color: colors._green,
+    paddingLeft: 10,
   },
   buttonsContainer: {
     justifyContent: "flex-end",
