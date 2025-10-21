@@ -524,13 +524,6 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="loadingCardMonkey"
-        component={LoadingCard}
-        options={{
-          title: "",
-        }}
-      />
-      <RootNavigator.Screen
         name="visaCard"
         component={VisaCard}
         options={{

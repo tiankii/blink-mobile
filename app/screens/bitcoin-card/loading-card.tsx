@@ -37,10 +37,6 @@ export const LoadingCard: React.FC = () => {
   })
 
   const handleNext = () => {
-    if (route.name === "loadingCard") {
-      navigation.navigate("loadingCardMonkey")
-      return
-    }
     navigation.navigate("Primary")
   }
 
@@ -66,33 +62,18 @@ export const LoadingCard: React.FC = () => {
           <Text type="p1" style={styles.bodyText} color={colors.grey3}>
             {LL.LoadinCardScreen.subtitle()}
           </Text>
-          {route.name === "loadingCardMonkey" && (
-            <View style={styles.imageContainer}>
-              <Image
-                source={TypingMonkeyImage}
-                style={styles.typingMonkeyImage}
-                resizeMode="contain"
-              />
-            </View>
-          )}
-          <View
-            style={[
-              styles.loadingContainer,
-              route.name === "loadingCard" && styles.marginTop,
-            ]}
-          >
+
+          <View style={styles.imageContainer}>
+            <Image
+              source={TypingMonkeyImage}
+              style={styles.typingMonkeyImage}
+              resizeMode="contain"
+            />
+          </View>
+          <View style={[styles.loadingContainer]}>
             <View style={styles.loadingWrapper}>
-              <View
-                style={[
-                  styles.loading,
-                  route.name === "loadingCardMonkey" && styles.loadingAnimatedCompleted,
-                ]}
-              />
-              {route.name === "loadingCard" && (
-                <Animated.View
-                  style={[styles.loadingAnimated, { width: progressWidth }]}
-                />
-              )}
+              <View style={[styles.loading]} />
+              <Animated.View style={[styles.loadingAnimated, { width: progressWidth }]} />
             </View>
             <View style={styles.loading}></View>
             <View style={styles.loading}></View>
@@ -154,9 +135,6 @@ const useStyles = makeStyles(({ colors }) => ({
     width: "100%",
     alignItems: "center",
   },
-  marginTop: {
-    marginTop: 130,
-  },
   loadingContainer: {
     width: "100%",
     flexDirection: "row",
@@ -177,14 +155,6 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey4,
   },
   loadingAnimated: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    height: 4,
-    backgroundColor: colors.primary,
-  },
-  loadingAnimatedCompleted: {
-    width: "100%",
     position: "absolute",
     left: 0,
     top: 0,
