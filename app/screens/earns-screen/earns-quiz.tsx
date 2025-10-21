@@ -195,7 +195,7 @@ const useStyles = makeStyles(({ colors }) => ({
   modalBodyText: {
     fontSize: 17,
     color: colors.grey3,
-    textAlign: "center",
+    textAlign: "left",
   },
 
   modalBody: {
@@ -267,7 +267,9 @@ export const EarnQuiz = ({ route }: Props) => {
   const [hasTriedClaim, setHasTriedClaim] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [quizErrorMessage, setQuizErrorMessage] = useState<string>()
-  const [quizErrorCode, setQuizErrorCode] = useState<string | null>()
+  const [quizErrorCode, setQuizErrorCode] = useState<
+    string | null | ValidateQuizCodeErrorsType
+  >()
 
   const addRecordedAnswer = (value: number) => {
     setRecordedAnswer([...recordedAnswer, value])
@@ -478,11 +480,15 @@ export const EarnQuiz = ({ route }: Props) => {
       <CustomModal
         isVisible={showModal}
         toggleModal={closeModal}
-        title={LL.EarnScreen.somethingNotRight()}
+        title={
+          quizErrorCode == "QUIZ_CLAIMED_TOO_EARLY"
+            ? "Continue without earning"
+            : LL.EarnScreen.somethingNotRight()
+        }
         backgroundModalColor={colors.white}
         body={
           <View style={styles.modalBody}>
-            <Text style={styles.modalBodyText}>{quizErrorMessage}</Text>
+            <Text style={styles.modalBodyText}>{quizErrorCode == "QUIZ_CLAIMED_TOO_EARLY"? "We only pay sats rewards for one section per day.\n\nYou can continue without the rewards or wait until tomorrow to continue." :quizErrorMessage}</Text>
           </View>
         }
         primaryButtonOnPress={handleClaimWithoutRewards}
