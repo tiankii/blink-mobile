@@ -54,7 +54,12 @@ import {
 import { WebViewScreen } from "@app/screens/webview/webview"
 import { testProps } from "@app/utils/testProps"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+  StackNavigationProp,
+} from "@react-navigation/stack"
+import { useNavigation } from "@react-navigation/native"
 import { makeStyles, useTheme } from "@rn-vui/themed"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
@@ -106,6 +111,7 @@ import {
   CreditCardLimit,
   SelectCreditLimit,
 } from "../screens/bitcoin-card"
+import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -116,6 +122,8 @@ export const RootStack = () => {
   } = useTheme()
   const isAuthed = useIsAuthed()
   const { LL } = useI18nContext()
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   return (
     <RootNavigator.Navigator
@@ -486,6 +494,15 @@ export const RootStack = () => {
         component={BitcoinCard}
         options={{
           title: LL.BitcoinCardScreen.title(),
+          headerRight: () => (
+            <GaloyIconButton
+              onPress={() => navigation.navigate("Primary")}
+              size={"medium"}
+              name="close"
+              backgroundColor={colors.grey5}
+              style={{ marginRight: 20 }}
+            />
+          ),
         }}
       />
       <RootNavigator.Screen
@@ -493,6 +510,15 @@ export const RootStack = () => {
         component={CardDetails}
         options={{
           title: LL.CardDetailsScreen.title(),
+          headerRight: () => (
+            <GaloyIconButton
+              onPress={() => navigation.navigate("Primary")}
+              size={"medium"}
+              name="close"
+              backgroundColor={colors.grey5}
+              style={{ marginRight: 20 }}
+            />
+          ),
         }}
       />
       <RootNavigator.Screen
@@ -507,6 +533,15 @@ export const RootStack = () => {
         component={CardPayment}
         options={{
           title: LL.CardSubscribeScreen.title(),
+          headerRight: () => (
+            <GaloyIconButton
+              onPress={() => navigation.navigate("Primary")}
+              size={"medium"}
+              name="close"
+              backgroundColor={colors.grey5}
+              style={{ marginRight: 20 }}
+            />
+          ),
         }}
       />
       <RootNavigator.Screen
@@ -542,6 +577,15 @@ export const RootStack = () => {
         component={SelectCreditLimit}
         options={{
           title: "",
+          headerRight: () => (
+            <GaloyIconButton
+              onPress={() => navigation.navigate("Primary")}
+              size={"medium"}
+              name="close"
+              backgroundColor={colors.grey5}
+              style={{ marginRight: 20 }}
+            />
+          ),
         }}
       />
     </RootNavigator.Navigator>
