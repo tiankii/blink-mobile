@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Icon, makeStyles, Text, useTheme } from "@rn-vui/themed"
 import { Screen } from "../../components/screen"
-import { View, Image, ScrollView } from "react-native"
+import { View, Image, ScrollView, Animated } from "react-native"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
@@ -18,6 +18,23 @@ export const LoadingCard: React.FC = () => {
   const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   const route = useRoute<RouteProp<RootStackParamList>>()
+
+  const progressAnim = React.useRef(new Animated.Value(0)).current
+
+  React.useEffect(() => {
+    if (route.name === "loadingCard") {
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: false,
+      }).start()
+    }
+  }, [route.name, progressAnim])
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0%", "100%"],
+  })
 
   const handleNext = () => {
     if (route.name === "loadingCard") {
@@ -64,7 +81,19 @@ export const LoadingCard: React.FC = () => {
               route.name === "loadingCard" && styles.marginTop,
             ]}
           >
-            <View style={[styles.loading, styles.firstLoading]}></View>
+            <View style={styles.loadingWrapper}>
+              <View
+                style={[
+                  styles.loading,
+                  route.name === "loadingCardMonkey" && styles.loadingAnimatedCompleted,
+                ]}
+              />
+              {route.name === "loadingCard" && (
+                <Animated.View
+                  style={[styles.loadingAnimated, { width: progressWidth }]}
+                />
+              )}
+            </View>
             <View style={styles.loading}></View>
             <View style={styles.loading}></View>
           </View>
@@ -91,6 +120,7 @@ const useStyles = makeStyles(({ colors }) => ({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    paddingTop: 60,
   },
   contentContainer: {
     alignItems: "center",
@@ -136,12 +166,29 @@ const useStyles = makeStyles(({ colors }) => ({
     gap: 12,
     marginTop: 5,
   },
+  loadingWrapper: {
+    flex: 1,
+    height: 4,
+    position: "relative",
+  },
   loading: {
     flex: 1,
     height: 4,
     backgroundColor: colors.grey4,
   },
-  firstLoading: {
+  loadingAnimated: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: 4,
+    backgroundColor: colors.primary,
+  },
+  loadingAnimatedCompleted: {
+    width: "100%",
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: 4,
     backgroundColor: colors.primary,
   },
   typingMonkeyImage: {
