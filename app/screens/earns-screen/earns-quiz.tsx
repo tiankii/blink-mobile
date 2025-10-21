@@ -194,7 +194,7 @@ const useStyles = makeStyles(({ colors }) => ({
 
   modalBodyText: {
     fontSize: 17,
-    color: colors.grey3,
+    color: colors.black,
     textAlign: "left",
   },
 
@@ -482,13 +482,17 @@ export const EarnQuiz = ({ route }: Props) => {
         toggleModal={closeModal}
         title={
           quizErrorCode == "QUIZ_CLAIMED_TOO_EARLY"
-            ? "Continue without earning"
+            ? LL.EarnScreen.customMessages.claimedToEarly.title()
             : LL.EarnScreen.somethingNotRight()
         }
         backgroundModalColor={colors.white}
         body={
           <View style={styles.modalBody}>
-            <Text style={styles.modalBodyText}>{quizErrorCode == "QUIZ_CLAIMED_TOO_EARLY"? "We only pay sats rewards for one section per day.\n\nYou can continue without the rewards or wait until tomorrow to continue." :quizErrorMessage}</Text>
+            <Text style={styles.modalBodyText}>
+              {quizErrorCode == "QUIZ_CLAIMED_TOO_EARLY"
+                ? LL.EarnScreen.customMessages.claimedToEarly.message()
+                : quizErrorMessage}
+            </Text>
           </View>
         }
         primaryButtonOnPress={handleClaimWithoutRewards}

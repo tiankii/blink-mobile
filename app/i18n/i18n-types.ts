@@ -6327,6 +6327,18 @@ type RootTranslation = {
 	​Y​o​u​ ​c​a​n​ ​s​t​i​l​l​ ​c​o​n​t​i​n​u​e​ ​l​e​a​r​n​i​n​g​ ​w​i​t​h​o​u​t​ ​r​e​w​a​r​d​s​,​ ​o​r​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​ ​f​r​o​m​ ​a​ ​d​i​f​f​e​r​e​n​t​ ​c​o​n​n​e​c​t​i​o​n​.
 		 */
 		customErrorMessage: string
+		customMessages: {
+			claimedToEarly: {
+				/**
+				 * D​a​i​l​y​ ​r​e​w​a​r​d​s​ ​d​e​p​l​e​t​e​d
+				 */
+				title: string
+				/**
+				 * T​r​y​ ​a​g​a​i​n​ ​t​o​m​o​r​r​o​w​ ​o​r​ ​c​l​i​c​k​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​t​o​ ​k​e​e​p​ ​l​e​a​r​n​i​n​g​ ​w​i​t​h​o​u​t​ ​r​e​w​a​r​d​s​.
+				 */
+				message: string
+			}
+		}
 	}
 	GetStartedScreen: {
 		/**
@@ -15707,6 +15719,18 @@ export type TranslationFunctions = {
 	You can still continue learning without rewards, or please try again later from a different connection.
 		 */
 		customErrorMessage: () => LocalizedString
+		customMessages: {
+			claimedToEarly: {
+				/**
+				 * Daily rewards depleted
+				 */
+				title: () => LocalizedString
+				/**
+				 * Try again tomorrow or click to continue to keep learning without rewards.
+				 */
+				message: () => LocalizedString
+			}
+		}
 	}
 	GetStartedScreen: {
 		/**

@@ -325,11 +325,11 @@ export const EarnMapScreen: React.FC = () => {
       <CustomModal
         isVisible={showModal}
         toggleModal={() => setShowModal(false)}
-        title={"Continue without earning"}
+        title={LL.EarnScreen.oneSectionADay()}
         backgroundModalColor={colors.white}
         body={
           <View style={styles.modalBody}>
-            <Text style={styles.modalBodyText}>{"We only pay sats rewards for one section per day.\n\nYou can continue without the rewards or wait until tomorrow to continue."}</Text>
+            <Text style={styles.modalBodyText}>{LL.EarnScreen.availableTomorrow()}</Text>
           </View>
         }
         primaryButtonOnPress={continueNotRewards}
@@ -395,7 +395,7 @@ const useStyles = makeStyles(({ colors }) => ({
   fullView: { position: "absolute", width: "100%" },
   modalBodyText: {
     fontSize: 17,
-    color: colors.grey3,
+    color: colors.black,
     textAlign: "left",
   },
   modalBody: {
