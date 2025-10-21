@@ -47,7 +47,7 @@ export const SelectCreditLimit: React.FC = () => {
           </Text>
 
           <View style={styles.limitsContainer}>
-            {CREDIT_LIMITS.map((limit) => (
+            {CREDIT_LIMITS.map((limit, index) => (
               <TouchableOpacity
                 key={limit}
                 style={[
@@ -59,7 +59,9 @@ export const SelectCreditLimit: React.FC = () => {
                 <Text type="p2" style={[styles.limitText]}>
                   ${limit.toLocaleString()}
                 </Text>
-                <View style={styles.limitBgOptionSelected}></View>
+                {index < CREDIT_LIMITS.length - 1 && (
+                  <View style={styles.limitBgOptionSelected}></View>
+                )}
               </TouchableOpacity>
             ))}
           </View>
