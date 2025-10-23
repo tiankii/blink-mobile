@@ -7,7 +7,6 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import TypingMonkeyImage from "../../assets/images/typing-monkey.png"
 
 export const LoadingCard: React.FC = () => {
   const styles = useStyles()
@@ -65,7 +64,7 @@ export const LoadingCard: React.FC = () => {
 
           <View style={styles.imageContainer}>
             <Image
-              source={TypingMonkeyImage}
+              source={require("../../assets/images/monkey-typing.gif")}
               style={styles.typingMonkeyImage}
               resizeMode="contain"
             />
