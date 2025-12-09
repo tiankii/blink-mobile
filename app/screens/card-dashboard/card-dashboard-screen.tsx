@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Icon, makeStyles, Text, useTheme } from "@rn-vui/themed"
-import { ScrollView, View, Image } from "react-native"
+import { ScrollView, View, Image, TouchableOpacity } from "react-native"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -24,14 +24,17 @@ export const CardDashboardScreen: React.FC = () => {
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <GaloyIconButton
-          style={styles.headerLeft}
-          name={"arrow-left"}
-          size="medium"
-          iconOnly
-          color={colors.black}
-          onPress={() => navigation.navigate("cardDashboardScreen")}
-        />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate("Home" as any)}
+        >
+          <Icon
+            style={styles.headerLeft}
+            name={"arrow-back-outline"}
+            type="ionicon"
+            color={colors.black}
+          />
+        </TouchableOpacity>
       ),
 
       headerRight: () => (
@@ -198,7 +201,7 @@ const useStyles = makeStyles(({ colors }) => ({
     color: colors.grey2,
   },
   headerLeft: {
-    marginLeft: 12,
+    marginLeft: 15,
   },
   headerRight: {
     marginRight: 12,

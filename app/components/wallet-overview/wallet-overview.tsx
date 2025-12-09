@@ -1,6 +1,6 @@
 import React from "react"
 import ContentLoader, { Rect } from "react-content-loader/native"
-import { Pressable, View } from "react-native"
+import { Pressable, TouchableOpacity, View } from "react-native"
 
 import { gql } from "@apollo/client"
 import { useWalletOverviewScreenQuery, WalletCurrency } from "@app/graphql/generated"
@@ -15,6 +15,10 @@ import { makeStyles, Text, useTheme } from "@rn-vui/themed"
 
 import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
 import { GaloyIcon } from "../atomic/galoy-icon"
+import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { CardDashboardStackParamList } from "@app/navigation/stack-param-lists"
+import { GaloyCurrencyBubbleText } from "../atomic/galoy-currency-bubble-text"
 
 const Loader = () => {
   const styles = useStyles()
@@ -64,6 +68,7 @@ const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }
   } = useTheme()
   const styles = useStyles()
   const { data } = useWalletOverviewScreenQuery({ skip: !isAuthed })
+  const navigation = useNavigation<StackNavigationProp<CardDashboardStackParamList>>()
 
   const { formatMoneyAmount, displayCurrency, moneyAmountToDisplayCurrencyString } =
     useDisplayCurrency()
@@ -160,6 +165,36 @@ const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }
           </View>
         )}
       </View>
+      <View style={styles.separator}></View>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => navigation.navigate("cardDashboardScreen")}
+      >
+        <View style={styles.displayTextView}>
+          <View style={styles.currency}>
+            <GaloyCurrencyBubbleText
+              currency={"CARD"}
+              textSize="p2"
+              containerSize="medium"
+            />
+          </View>
+          {loading ? (
+            <Loader />
+          ) : (
+            <View style={styles.hideableArea}>
+              {!hideAmount && (
+                <View style={styles.hideableArea}>
+                  <Text type="p1" bold {...testProps("bitcoin-balance")}>
+                    $21.21
+                  </Text>
+                  <Text type="p3">~ Kč500.00</Text>
+                </View>
+              )}
+              {hideAmount && <Text>****</Text>}
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
     </View>
   )
 }
