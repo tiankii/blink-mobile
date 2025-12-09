@@ -2809,6 +2809,7 @@ const en: BaseTranslation = {
     all: "ALL",
     allAccounts: "All accounts",
     profiles: "Profiles",
+    validThru: "Valid thru",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",

@@ -8860,6 +8860,10 @@ type RootTranslation = {
 		 * P​r​o​f​i​l​e​s
 		 */
 		profiles: string
+		/**
+		 * V​a​l​i​d​ ​t​h​r​u
+		 */
+		validThru: string
 	}
 	errors: {
 		/**
@@ -18182,6 +18186,10 @@ export type TranslationFunctions = {
 		 * Profiles
 		 */
 		profiles: () => LocalizedString
+		/**
+		 * Valid thru
+		 */
+		validThru: () => LocalizedString
 	}
 	errors: {
 		/**

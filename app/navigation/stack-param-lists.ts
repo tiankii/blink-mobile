@@ -162,12 +162,17 @@ export type PhoneValidationStackParamList = {
   totpLoginValidate: { authToken: string }
 }
 
+export type CardDashboardStackParamList = {
+  cardDashboardScreen: undefined
+}
+
 export type PrimaryStackParamList = {
   Home: undefined
   People: undefined
   Map: undefined
   Earn: undefined
   Web: undefined
+  CardDashboard: NavigatorScreenParams<CardDashboardStackParamList>
 }
 
 export type NewAccountFlowParamsList = { flow: "phone" | "trial" }

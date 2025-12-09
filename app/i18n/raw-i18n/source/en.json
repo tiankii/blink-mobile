@@ -2705,7 +2705,8 @@
         "dollar": "Dollar",
         "all": "ALL",
         "allAccounts": "All accounts",
-        "profiles": "Profiles"
+        "profiles": "Profiles",
+        "validThru": "Valid thru"
     },
     "errors": {
         "generic": "There was an error.\nPlease try again later.",

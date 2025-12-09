@@ -89,6 +89,7 @@ import {
   SupportOnboardingScreen,
 } from "@app/screens/onboarding-screen"
 import {
+  CardDashboardStackParamList,
   OnboardingStackParamList,
   PeopleStackParamList,
   PhoneValidationStackParamList,
@@ -96,6 +97,7 @@ import {
   RootStackParamList,
 } from "./stack-param-lists"
 import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
+import { CardDashboardScreen } from "@app/screens/card-dashboard"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -643,6 +645,39 @@ export const PhoneLoginNavigator = () => {
   )
 }
 
+const CardDashboard = createStackNavigator<CardDashboardStackParamList>()
+
+export const CardDashboardNavigator = () => {
+  const { LL } = useI18nContext()
+  const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
+
+  return (
+    <CardDashboard.Navigator
+      screenOptions={{
+        gestureEnabled: true,
+        headerBackTitle: LL.common.back(),
+        headerBackTestID: LL.common.back(),
+        headerStyle: styles.headerStyle,
+        headerTitleStyle: styles.title,
+        headerBackTitleStyle: styles.title,
+        headerTintColor: colors.black,
+      }}
+      initialRouteName="cardDashboardScreen"
+    >
+      <CardDashboard.Screen
+        name="cardDashboardScreen"
+        component={CardDashboardScreen}
+        options={() => ({
+          title: "Visa card",
+        })}
+      />
+    </CardDashboard.Navigator>
+  )
+}
+
 const Tab = createBottomTabNavigator<PrimaryStackParamList>()
 
 export const PrimaryNavigator = () => {
@@ -726,6 +761,14 @@ export const PrimaryNavigator = () => {
           tabBarIcon: ({ color }: { color: string }) => (
             <LearnIcon {...testProps("Earn")} color={color} />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="CardDashboard"
+        component={CardDashboardNavigator}
+        options={{
+          tabBarButton: () => null,
+          headerShown: false,
         }}
       />
     </Tab.Navigator>
