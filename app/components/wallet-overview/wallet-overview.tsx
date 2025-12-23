@@ -17,7 +17,7 @@ import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
 import { GaloyIcon } from "../atomic/galoy-icon"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { CardDashboardStackParamList } from "@app/navigation/stack-param-lists"
+import { PrimaryStackParamList } from "@app/navigation/stack-param-lists"
 import { GaloyCurrencyBubbleText } from "../atomic/galoy-currency-bubble-text"
 
 const Loader = () => {
@@ -68,7 +68,7 @@ const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }
   } = useTheme()
   const styles = useStyles()
   const { data } = useWalletOverviewScreenQuery({ skip: !isAuthed })
-  const navigation = useNavigation<StackNavigationProp<CardDashboardStackParamList>>()
+  const navigation = useNavigation<StackNavigationProp<PrimaryStackParamList>>()
 
   const { formatMoneyAmount, displayCurrency, moneyAmountToDisplayCurrencyString } =
     useDisplayCurrency()
@@ -168,7 +168,9 @@ const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }
       <View style={styles.separator}></View>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate("cardDashboardScreen")}
+        onPress={() =>
+          navigation.navigate("CardDashboard", { screen: "cardDashboardScreen" })
+        }
       >
         <View style={styles.displayTextView}>
           <View style={styles.currency}>
