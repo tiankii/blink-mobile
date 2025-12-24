@@ -97,7 +97,8 @@ import {
   RootStackParamList,
 } from "./stack-param-lists"
 import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
-import { CardDashboardScreen } from "@app/screens/card-dashboard"
+import { CardDashboardScreen, CardDetailsScreen } from "@app/screens/card-dashboard"
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -674,6 +675,13 @@ export const CardDashboardNavigator = () => {
           title: "Visa card",
         })}
       />
+      <CardDashboard.Screen
+        name="cardDetailsScreen"
+        component={CardDetailsScreen}
+        options={() => ({
+          title: "Card details",
+        })}
+      />
     </CardDashboard.Navigator>
   )
 }
@@ -766,9 +774,23 @@ export const PrimaryNavigator = () => {
       <Tab.Screen
         name="CardDashboard"
         component={CardDashboardNavigator}
-        options={{
-          tabBarButton: () => null,
-          headerShown: false,
+        options={({ route }) => {
+          // We only show the TabBar on the main screen of the CardDashboard stack
+          const routeName = getFocusedRouteNameFromRoute(route) ?? "cardDashboardScreen"
+          return {
+            tabBarButton: () => null,
+            headerShown: false,
+            tabBarStyle:
+              routeName === "cardDashboardScreen"
+                ? [
+                    styles.bottomNavigatorStyle,
+                    {
+                      height: 60 + insets.bottom,
+                      paddingBottom: insets.bottom,
+                    },
+                  ]
+                : { display: "none" },
+          }
         }}
       />
     </Tab.Navigator>

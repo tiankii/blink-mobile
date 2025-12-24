@@ -12,7 +12,7 @@ import { IconNamesType } from "@app/components/atomic/galoy-icon"
 import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
 import { useEffect, useState } from "react"
 
-export const CardDashboardScreen: React.FC = () => {
+export const CardDetailsScreen: React.FC = () => {
   const styles = useStyles()
   const {
     theme: { colors },
@@ -54,13 +54,13 @@ export const CardDashboardScreen: React.FC = () => {
     navigation.navigate(target)
   }
 
-  type Target = "cardDashboardScreen" | 'cardDetailsScreen'
+  type Target = "cardDashboardScreen"
 
   const buttons = [
     {
       id: "1",
       title: "Details",
-      event: () => onMenuClick("cardDetailsScreen"),
+      event: () => onMenuClick("cardDashboardScreen"),
       icon: "eye" as IconNamesType,
     },
     {
