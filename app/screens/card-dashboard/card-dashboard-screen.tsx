@@ -202,6 +202,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   headerLeft: {
     marginLeft: 15,
+    marginRight: 15,
   },
   headerRight: {
     marginRight: 12,

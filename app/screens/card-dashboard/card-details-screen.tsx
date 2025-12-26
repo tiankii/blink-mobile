@@ -8,9 +8,53 @@ import { CardDashboardStackParamList } from "@app/navigation/stack-param-lists"
 import { Screen } from "../../components/screen"
 import { VisaCard } from "../../components/visa-card/visa-card"
 import { testProps } from "@app/utils/testProps"
-import { IconNamesType } from "@app/components/atomic/galoy-icon"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import Clipboard from "@react-native-clipboard/clipboard"
+import { toastShow } from "@app/utils/toast"
+
+type CopyableFieldProps = {
+  label: string
+  value: string
+  onCopy: () => void
+}
+
+type InfoRowProps = {
+  label: string
+  value: string
+  valueColor?: string
+}
+
+const CopyableField: React.FC<CopyableFieldProps> = ({ label, value, onCopy }) => {
+  const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
+
+  return (
+    <View style={styles.fieldWrapper}>
+      <Text type="p3">{label}</Text>
+      <TouchableOpacity style={styles.fieldContainer} onPress={onCopy}>
+        <Text style={styles.fieldValue}>{value}</Text>
+        <GaloyIcon name="copy-paste" size={20} color={colors.primary} />
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+const InfoRow: React.FC<InfoRowProps> = ({ label, value, valueColor }) => {
+  const styles = useStyles()
+
+  return (
+    <View style={styles.infoRow}>
+      <Text style={styles.infoLabel} type="p3">
+        {label}
+      </Text>
+      <Text style={[styles.infoValue, valueColor && { color: valueColor }]}>{value}</Text>
+    </View>
+  )
+}
 
 export const CardDetailsScreen: React.FC = () => {
   const styles = useStyles()
@@ -19,24 +63,9 @@ export const CardDetailsScreen: React.FC = () => {
   } = useTheme()
   const { LL } = useI18nContext()
   const navigation = useNavigation<StackNavigationProp<CardDashboardStackParamList>>()
-  const [isFrozen, setIsFrozen] = useState(false)
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate("Home" as any)}
-        >
-          <Icon
-            style={styles.headerLeft}
-            name={"arrow-back-outline"}
-            type="ionicon"
-            color={colors.black}
-          />
-        </TouchableOpacity>
-      ),
-
       headerRight: () => (
         <GaloyIconButton
           style={styles.headerRight}
@@ -50,106 +79,81 @@ export const CardDetailsScreen: React.FC = () => {
     })
   }, [navigation, styles])
 
-  const onMenuClick = (target: Target) => {
-    navigation.navigate(target)
+  const handleCopy = (text: string, fieldName: string) => {
+    Clipboard.setString(text)
+    toastShow({ type: "success", message: "Copied to clipboard", LL })
   }
-
-  type Target = "cardDashboardScreen"
-
-  const buttons = [
-    {
-      id: "1",
-      title: "Details",
-      event: () => onMenuClick("cardDashboardScreen"),
-      icon: "eye" as IconNamesType,
-    },
-    {
-      id: "2",
-      title: "Freeze",
-      event: () => setIsFrozen(!isFrozen), //Mock
-      icon: "freeze" as IconNamesType,
-    },
-    {
-      id: "3",
-      title: "Set limits",
-      event: () => onMenuClick("cardDashboardScreen"),
-      icon: "limit" as IconNamesType,
-    },
-    {
-      id: "4",
-      title: "Statements",
-      event: () => onMenuClick("cardDashboardScreen"),
-      icon: "book" as IconNamesType,
-    },
-  ]
 
   return (
     <Screen>
       <ScrollView
-        {...testProps("card-dashboard")}
+        {...testProps("card-details")}
         contentContainerStyle={styles.scrollViewContainer}
       >
         <View style={styles.cardContainer}>
           <VisaCard
-            expiredDate={".. / .."}
-            name={"satoshi nakamoto"}
-            cardNumber=".... .... .... 2121"
+            expiredDate={"01/28"}
+            name={"SATOSHI NAKAMOTO"}
+            cardNumber="2121 2121 2121 2121"
             useGradient
             gradientDegrees={45}
           />
-          {isFrozen && (
-            <View style={styles.blurOverlay}>
-              <Image
-                source={require("../../assets/images/blur-card.png")}
-                resizeMode="cover"
-                style={{ width: "103%", height: "103%" }}
-              />
-              <View style={styles.frozenContent}>
-                <Icon
-                  type="ionicon"
-                  name="lock-closed-outline"
-                  color={colors.error}
-                  backgroundColor={"#DC262633"}
-                  style={{ padding: 12, borderRadius: 50 }}
-                  size={40}
-                />
-                <Text type="h2" bold style={{ fontWeight: "bold" }}>
-                  Card frozen
-                </Text>
-                <Text type="p4">Card is temporarily disabled</Text>
-              </View>
-            </View>
-          )}
         </View>
-        <View style={styles.balance}>
-          <View>
-            <Text type="p1">$21.21</Text>
-            <Text type="p4" color={colors.grey1}>
-              ~ Kč500.00
+
+        <CopyableField
+          label="Card number"
+          value="4242 4242 4242 4242"
+          onCopy={() => handleCopy("4242424242424242", "Card number")}
+        />
+
+        <View style={styles.rowContainer}>
+          <View style={styles.halfWidth}>
+            <CopyableField
+              label="Expiry date"
+              value="09/29"
+              onCopy={() => handleCopy("09/29", "Expiry date")}
+            />
+          </View>
+          <View style={styles.halfWidth}>
+            <CopyableField
+              label="CVV"
+              value="123"
+              onCopy={() => handleCopy("123", "CVV")}
+            />
+          </View>
+        </View>
+
+        <CopyableField
+          label="Cardholder name"
+          value="NAME SURNAME"
+          onCopy={() => handleCopy("NAME SURNAME", "Cardholder name")}
+        />
+
+        <View style={styles.infoWrapper}>
+          <Text style={styles.sectionTitle}>Card information</Text>
+          <View style={styles.infoSection}>
+            <InfoRow label="Card type" value="Virtual Visa debit" />
+            <View style={styles.divider} />
+            <InfoRow label="Status" value="Active" valueColor={colors.success} />
+            <View style={styles.divider} />
+            <InfoRow label="Issued" value="April 23, 2025" />
+            <View style={styles.divider} />
+            <InfoRow label="Network" value="Visa" />
+          </View>
+        </View>
+
+        <View style={styles.warningBox}>
+          <View style={styles.rowContainer}>
+            <GaloyIcon name="warning" size={18} color={colors.warning} />
+            <Text style={styles.warningTitle} type="p2">
+              Keep your details safe
             </Text>
           </View>
-          <View style={[styles.addButton, isFrozen ? styles.addButtonDisabled : {}]}>
-            <Text type="p3">Add funds</Text>
-            <Icon type="ionicon" name="add-outline" color={colors.primary} size={20} />
-          </View>
+          <Text style={styles.warningDescription} type="p3">
+            Never share your card details with anyone. Blink will never ask for your
+            information via email or phone.
+          </Text>
         </View>
-        <View style={styles.listItemsContainer}>
-          {buttons.map((item) => (
-            <View key={item.icon} style={styles.button}>
-              <GaloyIconButton
-                name={item.icon}
-                size="large"
-                text={item.title}
-                onPress={() => item.event()}
-                color={isFrozen && item.id == "2" ? colors.error : undefined}
-                backgroundColor={isFrozen && item.id == "2" ? colors.error9 : undefined}
-              />
-            </View>
-          ))}
-        </View>
-        <Text type="p1" style={styles.noTransaction}>
-          No transactions yet
-        </Text>
       </ScrollView>
     </Screen>
   )
@@ -161,48 +165,6 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingVertical: 20,
     rowGap: 20,
   },
-  listItemsContainer: {
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 12,
-    backgroundColor: colors.grey5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  button: {
-    maxWidth: "25%",
-    flexGrow: 1,
-  },
-  balance: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: colors.grey5,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderRadius: 7,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-  addButtonDisabled: {
-    opacity: 0.5,
-  },
-  noTransaction: {
-    alignItems: "center",
-    alignSelf: "center",
-    marginTop: 20,
-    color: colors.grey2,
-  },
-  headerLeft: {
-    marginLeft: 15,
-  },
   headerRight: {
     marginRight: 12,
   },
@@ -210,24 +172,73 @@ const useStyles = makeStyles(({ colors }) => ({
     position: "relative",
     overflow: "hidden",
   },
-  blurOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    overflow: "hidden",
-    justifyContent: "center",
+  fieldWrapper: {
+    gap: 8,
+  },
+
+  fieldContainer: {
+    backgroundColor: colors.grey5,
+    borderRadius: 8,
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  frozenContent: {
-    position: "absolute",
-    backgroundColor: "rgba(0, 0, 0, 0.58)",
-    width: "100%",
-    height: "100%",
+  fieldValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.black,
+  },
+  rowContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
+  },
+  halfWidth: {
     flex: 1,
-    justifyContent: "center",
+  },
+  infoWrapper: {
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: colors.grey1,
+  },
+  infoSection: {
+    backgroundColor: colors.grey5,
+    borderRadius: 8,
+    padding: 16,
+    gap: 12,
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  infoLabel: {
+    color: colors.grey2,
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.black,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.transparent,
+  },
+  warningBox: {
+    flexDirection: "column",
+    backgroundColor: colors.grey5,
+    borderRadius: 8,
+    padding: 16,
+    gap: 12,
+    marginBottom: 20,
+  },
+  warningTitle: {
+    color: colors.warning,
+  },
+  warningDescription: {
+    color: colors.grey2,
   },
 }))
