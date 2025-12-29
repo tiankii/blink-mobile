@@ -97,7 +97,7 @@ import {
   RootStackParamList,
 } from "./stack-param-lists"
 import { AcceptTermsAndConditionsScreen } from "@app/screens/accept-t-and-c"
-import { CardDashboardScreen, CardDetailsScreen, CardLimitsScreen } from "@app/screens/card-dashboard"
+import { CardDashboardScreen, CardDetailsScreen, CardLimitsScreen, CardStatementsScreen } from "@app/screens/card-dashboard"
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
@@ -687,6 +687,13 @@ export const CardDashboardNavigator = () => {
         component={CardLimitsScreen}
         options={() => ({
           title: "Card limits",
+        })}
+      />
+      <CardDashboard.Screen
+        name="cardStatementsScreen"
+        component={CardStatementsScreen}
+        options={() => ({
+          title: "Statements",
         })}
       />
     </CardDashboard.Navigator>

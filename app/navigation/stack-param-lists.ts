@@ -166,6 +166,7 @@ export type CardDashboardStackParamList = {
   cardDashboardScreen: undefined,
   cardDetailsScreen: undefined,
   cardLimitsScreen: undefined,
+  cardStatementsScreen: undefined,
 }
 
 export type PrimaryStackParamList = {

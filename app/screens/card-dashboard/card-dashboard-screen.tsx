@@ -54,7 +54,11 @@ export const CardDashboardScreen: React.FC = () => {
     navigation.navigate(target)
   }
 
-  type Target = "cardDashboardScreen" | 'cardDetailsScreen' | "cardLimitsScreen"
+  type Target =
+    | "cardDashboardScreen"
+    | "cardDetailsScreen"
+    | "cardLimitsScreen"
+    | "cardStatementsScreen"
 
   const buttons = [
     {
@@ -78,7 +82,7 @@ export const CardDashboardScreen: React.FC = () => {
     {
       id: "4",
       title: "Statements",
-      event: () => onMenuClick("cardDashboardScreen"),
+      event: () => onMenuClick("cardStatementsScreen"),
       icon: "book" as IconNamesType,
     },
   ]

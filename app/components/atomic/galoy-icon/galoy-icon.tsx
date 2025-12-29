@@ -61,6 +61,7 @@ import Upgrade from "@app/assets/icons-redesign/upgrade.svg"
 import Welcome from "@app/assets/icons-redesign/welcome.svg"
 import FreezeIcon from "@app/assets/icons-redesign/freeze.svg"
 import LimitIcon from "@app/assets/icons-redesign/limit.svg"
+import DownloadSimple from "@app/assets/icons-redesign/download-simple.svg"
 import { makeStyles, useTheme } from "@rn-vui/themed"
 
 export const icons = {
@@ -124,6 +125,7 @@ export const icons = {
   "welcome": Welcome,
   "freeze": FreezeIcon,
   "limit": LimitIcon,
+  "download-simple": DownloadSimple,
 } as const
 
 export type IconNamesType = keyof typeof icons
