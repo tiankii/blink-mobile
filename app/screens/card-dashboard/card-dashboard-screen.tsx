@@ -54,7 +54,7 @@ export const CardDashboardScreen: React.FC = () => {
     navigation.navigate(target)
   }
 
-  type Target = "cardDashboardScreen" | 'cardDetailsScreen'
+  type Target = "cardDashboardScreen" | 'cardDetailsScreen' | "cardLimitsScreen"
 
   const buttons = [
     {
@@ -72,7 +72,7 @@ export const CardDashboardScreen: React.FC = () => {
     {
       id: "3",
       title: "Set limits",
-      event: () => onMenuClick("cardDashboardScreen"),
+      event: () => onMenuClick("cardLimitsScreen"),
       icon: "limit" as IconNamesType,
     },
     {

@@ -165,6 +165,7 @@ export type PhoneValidationStackParamList = {
 export type CardDashboardStackParamList = {
   cardDashboardScreen: undefined,
   cardDetailsScreen: undefined,
+  cardLimitsScreen: undefined,
 }
 
 export type PrimaryStackParamList = {
