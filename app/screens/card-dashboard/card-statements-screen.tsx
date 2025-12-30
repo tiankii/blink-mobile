@@ -1,7 +1,7 @@
 import * as React from "react"
-import { Icon, makeStyles, useTheme, Text } from "@rn-vui/themed"
+import { Icon, makeStyles, useTheme, Text, Switch } from "@rn-vui/themed"
 import { Screen } from "../../components/screen"
-import { View, ScrollView, Switch, TouchableOpacity } from "react-native"
+import { View, ScrollView, TouchableOpacity } from "react-native"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 const YearSelector: React.FC<{
@@ -22,7 +22,9 @@ const YearSelector: React.FC<{
         <Text style={styles.calendarIcon}>
           <Icon name="calendar-number-outline" size={20} type="ionicon" />
         </Text>
-        <Text style={styles.yearText}>{selectedYear}</Text>
+        <Text style={styles.yearText} type="p1">
+          {selectedYear}
+        </Text>
         <Text>
           <Icon
             name="chevron-down-outline"
@@ -52,13 +54,13 @@ const CurrentStatement: React.FC<{
           <Text style={styles.statementLabel} type="p4">
             Statement period
           </Text>
-          <Text style={styles.statementValue}>{period}</Text>
+          <Text type="p1">{period}</Text>
         </View>
         <View style={styles.statementInfo}>
           <Text style={styles.statementLabel} type="p4">
             Total spent
           </Text>
-          <Text style={styles.statementValue}>{totalSpent}</Text>
+          <Text type="p1">{totalSpent}</Text>
         </View>
       </View>
     </View>
@@ -71,9 +73,11 @@ const DownloadAllButton: React.FC<{ onPress: () => void }> = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.downloadAllButton} onPress={onPress}>
       <Text style={styles.downloadIcon}>
-        <GaloyIcon name="download-simple" size={20} />
+        <GaloyIcon name="download-simple" size={16} />
       </Text>
-      <Text style={styles.downloadAllText}>Download all</Text>
+      <Text style={styles.downloadAllText} type="p3">
+        Download all
+      </Text>
     </TouchableOpacity>
   )
 }
@@ -81,10 +85,10 @@ const DownloadAllButton: React.FC<{ onPress: () => void }> = ({ onPress }) => {
 const StatementItem: React.FC<{
   month: string
   dateRange?: string
-  amountSpent: string
   transactions?: string
   onDownload: () => void
-}> = ({ month, dateRange, amountSpent, transactions, onDownload }) => {
+  disabled?: boolean
+}> = ({ month, dateRange, transactions, onDownload, disabled }) => {
   const styles = useStyles()
 
   return (
@@ -94,18 +98,23 @@ const StatementItem: React.FC<{
           <Icon name="document-text-outline" size={20} type="ionicon" />
         </Text>
         <View style={styles.statementItemInfo}>
-          <Text style={styles.statementMonth}>{month}</Text>
-          {dateRange && <Text style={styles.statementDateRange}>{dateRange}</Text>}
-          {transactions && (
-            <Text style={styles.statementTransactions}>{transactions}</Text>
+          <Text style={styles.statementMonth} type="p2">
+            {month}
+          </Text>
+          {dateRange && (
+            <Text style={styles.statementDateRange} type="p3">
+              {dateRange}
+            </Text>
           )}
-          <Text style={styles.statementAmount}>{amountSpent} spent</Text>
+          {transactions && (
+            <Text style={styles.statementTransactions} type="p4">
+              {transactions}
+            </Text>
+          )}
         </View>
       </View>
       <TouchableOpacity onPress={onDownload}>
-        <Text style={styles.downloadIconButton}>
-          <GaloyIcon name="download-simple" size={20} />
-        </Text>
+        <GaloyIcon name="download-simple" size={20} opacity={disabled ? 0.5 : 1} />
       </TouchableOpacity>
     </View>
   )
@@ -117,14 +126,18 @@ const AboutStatements: React.FC = () => {
   return (
     <View style={styles.aboutContainer}>
       <View style={styles.aboutContent}>
-        <Text style={styles.aboutTitle}>About statements</Text>
-        <Text style={styles.bulletPoint}>
+        <Text style={styles.aboutTitle} type="p2">
+          About statements
+        </Text>
+        <Text style={styles.bulletPoint} type="p2">
           • Monthly statements are generated on the last day of each month
         </Text>
-        <Text style={styles.bulletPoint}>
+        <Text style={styles.bulletPoint} type="p2">
           • Statements include all transactions and fees for the period
         </Text>
-        <Text style={styles.bulletPoint}>• Download statements as PDF</Text>
+        <Text style={styles.bulletPoint} type="p2">
+          • Download statements as PDF
+        </Text>
       </View>
     </View>
   )
@@ -142,15 +155,10 @@ const NotificationToggle: React.FC<{
         Notifications
       </Text>
       <View style={styles.notificationToggle}>
-        <Text style={styles.notificationText}>
+        <Text style={styles.notificationText} type="p3">
           Notify me when new statements are made available
         </Text>
-        <Switch
-          value={value}
-          onValueChange={onValueChange}
-          trackColor={{ false: "#3a3a3a", true: "#ffa500" }}
-          thumbColor="#ffffff"
-        />
+        <Switch value={value} onValueChange={onValueChange} />
       </View>
     </View>
   )
@@ -172,17 +180,19 @@ const SupportButton: React.FC<{ onPress: () => void }> = ({ onPress }) => {
           <GaloyIcon name="support" size={20} />
         </Text>
         <View style={styles.supportInfo}>
-          <Text style={styles.supportTitle}>Contact support</Text>
-          <Text style={styles.supportEmail}>support@blinkbtc.com</Text>
+          <Text style={styles.supportTitle} type="p3">
+            Contact support
+          </Text>
+          <Text style={styles.supportEmail} type="p3">
+            support@blinkbtc.com
+          </Text>
         </View>
-        <Text style={styles.chevronRight}>
-          <Icon
-            name="chevron-forward-outline"
-            size={20}
-            type="ionicon"
-            color={colors.primary}
-          />
-        </Text>
+        <Icon
+          name="chevron-forward-outline"
+          size={20}
+          type="ionicon"
+          color={colors.primary}
+        />
       </TouchableOpacity>
     </View>
   )
@@ -227,27 +237,29 @@ export const CardStatementsScreen: React.FC = () => {
 
           <DownloadAllButton onPress={handleDownloadAll} />
 
-          <StatementItem
-            month="August 2025"
-            amountSpent="$1,021.00"
-            onDownload={() => handleDownloadStatement("August 2025")}
-          />
+          <View style={{ display: "flex", flexDirection: "column" }}>
+            <StatementItem
+              month="August 2025"
+              transactions="$1,021.00 spent"
+              onDownload={() => handleDownloadStatement("August 2025")}
+            />
 
-          <StatementItem
-            month="July 2025"
-            dateRange="Jul 1 - Jul 30, 2025"
-            transactions="5 transactions, $121.00 spent"
-            amountSpent="$121.00"
-            onDownload={() => handleDownloadStatement("July 2025")}
-          />
+            <StatementItem
+              month="July 2025"
+              dateRange="Jul 1 - Jul 30, 2025"
+              transactions="5 transactions, $121.00 spent"
+              onDownload={() => handleDownloadStatement("July 2025")}
+              disabled
+            />
 
-          <StatementItem
-            month="June 2025"
-            dateRange="Jul 1 - Jul 30, 2025"
-            transactions="5 transactions, $121.00 spent"
-            amountSpent="$121.00"
-            onDownload={() => handleDownloadStatement("June 2025")}
-          />
+            <StatementItem
+              month="June 2025"
+              dateRange="Jul 1 - Jul 30, 2025"
+              transactions="5 transactions, $121.00 spent"
+              onDownload={() => handleDownloadStatement("June 2025")}
+              disabled
+            />
+          </View>
         </View>
 
         <AboutStatements />
@@ -266,7 +278,7 @@ export const CardStatementsScreen: React.FC = () => {
 const useStyles = makeStyles(({ colors }) => ({
   scrollView: {
     flex: 1,
-    padding: 16,
+    marginHorizontal: 20,
   },
   sectionTitle: {
     marginBottom: 12,
@@ -287,9 +299,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   yearText: {
     flex: 1,
-    color: "#ffffff",
-    fontSize: 18,
-    fontWeight: "600",
   },
   currentStatementContainer: {
     marginBottom: 24,
@@ -308,11 +317,7 @@ const useStyles = makeStyles(({ colors }) => ({
     color: colors.grey3,
     marginBottom: 4,
   },
-  statementValue: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+
   monthlyStatementsContainer: {
     marginBottom: 24,
   },
@@ -326,13 +331,10 @@ const useStyles = makeStyles(({ colors }) => ({
     marginBottom: 16,
   },
   downloadIcon: {
-    fontSize: 16,
     marginRight: 8,
   },
   downloadAllText: {
     color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
   },
   statementItem: {
     flexDirection: "row",
@@ -342,6 +344,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
+    flex: 1,
   },
   statementItemLeft: {
     flex: 1,
@@ -349,43 +352,25 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
   },
   documentIcon: {
-    fontSize: 24,
     marginRight: 12,
   },
   statementItemInfo: {
     flex: 1,
   },
   statementMonth: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "600",
     marginBottom: 2,
   },
   statementDateRange: {
-    color: "#999999",
-    fontSize: 12,
-    marginBottom: 2,
+    color: colors.grey3,
   },
   statementTransactions: {
-    color: "#999999",
-    fontSize: 12,
-    marginBottom: 2,
+    color: colors.grey3,
   },
-  statementAmount: {
-    color: "#999999",
-    fontSize: 12,
-  },
-  downloadIconButton: {
-    color: "#ffa500",
-    fontSize: 20,
-  },
+
   aboutContainer: {
     marginBottom: 24,
   },
   aboutTitle: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "600",
     marginBottom: 12,
   },
   aboutContent: {
@@ -394,10 +379,7 @@ const useStyles = makeStyles(({ colors }) => ({
     padding: 16,
   },
   bulletPoint: {
-    color: "#999999",
-    fontSize: 14,
-    marginBottom: 8,
-    lineHeight: 20,
+    color: colors.grey3,
   },
   notificationContainer: {
     marginBottom: 24,
@@ -412,8 +394,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   notificationText: {
     flex: 1,
-    color: "#ffffff",
-    fontSize: 14,
     marginRight: 12,
   },
   supportContainer: {
@@ -434,17 +414,9 @@ const useStyles = makeStyles(({ colors }) => ({
     flex: 1,
   },
   supportTitle: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "500",
     marginBottom: 2,
   },
   supportEmail: {
-    color: "#999999",
-    fontSize: 13,
-  },
-  chevronRight: {
-    color: "#999999",
-    fontSize: 24,
+    color: colors.grey3,
   },
 }))
